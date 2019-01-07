@@ -19,9 +19,9 @@ libopenblas-dev
 
 Install the packages:
 1) Become superuser
-2) Enter the directory "pycontrol"
+2) Enter the directory "pyEdit"
 3) launch "make"
-4) exit superuser and enter the directory "pycontrol"
+4) exit superuser and enter the directory "pyEdit"
 5) Modify the last line of the Makefile substitute "emacs" with your
    favorite editor
    Launch ""make user"
