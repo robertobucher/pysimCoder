@@ -16,9 +16,9 @@ python-pyqtgraph
 Install the packages:
 1) untar pycontrol.tgz ("tar xvfz pycontrol.tgz")
 2) Become superuser
-3) Enter the directory "pycontrol"
+3) Enter the directory "pyEdit"
 4) launch "make"
-5) exit superuser and enter the directory "pycontrol"
+5) exit superuser and enter the directory "pyEdit"
 6) Modify the last line of the Makefile substitute "emacs" with your
    favorite editor
    Launch ""make user"
