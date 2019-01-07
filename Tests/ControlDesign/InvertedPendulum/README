@@ -1,0 +1,9 @@
+Launch pyCodeGenCenter
+
+From the menu SCH->PY choose "Code generation"
+Choose the schematic file
+Choose the template Makefile "rt.tmf" 
+
+Add the python initialization script "pend.py"
+OK to generate the code
+

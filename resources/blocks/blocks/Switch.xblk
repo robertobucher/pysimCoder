@@ -1,0 +1,1 @@
+{"lib": "nonlin", "name": "Switch", "ip": 3, "op": 1, "st": 0, "icon": "SWITCH", "params": "switchBlk|Condition [0 < or 1 >] : 0|Compare Value: 0.5|Persistence [0 no or 1 yes]: 0"}

@@ -1,0 +1,1 @@
+{"lib": "comedi", "name": "DI", "ip": 0, "op": 1, "st": 0, "icon": "DI", "params": "comediDIBlk|Device: '/dev/comedi0'|Channel: 0"}

@@ -1,0 +1,1 @@
+{"lib": "nonlin", "name": "Generic_C_Block", "ip": 1, "op": 1, "st": 1, "icon": "CBLOCK", "params": "genericBlk|States: [0,0]|FeedForw: 0|Real pars: []| Int pars:[]|String: ''| Function name: 'test'"}

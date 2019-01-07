@@ -1,0 +1,46 @@
+\setlength{\unitlength}{4144sp}%
+%
+\begingroup\makeatletter\ifx\SetFigFont\undefined%
+\gdef\SetFigFont#1#2#3#4#5{%
+  \reset@font\fontsize{#1}{#2pt}%
+  \fontfamily{#3}\fontseries{#4}\fontshape{#5}%
+  \selectfont}%
+\fi\endgroup%
+\begin{picture}(6684,7472)(2689,-8169)
+\thinlines
+{\put(9361,-5333){\oval(  6,256)[br]}
+\put(6841,-5333){\oval(5046,5234)[tr]}
+\put(6841,-2716){\vector(-1, 0){0}}
+}%
+{\put(5401,-7936){\circle{450}}
+}%
+{\put(7201,-7936){\circle{450}}
+}%
+{\put(9046,-1006){\circle*{604}}
+}%
+{\put(2701,-7036){\vector( 1, 0){2250}}
+}%
+{\put(6301,-7036){\vector( 0, 1){2025}}
+\put(6301,-7036){\vector( 1, 0){2250}}
+}%
+{\put(6205,-7018){\vector(-2, 1){1809.600}}
+\put(6245,-6937){\vector( 1, 2){1005.400}}
+}%
+{\put(4951,-7711){\framebox(2700,1350){}}
+}%
+\thicklines
+{\put(6301,-7036){\line( 1, 2){2971.400}}
+}%
+\put(8776,-7261){\makebox(0,0)[lb]{\smash{{\SetFigFont{20}{24.0}{\familydefault}{\mddefault}{\updefault}{x}%
+}}}}
+\put(6526,-5011){\makebox(0,0)[lb]{\smash{{\SetFigFont{20}{24.0}{\familydefault}{\mddefault}{\updefault}{y}%
+}}}}
+\put(4501,-6361){\makebox(0,0)[lb]{\smash{{\SetFigFont{20}{24.0}{\familydefault}{\mddefault}{\updefault}{y1}%
+}}}}
+\put(7426,-5011){\makebox(0,0)[lb]{\smash{{\SetFigFont{20}{24.0}{\familydefault}{\mddefault}{\updefault}{x1}%
+}}}}
+\put(3016,-7306){\makebox(0,0)[lb]{\smash{{\SetFigFont{20}{24.0}{\familydefault}{\mddefault}{\updefault}{F}%
+}}}}
+\put(9271,-3976){\makebox(0,0)[lb]{\smash{{\SetFigFont{20}{24.0}{\familydefault}{\mddefault}{\updefault}{phi, w}%
+}}}}
+\end{picture}%

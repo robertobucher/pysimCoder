@@ -1,0 +1,1 @@
+{"lib": "Socket", "name": "UnixSkServer", "ip": 0, "op": 1, "st": 1, "icon": "UNIXSOCK", "params": "unixsocketSBlk|Socket: 'ssock'|Default outputs:[0.]"}

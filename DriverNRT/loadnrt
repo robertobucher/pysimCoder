@@ -1,0 +1,2 @@
+sudo insmod /lib/modules/`uname -r`/kernel/drivers/misc/nrt.ko
+sudo mknod -m0666 /dev/nrt c 20 0

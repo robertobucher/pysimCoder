@@ -1,0 +1,73 @@
+Additional files for the user
+=================
+In order to allow the normal user to interact with pyEdit, new folders have been
+added in the project. In particular, in .bashrc file, there is a new definition of a
+PYTHONPATH folder, located under $HOME/Documents/PYTHON.
+
+This new definition give the user the possibility to add its own files, without reinstalling
+the pycontrol SW.
+
+Modification in the code
+===============
+
+editor.py
+======
+- Complete rewritten editor, using states and events
+- Implemented an "Undo" mechanism in editor
+- Block Diagram will be "updated" after some graphical operations
+  (automatically repositioning of nodes)
+- Clicking with the right moude button by linking blocks stop the link
+
+Blocks
+====
+- Blocks are now redefines as "Dictionaries"
+- 1 file = 1 block
+- Blocks can be stored in 2 places:
+      - pycontrol/resources/blocks/blocks   -> Set of official defines blocks"
+      - $HOME/Documents/PYTHON/blocks  -> user defined blocks
+- The user can create a list of its own most used blocks into the file
+  $HOME/Documents/PYTHON/blocks/common.blks in a simple list
+  
+Example of a common.blks file:
+
+LTI_continous.xblk
+LTI_discrete.xblk
+Plot.xblk
+Step.xblk
+
+C-Code libraries
+==========
+- The C-code for the blocks defined under "pycontrol/blocks/blocks" are
+  coded under pycontrol/CodeGen/devices and the result is the "libpyblk.a" library
+  
+- The C-code for the blocks defined under "$HOME/Documents/PYTHON/blocks"
+  are coded under $HOME/Documents/blocks/lib and the result is the "userpyblklib.a"
+  library
+
+Additional tools
+==========
+- defBlocks.py is a qt application which allows to generate the ".xbjk" files in a simple way
+
+- xblk2blk.py is a qt qpplication which, starting from the ".xblk" file, allows to generate
+  in a simple way a minimal definition of the "blk" class and put it into the "userBlocks.py
+  file (or the pyeditBlocks.py file). In addition, the application can generate the skeleton of
+  the C-file.
+
+Real-time scope
+==========
+I've integrated the code from Ardit Drovani and Tim Berghoff from TU Berlin (thanks for
+the contribution!) for realtime plotting, using pyqtgraph.
+The corresponding block is the "RT plot" block under "output" in the Library
+
+ToDo
+===
+- Connecting block is still not perfect
+- Insert connectio from inport to outport, node or connection
+- Hierarchical blocks (????)
+- Better Integration algorithms: pyEdit should be more a code generator for RT-system
+  instead of a simulation program. This means that the most code should be in discrete
+  time modus. In order to use it as simulation system, pyEdit needs a better integration of
+  different integration algorithms.
+
+
+roberto.bucher@supsi.ch - 19.09.2018

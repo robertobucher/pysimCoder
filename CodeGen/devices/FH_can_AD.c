@@ -1,0 +1,88 @@
+/*
+COPYRIGHT (C) 2016  Roberto Bucher (roberto.bucher@supsi.ch)
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+*/
+
+#include <pyblock.h>
+#include <stdio.h>
+
+#define BYTE unsigned char
+#define WORD unsigned short
+#define DWORD unsigned int
+
+#define TIMEOUT -1
+
+#include <canopen.h>
+#include <stdlib.h>
+#include <unistd.h>
+
+static BYTE NMT_act[2]  = {0x01, 0x00};
+
+#define DATA_SIZE 2
+
+static BYTE data[DATA_SIZE][8]= {
+  {0x2b, 0x40, 0x60, 0x00, 0x06, 0x00, 0x00, 0x00},
+  {0x2b, 0x40, 0x60, 0x00, 0x0F, 0x00, 0x00, 0x00},
+};
+
+static BYTE read_req[8] = {0x40, 0x13, 0x23, 0x01, 0x00, 0x00, 0x00, 0x00};
+
+static void init(python_block *block)
+{
+  int i;
+  BYTE DATA[8];
+
+  if(canOpenTH()) exit(1);
+  
+  NMT_act[1] = (BYTE) block->intPar[0];
+  sendMsg(0x000,NMT_act,2);   /* Operational status */
+  usleep(50000);
+
+  for(i=0;i<DATA_SIZE;i++){
+    sendMsg(0x600+block->intPar[0],data[i],8);
+    usleep(50000);
+  }
+  
+  registerMsg(0x580+block->intPar[0], 0x2313, 0x01);
+}
+
+static void inout(python_block *block)
+{
+  double *y = block->y[0];
+
+  sendMsg(0x600+block->intPar[0],read_req,8);
+  y[0] = 1.0*get2ByteValue(0x580+block->intPar[0], 0x2313, 0x01);
+}
+
+static void end(python_block *block)
+{
+  canClose();
+}
+
+void FH_can_AD(int flag, python_block *block)
+{
+  if (flag==OUT){          /* get input */
+    inout(block);
+  }
+  else if (flag==END){     /* termination */ 
+    end(block);
+  }
+  else if (flag ==INIT){    /* initialisation */
+    init(block);
+  }
+}
+
+

@@ -1,0 +1,28 @@
+The following packages should be installed on your PC 
+
+numpy
+scipy
+matplotlib
+python-control   https://github.com/python-control/python-control
+Slycot Master    https://github.com/jgoppert/Slycot
+python-qt4
+python-qt4-dev
+python-qwt
+python-setuptools
+python-lxml
+liblapack-dev
+python-pyqtgraph
+
+Install the packages:
+1) untar pycontrol.tgz ("tar xvfz pycontrol.tgz")
+2) Become superuser
+3) Enter the directory "pycontrol"
+4) launch "make"
+5) exit superuser and enter the directory "pycontrol"
+6) Modify the last line of the Makefile substitute "emacs" with your
+   favorite editor
+   Launch ""make user"
+
+
+21.03.2017 roberto.bucher@supsi.ch
+

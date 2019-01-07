@@ -1,0 +1,1 @@
+{"lib": "can generic", "name": "canSDO_SendMsg", "ip": 1, "op": 0, "st": 0, "icon": "CAN_SDO_SEND", "params": "can_sdo_sendThBlk|Device ID: 0x01|Index: 0x2030|SubIndex: 0x00| Data: 0x00| Use Input [0/1 no/yes]: 1"}

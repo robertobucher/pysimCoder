@@ -1,0 +1,68 @@
+\documentclass[a4paper,12pt]{book}
+\usepackage{graphicx}
+\graphicspath{{./eps/}}
+\setlength{\paperheight}{297mm}
+\setlength{\paperwidth}{210mm}
+\setlength{\voffset}{-12mm}
+\setlength{\topmargin}{0mm}
+\setlength{\textheight}{235mm}
+\setlength{\hoffset}{-4mm}
+\setlength{\textwidth}{170mm}
+\setlength{\oddsidemargin}{5mm}
+\setlength{\evensidemargin}{5mm}
+\setlength{\marginparwidth}{0mm}
+\setlength{\marginparpush}{0mm}
+
+\usepackage{listings}
+\lstset{language=Python}
+\lstset{linewidth=13.5cm}
+%\lstset{frame=tb}
+\lstset{frame=single}
+%\lstset{frame=tblr}
+\lstset{basicstyle=\scriptsize}
+\lstset{aboveskip=20pt,belowskip=20pt}
+\lstset{breaklines=true}
+\lstset{xleftmargin=30mm}
+
+\usepackage{graphicx}
+\graphicspath{{./eps/}}
+
+\usepackage{amsmath}
+
+\usepackage{psfrag}
+
+\lstnewenvironment{code}[1][]%
+{
+   \noindent
+   \minipage{\linewidth} 
+   \vspace{0.5\baselineskip}}
+{\endminipage}
+
+\usepackage{pifont}
+
+\bibliographystyle{IEEEtran.bst}
+
+\parindent 0cm
+%opening
+\title{Python for control purposes}
+\author{Prof. Roberto Bucher\\
+Scuola Universitaria Professionale della Svizzera Italiana\\
+Dipartimento Tecnologie Innovative\\
+6928 Manno\\
+roberto.bucher@supsi.ch}
+
+\begin{document}
+\parindent 0cm
+
+\maketitle
+
+\tableofcontents
+
+\listoffigures
+
+\input{PyControl.tex}
+
+\newpage
+\bibliography{robi}
+
+\end{document}

@@ -1,0 +1,2 @@
+sed s/xxxx/$1/ ${PYSUPSICTRL}/CodeGen/devices/template.c.tmp > $1.c
+
