@@ -10,5 +10,4 @@ if __name__ == "__main__":
     else:
         fname = 'untitled'
     th = supsisimul(fname, runflag = True)
-    th.start()
 
