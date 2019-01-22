@@ -8,8 +8,9 @@ from lxml import etree
 class Node(QGraphicsPathItem):
     """A block holds ports that can be connected to."""
     def __init__(self, parent, scene):
-        super(Node, self).__init__(parent, scene)
+        super(Node, self).__init__(parent)
         self.scene = scene
+        self.scene.addItem(self)
         self.line_color = QtCore.Qt.black
         self.fill_color = QtCore.Qt.black
         self.setup()

@@ -6,7 +6,7 @@ Created on Thu Jun  8 17:35:41 2017
 """
 
 import sys
-use_pyqt = None
+use_pyqt = 5
 
 #==============================================================================
 # try if PyQt4 is already loaded
@@ -42,7 +42,7 @@ if use_pyqt == 4:
         QPen, QBrush, QTransform, QPolygonF
         
     from PyQt4 import QtCore, uic
-#    print('using Pyqt4')
+    #print('using Pyqt4')
         
 
 #==============================================================================
@@ -64,7 +64,7 @@ elif use_pyqt == 5:
         QPen, QBrush, QTransform, QFont, QPolygonF
 
     from PyQt5 import QtCore, uic
-#    print('using Pyqt5')
+    #print('using Pyqt5')
         
 #==============================================================================
 # no PyQt found

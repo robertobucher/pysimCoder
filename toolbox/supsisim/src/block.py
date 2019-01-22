@@ -9,41 +9,29 @@ from lxml import etree
 class Block(QGraphicsPathItem):
     """A block holds ports that can be connected to."""
     def __init__(self, *args):
-        '''
-        if len(args) >= 2:
-            parent, self.scene = args[0], args[1]
-        elif len(args) == 1:
-            parent, self.scene = None, args[0]
-        else:
-            parent, self.scene = None, None
-        if QtCore.qVersion().startswith('5'):
-            super(Block, self).__init__(parent)
-            if self.scene:
-                self.scene.addItem(self)
-        else:
-            super(Block, self).__init__(parent, self.scene)
-        '''
-        parent = args[0]
         scene = args[1]
-        super(Block, self).__init__(parent, scene)
-        self.scene = scene
+        parent = args[0]
+        super(Block, self).__init__(parent)
+        scene.addItem(self)
+ 
         if len(args) == 9:
-            parent, self.scene, self.name, self.inp, self.outp, self.iosetble, self.icon, self.params, self.flip = args
+            parent, scene, self.name, self.inp, self.outp, self.iosetble, self.icon, self.params, self.flip = args
         elif len(args) == 3:
-            parent, self.scene, strBlk = args
+            parent, scene, strBlk = args
             ln = strBlk.split('@')
             self.name = str(ln[0])
-            self.inp, ok = ln[1].toInt()
-            self.outp, ok = ln[2].toInt()
-            self.icon = str(ln[4])
-            self.params = str(ln[5])
+            self.inp = int(ln[1])
+            self.outp = int(ln[2])
+            self.icon = ln[4]
+            self.params = ln[5]
             self.flip = False
-            io, ok = ln[3].toInt()
+            io = int(ln[3])
             iosetble = (io==1)
             self.iosetble = iosetble
         else:
             raise ValueError('Needs 9 or 3 arguments; received %i.' % len(args))
-        
+
+        self.scene = scene
         self.line_color = QtCore.Qt.black
         self.fill_color = QtCore.Qt.black
         self.setup()

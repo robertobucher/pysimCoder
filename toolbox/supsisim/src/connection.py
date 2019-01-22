@@ -10,8 +10,9 @@ class Connection(QGraphicsPathItem):
     """Connects one port to another."""
 
     def __init__(self, parent, scene):
-        super(Connection, self).__init__(parent, scene)
+        super(Connection, self).__init__(None)
         self.scene = scene
+        self.scene.addItem(self)
 
         self.pos1 = None
         self.pos2 = None

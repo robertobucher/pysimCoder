@@ -4,19 +4,13 @@ if sys.version_info>(3,0):
     import sip
     sip.setapi('QString', 1)
     
-#from pyqt45 import QApplication
-
-from PyQt4.QtGui import QApplication
-from PyQt4 import QtCore
-
-import threading
+from pyqt45 import QApplication, QtCore
 
 from supsisim.pyEdit import SupsiSimMainWindow
 from supsisim.library import Library
 
-class supsisimul(threading.Thread):
+class supsisimul():
     def __init__(self, filename = 'untitled', runflag = False):
-        threading.Thread.__init__(self)
         if filename!='untitled':
             self.fname = QtCore.QFileInfo(filename)
             self.mypath = str(self.fname.absolutePath())
@@ -26,7 +20,6 @@ class supsisimul(threading.Thread):
             self.mypath =  os.getcwd()
         self.runflag = runflag
 
-    def run(self):
         app = QApplication(sys.argv)
         library = Library()
         library.setGeometry(20, 20, 400, 980)
@@ -40,4 +33,3 @@ class supsisimul(threading.Thread):
 
 def supsim(fn = 'untitled'):
     th = supsisimul(fn)
-    th.start()

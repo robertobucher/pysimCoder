@@ -94,6 +94,7 @@ class RTgenDlg(QDialog):
     def getTemplate(self):
         fname = QFileDialog.getOpenFileName(self,'Open Template Makefile',
                                                   path+'CodeGen/templates', 'Template (*.tmf)')
+        fname = fname[0]
         if len(fname) != 0:
             ln = fname.split('/')
             templ = ln[-1].__str__()
@@ -102,6 +103,7 @@ class RTgenDlg(QDialog):
     def getObjs(self):
         fname = QFileDialog.getOpenFileName(self,'Additional libraries',
                                                   '.','Dynamic libraries (*.so)')
+        fname = fname[0]
         if len(fname) != 0:
             ln = fname.split('/')
             libname = ln[-1].__str__()
@@ -110,6 +112,7 @@ class RTgenDlg(QDialog):
     def getScript(self):
         fname = QFileDialog.getOpenFileName(self,'Open Python script',
                                                   '.', 'Python file (*.py)')
+        fname = fname[0]
         if len(fname) != 0:
             #ln = fname.split('/')
             #script = ln[-1].__str__()

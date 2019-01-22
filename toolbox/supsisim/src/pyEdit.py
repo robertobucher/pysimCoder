@@ -23,7 +23,7 @@ class SupsiSimMainWindow(QMainWindow):
         self.resize(1024, 768)
         self.centralWidget = QWidget(self)
         self.verticalLayout = QVBoxLayout(self.centralWidget)
-        self.verticalLayout.setMargin(0)
+        #self.verticalLayout.setMargin(0)
         self.view = GraphicsView(self.centralWidget)
         self.view.setMouseTracking(True)
         self.scene = Scene(self)
@@ -119,6 +119,7 @@ class SupsiSimMainWindow(QMainWindow):
 
         self.codegenAction = QAction(QIcon(mypath+'codegen.png'),
                                                'Generate C-code',self,
+                                               shortcut = 'Ctrl+B',
                                                statusTip = 'Generate C-Code',
                                                triggered = self.codegenAct)
 
@@ -215,13 +216,10 @@ class SupsiSimMainWindow(QMainWindow):
         if len(items) == 0:
             return QMessageBox.Discard
         
-        msg = QMessageBox('The Document has been modified',
-                                    'Do you want to save your changes?',
-                                    QMessageBox.Question,
-                                    QMessageBox.Save,
-                                    QMessageBox.Discard,
-                                    QMessageBox.Cancel)
-        ret = msg.exec_()
+        ret = QMessageBox.question(self, 'The Document has been modified',
+                                   'Do you want to save your changes?',
+                                   QMessageBox.Save | QMessageBox.Discard | QMessageBox.Cancel,
+                                   QMessageBox.Cancel)
         return ret
             
     def newFile(self):
@@ -258,6 +256,7 @@ class SupsiSimMainWindow(QMainWindow):
             self.scene.newDgm()
                 
         filename = QFileDialog.getOpenFileName(self, 'Open', '.', filter='*.dgm')
+        filename = filename[0]
         if filename != '':
             fname = QtCore.QFileInfo(filename)
             self.filename = str(fname.baseName())
@@ -268,6 +267,7 @@ class SupsiSimMainWindow(QMainWindow):
         
     def saveFile(self):
         filename = QFileDialog.getSaveFileName(self, 'Save', self.path+'/'+self.filename, filter='*.dgm')
+        filename = filename[0]
         if filename != '':
             fname = QtCore.QFileInfo(filename)
             self.filename = str(fname.baseName())
@@ -320,7 +320,7 @@ class SupsiSimMainWindow(QMainWindow):
         self.scene.debugInfo()
 
     def runAct(self):
-        self.scene.simrun()
+         self.scene.simrun()
 
     def codegenAct(self):
         self.scene.codegen(True)
