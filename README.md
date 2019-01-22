@@ -1,4 +1,4 @@
-# pyEdit
+# pyCos
 Simulink like editor for Python
 
 See "README" for more info
