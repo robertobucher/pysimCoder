@@ -44,7 +44,7 @@ static void inout(python_block *block)
 
   read_req[3] = block->intPar[1]+7;
   sendMsg(0x600+block->intPar[0],read_req,8);
-  y[0] = 1.0*get2ByteValue(0x580+block->intPar[0], 0x2314, block->intPar[1]+7);
+  y[0] = 0.001*get2ByteValue(0x580+block->intPar[0], 0x2314, block->intPar[1]+7);
 }
 
 static void end(python_block *block)

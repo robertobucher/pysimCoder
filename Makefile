@@ -31,11 +31,11 @@ full_lib:
 	cd CodeGen/devices; make all
 
 link:
-	cd $(BINDIR); rm -f pyEdit pyParams gen_pydev loadnrt defBlocks dataplot xblk2Blk
+	cd $(BINDIR); rm -f pyCos pyParams gen_pydev loadnrt defBlocks dataplot xblk2Blk
 	cp BlockEditor/gen_pydev $(BINDIR)/
 	cd $(CURDIR)/BlockEditor; chmod a+x *.py
 	cd $(CURDIR)/DriverNRT/; chmod a+x loadnrt
-	ln -s $(CURDIR)/BlockEditor/pyEdit.py $(BINDIR)/pyEdit
+	ln -s $(CURDIR)/BlockEditor/pyCos.py $(BINDIR)/pyCos
 	ln -s $(CURDIR)/BlockEditor/pyParams.py $(BINDIR)/pyParams
 	ln -s $(CURDIR)/BlockEditor/defBlocks.py $(BINDIR)/defBlocks
 	ln -s $(CURDIR)/BlockEditor/dataplot.py $(BINDIR)/dataplot
