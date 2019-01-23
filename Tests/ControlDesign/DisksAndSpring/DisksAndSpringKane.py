@@ -53,7 +53,7 @@ bodies=[B1,B2]
 
 # Model
 KM = KanesMethod(N1,q_ind=[ph1,ph2],u_ind=[w1,w2],kd_eqs=kindiffs)
-fr, frstar = KM.kanes_equations(forces,bodies)
+fr, frstar = KM.kanes_equations(bodies, forces)
 
 print(fr)
 print(frstar)

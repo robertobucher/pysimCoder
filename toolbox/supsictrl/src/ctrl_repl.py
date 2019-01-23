@@ -112,13 +112,6 @@ def d2c(sys,method='zoh'):
         sysc=ss2tf(sysc)
     return sysc
 
-def place(A,B,P):
-    if size(nonzero(imag(P))) != 0:
-        fsf = place_poles(A,B,P)
-    else:
-        fsf = place_poles(A,B,P, method='KNV0')
-    return fsf.gain_matrix
-
 def dlqr(*args, **keywords):
     """Linear quadratic regulator design for discrete systems
 

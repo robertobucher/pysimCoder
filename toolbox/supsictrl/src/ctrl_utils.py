@@ -23,8 +23,7 @@ from numpy import hstack, vstack, imag, zeros, eye, mat, shape, pi, sqrt, log, e
 from scipy import poly 
 from scipy.linalg import inv, eigvals
 import matplotlib.pyplot as plt
-from control import TransferFunction, StateSpace, ss, tf, step_response
-from supsictrl.ctrl_repl import place
+from control import TransferFunction, StateSpace, ss, tf, step_response, place
 
 def full_obs(sys,poles):
     """Full order observer of the system sys

@@ -9,15 +9,15 @@ from lxml import etree
 class Block(QGraphicsPathItem):
     """A block holds ports that can be connected to."""
     def __init__(self, *args):
-        scene = args[1]
+        self.scene = args[1]
         parent = args[0]
         super(Block, self).__init__(parent)
-        scene.addItem(self)
+        self.scene.addItem(self)
  
         if len(args) == 9:
-            parent, scene, self.name, self.inp, self.outp, self.iosetble, self.icon, self.params, self.flip = args
+            parent, self.scene, self.name, self.inp, self.outp, self.iosetble, self.icon, self.params, self.flip = args
         elif len(args) == 3:
-            parent, scene, strBlk = args
+            parent, self.scene, strBlk = args
             ln = strBlk.split('@')
             self.name = str(ln[0])
             self.inp = int(ln[1])
@@ -31,10 +31,13 @@ class Block(QGraphicsPathItem):
         else:
             raise ValueError('Needs 9 or 3 arguments; received %i.' % len(args))
 
-        self.scene = scene
         self.line_color = QtCore.Qt.black
         self.fill_color = QtCore.Qt.black
         self.setup()
+        try:
+            self.scene.blocks.add(self)
+        except:
+            pass
         
     def __str__(self):
         txt  = 'Name         :' + self.name.__str__() +'\n'
@@ -54,13 +57,7 @@ class Block(QGraphicsPathItem):
         self.h = BHmin+PD*(max(Nports-1,0))
 
         p = QPainterPath()
-        
-        p.addRect(-self.w/2, -self.h/2, self.w, self.h)
-        self.label = QGraphicsTextItem(self)
-        self.label.setPlainText(self.name)
-        w = self.label.boundingRect().width()
-        self.label.setPos(-w/2, self.h/2+5)
-
+        self.setLabel(p)
         self.setPath(p)
 
         self.port_in = []
@@ -69,15 +66,10 @@ class Block(QGraphicsPathItem):
         for n in range(0,self.outp):
             self.add_outPort(n)
 
-        if self.flip:
-            self.scale(-1,1)
-            self.translate(0,0)
-            self.label.scale(-1,1)
-            w = self.label.boundingRect().width()
-            self.label.translate(-w,0)          
-
         self.setFlag(self.ItemIsMovable)
         self.setFlag(self.ItemIsSelectable)
+        
+        self.setFlip()
         
     def add_inPort(self, n):
         pos = -PD*(self.inp-1)/2
@@ -147,7 +139,33 @@ class Block(QGraphicsPathItem):
         b = Block(None, self.scene, self.name, self.inp, self.outp,
                       self.iosetble, self.icon, self.params, self.flip)
         b.setPos(self.scenePos().__add__(pt))
-       
+
+    def setFlip(self, flip=None):
+        if flip: 
+            self.flip = flip
+        if self.flip:
+            self.setTransform(QTransform.fromScale(-1, 1))
+        else:
+            self.setTransform(QTransform.fromScale(1, 1))
+        for p in self.ports():
+            p.setFlip()
+        #self.setIcon()
+        self.flipLabel()
+
+    def setLabel(self, p):
+        p.addRect(-self.w/2, -self.h/2, self.w, self.h)
+        self.label = QGraphicsTextItem(self)
+        self.label.setPlainText(self.name)
+        w = self.label.boundingRect().width()
+        self.label.setPos(-w/2, self.h/2+5)
+ 
+    def flipLabel(self):
+        w = self.label.boundingRect().width()
+        if self.flip:
+            self.label.setTransform(QTransform.fromScale(-1,1).translate(-w,0))
+        else:
+            self.label.setTransform(QTransform.fromScale(1,1))          
+    
     def save(self, root):
         blk = etree.SubElement(root,'block')
         etree.SubElement(blk,'name').text = self.name
@@ -165,4 +183,3 @@ class Block(QGraphicsPathItem):
             etree.SubElement(blk,'flip').text = '0'
         etree.SubElement(blk,'posX').text = self.pos().x().__str__()
         etree.SubElement(blk,'posY').text = self.pos().y().__str__()
-

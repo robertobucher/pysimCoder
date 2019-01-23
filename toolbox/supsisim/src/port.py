@@ -1,4 +1,4 @@
-from pyqt45  import QGraphicsPathItem, QGraphicsItem, QPainterPath, QtCore
+from pyqt45  import QGraphicsPathItem, QGraphicsItem, QPainterPath, QtCore, QTransform
 
 from supsisim.const import PW
 
@@ -52,6 +52,13 @@ class Port(QGraphicsPathItem):
             except AttributeError:
                 pass
 
+    def setFlip(self):
+        isflipped = self.parent.flip
+        if isflipped:
+            self.setTransform(QTransform.fromScale(-1, 1))
+        else:
+            self.setTransform(QTransform.fromScale(1, 1))
+                
 class InPort(Port):
     def __init__(self, parent, scene):
         super(InPort, self).__init__(parent, scene)

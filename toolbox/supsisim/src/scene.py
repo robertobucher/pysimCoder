@@ -33,7 +33,8 @@ class Scene(QGraphicsScene):
         self.nameList = []
         self.selection = []
         self.currentItem = None
-
+        self.blocks = set()
+        
         self.template = 'sim.tmf'
         self.addObjs = ''
         self.Ts = '0.01'

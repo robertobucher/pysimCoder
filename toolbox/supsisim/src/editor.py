@@ -94,16 +94,9 @@ class Editor(QtCore.QObject):
     def flipBlock(self):
         self.scene.DgmToUndo()
         item = self.scene.item
-        if item.flip:
-            item.flip = False
-        else:
-            item.flip = True
-        item.scale(-1,1)
-        item.translate(0,0)
-        item.label.scale(-1,1)
-        w = item.label.boundingRect().width()
-        item.label.translate(-w,0)
-
+        item.flip = not item.flip
+        item.setFlip()
+        
     def nameBlock(self):
         self.scene.DgmToUndo()
         item = self.scene.item
@@ -387,7 +380,8 @@ class Editor(QtCore.QObject):
             self.conn.port1 = item.port_out
             self.conn.pos1 = item.scenePos()
             self.conn.pos2 = item.scenePos()
-  
+        self.scene.updateDgm()
+        
     def P08(self, obj, event):
         item = self.itemAt(event.scenePos())
         if isinstance(item,InPort):
