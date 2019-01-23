@@ -22,7 +22,7 @@ class GraphicsView(QGraphicsView):
         self.setAcceptDrops(True)
         
     def wheelEvent(self, event):
-        factor = 1.41 ** (-event.delta() / 240.0)
+        factor = 1.41 ** (-event.angleDelta().y() / 240.0)
         self.scale(factor, factor)
 
 class Scene(QGraphicsScene):
@@ -41,7 +41,7 @@ class Scene(QGraphicsScene):
         self.Tf = '10'
 
         self.undoList = []
-        
+
     def getIndex(self,name):
         try:
             index = self.nameList.index(name)

@@ -347,7 +347,7 @@ class Editor(QtCore.QObject):
 
     def P06(self, obj, event):
         item = self.itemAt(event.scenePos())
-        self.state = IDLE
+        #self.state = IDLE
         #self.scene.mainw.status.showMessage('IDLE')
         if isinstance(item, Block) or isinstance(item, Node):
             self.scene.DgmToUndo()
@@ -477,7 +477,7 @@ class Editor(QtCore.QObject):
     def P11(self, obj, event):
         item = self.itemAt(event.scenePos())
         if  isinstance(item, Node):
-            sdelf.scene.DmgToUndo()
+            self.scene.DmgToUndo()
             self.state = DRAWFROMOUTPORT
             #self.scene.mainw.status.showMessage('DRAWFROMOUTPORT')
             self.conn = Connection(None, self.scene)
