@@ -51,7 +51,7 @@ class Block(QGraphicsPathItem):
         
     def setup(self):
         self.ports_in = []
-        self.name = self.scene.setUniqueName(self)
+        #self.name = self.scene.setUniqueName(self)
         Nports = max(self.inp, self.outp)
         self.w = BWmin
         self.h = BHmin+PD*(max(Nports-1,0))
@@ -153,9 +153,29 @@ class Block(QGraphicsPathItem):
         self.flipLabel()
 
     def setLabel(self, p):
+        labels = set()
+        try:
+            for b in self.scene.blocks:
+                if b != self:
+                    labels.add(b.label.toPlainText())
+            name = self.name
+            if name in labels:
+                cnt = 0
+                while name and name[-1] in '0123456789':
+                    name = name[:-1]
+                base = name
+                while name in labels:
+                    name = base + str(cnt)
+                    cnt += 1
+                    
+            self.label = QGraphicsTextItem(self)
+            self.label.setPlainText(name)
+            
+        except:
+            self.label = QGraphicsTextItem(self)
+            self.label.setPlainText(self.name)           
+         
         p.addRect(-self.w/2, -self.h/2, self.w, self.h)
-        self.label = QGraphicsTextItem(self)
-        self.label.setPlainText(self.name)
         w = self.label.boundingRect().width()
         self.label.setPos(-w/2, self.h/2+5)
  

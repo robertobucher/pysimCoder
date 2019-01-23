@@ -112,6 +112,7 @@ class Scene(QGraphicsScene):
                     for conn in thing.connections:
                         conn.remove()
             self.removeItem(item)
+        self.blocks.clear()
         
     def MsgToDgm(self, msg):
         self.clearDgm()
