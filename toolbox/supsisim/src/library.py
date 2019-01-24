@@ -20,9 +20,6 @@ class CompViewer(QGraphicsScene):
         self.componentList = []	 
         self.activeComponent = None 
 
-    def setUniqueName(self, block):
-        return block.name
-        
     def dropEvent(self, event):
         event.accept()
 

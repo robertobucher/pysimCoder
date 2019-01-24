@@ -30,7 +30,6 @@ class Scene(QGraphicsScene):
         super(Scene,self).__init__(parent)
         self.mainw = main
 
-        self.nameList = []
         self.selection = []
         self.currentItem = None
         self.blocks = set()
@@ -43,28 +42,6 @@ class Scene(QGraphicsScene):
 
         self.undoList = []
 
-    def getIndex(self,name):
-        try:
-            index = self.nameList.index(name)
-        except:
-            index = -1
-        return index
-
-    def setUniqueName(self, block):
-        cnt = 1
-        name = block.name
-        N = len(name)
-        while str.isdigit(name[N-1]):
-            N -= 1
-        name = name[0:N]
-        nm = name
-        while self.getIndex(nm) != -1:
-            nm = name + str(cnt)
-            cnt += 1
-        self.nameList.append(nm)
-        self.nameList.sort()
-        return nm
-        
     def dragLeaveEvent(self, event):
         self.DgmToUndo()
         data = event.mimeData().text()
@@ -145,7 +122,6 @@ class Scene(QGraphicsScene):
         self.addObjs=''
         self.script=''
         self.Tf='10.0'
-        self.nameList = []
         self.undoList = []
 
     def clearLastUndo(self):
@@ -215,7 +191,6 @@ class Scene(QGraphicsScene):
         f.close()
 
     def loadDgm(self, fname):
-        self.nameList = []
         f = open(fname,'r')
         msg = f.read()
         f.close()

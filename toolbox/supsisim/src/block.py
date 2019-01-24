@@ -51,7 +51,6 @@ class Block(QGraphicsPathItem):
         
     def setup(self):
         self.ports_in = []
-        #self.name = self.scene.setUniqueName(self)
         Nports = max(self.inp, self.outp)
         self.w = BWmin
         self.h = BHmin+PD*(max(Nports-1,0))
@@ -112,7 +111,7 @@ class Block(QGraphicsPathItem):
         return value
 
     def remove(self):
-        self.scene.nameList.remove(self.name)
+        self.scene.blocks.remove(self)
         for thing in self.childItems():
             try:
                 thing.remove()
@@ -167,7 +166,7 @@ class Block(QGraphicsPathItem):
                 while name in labels:
                     name = base + str(cnt)
                     cnt += 1
-                    
+            self.name = name
             self.label = QGraphicsTextItem(self)
             self.label.setPlainText(name)
             
