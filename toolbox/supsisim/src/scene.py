@@ -1,4 +1,4 @@
-from pyqt45 import QGraphicsView, QGraphicsScene, QGraphicsItem, QPainter, QtCore, use_pyqt
+from pyqt5 import QGraphicsView, QGraphicsScene, QGraphicsItem, QPainter, QtCore
 
 
 from supsisim.block import Block

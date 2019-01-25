@@ -1,4 +1,4 @@
-from pyqt45 import QGraphicsPathItem, QPainterPath, QPen, QtCore
+from pyqt5 import QGraphicsPathItem, QPainterPath, QPen, QtCore
 
 from supsisim.port import InNodePort, OutNodePort
 from supsisim.const import GRID, NW

@@ -2,7 +2,7 @@
 
 import os
 
-from pyqt45 import QMainWindow, QWidget, QVBoxLayout,  QAction, QMessageBox, \
+from pyqt5 import QMainWindow, QWidget, QVBoxLayout,  QAction, QMessageBox, \
                    QFileDialog, QDialog, QPainter, QIcon, QPrinter, \
                    QPrintDialog, QtCore
 

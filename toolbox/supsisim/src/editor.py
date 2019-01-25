@@ -1,4 +1,4 @@
-from pyqt45  import QMenu, QGraphicsItem, QtCore, set_orient, QTransform
+from pyqt5  import QMenu, QGraphicsItem, QtCore, QTransform
 
 from supsisim.port import Port, InPort, OutPort
 from supsisim.connection import Connection

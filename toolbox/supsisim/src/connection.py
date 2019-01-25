@@ -1,4 +1,4 @@
-from pyqt45 import QGraphicsPathItem, QPainterPath, QPen, QtCore
+from pyqt5 import QGraphicsPathItem, QPainterPath, QPen, QtCore
 
 import numpy as np
 from supsisim.const import LW

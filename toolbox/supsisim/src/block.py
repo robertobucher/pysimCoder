@@ -1,5 +1,5 @@
-from pyqt45  import QGraphicsPathItem, QGraphicsTextItem, QPainterPath, \
-                    QPen, QImage, QtCore, QTransform, textItem
+from pyqt5  import QGraphicsPathItem, QGraphicsTextItem, QPainterPath, \
+                    QPen, QImage, QtCore, QTransform
 
 from supsisim.port import Port, InPort, OutPort
 from supsisim.const import GRID, PW, LW, BWmin, BHmin, PD, respath

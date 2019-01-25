@@ -1,4 +1,4 @@
-from pyqt45 import QDialog, QGridLayout, QSpinBox, QLabel, QPushButton, \
+from pyqt5 import QDialog, QGridLayout, QSpinBox, QLabel, QPushButton, \
                     QLineEdit, QFileDialog, QtCore, QVBoxLayout, QTextEdit, \
                     QFont, QDialogButtonBox, QApplication
 

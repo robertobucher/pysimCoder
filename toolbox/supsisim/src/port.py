@@ -1,4 +1,4 @@
-from pyqt45  import QGraphicsPathItem, QGraphicsItem, QPainterPath, QtCore, QTransform
+from pyqt5  import QGraphicsPathItem, QGraphicsItem, QPainterPath, QtCore, QTransform
 
 from supsisim.const import PW
 

@@ -1,6 +1,6 @@
 #import sys
 
-from pyqt45 import QDialog, QGridLayout, QLabel, QLineEdit, QPushButton, QListWidget, QtCore
+from pyqt5 import QDialog, QGridLayout, QLabel, QLineEdit, QPushButton, QListWidget, QtCore
 from supsisim.const import pyrun
 import subprocess
 

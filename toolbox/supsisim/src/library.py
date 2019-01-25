@@ -1,9 +1,8 @@
 #!/usr/bin/python
 
-from pyqt45 import QGraphicsScene, QMainWindow, QWidget, QVBoxLayout, \
+from pyqt5 import QGraphicsScene, QMainWindow, QWidget, QVBoxLayout, \
                    QHBoxLayout, QGraphicsView,QTabWidget, QApplication, \
-                   QTransform, QDrag, QtCore, QMenu, QMessageBox, QComboBox, \
-                   set_orient
+                   QTransform, QDrag, QtCore, QMenu, QMessageBox, QComboBox
 
 #import dircache
 import os

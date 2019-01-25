@@ -4,7 +4,7 @@ if sys.version_info>(3,0):
     import sip
     sip.setapi('QString', 1)
     
-from pyqt45 import QApplication, QtCore
+from pyqt5 import QApplication, QtCore
 
 from supsisim.pyEdit import SupsiSimMainWindow
 from supsisim.library import Library
