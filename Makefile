@@ -31,11 +31,11 @@ full_lib:
 	cd CodeGen/devices; make all
 
 link:
-	cd $(BINDIR); rm -f pymulink pyParams gen_pydev loadnrt defBlocks dataplot xblk2Blk
+	cd $(BINDIR); rm -f pysimCoder pyParams gen_pydev loadnrt defBlocks dataplot xblk2Blk
 	cp BlockEditor/gen_pydev $(BINDIR)/
 	cd $(CURDIR)/BlockEditor; chmod a+x *.py
 	cd $(CURDIR)/DriverNRT/; chmod a+x loadnrt
-	ln -s $(CURDIR)/BlockEditor/pymulink.py $(BINDIR)/pymulink
+	ln -s $(CURDIR)/BlockEditor/pysimCoder.py $(BINDIR)/pysimCoder
 	ln -s $(CURDIR)/BlockEditor/pyParams.py $(BINDIR)/pyParams
 	ln -s $(CURDIR)/BlockEditor/defBlocks.py $(BINDIR)/defBlocks
 	ln -s $(CURDIR)/BlockEditor/dataplot.py $(BINDIR)/dataplot

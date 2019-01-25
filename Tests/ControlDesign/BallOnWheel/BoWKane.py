@@ -77,7 +77,7 @@ B_w = RigidBody('B_w', O, N_w, M_w, In1T)
 B_r = RigidBody('B_r', CM2, N_roll, M_b, In2T)
 
 #forces = [(N_w, (T-d_w*w_w)*N.y), (CM2,-M2*g*N.z)]
-forces = [(N_w, T*N.y), (CM2,-M_b*g*N.z)]
+forces = [(CM2,-M_b*g*N.z), (N_w, T*N.y) ]
 
 kindiffs = [phi_w.diff(t)-w_w,phi_b.diff(t)-w_b]
 
