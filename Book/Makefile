@@ -16,3 +16,7 @@ $(BOOK).bbl: $(BOOK).aux robi.bib
 
 $(BOOK).aux: $(BOOK).dvi
 
+clean:
+	rm -f *.aux *.bbl *.blg *.dvi *.lof *.log *.ps *.toc
+
+

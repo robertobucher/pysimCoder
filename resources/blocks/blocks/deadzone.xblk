@@ -1,0 +1,1 @@
+{"lib": "nonlin", "name": "Deadzone", "ip": 1, "op": 1, "st": 0, "icon": "DEAD", "params": "deadzoneBlk|Start:-1|End:1"}
