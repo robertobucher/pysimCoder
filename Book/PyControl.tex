@@ -1585,7 +1585,7 @@ The radius of the wheel and of the ball are respectively $R_1$ and $R_2$. The
 non sliding condition is given by
 
 $$
-(R_1+R_2) \cdot ph_0=R_1 \cdot ph_1 + R_2 \cdot ph_2
+R_1 \cdot ph_0=R_1 \cdot ph_1 + R_2 \cdot ph_2
 $$
 
 The input of the system is represented by the torque $T$ applied to the wheel.
@@ -2297,7 +2297,7 @@ It is not possible to simulate the resulting system in Python because of:
 not possible to perform hybrid simulation usin the control package. In some 
 cases we can substitute the plant with the discrete-time system and perform a 
 discrete 
-simulation. Hybrid simulation is possible using the pyEdit application 
+simulation. Hybrid simulation is possible using the pysimCoder application 
 described in the next chapter.
 \item The block ``CTRIN'' has two inputs. The step function can only find the 
 output from a single input.
@@ -2313,23 +2313,23 @@ CACSD environments usually offer a graphical
 editor to perform the hybrid simulation (Matlab$\leftrightarrow$Simulink, 
 Scioslab$\leftrightarrow$Scicos, Scilab$\leftrightarrow$xCos etc.).
 
-The ``pyEdit.py'' application should cover this task for the Python Control 
+The ``pysimCoder.py'' application should cover this task for the Python Control 
 environment.
 
-In the following we'll explain how it is possible, from the pyEdit schematics, 
+In the following we'll explain how it is possible, from the pysimCoder schematics, 
 to generate code for the hybrid simulation. Code for the RT controller can be 
 generated in the same way: users should only replace the mathematical model 
 of the plant with the blocks interfacing the sensors and the actuators of the 
 real system.
 
-\section{pyEdit}
+\section{pysimCoder}
 
 \subsection{The editor}
 
-The application ``pyEdit`` is a block diagram editor to design schematics for 
+The application ``pysimCoder`` is a block diagram editor to design schematics for 
 simulation and code generation.
 
-Starting points for the pyEdit application were the PySimEd project 
+Starting points for the pysimCoder application were the PySimEd project 
 (\cite{PSE}) and the qtnodes-develop project (\cite{QTNODES}).
 
 PyEdit offers the most used blocks in control design. A little set of these 
@@ -2338,7 +2338,7 @@ blocks is shown in figure~\ref{F17}.
  \begin{figure}[htbp]	% Step
  \centering
  \includegraphics[width=0.7\textwidth]{blocks.eps}
- \caption{Some pyEdit blocks for control design}
+ \caption{Some pysimCoder blocks for control design}
  \label{F17}
  \end{figure}
  
@@ -2355,15 +2355,15 @@ blocks is shown in figure~\ref{F17}.
 We open a shell and we give the command
  
 \begin{verbatim}
-pyEdit
+pysimCoder
 \end{verbatim}
 
 The application opens 2 windows as shown in figure~\ref{Fig:envEdit}
 
 \begin{figure}[htbp]	% Step
 \centering
-\includegraphics[width=\textwidth]{env_pyEdit.eps}
-\caption{The pyEdit environment}
+\includegraphics[width=\textwidth]{env_pysimCoder.eps}
+\caption{The pysimCoder environment}
 \label{Fig:envEdit}
 \end{figure}
 
@@ -2447,7 +2447,7 @@ its own most used blocks. The blocks are shown in the library both in the
 ``common'' tab and in the specific tab.
 
 \subsection{Defining new blocks}
-The user can define new blocks and integrate them into the pyEdit application.
+The user can define new blocks and integrate them into the pysimCoder application.
 
 First of all he have to define the ``.xblk'' file, using for example the 
 application ``defBlock'' (which is part of pycontrol.tgz). This block must be 
@@ -2510,13 +2510,13 @@ name of the diagram.
 \subsection{The toolbar}
 
 The application offers  set of operations in the toolbar as shown in the 
-figure~\ref{Fig:pyEdit}.
+figure~\ref{Fig:pysimCoder}.
 
 \begin{figure}[htbp]
  \centering
  \includegraphics[width=0.8\textwidth]{pyedit.eps}
- \caption{The pyEdit application}
- \label{Fig:pyEdit}
+ \caption{The pysimCoder application}
+ \label{Fig:pysimCoder}
  \end{figure}
 
 \subsection{Operations with the right mouse button}
@@ -2650,7 +2650,7 @@ using the following fields:
 The first string in the param field is used as name of the Python function used 
 to prepare the block to be translated into C-Code.
 
-The block libraries are loaded after launching the pyEdit application as shown 
+The block libraries are loaded after launching the pysimCoder application as shown 
 in figure~\ref{Fig:app1}
 
  \begin{figure}[htbp]	% Step
@@ -2661,7 +2661,7 @@ in figure~\ref{Fig:app1}
  \end{figure}
 
 Each block must be renamed with a unique name (popup menu ``Change name''), and 
-its parameters can be modified directly in the pyEdit application with a double 
+its parameters can be modified directly in the pysimCoder application with a double 
 click.
 
 \section{The implementation functions}

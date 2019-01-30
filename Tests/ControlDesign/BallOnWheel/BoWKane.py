@@ -182,7 +182,6 @@ B = Kt*B.astype('float64')
 C = [[1, 0, 0, 0], [0, 1, 0, 0]]
 D = [[0],[0]]
 
-
 # Plant continous and discrete
 # input Motor torque
 # output Wheel angle and Angle between Wheel CM and Ball CM
