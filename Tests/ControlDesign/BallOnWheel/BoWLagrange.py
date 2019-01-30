@@ -1,4 +1,4 @@
-from sympy import symbols, Matrix, pi
+from sympy import symbols, Matrix, pi, sin, cos
 from sympy.physics.mechanics import *
 import numpy as np
 from scipy.optimize import leastsq
@@ -30,15 +30,15 @@ obs_k = 8         # Distance factor for observer poles to closed loop poles
 
 ##############################################
 
-# Kane's Model of the system
+# Lagrange Model of the system
 # Index _b: angle between Wheel center and Ball CM
 # Index _w: Wheel
 # Index _roll: Ball
 
 # Dynamic symbols
 phi_b, phi_w, phi_roll = dynamicsymbols('phi_b phi_w phi_roll')
-w_b, w_w, w_roll = dynamicsymbols('w_b w_w w_roll')
-
+w_b, w_w = dynamicsymbols('phi_b phi_w', 1)
+w_roll = dynamicsymbols('w_roll')
 T = dynamicsymbols('T')
 
 # Symbols
@@ -77,27 +77,38 @@ CM2.v2pt_theory(O,N,N_b)
 
 # Inertia
 Iy = outer(N.y,N.y)
-In1T = (J_w*Iy, O)
-In2T = (J_b*Iy, CM2)
+In1T = (J_w*Iy, O)       # Wheel
+In2T = (J_b*Iy, CM2)   # Ball
 
 # Bodies
 B_w = RigidBody('B_w', O, N_w, M_w, In1T)
 B_r = RigidBody('B_r', CM2, N_roll, M_b, In2T)
 
-# Forces
-forces = [(CM2,-M_b*g*N.z), (N_w, T*N.y) ]
+B_r.potential_energy = (R_w+R_b)*M_b*g*sin(phi_b)
+B_w.potential_energy = 0
 
-# Relations between position and speed
-kindiffs = [phi_w.diff(t)-w_w,phi_b.diff(t)-w_b]
+forces = [(N_roll, 0*N.y) , (N_w, T*N.y) ]
 
-# Identification with Kane's method
-KM = KanesMethod(N,q_ind=[phi_b, phi_w],u_ind=[w_b, w_w],kd_eqs=kindiffs)
-fr, frstar = KM.kanes_equations([B_r, B_w], forces)
+# Lagrange operator
+L = Lagrangian(N,  B_r,  B_w)
 
-# Linearization and Identification
+# Lagrange model
+LM = LagrangesMethod(L, [phi_b, phi_w], forcelist = forces,   frame = N)
+LM.form_lagranges_equations()
+
 # Equilibrium point
-eq_pt = [0, 0, 0, 0, 0]
-eq_dict = dict(zip([phi_b, phi_w,w_b, w_w, T], eq_pt))
+eq_pt = [pi/2, 0, 0, 0]
+eq_dict = dict(zip([phi_b, phi_w, w_b, w_w], eq_pt))
+
+MM, linear_state_matrix, linear_input_matrix, inputs = LM.linearize(q_ind=[phi_b, phi_w], qd_ind = [w_b, w_w])
+
+f_p_lin = linear_state_matrix.subs(eq_dict)
+f_B_lin = linear_input_matrix.subs(eq_dict)
+
+MM = MM.subs(eq_dict)
+
+Atmp = MM.inv() * f_p_lin
+Btmp = MM.inv() * f_B_lin
 
 # Motor and Wheel identification
 def plot_Res(t, y, g):
@@ -174,21 +185,6 @@ pars = [R_w, R_b, M_b, J_w, J_b, d_w, g]
 par_vals =  [R1p, R2p, M2p, J1p, J2p, d1p, gp]
 par_dict = dict(zip(pars, par_vals))
 
-M = KM.mass_matrix_full
-F = KM.forcing_full
-
-# Linearize the system for control design
-# symbolically linearize about arbitrary equilibrium
-M, linear_state_matrix, linear_input_matrix, inputs = KM.linearize(new_method=True)
-
-# subst values at the equilibrium point and with the parameters
-f_A_lin = linear_state_matrix.subs(eq_dict)
-f_B_lin = linear_input_matrix.subs(eq_dict)
-
-# compute A and B
-Atmp = M.inv() * f_A_lin
-Btmp = M.inv() * f_B_lin
-
 Atmp = Atmp.subs(par_dict)
 Btmp = Btmp.subs(par_dict)
 
@@ -199,7 +195,6 @@ A = A.astype('float64')
 B = Kt*B.astype('float64')
 C = [[1, 0, 0, 0], [0, 1, 0, 0]]
 D = [[0],[0]]
-
 
 # Plant continous and discrete
 # input Motor torque
