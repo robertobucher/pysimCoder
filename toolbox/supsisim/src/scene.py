@@ -1,12 +1,11 @@
 from pyqt5 import QGraphicsView, QGraphicsScene, QGraphicsItem, QPainter, QtCore
 
-
 from supsisim.block import Block
 from supsisim.port import Port, InPort, OutPort
 from supsisim.node import Node
 from supsisim.connection import Connection
 from supsisim.dialg import RTgenDlg
-from supsisim.const import pyrun, TEMP
+from supsisim.const import pyrun, TEMP, respath
 from lxml import etree
 import os
 import subprocess
@@ -328,19 +327,29 @@ class Scene(QGraphicsScene):
                 pass
 
         items = self.items()
+        dir1 = respath + 'blocks/rcpBlk'
+        dir2 = os.environ.get('PYUSERBLKS')
+        txt += 'import os\n'
         txt += 'from supsisim.RCPblk import RCPblk\n'
-        txt += 'from supsisim.pyeditBlocks import *\n'
-        txt += 'try:\n'
-        txt += '    from supsisim.dsPICblk import *\n'
-        txt += 'except:\n'
-        txt += '    pass\n'        
-        txt += 'try:\n'
-        txt += '    from blocks.userBlocks import *\n'
-        txt += 'except:\n'
-        txt += '    pass\n'        
+        txt += 'files = os.listdir("' + dir1 + '")\n'
+        txt += 'for f in files:\n'
+        txt += '    f = f.rstrip("*.py")\n'
+        txt += '    try:\n'
+        txt += '        cmd = "from " + f + " import *"\n'
+        txt += '        exec(cmd)\n'
+        txt += '    except:\n'
+        txt += '        pass\n'
+        txt += 'files = os.listdir("' + dir2 + '")\n'
+        txt += 'for f in files:\n'
+        txt += '    f = "rcpBlk." + f.rstrip("*.py")\n'
+        txt += '    try:\n'
+        txt += '        cmd = "from " + f + " import *"\n'
+        txt += '        exec(cmd)\n'
+        txt += '    except:\n'
+        txt += '        pass\n'
+       
         txt += 'from supsisim.RCPgen import *\n'
         txt += 'from control import *\n'
-        txt += 'import os\n'
         blkList = []
         for item in items:
             if isinstance(item, Block):

@@ -5,7 +5,7 @@ PYCODEGEN = $(PYSUPSICTRL)/CodeGen
 MAINDIR = $(PYCODEGEN)/src
 LIBDIR  = $(PYCODEGEN)/lib
 INCDIR  = $(PYCODEGEN)/include 
-USERLIB = $(PYTHONPATH)/blocks//lib/userpyblk.a
+USERLIB = $(PYUSERBLKS)/blocks//lib/userpyblk.a
 
 RM = rm -f
 FILES_TO_CLEAN = *.o $(MODEL)
@@ -21,7 +21,7 @@ OBJSSTAN = $(MAIN).o $(MODEL).o $(ADD_FILES)
 ifeq ($(shell test -e $(USERLIB) && echo -n yes),yes)
      LIB = $(LIBDIR)/libpyblk.a $(USERLIB)
 else
-     LIB = $(LIBDIR)/libpyblk.a $(USERLIB)
+     LIB = $(LIBDIR)/libpyblk.a
 endif
 
 CFLAGS = $(CC_OPTIONS) -O2 -I$(INCDIR) $(C_FLAGS) -DMODEL=$(MODEL) 

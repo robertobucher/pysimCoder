@@ -115,11 +115,12 @@ class Library(QMainWindow):
         return d
         
     def readLib(self):
-        myDir = os.environ.get('PYTHONPATH')+'/blocks'
+        commonDir = respath+'blocks/blocks'
+        userDir = os.environ.get('PYUSERBLKS')+'/blocks/'
         
         blkList = []
         try:
-            fn = open(myDir + '/common.blks')
+            fn = open(commonDir + '/common.blks')
             for f in fn:
                 f = f.rstrip()
                 try:
@@ -137,17 +138,17 @@ class Library(QMainWindow):
         except:
             pass
         
-        files = os.listdir(respath+'blocks/blocks')
+        files = os.listdir(commonDir)
         for f in sorted(files):
             if f.endswith('.xblk'):
                 d = self.getBlock(respath +'blocks/blocks/' + f)
                 blkList.append(d)
 
         try:
-            files = os.listdir(myDir)
+            files = os.listdir(userDir)
             for f in sorted(files):
                 if f.endswith('.xblk'):
-                    d = self.getBlock(myDir + '/'  + f)
+                    d = self.getBlock(userDir + '/'  + f)
                     blkList.append(d)
         except:
             pass
