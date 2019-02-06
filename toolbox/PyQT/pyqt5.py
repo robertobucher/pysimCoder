@@ -7,10 +7,10 @@ from PyQt5.QtWidgets import QAction, QApplication, QDialog, QFileDialog, \
     QDialogButtonBox
 
 
-from Qt.QtPrintSupport import QPrinter, QPrintDialog
-
-from Qt.QtGui import QDrag, QIcon, QImage, QPainter, QPainterPath, \
+from PyQt5.QtGui import QDrag, QIcon, QImage, QPainter, QPainterPath, \
     QPen, QBrush, QTransform, QFont, QPolygonF
 
-from Qt import QtCore
+from PyQt5.QtPrintSupport import QPrinter, QPrintDialog
+
+from PyQt5 import QtCore
 
