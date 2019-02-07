@@ -11,9 +11,6 @@ import json
 
 path = os.environ.get('PYSUPSICTRL') + '/'
 mypath = path + 'resources/icons/'
-addFile =  os.environ.get('PYTHONPATH') + '/blocks/userBlocks.py'
-devFile = os.environ.get('PYTHONPATH') + '/blocks/lib/'
-addFile2 = path + 'toolbox/supsisim/src/pyeditBlocks.py'
 
 form_class = uic.loadUiType(path+'BlockEditor/xblk.ui')[0]    
 
@@ -53,11 +50,12 @@ class MainWindow(QMainWindow, form_class):
         self.setMenuBar(menubar)
         fileMenu = menubar.addMenu('&File')      
         fileMenu.addAction(openFileAction)
+        toolbarF = self.addToolBar('File')
+        toolbarF.addAction(openFileAction)
 
     def connectWidgets(self):
         self.btnGenText.clicked.connect(self.genFunction)
         self.btnWriteText.clicked.connect(self.writeFunction)
-        self.btnWriteText2.clicked.connect(self.write2Function)
         self.btnGenSkel.clicked.connect(self.genSkeleton)
        
     def params2grid(self,pars):
@@ -111,8 +109,10 @@ class MainWindow(QMainWindow, form_class):
         for n in range(1, self.N):
             callingFun += self.gridLayout.itemAtPosition(n,2).widget().text() + ', '
         callingFun = callingFun.rstrip(', ') + ')'
-     
-        fun = 'def ' + callingFun + ':\n'
+        fun   = 'from supsisim.RCPblk import RCPblk\n'
+        fun += 'from scipy import size\n\n'
+        
+        fun += 'def ' + callingFun + ':\n'
             
         # write comment lines
         fun += '    """\n'
@@ -176,25 +176,14 @@ class MainWindow(QMainWindow, form_class):
     def writeFunction(self):
         if self.text.toPlainText() != '':
             fun = '\n' + self.text.toPlainText()
-            f = open('/tmp/fun', 'w')
+            f = open(self.edFun + '.py', 'w')
             f.write(fun)
             f.close()
-            cmd = 'cat /tmp/fun >> ' + addFile
-            os.system(cmd)
             
-    def write2Function(self):
-        if self.text.toPlainText() != '':
-            fun = '\n' + self.text.toPlainText()
-            f = open('/tmp/fun', 'w')
-            f.write(fun)
-            f.close()
-            cmd = 'cat /tmp/fun >> ' + addFile2
-            os.system(cmd)
-    
     def genSkeleton(self):
         if self.text.toPlainText() != '':
             name = self.edFun.rstrip('Blk')
-            cmd = 'cd ' + devFile + ';gen_pydev ' + name
+            cmd = 'gen_pydev ' + name
             os.system(cmd)
         
 app = QApplication(sys.argv)

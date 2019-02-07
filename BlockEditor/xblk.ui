@@ -106,28 +106,13 @@ Function</string>
      </rect>
     </property>
     <property name="text">
-     <string>Copy text to
-userBlock.py</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="btnWriteText2">
-    <property name="geometry">
-     <rect>
-      <x>400</x>
-      <y>90</y>
-      <width>161</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Copy text to
-editBlock.py</string>
+     <string>Save Function</string>
     </property>
    </widget>
    <widget class="QPushButton" name="btnGenSkel">
     <property name="geometry">
      <rect>
-      <x>590</x>
+      <x>400</x>
       <y>90</y>
       <width>161</width>
       <height>41</height>
@@ -166,7 +151,7 @@ skeleton program</string>
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>22</height>
+     <height>20</height>
     </rect>
    </property>
   </widget>
