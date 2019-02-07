@@ -1,4 +1,4 @@
-# pymulink
+# pysimCoder
 Simulink like editor for Python
 
 See "README" for more info
