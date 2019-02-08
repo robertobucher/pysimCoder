@@ -5,7 +5,7 @@ PYCODEGEN = $(PYSUPSICTRL)/CodeGen
 MAINDIR = $(PYCODEGEN)/src
 LIBDIR  = $(PYCODEGEN)/lib
 INCDIR  = $(PYCODEGEN)/include 
-USERLIB = $(PYUSERBLKS)/blocks//lib/userpyblk.a
+USERLIB = $(PYUSERBLKS)/lib/userpyblk.a
 
 RM = rm -f
 FILES_TO_CLEAN = *.o $(MODEL)
