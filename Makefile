@@ -50,8 +50,8 @@ user:
 	echo 'export PYEDITOR=emacs' >> ~/.bashrc
 	echo 'export PYTHONPATH=$(HOME)/Documents/PYTHON:$(PYCTL)/resources/blocks/blocks/rcpBlk' >> ~/.bashrc
 	echo 'export PYUSERBLKS=$(HOME)/Documents/PYTHON/rcpBlk' >> ~/.bashrc
-	mkdir -p $(HOME)/Documents/PYTHON/blocks/lib
-	cp ./userLib/* $(HOME)/Documents/PYTHON/blocks/lib
+	mkdir -p $(HOME)/Documents/PYTHON/rcpBlk/lib
+	cp ./userLib/* $(HOME)/Documents/PYTHON/rcpBlk/lib
 
 
 
