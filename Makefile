@@ -46,7 +46,7 @@ driver:
 user:
 	echo $(PYCTL) >> ~/.bashrc
 	echo 'export PYEDITOR=emacs' >> ~/.bashrc
-	echo 'export PYTHONPATH=$(HOME)/Documents/PYTHON:$(CURDIR)/resources/blocks/blocks/rcpBlk' >> ~/.bashrc
+	echo 'export PYTHONPATH=$(HOME)/Documents/PYTHON:$(CURDIR)/resources/blocks/rcpBlk' >> ~/.bashrc
 	echo 'export PYUSERBLKS=$(HOME)/Documents/PYTHON/rcpBlk' >> ~/.bashrc
 	mkdir -p $(HOME)/Documents/PYTHON/rcpBlk/lib
 	cp ./userLib/* $(HOME)/Documents/PYTHON/rcpBlk/lib
