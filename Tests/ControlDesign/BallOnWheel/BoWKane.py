@@ -127,7 +127,7 @@ t = x[:,0]
 y = x[:,1]
 
 t = t[100:]
-y = y[100:]*(-1)
+y = y[100:]
 t = t-t[0]
 yn = y/Input
 
@@ -140,7 +140,7 @@ alpha = plsq[0][1]
 G_w = tf(K,[1, alpha,0])
 
 # Compare simulation and real values
-plot_Res(t, yn, G_w)
+#plot_Res(t, yn, G_w)
 
 J = Kt/K    # Jwheel/Kgears^2+Jmotore
 D = alpha*J
@@ -235,7 +235,7 @@ if Controller == 1:
 
 elif Controller == 2:
     # LQR Controller
-    Q = np.diag([10, 1, 20, 1]);
+    Q = np.diag([10, 1, 10, 1]);
     R = [4];                    
     k, S, E = rp.dlqr(Ad, Bd, Q, R)
 
@@ -275,6 +275,7 @@ Sat = 1300
 # Other system constants
 Kd = 6.1e-2                     #  Voltage to Ball position [m]
 D2PHI = Kd/(Rb+Rw)    # Voltage to Ball angle phi_b [rad]
-   
+D0 = 1.781951
+
 enc_w = 4096*GearsRatio/2/np.pi   # Motor encoder resolution (reduced to motor)
 

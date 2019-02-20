@@ -1,5 +1,4 @@
 all: addfiles modules full_lib driver link
-reduced: addfiles modules lib driver link
 
 BINDIR = /usr/local/bin
 CURDIR = $(shell pwd)
@@ -9,7 +8,6 @@ PYCTL = export PYSUPSICTRL=$(CWD)
 addfiles:
 	wget https://codeload.github.com/python-control/python-control/zip/master -O python-control-master.zip
 	wget https://codeload.github.com/python-control/Slycot/zip/master -O Slycot-master.zip
-
 
 	unzip python-control-master.zip
 	unzip Slycot-master.zip
@@ -48,7 +46,7 @@ driver:
 user:
 	echo $(PYCTL) >> ~/.bashrc
 	echo 'export PYEDITOR=emacs' >> ~/.bashrc
-	echo 'export PYTHONPATH=$(HOME)/Documents/PYTHON:$(PYCTL)/resources/blocks/blocks/rcpBlk' >> ~/.bashrc
+	echo 'export PYTHONPATH=$(HOME)/Documents/PYTHON:$(CURDIR)/resources/blocks/blocks/rcpBlk' >> ~/.bashrc
 	echo 'export PYUSERBLKS=$(HOME)/Documents/PYTHON/rcpBlk' >> ~/.bashrc
 	mkdir -p $(HOME)/Documents/PYTHON/rcpBlk/lib
 	cp ./userLib/* $(HOME)/Documents/PYTHON/rcpBlk/lib
