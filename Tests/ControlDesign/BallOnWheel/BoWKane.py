@@ -276,6 +276,7 @@ Sat = 1300
 Kd = 6.1e-2                     #  Voltage to Ball position [m]
 D2PHI = Kd/(Rb+Rw)    # Voltage to Ball angle phi_b [rad]
 D0 = 1.781951
+D0 = 1.781955
 
 enc_w = 4096*GearsRatio/2/np.pi   # Motor encoder resolution (reduced to motor)
 
