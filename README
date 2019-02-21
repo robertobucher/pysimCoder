@@ -11,6 +11,7 @@ python-setuptools
 python-lxml
 liblapack-dev
 python-pyqtgraph
+libopenblas-dev
 
 Install the packages:
 - Launch "make" as superuser
