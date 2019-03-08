@@ -55,9 +55,6 @@ bodies=[B1,B2]
 KM = KanesMethod(N1,q_ind=[ph1,ph2],u_ind=[w1,w2],kd_eqs=kindiffs)
 fr, frstar = KM.kanes_equations(bodies, forces)
 
-print(fr)
-print(frstar)
-
 # symbolically linearize about arbitrary equilibrium
 M,linear_state_matrix, linear_input_matrix, inputs = KM.linearize(new_method=True)
 
@@ -72,9 +69,6 @@ m_mat = KM.mass_matrix_full.subs(eq_dict)
 # compute A and B matrices
 A = M.inv() * f_A_lin
 B = M.inv() * f_B_lin
-
-print(A)
-print(B)
 
 # Real plants parameters
 # Motore 1

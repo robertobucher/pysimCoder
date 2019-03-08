@@ -236,6 +236,7 @@ if Controller == 1:
 elif Controller == 2:
     # LQR Controller
     Q = np.diag([10, 1, 10, 1]);
+    Q = np.diag([10, 5, 10, 1]);
     R = [4];                    
     k, S, E = rp.dlqr(Ad, Bd, Q, R)
 
@@ -265,7 +266,7 @@ elif Observer == 2:
     ctr = comp_form(bowD, f_obs, k)
 
 # Filter for AD sensor
-wnf = 10
+wnf =10
 g = tf(wnf,[1,wnf])
 gz = c2d(g,Ts)
 

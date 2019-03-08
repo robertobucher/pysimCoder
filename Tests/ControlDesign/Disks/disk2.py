@@ -35,7 +35,7 @@ Uo=1000
 
 # Identify motor 2
 
-x2 = np.loadtxt('/home/bucher/CACSD/pycontrol/Tests/ControlDesign/Disks/MOT2');
+x2 = np.loadtxt('/home/bucher/CACSD/pysimCoder/Tests/ControlDesign/Disks/MOT2');
 t2=x2[:,0] 
 y2=x2[:,2] 
 t2=t2[100:] 

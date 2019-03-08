@@ -22,6 +22,7 @@ Design and plot commands
 from numpy import hstack, vstack, imag, zeros, eye, mat, shape, pi, sqrt, log, exp, isscalar, linspace
 from scipy import poly 
 from scipy.linalg import inv, eigvals
+from scipy.integrate import solve_ivp, odeint
 import matplotlib.pyplot as plt
 from control import TransferFunction, StateSpace, ss, tf, step_response, place
 
@@ -320,3 +321,50 @@ def wn2ts(wn, xi):
     ts = -log(0.02*sqrt(1-xi**2))/(xi*wn)
     return ts
 
+class StatePrt:
+    """
+    StatePrt(fun, [xmin, xmax], [ymin, ymax], Points=20)
+
+    The function "fun" is defined as
+    def fun(t, x):
+        .....
+    """
+    def __init__(self, fun, xlim, ylim, Points = 20):
+        self.fun = fun
+        self.ts = (0,500)
+        
+        x1 = linspace(xlim[0], xlim[-1], Points)
+        x2 = linspace(ylim[0], ylim[-1], Points)
+        k1 = x1[1] - x1[0]
+        k2  =x2[1] - x2[0]
+        k = 3/sqrt(k1**2+k2**2)
+    
+        x1m = zeros((Points, Points))
+        x2m = zeros((Points, Points))
+        h = 0.01
+        for nx1 in range(0, Points):
+            for nx2 in range(0, Points):
+                t, x = odeint(fun, [x1[nx1], x2[nx2]], [0, h], tfirst=True)
+                
+                dx1 = x[0] - x1[nx1]
+                dx2 = x[1] - x2[nx2]
+                
+                l = sqrt(dx1**2+dx2**2)*k
+                if l>1.e-10:
+                    x1m[nx2,nx1] = dx1/l
+                    x2m[nx2,nx1] = dx2/l
+
+        fig, self.ax = plt.subplots()
+        self.hl, = self.ax.plot([0], [0])
+        #self.ax.set_autoscalex_on(False)
+        #self.ax.set_autoscaley_on(False)
+        q = self.ax.quiver(x1, x2, x1m, x2m)
+        cid = self.hl.figure.canvas.mpl_connect('button_press_event', self)
+        plt.show()
+           
+    def __call__(self, event):
+        if event.inaxes!=self.ax.axes: return
+        x0 = [event.xdata, event.ydata]
+        x = solve_ivp(self.fun, (0,500), x0)
+        self.hl.set_data(x.y[0], x.y[1])
+        self.hl.figure.canvas.draw()
