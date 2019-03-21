@@ -19,6 +19,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 #include <pyblock.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 #define BYTE unsigned char
 #define WORD unsigned short
@@ -30,8 +31,17 @@ static BYTE read_req[8]={0x40,0x04,0x60,0x00,0x00,0x00,0x00,0x00};
 
 static void init(python_block *block)
 {
+  int cnt;
+  short int counter;
+  
   if(canOpenTH()) exit(1);  
   registerMsg(0x400+block->intPar[0], 0x6004, 0x00);
+  if(block->intPar[1]) {
+    sendMsg(block->intPar[0],read_req,8);
+    usleep(50000);
+    counter = (short int) (getValue(0x400+block->intPar[0], 0x6004, 0x00) & 0xFFFF);
+    block->intPar[1] = counter;
+  }
 }  
 
 static void inout(python_block *block)
@@ -45,7 +55,8 @@ static void inout(python_block *block)
 
   sendMsg(block->intPar[0],read_req,8);
   counter = (short int) (getValue(0x400+block->intPar[0], 0x6004, 0x00) & 0xFFFF);
-  y[0] = 2*pi*(counter-0xFFF)/block->realPar[0];
+  counter -= block->intPar[1];
+  y[0] = 2*pi*counter/block->realPar[0];
 }
 
 static void end(python_block *block)

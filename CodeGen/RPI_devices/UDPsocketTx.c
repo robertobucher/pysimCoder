@@ -21,6 +21,7 @@
 #include<unistd.h>
 #include<stdlib.h> 
 #include<arpa/inet.h>
+#include <netdb.h>
 #include<sys/socket.h>
 #include <math.h>
 
@@ -28,13 +29,19 @@ static void init(python_block *block)
 {
   static struct sockaddr_in server;
   int s;
+
+  char * IPbuf;
+  struct hostent *he;
+
+  if ((he = gethostbyname(block->str)) == NULL) exit(1);
+  IPbuf =  inet_ntoa(*((struct in_addr*) he->h_addr_list[0]));
   
   if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0) exit(1);
   block->intPar[1] = s;
     
   server.sin_family      = AF_INET;                            
   server.sin_port         = htons(block->intPar[0]);    
-  server.sin_addr.s_addr = inet_addr(block->str);
+  server.sin_addr.s_addr = inet_addr(IPbuf);
   block->ptrPar = (void *) &server;
 }
 

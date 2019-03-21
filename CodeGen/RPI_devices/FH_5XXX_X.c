@@ -53,7 +53,7 @@ static void inout(python_block *block)
   unsigned short *index;
   
   U_can = (int *) &write_value[4];
-  *U_can = (int) (u[0]*block->realPar[2]);
+  *U_can = (int) (u[0]);
 
   sendMsg(0x600+block->intPar[0],write_value,8);
   sendMsg(0x600+block->intPar[0],write_init,8);

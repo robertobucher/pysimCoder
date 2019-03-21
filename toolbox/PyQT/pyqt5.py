@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import QAction, QApplication, QDialog, QFileDialog, \
     QListWidget, QMainWindow, QMenu, QMessageBox, QPushButton, \
     QSpinBox, QTabWidget, QVBoxLayout, QWidget, \
     QTableWidget, QTableWidgetItem, QLayout, QTextEdit, QComboBox, \
-    QDialogButtonBox
+    QDialogButtonBox, QGraphicsLineItem
 
 
 from PyQt5.QtGui import QDrag, QIcon, QImage, QPainter, QPainterPath, \
