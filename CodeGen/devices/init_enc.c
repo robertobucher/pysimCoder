@@ -32,7 +32,7 @@ static void inout(python_block *block)
   double *u = block->u[0];
 
   double t=get_run_time();
-  if (t >= block->realPar[0]) 
+  if (t > block->realPar[0]) 
     y[0] = u[0]-block->realPar[2]-block->realPar[3];
   else {
     block->realPar[3] = u[0];

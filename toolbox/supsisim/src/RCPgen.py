@@ -388,14 +388,13 @@ def detBlkSeq(Nodes, blocks):
             counter = 0
 
             try:
-                node = blk.block.pout[0]
-
-                for bk in nodes[node].block_out:
-                    el=[el for el in blks2order if el.block == bk]
-                    try:
-                        el[0].block_in.remove(blk.block)
-                    except:
-                        pass
+                for node in blk.block.pout:
+                    for bk in nodes[node].block_out:
+                        el=[el for el in blks2order if el.block == bk]
+                        try:
+                            el[0].block_in.remove(blk.block)
+                        except:
+                            pass
             except:
                 pass
         else:
