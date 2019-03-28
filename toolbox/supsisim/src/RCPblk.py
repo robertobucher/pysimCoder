@@ -8,7 +8,7 @@ The following class is provided:
   RCPblk      - class with info for Rapid Controller Prototyping
 
 """
-from numpy import array
+from numpy import array, ones
 
 class RCPblk:
     def __init__(self, *args):  
@@ -23,6 +23,8 @@ class RCPblk:
         self.fcn = fcn
         self.pin = array(pin)
         self.pout = array(pout)
+        self.dimPin = ones(self.pin.shape)
+        self.dimPout = ones(self.pout.shape)
         self.nx = array(nx)
         self.uy = array(uy)
         self.realPar = array(realPar)
@@ -34,6 +36,8 @@ class RCPblk:
         str =  "Function           : " + self.fcn.__str__() + "\n"
         str += "Input ports        : " + self.pin.__str__() + "\n"
         str += "Output ports      : " + self.pout.__str__() + "\n"
+        str += "Input dimensions : " + self.dimPin.__str__() + "\n"
+        str += "Output dimensions : " + self.dimPout.__str__() + "\n"
         str += "Nr. of states      : " + self.nx.__str__() + "\n"
         str += "Relation u->y      : " + self.uy.__str__() + "\n"
         str += "Real parameters    : " + self.realPar.__str__() + "\n"

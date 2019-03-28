@@ -301,12 +301,13 @@ class SupsiSimMainWindow(QMainWindow):
         icon = item.icon
         params = item.params
         iosetble = item.iosetble
+        width = item.width
         res = dialog.exec_()
         if res == 1 and iosetble:
             item.remove()
             inp = dialog.spbInput.value()
             outp = dialog.spbOutput.value()
-            b = Block(None, self.scene, name, inp, outp, iosetble, icon, params, flip)
+            b = Block(None, self.scene, name, inp, outp, iosetble, icon, params, width, flip)
             b.setPos(self.scene.evpos)
             ok = True
         else:

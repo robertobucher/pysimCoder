@@ -14,8 +14,8 @@ class Block(QGraphicsPathItem):
         super(Block, self).__init__(parent)
         self.scene.addItem(self)
  
-        if len(args) == 9:
-            parent, self.scene, self.name, self.inp, self.outp, self.iosetble, self.icon, self.params, self.flip = args
+        if len(args) == 10:
+            parent, self.scene, self.name, self.inp, self.outp, self.iosetble, self.icon, self.params, self.width, self.flip = args
         elif len(args) == 3:
             parent, self.scene, strBlk = args
             ln = strBlk.split('@')
@@ -24,12 +24,13 @@ class Block(QGraphicsPathItem):
             self.outp = int(ln[2])
             self.icon = ln[4]
             self.params = ln[5]
+            self.width = int(ln[6])
             self.flip = False
             io = int(ln[3])
             iosetble = (io==1)
             self.iosetble = iosetble
         else:
-            raise ValueError('Needs 9 or 3 arguments; received %i.' % len(args))
+            raise ValueError('Needs 10 or 3 arguments; received %i.' % len(args))
 
         self.line_color = QtCore.Qt.black
         self.fill_color = QtCore.Qt.black
@@ -52,7 +53,7 @@ class Block(QGraphicsPathItem):
     def setup(self):
         self.ports_in = []
         Nports = max(self.inp, self.outp)
-        self.w = BWmin
+        self.w = self.width
         self.h = BHmin+PD*(max(Nports-1,0))
 
         p = QPainterPath()
@@ -196,6 +197,7 @@ class Block(QGraphicsPathItem):
             etree.SubElement(blk,'ioset').text = '0'
         etree.SubElement(blk,'icon').text = self.icon
         etree.SubElement(blk,'params').text = self.params
+        etree.SubElement(blk,'width').text = self.width.__str__()
         if self.flip:
             etree.SubElement(blk,'flip').text = '1'
         else:

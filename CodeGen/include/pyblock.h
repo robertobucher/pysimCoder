@@ -6,6 +6,8 @@
 typedef struct {
   int nin;             /* Number of inputs */
   int nout;            /* Number of outputs */
+  int * dimIn;       /* Port signal dimension */
+  int * dimOut;      /* Port signal dimension */
   int *nx;             /* Cont. and Discr states */
   void **u;            /* inputs */
   void **y;            /* outputs */

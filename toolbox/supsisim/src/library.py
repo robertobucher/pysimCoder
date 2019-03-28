@@ -9,7 +9,7 @@ import os
 import json
 
 from supsisim.block import Block
-from supsisim.const import respath
+from supsisim.const import respath, BWmin
 
 class CompViewer(QGraphicsScene):
     def __init__(self, parent=None):
@@ -42,7 +42,7 @@ class CompViewer(QGraphicsScene):
                 io = '1'
             else:
                 io = '0'
-            data = self.actComp.name+'@'+self.actComp.inp.__str__()+'@'+self.actComp.outp.__str__() + '@' + io +'@' + self.actComp.icon + '@' + self.actComp.params
+            data = self.actComp.name+'@'+self.actComp.inp.__str__()+'@'+self.actComp.outp.__str__() + '@' + io +'@' + self.actComp.icon + '@' + self.actComp.params + '@' + self.actComp.width.__str__()
             mimeData.setText(data)
             drag = QDrag(self.parent)
             drag.setMimeData(mimeData)
@@ -86,8 +86,13 @@ class Library(QMainWindow):
                 diagram.compLock = True
                 i = 1
 
+            try:
+                w = el['width']
+            except:
+                w = BWmin
+                
             io = (el['st'] == 1)
-            b = Block(None, diagram, el['name'], el['ip'], el['op'], io, el['icon'], el['params'], False)
+            b = Block(None, diagram, el['name'], el['ip'], el['op'], io, el['icon'], el['params'], w, False)
             px = (i-1) % 2
             py = (i-1)/2
             b.setPos(px*150,py*150)

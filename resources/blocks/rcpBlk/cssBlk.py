@@ -22,14 +22,15 @@ def cssBlk(pin,pout,sys,X0=[]):
         blk  : RCPblk
 
     """
-    
+    print(sys)
     if isinstance(sys, TransferFunction):
         sys=tf2ss(sys)
 
     nin = size(pin)
-    ni = shape(sys.B)[1];
+    print('-----')
+    ni = shape(sys.B)[1]
     if (nin != ni):
-        raise ValueError("Block have %i inputs: received %i input ports" % (nin,ni))
+        raise ValueError("Block Robi have %i inputs: received %i input ports" % (nin,ni))
     
     no = shape(sys.C)[0]
     nout = size(pout)

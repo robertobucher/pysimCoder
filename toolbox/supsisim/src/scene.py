@@ -5,7 +5,7 @@ from supsisim.port import Port, InPort, OutPort
 from supsisim.node import Node
 from supsisim.connection import Connection
 from supsisim.dialg import RTgenDlg
-from supsisim.const import pyrun, TEMP, respath
+from supsisim.const import pyrun, TEMP, respath, BWmin
 from lxml import etree
 import os
 import subprocess
@@ -197,10 +197,17 @@ class Scene(QGraphicsScene):
         self.undoList = [msg]
               
     def loadBlock(self, item):
+        # --- For old files without block width ---
+        try:
+            width = int(item.findtext('width'))
+        except:
+            width = BWmin
+        # --------------------------------------------------
+            
         b = Block(None, self, item.findtext('name'),
                       int(item.findtext('inp')), int(item.findtext('outp')),
                       item.findtext('ioset')=='1', item.findtext('icon'),
-                      item.findtext('params'), item.findtext('flip')=='1' )
+                      item.findtext('params'), width, item.findtext('flip')=='1' )
         b.setPos(float(item.findtext('posX')), float(item.findtext('posY')))
 
     def loadNode(self, item):

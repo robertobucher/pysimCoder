@@ -22,7 +22,7 @@ Observer = 1
 
 # Choose Ball
 # 1: Blue Ball
-# 2: Green Ball
+# 2: Yellow Ball
 Ball = 1
 
 wn = 1             # Bandwidth for State feedback controller
@@ -153,12 +153,14 @@ if Ball == 1:
     Mb = 0.106712     # Mass
     Rb = 0.105/2         # Radius
     Jb = 2.3608e-04;   # Inertia
+    D0 = 1.781955
     
 elif Ball == 2:
     # Green Ball
-    Mb = 0.13119        # Mass
-    Rb = 0.09/2            # Radius
+    Mb = 71.36e-3       # Mass
+    Rb = 0.10/2            # Radius
     Jb = 2.0/3*M_b*R_b**2     # Inertia
+    D0 = 1.585
     
 Rw = 0.285       # Wheel radius
 
@@ -235,8 +237,8 @@ if Controller == 1:
 
 elif Controller == 2:
     # LQR Controller
-    Q = np.diag([10, 1, 10, 1]);
-    Q = np.diag([10, 5, 10, 1]);
+    Q = np.diag([5, 5, 10, 1]);
+    Q = np.diag([20, 10, 20 , 10]);
     R = [4];                    
     k, S, E = rp.dlqr(Ad, Bd, Q, R)
 
@@ -276,7 +278,7 @@ Sat = 1300
 # Other system constants
 Kd = 6.1e-2                     #  Voltage to Ball position [m]
 D2PHI = Kd/(Rb+Rw)    # Voltage to Ball angle phi_b [rad]
-D0 = 1.781951
+#D0 = 1.781951
 D0 = 1.781955
 
 enc_w = 4096*GearsRatio/2/np.pi   # Motor encoder resolution (reduced to motor)

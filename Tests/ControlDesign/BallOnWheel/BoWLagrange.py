@@ -22,7 +22,7 @@ Observer = 1
 
 # Choose Ball
 # 1: Blue Ball
-# 2: Green Ball
+# 2: Yellow Ball
 Ball = 1
 
 wn = 1             # Bandwidth for State feedback controller
@@ -167,8 +167,8 @@ if Ball == 1:
     
 elif Ball == 2:
     # Green Ball
-    Mb = 0.13119        # Mass
-    Rb = 0.09/2            # Radius
+    Mb = 71.36e-3       # Mass
+    Rb = 0.10/2            # Radius
     Jb = 2.0/3*M_b*R_b**2     # Inertia
     
 Rw = 0.285       # Wheel radius
