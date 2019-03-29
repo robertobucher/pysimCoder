@@ -22,7 +22,6 @@ def cssBlk(pin,pout,sys,X0=[]):
         blk  : RCPblk
 
     """
-    print(sys)
     if isinstance(sys, TransferFunction):
         sys=tf2ss(sys)
 
