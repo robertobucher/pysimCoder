@@ -87,7 +87,7 @@ sz2=sp.shape(sys.B);
 # Add discrete integrator for steady state zero error
 Phi_f=np.vstack((sys.A,-sys.C*Ts))
 Phi_f=np.hstack((Phi_f,[[0],[0],[1]]))
-G_f=np.vstack((sys.B,zeros((1,1))))
+G_f=np.vstack((sys.B, np.zeros((1,1))))
 
 k=place(Phi_f,G_f,cl_polesd)
 

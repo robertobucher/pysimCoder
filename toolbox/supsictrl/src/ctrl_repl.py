@@ -10,15 +10,11 @@ Design and plot commands
   dlqr        - Discrete linear quadratic regulator
   d2c         - discrete to continous time conversion  
 """
-from numpy import hstack, vstack, imag, zeros, eye, mat, sort, \
-     array, shape, real, sort, around, inf, sqrt, size, nonzero
-from scipy.linalg import inv, eigvals, eig, logm, norm
-import scipy as sp
-from scipy.signal import place_poles
 import numpy as np
+import scipy as sp
+import scipy.linalg as la
 from slycot import sb02od
-#from control import *
-from control import TransferFunction, tf2ss, StateSpace, ss2tf, dare, issys
+import control as ct
 
 def d2c(sys,method='zoh'):
     """Continous to discrete conversion with ZOH method
@@ -38,78 +34,78 @@ def d2c(sys,method='zoh'):
 
     """
     flag = 0
-    if isinstance(sys, TransferFunction):
-        sys=tf2ss(sys)
-        flag=1
+    if isinstance(sys, ct.TransferFunction):
+        sys = ct.tf2ss(sys)
+        flag = 1
 
-    a=sys.A
-    b=sys.B
-    c=sys.C
-    d=sys.D
-    Ts=sys.dt
-    n=shape(a)[0]
-    nb=shape(b)[1]
-    nc=shape(c)[0]
+    a = sys.A
+    b = sys.B
+    c = sys.C
+    d = sys.D
+    Ts = sys.dt
+    n = np.shape(a)[0]
+    nb = p.shape(b)[1]
+    nc = np.shape(c)[0]
     tol=1e-12
     
     if method=='zoh':
         if n==1:
             if b[0,0]==1:
-                A=0
-                B=b/sys.dt
-                C=c
-                D=d
+                A = 0
+                B = b/sys.dt
+                C = c
+                D = d
         else:
-            tmp1=hstack((a,b))
-            tmp2=hstack((zeros((nb,n)),eye(nb)))
-            tmp=vstack((tmp1,tmp2))
-            s=logm(tmp)
-            s=s/Ts
-            if norm(imag(s),inf) > sqrt(sp.finfo(float).eps):
+            tmp1 = np.hstack((a,b))
+            tmp2 = np.hstack((np.zeros((nb, n)), np.eye(nb)))
+            tmp = np.vstack((tmp1, tmp2))
+            s = la.logm(tmp)
+            s = s/Ts
+            if la.norm(np. imag(s), np.inf) > sqrt(sp.finfo(float).eps):
                 print('Warning: accuracy may be poor')
-            s=real(s)
-            A=s[0:n,0:n]
-            B=s[0:n,n:n+nb]
-            C=c
-            D=d
+            s = np.real(s)
+            A = s[0:n,0:n]
+            B = s[0:n,n:n+nb]
+            C = c
+            D = d
     elif method=='foh':
-        a=mat(a)
-        b=mat(b)
-        c=mat(c)
-        d=mat(d)
-        Id = mat(eye(n))
-        A = logm(a)/Ts
-        A = real(around(A,12))
-        Amat = mat(A)
+        a = np.mat(a)
+        b = np.mat(b)
+        c = np.mat(c)
+        d = np.mat(d)
+        Id = np.mat(np.eye(n))
+        A = la.logm(a)/Ts
+        A = np.real(np.around(A,12))
+        Amat = np.mat(A)
         B = (a-Id)**(-2)*Amat**2*b*Ts
-        B = real(around(B,12))
-        Bmat = mat(B)
+        B = np.real(np.around(B,12))
+        Bmat = np.mat(B)
         C = c
         D = d - C*(Amat**(-2)/Ts*(a-Id)-Amat**(-1))*Bmat
-        D = real(around(D,12))
+        D = np.real(np.around(D,12))
     elif method=='tustin':
-        a=mat(a)
-        b=mat(b)
-        c=mat(c)
-        d=mat(d)
-        poles=eigvals(a)
+        a = np.mat(a)
+        b = np.mat(b)
+        c = np.mat(c)
+        d = np.mat(d)
+        poles = la.eigvals(a)
         if any(abs(poles-1)<200*sp.finfo(float).eps):
             print('d2c: some poles very close to one. May get bad results.')
         
-        I=mat(eye(n,n))
+        I = np.mat(np.eye(n,n))
         tk = 2 / sqrt (Ts)
-        A = (2/Ts)*(a-I)*inv(a+I)
-        iab = inv(I+a)*b
+        A = (2/Ts)*(a-I)*la.inv(a+I)
+        iab = la.inv(I+a)*b
         B = tk*iab
-        C = tk*(c*inv(I+a))
+        C = tk*(c*la.inv(I+a))
         D = d- (c*iab)
     else:
         print('Method not supported')
         return
     
-    sysc=StateSpace(A,B,C,D)
+    sysc=ct.StateSpace(A,B,C,D)
     if flag==1:
-        sysc=ss2tf(sysc)
+        sysc = ct.ss2tf(sysc)
     return sysc
 
 def dlqr(*args, **keywords):
@@ -147,28 +143,28 @@ def dlqr(*args, **keywords):
     if (len(args) < 3):
         raise ControlArgument("not enough input arguments")
 
-    elif (issys(args[0])):
+    elif (ct.issys(args[0])):
         # We were passed a system as the first argument; extract A and B
-        A = array(args[0].A, ndmin=2, dtype=float);
-        B = array(args[0].B, ndmin=2, dtype=float);
+        A = np.array(args[0].A, ndmin=2, dtype=float);
+        B = np.array(args[0].B, ndmin=2, dtype=float);
         index = 1;
         if args[0].dt==None:
             print('dlqr works only for discrete systems!')
             return
     else:
         # Arguments should be A and B matrices
-        A = array(args[0], ndmin=2, dtype=float);
-        B = array(args[1], ndmin=2, dtype=float);
+        A = np.array(args[0], ndmin=2, dtype=float);
+        B = np.array(args[1], ndmin=2, dtype=float);
         index = 2;
 
     # Get the weighting matrices (converting to matrices, if needed)
-    Q = array(args[index], ndmin=2, dtype=float);
-    R = array(args[index+1], ndmin=2, dtype=float);
+    Q = np.array(args[index], ndmin=2, dtype=float);
+    R = np.array(args[index+1], ndmin=2, dtype=float);
     if (len(args) > index + 2): 
-        N = array(args[index+2], ndmin=2, dtype=float);
+        N = np.array(args[index+2], ndmin=2, dtype=float);
         Nflag = 1;
     else:
-        N = zeros((Q.shape[0], R.shape[1]));
+        N = np.zeros((Q.shape[0], R.shape[1]));
         Nflag = 0;
 
     # Check dimensions for consistency
@@ -183,21 +179,21 @@ def dlqr(*args, **keywords):
         raise ControlDimension("incorrect weighting matrix dimensions")
 
     if Nflag==1:
-        Ao=A-B*inv(R)*N.T
-        Qo=Q-N*inv(R)*N.T
+        Ao = A-B*la.inv(R)*N.T
+        Qo = Q-N*la.inv(R)*N.T
     else:
-        Ao=A
-        Qo=Q
+        Ao = A
+        Qo = Q
     
     #Solve the riccati equation
-    (X,L,G) = dare(Ao,B,Qo,R)
+    (X,L,G) = ct.dare(Ao,B,Qo,R)
 #    X = bb_dare(Ao,B,Qo,R)
 
     # Now compute the return value
-    Phi=mat(A)
-    H=mat(B)
-    K=inv(H.T*X*H+R)*(H.T*X*Phi+N.T)
-    L=eig(Phi-H*K)
+    Phi = np.mat(A)
+    H = np.mat(B)
+    K = la.inv(H.T*X*H+R)*(H.T*X*Phi+N.T)
+    L = la.eig(Phi-H*K)
     return K,X,L
 
 def dlqe(A, G, C, Q, R):
@@ -216,7 +212,7 @@ def dlqe(A, G, C, Q, R):
     G = np.mat(G)
     
     #Solve the riccati equation
-    (X,L,G) = dare(A.T, C.T, G*Q*G.T, R)
+    (X,L,G) = ct.dare(A.T, C.T, G*Q*G.T, R)
 
     # Now compute the return value
     K = X*C.T /(C*X*C.T+R)

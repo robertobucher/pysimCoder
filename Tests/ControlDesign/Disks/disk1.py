@@ -75,6 +75,7 @@ sys = c2d(sysc,Ts,'zoh')       # Get discrete state space form
 
 wn=6
 xi=np.sqrt(2)/2
+xi=0.3   # Test for students
 
 cl_p1=[1,2*xi*wn,wn**2]
 cl_p2=[1,wn]
@@ -88,7 +89,7 @@ sz2=sp.shape(sys.B);
 # Add discrete integrator for steady state zero error
 Phi_f=np.vstack((sys.A,-sys.C*Ts))
 Phi_f=np.hstack((Phi_f,[[0],[0],[1]]))
-G_f=np.vstack((sys.B,zeros((1,1))))
+G_f=np.vstack((sys.B, np.zeros((1,1))))
 
 k=place(Phi_f,G_f,cl_polesd)
 

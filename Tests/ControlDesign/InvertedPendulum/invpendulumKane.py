@@ -204,7 +204,7 @@ sz2=sp.shape(Motd.B);
 # Add discrete integrator for steady state zero error
 Phi_f=np.vstack((Motd.A,-Motd.C*ts))
 Phi_f=np.hstack((Phi_f,[[0],[0],[1]]))
-G_f=np.vstack((Motd.B,zeros((1,1))))
+G_f=np.vstack((Motd.B, np.zeros((1,1))))
 
 kmot=place(Phi_f,G_f,cl_polesd)
 
