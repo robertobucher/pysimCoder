@@ -56,8 +56,6 @@ static void inout(python_block *block)
 
 static void end(python_block *block)
 {
-  BYTE DATA[8];
-  unsigned short *index;
   int *U_can;
 
   U_can = (int *) &write_value[4];

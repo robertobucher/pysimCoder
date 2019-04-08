@@ -47,7 +47,6 @@ static void inout(python_block *block)
 
   BYTE DATA[8];
   double *u = block->u[0];
-  unsigned short *index;
   
   U_can = (int *) &write_value[4];
   *U_can = (int) (u[0]);

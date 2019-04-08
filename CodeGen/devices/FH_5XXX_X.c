@@ -28,9 +28,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 #include <stdlib.h>
 #include <unistd.h>
 
-static BYTE NMT_pre[2]  = {0x80, 0x00};
-static BYTE NMT_act[2]  = {0x01, 0x00};
-
 static BYTE pos_mode[8]    = {0x2f, 0x60, 0x60, 0x00, 0x01, 0x00, 0x00, 0x00};
 static BYTE write_value[8] = {0x23, 0x7a, 0x60, 0x00, 0x00, 0x00, 0x00, 0x00};
 static BYTE write_init[8]  = {0x2b, 0x40, 0x60, 0x00, 0x0f, 0x00, 0x00, 0x00};
@@ -50,7 +47,6 @@ static void inout(python_block *block)
 
   BYTE DATA[8];
   double *u = block->u[0];
-  unsigned short *index;
   
   U_can = (int *) &write_value[4];
   *U_can = (int) (u[0]);

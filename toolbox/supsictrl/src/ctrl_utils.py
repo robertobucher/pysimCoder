@@ -360,16 +360,15 @@ class StatePrt:
         h = 0.01
         for nx1 in range(0, Points):
             for nx2 in range(0, Points):
-                t, x = ig.odeint(fun, [x1[nx1], x2[nx2]], [0, h], tfirst=True)
-                
+                t, x  = ig.odeint(fun, [x1[nx1], x2[nx2]], [0, h], tfirst=True)
+
                 dx1 = x[0] - x1[nx1]
                 dx2 = x[1] - x2[nx2]
-                
+
                 l = np.sqrt(dx1**2+dx2**2)*k
                 if l>1.e-10:
                     x1m[nx2,nx1] = dx1/l
                     x2m[nx2,nx1] = dx2/l
-
         fig, self.ax = plt.subplots()
         self.hl, = self.ax.plot([0], [0])
         #self.ax.set_autoscalex_on(False)
@@ -381,6 +380,9 @@ class StatePrt:
     def __call__(self, event):
         if event.inaxes!=self.ax.axes: return
         x0 = [event.xdata, event.ydata]
-        x = ig.solve_ivp(self.fun, (0,500), x0)
-        self.hl.set_data(x.y[0], x.y[1])
-        self.hl.figure.canvas.draw()
+        try:
+            x = ig.solve_ivp(self.fun, (0,500), x0)
+            self.hl.set_data(x.y[0], x.y[1])
+            self.hl.figure.canvas.draw()
+        except:
+            pass
