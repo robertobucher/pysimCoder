@@ -286,11 +286,18 @@ def grstep(sys, T = None):
             T = np.linspace(0,T)
         else:
             T = np.arange(0,T,sys.dt)
-        
-    t, y = ct.step_response(sys, T)
-    plt.plot(t,y),plt.grid()
-    plt.show()
 
+    t, y = ct.step_response(sys, T)
+
+    if len(y.shape)==2:
+        N = y.shape[0]
+        for n in range(0,N):
+            plt.plot(t,y[n])
+    else:
+        plt.plot(t,y)
+    plt.grid()
+    plt.show()
+        
 def init_par(os,ts):
     """
     Find xi and wn for given os and ts
