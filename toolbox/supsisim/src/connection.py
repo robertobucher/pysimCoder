@@ -87,7 +87,6 @@ class Connection(QGraphicsPathItem):
         p.lineTo(self.pos2)
         self.setPath(p)
 
-    '''
     def paint(self, painter, option, widget):
         pen = QPen()
         pen.setBrush(self.line_color)
@@ -95,7 +94,7 @@ class Connection(QGraphicsPathItem):
         if self.isSelected():
             pen.setStyle(QtCore.Qt.DotLine)
         painter.setPen(pen)
-    '''
+        painter.drawPath(self.path())
 
     def remove(self):
         try:

@@ -235,6 +235,20 @@ class Editor(QtCore.QObject):
                 return item
         return None
 
+    def itemIsPortIn(self, pos):
+        items =  self.scene.items(QtCore.QRectF(pos-QtCore.QPointF(DB,DB), QtCore.QSizeF(2*DB,2*DB)))
+        for el in items:
+            if isinstance(el, InPort):
+                return el
+        return None
+
+    def itemIsNode(self, pos):
+        items =  self.scene.items(QtCore.QRectF(pos-QtCore.QPointF(DB,DB), QtCore.QSizeF(2*DB,2*DB)))
+        for el in items:
+            if isinstance(el, Node):
+                return el
+        return None
+    
     def deselect_all(self):
         for el in self.scene.items():
             el.setSelected(False)
@@ -285,7 +299,6 @@ class Editor(QtCore.QObject):
     def P01(self, obj, event):
         self.scene.currentItem = self.itemAt(event.scenePos())
         self.state = LEFTMOUSEPRESSED
-        #self.scene.mainw.status.showMessage('LEFTMOUSEPRESSED')
  
     def P02(self, obj, event):
         item = self.itemAt(event.scenePos())
@@ -332,16 +345,12 @@ class Editor(QtCore.QObject):
             except:
                 pass
         self.state = IDLE
-        #self.scene.mainw.status.showMessage('IDLE')
 
     def P05(self, obj, event):
         self.state = IDLE
-        #self.scene.mainw.status.showMessage('IDLE')
 
     def P06(self, obj, event):
         item = self.itemAt(event.scenePos())
-        #self.state = IDLE
-        #self.scene.mainw.status.showMessage('IDLE')
         if isinstance(item, Block) or isinstance(item, Node):
             self.scene.DgmToUndo()
                         
@@ -357,15 +366,12 @@ class Editor(QtCore.QObject):
 
         if self.scene.selectedItems():
             self.state = ITEMSELECTED
-            #self.scene.mainw.status.showMessage('ITEMSELECTED')
         else:
             self.state = IDLE
-            #self.scene.mainw.status.showMessage('IDLE')
 
         if isinstance(item, OutPort):
             self.scene.DgmToUndo()
             self.state = DRAWFROMOUTPORT
-            #self.scene.mainw.status.showMessage('DRAWFROMOUTPORT')
             if len(item.connections) == 0:
                 self.conn = Connection(None, self.scene)
                 self.conn.port1 = item
@@ -375,7 +381,6 @@ class Editor(QtCore.QObject):
         if  isinstance(item, Node):
             self.scene.DgmToUndo()
             self.state = DRAWFROMOUTPORT
-            #self.scene.mainw.status.showMessage('DRAWFROMOUTPORT')
             self.conn = Connection(None, self.scene)
             self.conn.port1 = item.port_out
             self.conn.pos1 = item.scenePos()
@@ -383,7 +388,9 @@ class Editor(QtCore.QObject):
         self.scene.updateDgm()
         
     def P08(self, obj, event):
-        item = self.itemAt(event.scenePos())
+        PortOrNode = False
+        
+        item = self.itemIsPortIn(event.scenePos())
         if isinstance(item,InPort):
             if len(item.connections)==0:
                 self.scene.DgmToUndo()
@@ -398,8 +405,9 @@ class Editor(QtCore.QObject):
                 self.conn.update_path()
                 self.conn = None
                 self.state = IDLE
-                #self.scene.mainw.status.showMessage('IDLE')
-                                        
+            PortOrNode = True
+
+        item = self.itemIsNode(event.scenePos())
         if isinstance(item, Node):
             if item.port_in.connections == []:
                 self.scene.DgmToUndo()
@@ -411,9 +419,9 @@ class Editor(QtCore.QObject):
                 self.conn.update_path()
                 self.conn = None
                 self.state = IDLE
-                #self.scene.mainw.status.showMessage('IDLE')
-                    
-        if item == None:
+            PortOrNode = True
+                   
+        if not PortOrNode:
             pt = self.genInterPoint(event.scenePos())
             b = Node(None, self.scene)
             b.setPos(pt)
@@ -426,7 +434,7 @@ class Editor(QtCore.QObject):
             self.conn = Connection(None, self.scene)
             self.conn.port1 = b.port_out
             self.conn.pos1 = b.scenePos()
-            self.conn.pos2 = b.scenePos()             
+            self.conn.pos2 = event.scenePos()             
                     
     def P09(self, obj, event):
         try:
@@ -447,7 +455,6 @@ class Editor(QtCore.QObject):
                 self.conn.update_path()
                 self.conn = None
                 self.state = IDLE
-                #self.scene.mainw.status.showMessage('IDLE')
         else:         
             pt = self.genInterPoint(self.conn.pos2)
             b = Node(None, self.scene)
@@ -459,13 +466,12 @@ class Editor(QtCore.QObject):
             self.conn.update_path()
             self.conn = None
             self.state = IDLE
-            #self.scene.mainw.status.showMessage('IDLE')
        
     def P10(self, obj, event):
         item = self.itemAt(event.scenePos())
         self.setMouseByDraw(item)
-        pt = self.genInterPoint(event.scenePos())
-        self.conn.pos2 = pt
+        #pt = self.genInterPoint(event.scenePos())
+        self.conn.pos2 = event.scenePos()
         self.conn.update_path()
 
     def P11(self, obj, event):
@@ -473,7 +479,6 @@ class Editor(QtCore.QObject):
         if  isinstance(item, Node):
             self.scene.DmgToUndo()
             self.state = DRAWFROMOUTPORT
-            #self.scene.mainw.status.showMessage('DRAWFROMOUTPORT')
             self.conn = Connection(None, self.scene)
             self.conn.port1 = item.port_out
             self.conn.pos1 = item.scenePos()

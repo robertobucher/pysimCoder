@@ -26,7 +26,6 @@ def cssBlk(pin,pout,sys,X0=[]):
         sys=tf2ss(sys)
 
     nin = size(pin)
-    print('-----')
     ni = shape(sys.B)[1]
     if (nin != ni):
         raise ValueError("Block Robi have %i inputs: received %i input ports" % (nin,ni))
