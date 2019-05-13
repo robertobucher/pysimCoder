@@ -422,9 +422,8 @@ class Editor(QtCore.QObject):
             PortOrNode = True
                    
         if not PortOrNode:
-            pt = self.genInterPoint(event.scenePos())
             b = Node(None, self.scene)
-            b.setPos(pt)
+            b.setPos(event.scenePos())
             self.conn.port2 = b.port_in
             self.conn.pos2 = b.scenePos()
             self.conn.port1.connections.append(self.conn)
