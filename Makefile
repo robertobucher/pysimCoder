@@ -1,4 +1,4 @@
-all: addfiles modules full_lib driver link
+all: addfiles modules fmu full_lib driver link
 
 BINDIR = /usr/local/bin
 CURDIR = $(shell pwd)
@@ -22,6 +22,9 @@ modules:
 	cd toolbox/supsictrl; python setup.py install
 	cd toolbox/supsisim; python setup.py install
 	cd toolbox/PyQT; python setup.py install
+
+fmu:
+	cd CodeGen/fmu; rm -rf lib; mkdir lib; make all; make install
 
 lib:
 	cd CodeGen; rm -rf lib; mkdir lib
