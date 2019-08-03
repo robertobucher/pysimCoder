@@ -1,3 +1,20 @@
+/* ------------------------------------------------------------------------- 
+ * from original: sim_support.c
+ * Functions used by both FMU simulators fmu20sim_me and fmu20sim_cs
+ * to parse command-line arguments, to unzip and load an fmu,
+ * to write CSV file, and more.
+ *
+ * Revision history
+ *  07.03.2014 initial version released in FMU SDK 2.0.0
+ *  10.04.2014 use FMI 2.0 headers that prefix function and type names with 'fmi2'.
+ *             When 'fmi2' functions are not found in loaded DLL, look also for
+ *             FMI 2.0 RC1 function names.
+ *
+ * Author: Adrian Tirea
+ * Copyright QTronic GmbH. All rights reserved.
+ * Modified for pysimCoder: roberto.bucher@supsi.ch
+ * -------------------------------------------------------------------------*/
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
