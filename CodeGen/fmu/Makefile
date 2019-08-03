@@ -27,7 +27,7 @@ CXX=c++
 fmulib.a: $(SHARED_DEPS)
 	$(CC) $(CFLAGS) -c -g -Wall -DFMI_COSIMULATION \
 		-DSTANDALONE_XML_PARSER -DLIBXML_STATIC \
-		-Ifmuinc/include -Ifmuinc/parser -Ifmuinc \
+		-Ifmuinc/include -Ifmuinc/parser -Ifmuinc  -I/usr/include/libxml2 \
 		$(SHARED_SRCS)
 
 	$(CXX) $(CFLAGS) -c -g -Wall -DFMI_COSIMULATION \
