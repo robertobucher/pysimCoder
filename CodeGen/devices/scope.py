@@ -15,7 +15,7 @@ NIN = int(sys.argv[3]);
 PLOT_LEN = 2048
 DOUBLE_SIZE = 8
 PACKET_LEN = NIN * PACKET_NUM * DOUBLE_SIZE
-PLOT_LINE_COLORS = ['y', 'r', 'g', 'b', 'c', 'm', 'k', 'w']
+PLOT_LINE_COLORS = ['y', 'g', 'r', 'b', 'c', 'm', 'k', 'w']
 PLOT_WINDOM_SIZE = (1200, NIN*200)
 TIMER_PERIOD = 50
 

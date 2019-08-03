@@ -6,14 +6,17 @@ CWD = $(shell pwd)
 PYCTL = export PYSUPSICTRL=$(CWD)
 
 addfiles:
-	wget https://codeload.github.com/python-control/python-control/zip/master -O python-control-master.zip
-	wget https://codeload.github.com/python-control/Slycot/zip/master -O Slycot-master.zip
+	git clone https://github.com/python-control/python-control.git
+	#wget https://codeload.github.com/python-control/python-control/zip/master -O python-control-master.zip
+	git clone https://github.com/python-control/Slycot
+	#wget https://codeload.github.com/python-control/Slycot/zip/master -O Slycot-master.zip
 
-	unzip python-control-master.zip
-	unzip Slycot-master.zip
-	cd python-control-master; python setup.py install
-	cd Slycot-master; python setup.py install
-	rm -rf python-control-master Slycot-master python-control-master.zip Slycot-master.zip 
+	#unzip python-control-master.zip
+	#unzip Slycot-master.zip
+	cd python-control; python setup.py install
+	cd Slycot; python setup.py install
+	#rm -rf python-control-master Slycot-master python-control-master.zip Slycot-master.zip 
+	rm -rf python-control Slycot
 
 modules:
 	cd toolbox/supsictrl; python setup.py install

@@ -24,6 +24,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 #define WORD unsigned short
 #define DWORD unsigned int
 
+#include <canopen.h>
+
 static BYTE read_req[8] = {0x40, 0x7C, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00};
 
 static void init(python_block *block)

@@ -818,7 +818,7 @@ In [6]: t=arange(0,16,0.1)
 
 In [7]: t1,y = step_response(gz,t)
 
-In [8]: plt.step(t,y.T[0]) # transpose col matrix y[0]
+In [8]: plt.step(t,y[0]) # transpose col matrix y[0]
    ...: plt.grid()
    ...: plt.xlabel('t')
    ...: plt.ylabel('y')
@@ -1375,7 +1375,7 @@ matrices $A$ and $B$ of the state-space representation.
 
 \begin{code}
 In [6]: # symbolically linearize about arbitrary equilibrium
-   ...: linear_state_matrix, linear_input_matrix, inputs = 
+   ...: MM, linear_state_matrix, linear_input_matrix, inputs = 
 KM.linearize(new_method=True)
    ...: 
    ...: # set the the equilibrium point
@@ -1384,11 +1384,11 @@ KM.linearize(new_method=True)
    ...: 
    ...: f_A_lin = linear_state_matrix.subs(eq_dict)
    ...: f_B_lin = linear_input_matrix.subs(eq_dict)
-   ...: m_mat = KM.mass_matrix_full.subs(eq_dict)
+   ...: MM = MM.subs(eq_dict)
    ...: 
    ...: # compute A and B matrices
-   ...: A = np.matrix(m_mat.inv() * f_A_lin)
-   ...: B = np.matrix(m_mat.inv() * f_B_lin)
+   ...: A = MM.inv() * f_A_lin)
+   ...: B = MM.inv() * f_B_lin)
 \end{code}
 
 \begin{code}
@@ -1505,17 +1505,17 @@ n [5]: # Model
    ...: eq_dict = dict(zip([x,th,v,w], eq_pt))
    ...: 
    ...: # symbolically linearize about arbitrary equilibrium
-   ...: linear_state_matrix, linear_input_matrix, inputs = 
+   ...: MM, linear_state_matrix, linear_input_matrix, inputs = 
 KM.linearize(new_method=True)
    ...: 
    ...: # sub in the equilibrium point and the parameters
    ...: f_A_lin = linear_state_matrix.subs(eq_dict)
    ...: f_B_lin = linear_input_matrix.subs(eq_dict)
-   ...: m_mat = KM.mass_matrix_full.subs(eq_dict)
+   ...: MM = MM.subs(eq_dict)
    ...: 
    ...: # compute A and B
-   ...: A = m_mat.inv() * f_A_lin
-   ...: B = m_mat.inv() * f_B_lin
+   ...: A = MM.inv() * f_A_lin
+   ...: B = MM.inv() * f_B_lin
    ...: 
 \end{code}
 
@@ -1668,17 +1668,17 @@ In [7]: # Equilibrium point
    ...: 
 
 In [8]: # symbolically linearize about arbitrary equilibrium
-   ...: linear_state_matrix, linear_input_matrix, inputs = 
+   ...: MM, linear_state_matrix, linear_input_matrix, inputs = 
 KM.linearize(new_method=True)
    ...: 
    ...: # sub in the equilibrium point and the parameters
    ...: f_A_lin = linear_state_matrix.subs(eq_dict)
    ...: f_B_lin = linear_input_matrix.subs(eq_dict)
-   ...: m_mat = KM.mass_matrix_full.subs(eq_dict)
+   ...: MM = MM.subs(eq_dict)
    ...: 
    ...: # compute A and B
-   ...: A = m_mat.inv() * f_A_lin
-   ...: B = m_mat.inv() * f_B_lin
+   ...: A = MM.inv() * f_A_lin
+   ...: B = MM.inv() * f_B_lin
 \end{code}
 
 \begin{code}

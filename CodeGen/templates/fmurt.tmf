@@ -4,35 +4,30 @@ all: ../$(MODEL)
 PYCODEGEN = $(PYSUPSICTRL)/CodeGen
 MAINDIR = $(PYCODEGEN)/src
 LIBDIR  = $(PYCODEGEN)/lib
-INCDIR  = $(PYCODEGEN)/include 
-FMILIB = -lipopt -lmumps_common -ldl
+INCDIR  = $(PYCODEGEN)/include
+FMUINC = $(PYCODEGEN)/fmu/fmuinc
+FMILIB = $(PYCODEGEN)/fmu/lib/fmulib.a  -ldl -lxml2
 USERLIB = $(PYUSERBLKS)/lib/userpyblk.a
 
 RM = rm -f
 FILES_TO_CLEAN = *.o $(MODEL)
 
 CC = gcc
+CXX = c++
 CC_OPTIONS = -g -fPIC
 
 MAIN = python_main_rt
 
-ADD_LIB = $$ADD_FILES$$
-ADD_FILES = ./binaries/linux64/$(ADD_LIB)
-FMU = $(ADD_LIB:.so=.fmu)
-
-OBJSSTAN = $(MAIN).o $(MODEL).o $(ADD_FILES)
+OBJSSTAN = $(MAIN).o $(MODEL).o
 
 ifeq ($(shell test -e $(USERLIB) && echo -n yes),yes)
-     LIB = $(LIBDIR)/libpyblk.a $(USERLIB)
+     LIB = $(LIBDIR)/libpyblk.a $(USERLIB) $(FMILIB)
 else
-     LIB = $(LIBDIR)/libpyblk.a
+     LIB = $(LIBDIR)/libpyblk.a $(FMILIB)
 endif
 
-CFLAGS = $(CC_OPTIONS) -O2 -I$(INCDIR) $(C_FLAGS) -DMODEL=$(MODEL) 
+CFLAGS = $(CC_OPTIONS) -O2 -I$(INCDIR) -I$(FMUINC) $(C_FLAGS) -DMODEL=$(MODEL) 
 
-$(ADD_FILES): ../$(FMU)
-	unzip -o ../$(FMU) -x "sources/*" >/dev/null
-	   
 $(MAIN).c: $(MAINDIR)/$(MAIN).c $(MODEL).c
 	cp $< .
 	
@@ -40,7 +35,7 @@ $(MAIN).c: $(MAINDIR)/$(MAIN).c $(MODEL).c
 	$(CC) -c -o $@ $(CFLAGS) $<
 
 ../$(MODEL): $(OBJSSTAN) $(LIB)
-	$(CC) -o $@  $(OBJSSTAN) $(LIB) -lrt -lpthread -lcomedi -lm $(FMILIB)
+	$(CXX) -o $@  $(OBJSSTAN) $(LIB) -lrt -lpthread -lm
 	@echo "### Created executable: $(MODEL)"
 
 clean::

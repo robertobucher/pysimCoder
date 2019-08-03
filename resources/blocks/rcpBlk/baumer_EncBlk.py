@@ -4,13 +4,14 @@ from scipy import size
 def baumer_EncBlk(pout, ID, res, encres):
     """
 
-    Call:   baumer_EncBlk(pout, ID, res)
+    Call:   baumer_EncBlk(pout, ID, res, encres)
 
     Parameters
     ----------
        pout: connected output port(s)
        ID : Device ID
        res : Resolution
+       encres : Encoder reset
 
     Returns
     -------
