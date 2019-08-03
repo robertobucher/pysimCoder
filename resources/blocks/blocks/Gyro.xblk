@@ -1,0 +1,1 @@
+{"lib": "Raspberry", "name": "GYRO", "ip": 0, "op": 3, "st": 0, "icon": "IMU", "params": "GyroBlk|CorrX: 0.7 | CorrY: 0.7 | CorrZ: 0.7"}

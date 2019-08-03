@@ -1,0 +1,1 @@
+{"lib": "Raspberry", "name": "ACCEL", "ip": 0, "op": 3, "st": 0, "icon": "IMU", "params": "AccelBlk|CorrX: 0.0621 | CorrY: 0.0621 | CorrZ: 0.0621"}
