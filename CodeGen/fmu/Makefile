@@ -32,7 +32,7 @@ fmulib.a: $(SHARED_DEPS)
 
 	$(CXX) $(CFLAGS) -c -g -Wall -DFMI_COSIMULATION \
 		-DSTANDALONE_XML_PARSER -DLIBXML_STATIC \
-		-Ifmuinc/include -Ifmuinc/parser -Ifmuinc \
+		-Ifmuinc/include -Ifmuinc/parser -Ifmuinc -I/usr/include/libxml2 \
 		$(CPP_SRCS)
 
 	ar -r fmulib.a *.o
