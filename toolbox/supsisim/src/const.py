@@ -9,7 +9,7 @@ PD = 40
 NW = 2
 LW =1.5
 
-DB = 0.5
+DB = 8
 
 path = os.environ.get('PYSUPSICTRL') + '/'
 respath = path+'resources/'
