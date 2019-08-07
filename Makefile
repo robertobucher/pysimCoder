@@ -1,4 +1,5 @@
 all: addfiles modules fmu full_lib driver link
+reduced: addfiles modules fmu lib driver link
 
 BINDIR = /usr/local/bin
 CURDIR = $(shell pwd)

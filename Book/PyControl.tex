@@ -53,7 +53,7 @@ installed separately.
 \begin{itemize}
 \item The Python Control toolbox \cite{PYCONTROL}
 \item The Slycot libraries \cite{SLYCOT}
-\item The pycontrol.tgz package \cite{SUPSICTRL}
+\item The pysimCoder package \cite{SUPSICTRL}
 \end{itemize}
 
 For the second part of the project (code generation etc.) the following 
@@ -61,18 +61,16 @@ packages
 are required
 
 \begin{itemize}
-\item python-pyqt4
-\item python-pyqt4-dev
-\item python-qwt5-qt4
+\item python(3)-pyqt5
+\item  python(3)-qwt
 \end{itemize}
 
 This features presented in the second part of this document are at present only 
 interesting under the Linux OS, because the real-time code is generated for a 
 Linux PREEMPT-RT machine.
 
-\subsection{Install the pycontrol.tgz package}
-After downloading the pycontrol.tgz package, unpack it for example under 
-``/usr/local'' and you obtain a new folder ``pycontrol''.
+\subsection{Install the pysimCoder package}
+The package can be downloaded from the githib page (as zip or using ``git clone''.
 
 The installation is quite simple. Launch as superuser the command
 
@@ -88,27 +86,26 @@ make reduced
 
 if you don't want to have COMEDI installed.
 
-The installation download the control-master package, the slycot-master package 
+The installation download the control package, the slycot package 
 and install the full software.
 
-As last step it is important to update the ``.bashrc'' file as normal user with 
-the command
+As last step it is important to update the ``.bashrc'' file as normal user with the command
 
 \begin{verbatim}
 make user
 \end{verbatim}
 
 The system has been tested under ``Debian stable'', ``Debian testing'' with 
-python-2.7, python-3.5 and python-3.6.
+python-2.7, python-3.5, python-3.6 and python-3.7.
 
 \section{Windows}
 
 Under Windows it is sufficient to install the ``Anaconda'' 
 package~\cite{ANACONDA}, to have all the python and jupyter modules installed.
+
 The Slycot libraries for Windows can be downloaded from here~\cite{SLYCOT2}.
 
-At present it is not possible to perform hybrid simulation and code generation 
-under the Windows OS.
+At present it is not possible to perform hybrid simulation and code generation under the Windows OS.
 
 \section{Mac OSX}
 
@@ -2440,59 +2437,6 @@ output of the simulation (see figure~\ref{Fig:exaplot}).
 \label{Fig:exaplot}
 \end{figure}
 
-\subsection{Personalize the most used blocks}
-A special file ``common.blks'' is defined in the ``resources/block/block'' 
-folder. This file contains a list of clocks, that the user can modify to have 
-its own most used blocks. The blocks are shown in the library both in the 
-``common'' tab and in the specific tab.
-
-\subsection{Defining new blocks}
-The user can define new blocks and integrate them into the pysimCoder application.
-
-First of all he have to define the ``.xblk'' file, using for example the 
-application ``defBlock'' (which is part of pycontrol.tgz). This block must be 
-moved in the folder ``~/Documents/PYTHON/blocks''.
-
-A new function must be inserted in the file ``~/Document/PYTHON/userBlocks.py'' 
-(the file must be created the first time that the user insert a new block!). 
-\textbf{The first line of this file must be}:
-
-\begin{code}
-from supsisim.RCPblk import RCPblk
-\end{code}
-
-Then, the user must define a function for each new block. In the following there 
-are some example with 3 blocks, the first with only input ports, the second with 
-only output ports, and the last with both input and output ports.
-
-\begin{code}
-from supsisim.RCPblk import RCPblk
-
-def digilent_AOBlk(pin, ch):
-    if np.size(pin) != 1:
-        raise ValueError("Block should have 1 input port; received %i !" % 
-np.size(pin))
-
-    blk = RCPblk('digilent_analog_output',pin,[],[0,0],0,[],[ch])
-    return blk
-
-def digilent_AIBlk(pout, ch, rng, offset):
-    if np.size(pout) != 1:
-        raise ValueError("Block should have 1 input port; received %i !" % 
-np.size(pout))
-
-    blk = RCPblk('digilent_analog_input',[],pout,[0,0],0,[rng, offset],[ch])
-    return blk
-
-def MeanFilterBlk(pin, pout, N):
-    blk = RCPblk('meanfilter',pin,pout,[0,0],1,[],[N,0])
-    return blk
-
-\end{code}
-
-The implementation of the RCPblk class is defined in the file 
-``toolbox/supsisim/src/RCPblk.py''.
-
 \subsection{Some remarks}
 \begin{itemize}
 \item the simulation result (Plot) \textbf{is available only after the 
@@ -2504,6 +2448,56 @@ The sources are written in the folder ``xxxxxx\_gen'', where ``xxxxx'' is the
 name of the diagram.
 \end{itemize}
 
+\subsection{Defining new blocks}
+The user can define new blocks and integrate them into the pysimCoder application.
+
+Two applications help the user todefine a new block.
+
+\begin{itemize}
+\item defBlocks
+\item xblk2Blk
+\end{itemize}
+
+The first application (defBlocks) is used to generate the ``.xblk'' file, with the default values of the block, by simply filling the different fields and adding the parameters on the bottom (seee figure~\ref{Fig:defBlocks}).
+
+\begin{figure}[htbp]	% Step
+\centering
+\includegraphics[width=0.9\textwidth]{defBlocks.eps}
+\caption{The ``defBlocks'' application}
+\label{Fig:defBlocks}
+\end{figure}
+
+The parameters in the window represent:
+\begin{description}
+\item[Library] is the name of the ``tab'' window in the pysimCoder library
+\item [Name] is the name of the block which appears under the block in the editor
+\item [Icon] is the name of the icon file (located under ``resources/blocks/Icons'' without the extension (``.svg'')
+\item [Function] is the name of the ``.py'' block which translates the block into the RCPBlk class objects (see code generation)
+\item [Inputs]: number of the input ports
+\item [Outputs]: number of the output ports
+\item [Settable]is a flag which indicates if the numer of ports can be changed or not
+\item [Bottom window] is a grid which contains the parameters of the block (Label+default value)
+\end{description}
+
+The ``Save'' or ``Save as'' operation generates the ``.xblk'' file. This file must be placed under ``resources/blocks/blocks''
+
+The second step is to call the application ``xblk2Blk'' (see figure~\ref{Fig:xblk2Blk}).
+
+\begin{figure}[htbp]	% Step
+\centering
+\includegraphics[width=0.9\textwidth]{xblk2Blk.eps}
+\caption{The ``xblk2Blk'' application}
+\label{Fig:xblk2Blk}
+\end{figure}
+
+After opening the ``.xblk'' file, it is possible to set a name and a type of each parameters of the block.
+
+These informations are used to generate the ``.py'' which can be modified and saved, and the `*.c* skeleton, which should be modified for the specific block tasks.
+
+The ``.py'' file must be moved in the folder ``resources/blocks/rcpBlk'', the ``*.c* file must be edited and stored under ''CodeGen/devices``.
+
+\subsection{Personalize the most used blocks}
+A special file ``common.blks'' is defined in the ``resources/block/block'' folder. This file contains a list of blocks, that the user can modify to have its own most used blocks. The blocks are shown in the library both in the ``common'' tab and in the specific tab.
 
 \section{The editor window}
 
