@@ -95,7 +95,7 @@ class Library(QMainWindow):
             b = Block(None, diagram, el['name'], el['ip'], el['op'], io, el['icon'], el['params'], w, False)
             px = (i-1) % 2
             py = (i-1)/2
-            b.setPos(px*150,py*150)
+            b.setPos(px*150,py*200)
             i += 1
             
         tab = QWidget()

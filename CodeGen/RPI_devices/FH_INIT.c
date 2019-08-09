@@ -1,5 +1,5 @@
 /*
-COPYRIGHT (C) 2016  Roberto Bucher (roberto.bucher@supsi.ch)
+COPYRIGHT (C) 2009  Roberto Bucher (roberto.bucher@supsi.ch)
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -71,8 +71,11 @@ static BYTE data_ctr_TQ[DATA_CTR_X][8]= {
   {0x2b, 0x42, 0x23, 0x02, 0x00, 0x00, 0x00, 0x00},
 };
 
-static void init_3XXX_X(python_block *block)
+static void init5(python_block *block)
 {
+  double * realPar = block->realPar;
+  int * intPar    = block->intPar;
+
   int i;
   unsigned char cval;
   
@@ -88,6 +91,8 @@ static void init_3XXX_X(python_block *block)
     usleep(50000);
   }
 
+  
+   
   if (block->realPar[0] > 0.0){
       cval = (unsigned char) ((int) block->realPar[0] & 0x0000FFFF);
       data_ctr_X[3][4] = cval;
@@ -98,164 +103,22 @@ static void init_3XXX_X(python_block *block)
 	usleep(50000);
       }
   }
-    
-  if(block->intPar[1]){
-    for(i=0;i<DATA_SIZE_HOMING;i++){
-      sendMsg(0x600+block->intPar[0],data_H_3XXX[i],8);  /* Set this position to 0 */
-      usleep(50000);
-    }
-  }
-  
-  for(i=0;i<DATA_SIZE2;i++){
-    sendMsg(0x600+block->intPar[0],data2[i],8);       /* Initialize device */
-    usleep(50000);
-  }
-}
 
-static void init_5XXX_X(python_block *block)
-{
-  int i;
-  unsigned char cval;
-  
-  if(canOpenTH()) exit(1);
-
-  NMT_act[1] = (BYTE) block->intPar[0];
-
-  sendMsg(0x000,NMT_act,2);   /* Operational status */
-  usleep(50000);
-
-  for(i=0;i<DATA_SIZE1;i++){
-    sendMsg(0x600+block->intPar[0],data1[i],8);  /* Reset devices */
-    usleep(50000);
-  }
-
-  if (block->realPar[0] > 0.0){
-      cval = (unsigned char) ((int) block->realPar[0] & 0x0000FFFF);
-      data_ctr_X[3][4] = cval;
-      cval = (unsigned char) ((int) block->realPar[1] & 0x0000FFFF);
-      data_ctr_X[4][4] = cval;
-      for(i=0;i<DATA_CTR_X;i++){
-	sendMsg(0x600+block->intPar[0],data_ctr_X[i],8); 
-	usleep(50000);
-      }
-  }
-    
-  if(block->intPar[1]){
-    for(i=0;i<DATA_SIZE_HOMING;i++){
-      sendMsg(0x600+block->intPar[0],data_H_5XXX[i],8);  /* Set this position to 0 */
-      usleep(50000);
-    }
-  }
-  
-  for(i=0;i<DATA_SIZE2;i++){
-    sendMsg(0x600+block->intPar[0],data2[i],8);       /* Initialize device */
-    usleep(50000);
-  }
-}
-
-static void init_3XXX_V(python_block *block)
-{
-  int i;
-  unsigned char cval;
-  
-  if(canOpenTH()) exit(1);
-
-  NMT_act[1] = (BYTE) block->intPar[0];
-
-  sendMsg(0x000,NMT_act,2);   /* Operational status */
-  usleep(50000);
-
-  for(i=0;i<DATA_SIZE1;i++){
-    sendMsg(0x600+block->intPar[0],data1[i],8);  /* Reset devices */
-    usleep(50000);
-  }
-
-  if (block->realPar[0] > 0.0){
-      cval = (unsigned char) ((int) block->realPar[0] & 0x0000FFFF);
+  if (block->realPar[2] > 0.0){
+      cval = (unsigned char) ((int) block->realPar[2] & 0x0000FFFF);
       data_ctr_V[3][4] = cval;
-      cval = (unsigned char) ((int) block->realPar[1] & 0x0000FFFF);
+      cval = (unsigned char) ((int) block->realPar[3] & 0x0000FFFF);
       data_ctr_V[4][4] = cval;
       for(i=0;i<DATA_CTR_X;i++){
 	sendMsg(0x600+block->intPar[0],data_ctr_V[i],8); 
 	usleep(50000);
       }
   }
-    
-  if(block->intPar[1]){
-    for(i=0;i<DATA_SIZE_HOMING;i++){
-      sendMsg(0x600+block->intPar[0],data_H_3XXX[i],8);  /* Set this position to 0 */
-      usleep(50000);
-    }
-  }
-  
-  for(i=0;i<DATA_SIZE2;i++){
-    sendMsg(0x600+block->intPar[0],data2[i],8);       /* Initialize device */
-    usleep(50000);
-  }
-}
 
-static void init_5XXX_V(python_block *block)
-{
-  int i;
-  unsigned char cval;
-  
-  if(canOpenTH()) exit(1);
-
-  NMT_act[1] = (BYTE) block->intPar[0];
-
-  sendMsg(0x000,NMT_act,2);   /* Operational status */
-  usleep(50000);
-
-  for(i=0;i<DATA_SIZE1;i++){
-    sendMsg(0x600+block->intPar[0],data1[i],8);  /* Reset devices */
-    usleep(50000);
-  }
-
-  if (block->realPar[0] > 0.0){
-      cval = (unsigned char) ((int) block->realPar[0] & 0x0000FFFF);
-      data_ctr_V[3][4] = cval;
-      cval = (unsigned char) ((int) block->realPar[1] & 0x0000FFFF);
-      data_ctr_V[4][4] = cval;
-      for(i=0;i<DATA_CTR_X;i++){
-	sendMsg(0x600+block->intPar[0],data_ctr_V[i],8); 
-	usleep(50000);
-      }
-  }
-    
-  if(block->intPar[1]){
-    for(i=0;i<DATA_SIZE_HOMING;i++){
-      sendMsg(0x600+block->intPar[0],data_H_5XXX[i],8);  /* Set this position to 0 */
-      usleep(50000);
-    }
-  }
-  
-  for(i=0;i<DATA_SIZE2;i++){
-    sendMsg(0x600+block->intPar[0],data2[i],8);       /* Initialize device */
-    usleep(50000);
-  }
-}
-
-static void init_5XXX_TQ(python_block *block)
-{
-  int i;
-  unsigned char cval;
-  
-  if(canOpenTH()) exit(1);
-
-  NMT_act[1] = (BYTE) block->intPar[0];
-
-  sendMsg(0x000,NMT_act,2);   /* Operational status */
-  usleep(50000);
-
-  for(i=0;i<DATA_SIZE1;i++){
-    sendMsg(0x600+block->intPar[0],data1[i],8);  /* Reset devices */
-    usleep(50000);
-  }
-
-  if (block->realPar[0] > 0.0){
-      cval = (unsigned char) ((int) block->realPar[0] & 0x0000FFFF);
+  if (block->realPar[4] > 0.0){
+      cval = (unsigned char) ((int) block->realPar[4] & 0x0000FFFF);
       data_ctr_TQ[3][4] = cval;
-      cval = (unsigned char) ((int) block->realPar[1] & 0x0000FFFF);
+      cval = (unsigned char) ((int) block->realPar[5] & 0x0000FFFF);
       data_ctr_TQ[4][4] = cval;
       for(i=0;i<DATA_CTR_X;i++){
 	sendMsg(0x600+block->intPar[0],data_ctr_TQ[i],8); 
@@ -276,58 +139,83 @@ static void init_5XXX_TQ(python_block *block)
   }
 }
 
+static void init3(python_block *block)
+{
+  double * realPar = block->realPar;
+  int * intPar    = block->intPar;
+  
+  int i;
+  unsigned char cval;
+  
+  if(canOpenTH()) exit(1);
+
+  NMT_act[1] = (BYTE) block->intPar[0];
+
+  sendMsg(0x000,NMT_act,2);   /* Operational status */
+  usleep(50000);
+
+  for(i=0;i<DATA_SIZE1;i++){
+    sendMsg(0x600+block->intPar[0],data1[i],8);  /* Reset devices */
+    usleep(50000);
+  }
+
+  if (block->realPar[0] > 0.0){
+      cval = (unsigned char) ((int) block->realPar[0] & 0x0000FFFF);
+      data_ctr_X[3][4] = cval;
+      cval = (unsigned char) ((int) block->realPar[1] & 0x0000FFFF);
+      data_ctr_X[4][4] = cval;
+      for(i=0;i<DATA_CTR_X;i++){
+	sendMsg(0x600+block->intPar[0],data_ctr_X[i],8); 
+	usleep(50000);
+      }
+  }
+
+  if (block->realPar[2] > 0.0){
+      cval = (unsigned char) ((int) block->realPar[2] & 0x0000FFFF);
+      data_ctr_V[3][4] = cval;
+      cval = (unsigned char) ((int) block->realPar[3] & 0x0000FFFF);
+      data_ctr_V[4][4] = cval;
+      for(i=0;i<DATA_CTR_X;i++){
+	sendMsg(0x600+block->intPar[0],data_ctr_V[i],8); 
+	usleep(50000);
+      }
+  }
+
+  if(block->intPar[1]){
+    for(i=0;i<DATA_SIZE_HOMING;i++){
+      sendMsg(0x600+block->intPar[0],data_H_3XXX[i],8);  /* Set this position to 0 */
+      usleep(50000);
+    }
+  }
+  
+  for(i=0;i<DATA_SIZE2;i++){
+    sendMsg(0x600+block->intPar[0],data2[i],8);       /* Initialize device */
+    usleep(50000);
+  }  
+}
+
 static void end(python_block *block)
 {
   canClose();
 }
 
-void FH_3XXX_INIT_X(int Flag, python_block *block)
+void FH_5XXX_INIT_(int flag, python_block *block)
 {
-  if (Flag == END){          /* set output */
+  if (flag==END){     /* termination */ 
     end(block);
   }
-  else if (Flag == INIT){    /* initialisation */
-    init_3XXX_X(block);
+  else if (flag ==INIT){    /* initialisation */
+    init5(block);
   }
 }
 
-void FH_5XXX_INIT_X(int Flag, python_block *block)
+void FH_3XXX_INIT_(int flag, python_block *block)
 {
-  if (Flag == END){          /* set output */
+  if (flag==END){     /* termination */ 
     end(block);
   }
-  else if (Flag == INIT){    /* initialisation */
-    init_5XXX_X(block);
-  }
-}
-
-void FH_3XXX_INIT_V(int Flag, python_block *block)
-{
-  if (Flag == END){          /* set output */
-    end(block);
-  }
-  else if (Flag == INIT){    /* initialisation */
-    init_3XXX_V(block);
-  }
-}
-
-void FH_5XXX_INIT_V(int Flag, python_block *block)
-{
-  if (Flag == END){          /* set output */
-    end(block);
-  }
-  else if (Flag == INIT){    /* initialisation */
-    init_5XXX_V(block);
-  }
-}
-
-void FH_5XXX_INIT_TQ(int Flag, python_block *block)
-{
-  if (Flag == END){          /* set output */
-    end(block);
-  }
-  else if (Flag == INIT){    /* initialisation */
-    init_5XXX_TQ(block);
+  else if (flag ==INIT){    /* initialisation */
+    init3(block);
   }
 }
 

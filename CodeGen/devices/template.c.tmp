@@ -36,6 +36,15 @@ static void inout(python_block *block)
   
 }
 
+static void update(python_block *block)
+{
+  /* double * realPar = block->realPar; */
+  /* int * intPar    = block->intPar; */
+  /* double *y = block->y[0]; */
+  /* double *u = block->u[0]; */
+  
+}
+
 static void end(python_block *block)
 {
   /* double * realPar = block->realPar; */
@@ -49,6 +58,9 @@ void xxxx(int flag, python_block *block)
 {
   if (flag==OUT){          /* get input */
     inout(block);
+  }
+  else if (flag == STUPD){
+    update(block);
   }
   else if (flag==END){     /* termination */ 
     end(block);
