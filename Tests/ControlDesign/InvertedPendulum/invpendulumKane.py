@@ -135,10 +135,7 @@ obs=red_obs(sysd,T,obs_poles)
 # Put Observer and controller together (compact form)
 ctr = comp_form(sysd,obs,k_lqr)
 
-g = tf(kt/Mpar/rp,[1, dpar/Mpar,0])
-
 ###### Swing up
-
 # Motor model
 # Motor response for least square identification
 from scipy.optimize import leastsq
@@ -151,7 +148,6 @@ def residuals(p, y, t):
     return err
 
 # Motore 1
-
 kt = 60.3e-6
 rp = 0.75/26.17585
 N = 1
@@ -188,8 +184,7 @@ Mot = ss(AP,BP,CP,DP)
 Motd = c2d(Mot, ts, 'zoh')
 
 # Control Design
-
-wn=12
+wn=6
 xi=np.sqrt(2)/2
 
 cl_p1=[1,2*xi*wn,wn**2]
@@ -217,7 +212,33 @@ r_obs=red_obs(Motd,T,[p_od])
 
 contr_I=comp_form_i(Motd,r_obs,kmot)
 
-Amp = 0.28
-Tosc = 18.0/21
+# Anti windup
+[gss_in,gss_out]=set_aw(contr_I,[0,0])
 
+def build_step_up(T1, T2, R1, R2):
+    Tbase = np.arange(0,10,ts)
+    s = np.shape(Tbase)
+    vals = np.zeros(s)
+
+    N1 = int(T1/ts)
+    N2 = int(T2/ts)
+    vals[0:N1]=R1
+    vals[N1:N2]=R2
+
+    #plt.plot(Tbase,vals)
+    #plt.grid()
+    #plt.show()
+    np.savetxt('swingup.dat',vals)
+
+build_step_up(0.5,4,0.4,-0.4)
+
+Amp = 0.59
+F = 0.75
+
+Amp = 0.59
+F = 0.75
+
+
+        
+        
 

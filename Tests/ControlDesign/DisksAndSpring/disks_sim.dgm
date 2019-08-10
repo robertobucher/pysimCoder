@@ -1,12 +1,12 @@
 <root>
   <Date>
-    <SavingDate>20.07.2018 - 16:26:32</SavingDate>
+    <SavingDate>09.07.2019 - 15:58:40</SavingDate>
   </Date>
   <Simulation>
     <Template>sim.tmf</Template>
     <Ts>0.01</Ts>
     <AddObj></AddObj>
-    <ParScript>DisksAndSpringKane.py</ParScript>
+    <ParScript>/home/bucher/CACSD/pysimCoder/Tests/ControlDesign/DisksAndSpring/DisksAndSpringKane.py</ParScript>
     <Tf>40</Tf>
   </Simulation>
   <block>
@@ -16,6 +16,7 @@
     <ioset>1</ioset>
     <icon>CSS</icon>
     <params>cssBlk|System: gss1|Initial conditions: 0</params>
+    <width>80</width>
     <flip>0</flip>
     <posX>350.0</posX>
     <posY>-80.0</posY>
@@ -27,9 +28,10 @@
     <ioset>0</ioset>
     <icon>SATUR</icon>
     <params>saturBlk|Upper saturation: 3000|Lower saturation: -3000</params>
+    <width>80</width>
     <flip>0</flip>
-    <posX>175.0</posX>
-    <posY>-79.0</posY>
+    <posX>180.0</posX>
+    <posY>-80.0</posY>
   </block>
   <block>
     <name>CTRFBK</name>
@@ -38,8 +40,9 @@
     <ioset>1</ioset>
     <icon>DSS</icon>
     <params>dssBlk|System: gss_out|Initial conditions: 0</params>
+    <width>80</width>
     <flip>1</flip>
-    <posX>75.0</posX>
+    <posX>80.0</posX>
     <posY>40.0</posY>
   </block>
   <block>
@@ -49,8 +52,9 @@
     <ioset>1</ioset>
     <icon>SUM</icon>
     <params>sumBlk|Gains: [1,1]</params>
+    <width>80</width>
     <flip>0</flip>
-    <posX>24.0</posX>
+    <posX>20.0</posX>
     <posY>-80.0</posY>
   </block>
   <block>
@@ -60,6 +64,7 @@
     <ioset>1</ioset>
     <icon>DSS</icon>
     <params>dssBlk|System: gss_in|Initial conditions: 0</params>
+    <width>80</width>
     <flip>0</flip>
     <posX>-150.0</posX>
     <posY>-100.0</posY>
@@ -71,6 +76,7 @@
     <ioset>0</ioset>
     <icon>SQUARE</icon>
     <params>squareBlk|Amplitude: 4|Period: 10|Width: 5|Bias: 0|Delay: 0</params>
+    <width>80</width>
     <flip>0</flip>
     <posX>-310.0</posX>
     <posY>-140.0</posY>
@@ -82,6 +88,7 @@
     <ioset>1</ioset>
     <icon>PLOT</icon>
     <params>plotBlk</params>
+    <width>80</width>
     <flip>0</flip>
     <posX>540.0</posX>
     <posY>-100.0</posY>
@@ -128,7 +135,7 @@
   </node>
   <node>
     <posX>-60.0</posX>
-    <posY>40.0</posY>
+    <posY>-60.0</posY>
   </node>
   <node>
     <posX>260.0</posX>
@@ -153,12 +160,12 @@
   <connection>
     <pos1X>260.0</pos1X>
     <pos1Y>-80.0</pos1Y>
-    <pos2X>119.0</pos2X>
+    <pos2X>124.0</pos2X>
     <pos2Y>40.0</pos2Y>
   </connection>
   <connection>
     <pos1X>100.0</pos1X>
-    <pos1Y>-80.0</pos1Y>
+    <pos1Y>-79.0</pos1Y>
     <pos2X>131.0</pos2X>
     <pos2Y>-79.0</pos2Y>
   </connection>
@@ -170,8 +177,8 @@
   </connection>
   <connection>
     <pos1X>-60.0</pos1X>
-    <pos1Y>40.0</pos1Y>
-    <pos2X>-20.0</pos2X>
+    <pos1Y>-60.0</pos1Y>
+    <pos2X>-24.0</pos2X>
     <pos2Y>-60.0</pos2Y>
   </connection>
   <connection>
@@ -223,10 +230,10 @@
     <pos2Y>150.0</pos2Y>
   </connection>
   <connection>
-    <pos1X>31.0</pos1X>
+    <pos1X>36.0</pos1X>
     <pos1Y>40.0</pos1Y>
     <pos2X>-60.0</pos2X>
-    <pos2Y>40.0</pos2Y>
+    <pos2Y>-60.0</pos2Y>
   </connection>
   <connection>
     <pos1X>260.0</pos1X>
@@ -271,10 +278,10 @@
     <pos2Y>-100.0</pos2Y>
   </connection>
   <connection>
-    <pos1X>219.0</pos1X>
-    <pos1Y>-79.0</pos1Y>
+    <pos1X>224.0</pos1X>
+    <pos1Y>-80.0</pos1Y>
     <pos2X>260.0</pos2X>
-    <pos2Y>-79.0</pos2Y>
+    <pos2Y>-80.0</pos2Y>
   </connection>
   <connection>
     <pos1X>68.0</pos1X>

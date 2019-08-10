@@ -1,68 +1,35 @@
 <root>
   <Date>
-    <SavingDate>11.08.2018 - 08:40:21</SavingDate>
+    <SavingDate>13.03.2019 - 16:11:19</SavingDate>
   </Date>
   <Simulation>
-    <Template>sim.tmf</Template>
+    <Template>rt.tmf</Template>
     <Ts>0.01</Ts>
     <AddObj></AddObj>
     <ParScript>disk1.py</ParScript>
-    <Tf>10</Tf>
+    <Tf>20</Tf>
   </Simulation>
   <block>
-    <name>Sum</name>
-    <inp>2</inp>
-    <outp>1</outp>
-    <ioset>1</ioset>
-    <icon>SUM</icon>
-    <params>sumBlk|Gains: [1,1]</params>
-    <flip>0</flip>
-    <posX>20.0</posX>
-    <posY>-140.0</posY>
-  </block>
-  <block>
-    <name>Plot</name>
+    <name>RT Plot</name>
     <inp>2</inp>
     <outp>0</outp>
     <ioset>1</ioset>
     <icon>PLOT</icon>
-    <params>plotBlk</params>
+    <params>scopeStream</params>
     <flip>0</flip>
-    <posX>590.0</posX>
+    <posX>620.0</posX>
     <posY>-160.0</posY>
   </block>
   <block>
-    <name>LTI_continous</name>
+    <name>LTI_discrete</name>
     <inp>1</inp>
-    <outp>1</outp>
-    <ioset>1</ioset>
-    <icon>CSS</icon>
-    <params>cssBlk|System: g1|Initial conditions: 0</params>
-    <flip>0</flip>
-    <posX>390.0</posX>
-    <posY>-140.0</posY>
-  </block>
-  <block>
-    <name>SAT</name>
-    <inp>1</inp>
-    <outp>1</outp>
-    <ioset>0</ioset>
-    <icon>SATUR</icon>
-    <params>saturBlk|Upper saturation: 3000|Lower saturation: -3000</params>
-    <flip>0</flip>
-    <posX>160.0</posX>
-    <posY>-140.0</posY>
-  </block>
-  <block>
-    <name>CTRIN</name>
-    <inp>2</inp>
     <outp>1</outp>
     <ioset>1</ioset>
     <icon>DSS</icon>
-    <params>dssBlk|System: gss_in|Initial conditions: 0</params>
-    <flip>0</flip>
-    <posX>-140.0</posX>
-    <posY>-160.0</posY>
+    <params>dssBlk|System: gss_out|Initial conditions: 0</params>
+    <flip>1</flip>
+    <posX>100.0</posX>
+    <posY>0.0</posY>
   </block>
   <block>
     <name>REF</name>
@@ -76,204 +43,141 @@
     <posY>-180.0</posY>
   </block>
   <block>
-    <name>LTI_discrete</name>
-    <inp>1</inp>
+    <name>CTRIN</name>
+    <inp>2</inp>
     <outp>1</outp>
     <ioset>1</ioset>
     <icon>DSS</icon>
-    <params>dssBlk|System: gss_out|Initial conditions: 0</params>
-    <flip>1</flip>
-    <posX>100.0</posX>
-    <posY>0.0</posY>
+    <params>dssBlk|System: gss_in|Initial conditions: 0</params>
+    <flip>0</flip>
+    <posX>-140.0</posX>
+    <posY>-160.0</posY>
+  </block>
+  <block>
+    <name>SAT</name>
+    <inp>1</inp>
+    <outp>1</outp>
+    <ioset>0</ioset>
+    <icon>SATUR</icon>
+    <params>saturBlk|Upper saturation: 3000|Lower saturation: -3000</params>
+    <flip>0</flip>
+    <posX>160.0</posX>
+    <posY>-140.0</posY>
+  </block>
+  <block>
+    <name>LTI_continous</name>
+    <inp>1</inp>
+    <outp>1</outp>
+    <ioset>1</ioset>
+    <icon>CSS</icon>
+    <params>cssBlk|System: g1|Initial conditions: 0</params>
+    <flip>0</flip>
+    <posX>390.0</posX>
+    <posY>-140.0</posY>
+  </block>
+  <block>
+    <name>Sum</name>
+    <inp>2</inp>
+    <outp>1</outp>
+    <ioset>1</ioset>
+    <icon>SUM</icon>
+    <params>sumBlk|Gains: [1,1]</params>
+    <flip>0</flip>
+    <posX>20.0</posX>
+    <posY>-140.0</posY>
   </block>
   <node>
-    <posX>-250.0</posX>
-    <posY>-140.0</posY>
-  </node>
-  <node>
-    <posX>-250.0</posX>
-    <posY>130.0</posY>
-  </node>
-  <node>
-    <posX>-70.0</posX>
-    <posY>-120.0</posY>
-  </node>
-  <node>
-    <posX>-70.0</posX>
-    <posY>0.0</posY>
-  </node>
-  <node>
-    <posX>260.0</posX>
-    <posY>0.0</posY>
-  </node>
-  <node>
-    <posX>510.0</posX>
-    <posY>-180.0</posY>
-  </node>
-  <node>
-    <posX>-250.0</posX>
-    <posY>-270.0</posY>
-  </node>
-  <node>
-    <posX>-240.0</posX>
-    <posY>-140.0</posY>
-  </node>
-  <node>
-    <posX>490.0</posX>
-    <posY>130.0</posY>
-  </node>
-  <node>
-    <posX>490.0</posX>
-    <posY>-140.0</posY>
-  </node>
-  <node>
-    <posX>300.0</posX>
-    <posY>-140.0</posY>
-  </node>
-  <node>
-    <posX>-250.0</posX>
-    <posY>-180.0</posY>
-  </node>
-  <node>
     <posX>-60.0</posX>
-    <posY>-160.0</posY>
-  </node>
-  <node>
-    <posX>260.0</posX>
-    <posY>-140.0</posY>
+    <posY>-120.0</posY>
   </node>
   <node>
     <posX>90.0</posX>
     <posY>-140.0</posY>
   </node>
   <node>
+    <posX>260.0</posX>
+    <posY>-140.0</posY>
+  </node>
+  <node>
     <posX>-60.0</posX>
+    <posY>-160.0</posY>
+  </node>
+  <node>
+    <posX>-250.0</posX>
+    <posY>-180.0</posY>
+  </node>
+  <node>
+    <posX>300.0</posX>
+    <posY>-140.0</posY>
+  </node>
+  <node>
+    <posX>490.0</posX>
+    <posY>-140.0</posY>
+  </node>
+  <node>
+    <posX>490.0</posX>
+    <posY>130.0</posY>
+  </node>
+  <node>
+    <posX>-240.0</posX>
+    <posY>-140.0</posY>
+  </node>
+  <node>
+    <posX>-250.0</posX>
+    <posY>-270.0</posY>
+  </node>
+  <node>
+    <posX>510.0</posX>
+    <posY>-180.0</posY>
+  </node>
+  <node>
+    <posX>260.0</posX>
+    <posY>0.0</posY>
+  </node>
+  <node>
+    <posX>-70.0</posX>
+    <posY>0.0</posY>
+  </node>
+  <node>
+    <posX>-70.0</posX>
     <posY>-120.0</posY>
   </node>
-  <connection>
-    <pos1X>-250.0</pos1X>
-    <pos1Y>-140.0</pos1Y>
-    <pos2X>-240.0</pos2X>
-    <pos2Y>-140.0</pos2Y>
-  </connection>
-  <connection>
-    <pos1X>-60.0</pos1X>
-    <pos1Y>-120.0</pos1Y>
-    <pos2X>-24.0</pos2X>
-    <pos2Y>-120.0</pos2Y>
-  </connection>
-  <connection>
-    <pos1X>-250.0</pos1X>
-    <pos1Y>130.0</pos1Y>
-    <pos2X>-250.0</pos2X>
-    <pos2Y>-140.0</pos2Y>
-  </connection>
-  <connection>
-    <pos1X>-60.0</pos1X>
-    <pos1Y>-160.0</pos1Y>
-    <pos2X>-24.0</pos2X>
-    <pos2Y>-160.0</pos2Y>
-  </connection>
+  <node>
+    <posX>-250.0</posX>
+    <posY>130.0</posY>
+  </node>
+  <node>
+    <posX>-250.0</posX>
+    <posY>-140.0</posY>
+  </node>
   <connection>
     <pos1X>490.0</pos1X>
-    <pos1Y>130.0</pos1Y>
-    <pos2X>-250.0</pos2X>
-    <pos2Y>130.0</pos2Y>
-  </connection>
-  <connection>
-    <pos1X>64.0</pos1X>
     <pos1Y>-140.0</pos1Y>
-    <pos2X>90.0</pos2X>
+    <pos2X>576.0</pos2X>
     <pos2Y>-140.0</pos2Y>
-  </connection>
-  <connection>
-    <pos1X>-70.0</pos1X>
-    <pos1Y>-120.0</pos1Y>
-    <pos2X>-60.0</pos2X>
-    <pos2Y>-120.0</pos2Y>
-  </connection>
-  <connection>
-    <pos1X>-70.0</pos1X>
-    <pos1Y>0.0</pos1Y>
-    <pos2X>-70.0</pos2X>
-    <pos2Y>-120.0</pos2Y>
   </connection>
   <connection>
     <pos1X>510.0</pos1X>
     <pos1Y>-180.0</pos1Y>
-    <pos2X>546.0</pos2X>
+    <pos2X>576.0</pos2X>
     <pos2Y>-180.0</pos2Y>
   </connection>
   <connection>
-    <pos1X>-96.0</pos1X>
-    <pos1Y>-160.0</pos1Y>
-    <pos2X>-60.0</pos2X>
-    <pos2Y>-160.0</pos2Y>
-  </connection>
-  <connection>
-    <pos1X>56.0</pos1X>
-    <pos1Y>0.0</pos1Y>
-    <pos2X>-70.0</pos2X>
-    <pos2Y>0.0</pos2Y>
-  </connection>
-  <connection>
-    <pos1X>260.0</pos1X>
-    <pos1Y>0.0</pos1Y>
-    <pos2X>144.0</pos2X>
-    <pos2Y>0.0</pos2Y>
-  </connection>
-  <connection>
-    <pos1X>-250.0</pos1X>
-    <pos1Y>-270.0</pos1Y>
-    <pos2X>510.0</pos2X>
+    <pos1X>-316.0</pos1X>
+    <pos1Y>-180.0</pos1Y>
+    <pos2X>-250.0</pos2X>
     <pos2Y>-180.0</pos2Y>
-  </connection>
-  <connection>
-    <pos1X>204.0</pos1X>
-    <pos1Y>-140.0</pos1Y>
-    <pos2X>260.0</pos2X>
-    <pos2Y>-140.0</pos2Y>
-  </connection>
-  <connection>
-    <pos1X>260.0</pos1X>
-    <pos1Y>-140.0</pos1Y>
-    <pos2X>260.0</pos2X>
-    <pos2Y>0.0</pos2Y>
   </connection>
   <connection>
     <pos1X>-250.0</pos1X>
     <pos1Y>-180.0</pos1Y>
-    <pos2X>-250.0</pos2X>
-    <pos2Y>-270.0</pos2Y>
-  </connection>
-  <connection>
-    <pos1X>490.0</pos1X>
-    <pos1Y>-140.0</pos1Y>
-    <pos2X>546.0</pos2X>
-    <pos2Y>-140.0</pos2Y>
-  </connection>
-  <connection>
-    <pos1X>90.0</pos1X>
-    <pos1Y>-140.0</pos1Y>
-    <pos2X>116.0</pos2X>
-    <pos2Y>-140.0</pos2Y>
-  </connection>
-  <connection>
-    <pos1X>-240.0</pos1X>
-    <pos1Y>-140.0</pos1Y>
     <pos2X>-184.0</pos2X>
-    <pos2Y>-140.0</pos2Y>
+    <pos2Y>-180.0</pos2Y>
   </connection>
   <connection>
-    <pos1X>490.0</pos1X>
+    <pos1X>260.0</pos1X>
     <pos1Y>-140.0</pos1Y>
-    <pos2X>490.0</pos2X>
-    <pos2Y>130.0</pos2Y>
-  </connection>
-  <connection>
-    <pos1X>434.0</pos1X>
-    <pos1Y>-140.0</pos1Y>
-    <pos2X>490.0</pos2X>
+    <pos2X>300.0</pos2X>
     <pos2Y>-140.0</pos2Y>
   </connection>
   <connection>
@@ -283,21 +187,117 @@
     <pos2Y>-140.0</pos2Y>
   </connection>
   <connection>
-    <pos1X>260.0</pos1X>
+    <pos1X>434.0</pos1X>
     <pos1Y>-140.0</pos1Y>
-    <pos2X>300.0</pos2X>
+    <pos2X>490.0</pos2X>
+    <pos2Y>-140.0</pos2Y>
+  </connection>
+  <connection>
+    <pos1X>490.0</pos1X>
+    <pos1Y>-140.0</pos1Y>
+    <pos2X>490.0</pos2X>
+    <pos2Y>130.0</pos2Y>
+  </connection>
+  <connection>
+    <pos1X>-240.0</pos1X>
+    <pos1Y>-140.0</pos1Y>
+    <pos2X>-184.0</pos2X>
+    <pos2Y>-140.0</pos2Y>
+  </connection>
+  <connection>
+    <pos1X>90.0</pos1X>
+    <pos1Y>-140.0</pos1Y>
+    <pos2X>116.0</pos2X>
     <pos2Y>-140.0</pos2Y>
   </connection>
   <connection>
     <pos1X>-250.0</pos1X>
     <pos1Y>-180.0</pos1Y>
-    <pos2X>-184.0</pos2X>
+    <pos2X>-250.0</pos2X>
+    <pos2Y>-270.0</pos2Y>
+  </connection>
+  <connection>
+    <pos1X>260.0</pos1X>
+    <pos1Y>-140.0</pos1Y>
+    <pos2X>260.0</pos2X>
+    <pos2Y>0.0</pos2Y>
+  </connection>
+  <connection>
+    <pos1X>204.0</pos1X>
+    <pos1Y>-140.0</pos1Y>
+    <pos2X>260.0</pos2X>
+    <pos2Y>-140.0</pos2Y>
+  </connection>
+  <connection>
+    <pos1X>-250.0</pos1X>
+    <pos1Y>-270.0</pos1Y>
+    <pos2X>510.0</pos2X>
     <pos2Y>-180.0</pos2Y>
   </connection>
   <connection>
-    <pos1X>-316.0</pos1X>
-    <pos1Y>-180.0</pos1Y>
+    <pos1X>260.0</pos1X>
+    <pos1Y>0.0</pos1Y>
+    <pos2X>144.0</pos2X>
+    <pos2Y>0.0</pos2Y>
+  </connection>
+  <connection>
+    <pos1X>56.0</pos1X>
+    <pos1Y>0.0</pos1Y>
+    <pos2X>-70.0</pos2X>
+    <pos2Y>0.0</pos2Y>
+  </connection>
+  <connection>
+    <pos1X>-96.0</pos1X>
+    <pos1Y>-160.0</pos1Y>
+    <pos2X>-60.0</pos2X>
+    <pos2Y>-160.0</pos2Y>
+  </connection>
+  <connection>
+    <pos1X>-70.0</pos1X>
+    <pos1Y>0.0</pos1Y>
+    <pos2X>-70.0</pos2X>
+    <pos2Y>-120.0</pos2Y>
+  </connection>
+  <connection>
+    <pos1X>-70.0</pos1X>
+    <pos1Y>-120.0</pos1Y>
+    <pos2X>-60.0</pos2X>
+    <pos2Y>-120.0</pos2Y>
+  </connection>
+  <connection>
+    <pos1X>64.0</pos1X>
+    <pos1Y>-140.0</pos1Y>
+    <pos2X>90.0</pos2X>
+    <pos2Y>-140.0</pos2Y>
+  </connection>
+  <connection>
+    <pos1X>490.0</pos1X>
+    <pos1Y>130.0</pos1Y>
     <pos2X>-250.0</pos2X>
-    <pos2Y>-180.0</pos2Y>
+    <pos2Y>130.0</pos2Y>
+  </connection>
+  <connection>
+    <pos1X>-60.0</pos1X>
+    <pos1Y>-160.0</pos1Y>
+    <pos2X>-24.0</pos2X>
+    <pos2Y>-160.0</pos2Y>
+  </connection>
+  <connection>
+    <pos1X>-250.0</pos1X>
+    <pos1Y>130.0</pos1Y>
+    <pos2X>-250.0</pos2X>
+    <pos2Y>-140.0</pos2Y>
+  </connection>
+  <connection>
+    <pos1X>-60.0</pos1X>
+    <pos1Y>-120.0</pos1Y>
+    <pos2X>-24.0</pos2X>
+    <pos2Y>-120.0</pos2Y>
+  </connection>
+  <connection>
+    <pos1X>-250.0</pos1X>
+    <pos1Y>-140.0</pos1Y>
+    <pos2X>-240.0</pos2X>
+    <pos2Y>-140.0</pos2Y>
   </connection>
 </root>

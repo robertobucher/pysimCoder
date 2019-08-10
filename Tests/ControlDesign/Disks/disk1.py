@@ -54,15 +54,17 @@ Dm1=plsq[0][1]*Jm1           # Motor friction
 
 g1=tf([kt1/Jm1],[1,Dm1/Jm1,0])  # Transfer function
 
+"""
 Y1,T1 = step(g1,t1)
 plot(T1,Y1)
 plot(t1,y11)
 show()
+"""
 
 # Design Controller Motor 1
 a=[[0,1],[0,-Dm1/Jm1]]
-b=[[0],[1]]
-c=[[kt1/Jm1,0]];
+b=[[0],[kt1/Jm1]]
+c=[[1,0]];
 d=[0];
 
 sysc=ss(a,b,c,d)                # Continous state space form
@@ -73,9 +75,9 @@ sys = c2d(sysc,Ts,'zoh')       # Get discrete state space form
 # Control system design
 # State feedback with integral part
 
-wn=6
+wn=8
 xi=np.sqrt(2)/2
-xi=0.3   # Test for students
+#xi=0.3   # Test for students
 
 cl_p1=[1,2*xi*wn,wn**2]
 cl_p2=[1,wn]

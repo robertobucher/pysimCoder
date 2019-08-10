@@ -156,7 +156,7 @@ if Ball == 1:
     D0 = 1.781955
     
 elif Ball == 2:
-    # Green Ball
+    # Yellow Ball
     Mb = 71.36e-3       # Mass
     Rb = 0.10/2            # Radius
     Jb = 2.0/3*M_b*R_b**2     # Inertia
@@ -238,7 +238,7 @@ if Controller == 1:
 elif Controller == 2:
     # LQR Controller
     Q = np.diag([5, 5, 10, 1]);
-    Q = np.diag([20, 10, 20 , 10]);
+    Q = np.diag([20, 10, 100 , 10]);
     R = [4];                    
     k, S, E = rp.dlqr(Ad, Bd, Q, R)
 
@@ -255,7 +255,7 @@ if Observer == 1:
     T=[[0,0,1,0],[0,0,0,1]]
     obs_polesc = obs_k*cl_2poles
     obs_polesd = sp.exp(obs_polesc*Ts)
-    r_obs=red_obs(bowD,T, obs_polesd)
+    r_obs = red_obs(bowD,T, obs_polesd)
     # Put Observer and controller together (compact form)
     ctr = comp_form(bowD, r_obs, k)
 
@@ -278,8 +278,6 @@ Sat = 1300
 # Other system constants
 Kd = 6.1e-2                     #  Voltage to Ball position [m]
 D2PHI = Kd/(Rb+Rw)    # Voltage to Ball angle phi_b [rad]
-#D0 = 1.781951
-D0 = 1.781955
 
 enc_w = 4096*GearsRatio/2/np.pi   # Motor encoder resolution (reduced to motor)
 

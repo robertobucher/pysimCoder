@@ -148,9 +148,10 @@ gz = c2d(gss,ts,'zoh')
 
 # Control design
 wn = 10
+
 xi1 = np.sqrt(2)/2 
 xi2 = np.sqrt(3)/2 
-xi2 = 0.85
+#xi2 = 0.85
 
 cl_p1 = [1,2*xi1*wn,wn**2]
 cl_p2 = [1,2*xi2*wn,wn**2]
