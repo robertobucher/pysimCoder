@@ -231,6 +231,10 @@ class Editor(QtCore.QObject):
     def itemAt(self, pos):
         items =  self.scene.items(QtCore.QRectF(pos-QtCore.QPointF(DB,DB), QtCore.QSizeF(2*DB,2*DB)))
         for item in items:
+            if isinstance(item, Node):
+                return item
+            
+        for item in items:
             if isinstance(item, QGraphicsItem):
                 return item
         return None
