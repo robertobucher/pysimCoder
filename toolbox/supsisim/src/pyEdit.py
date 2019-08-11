@@ -146,7 +146,7 @@ class SupsiSimMainWindow(QMainWindow):
         toolbarE.addAction(self.undoAction)
         #toolbarE.addAction(self.updateAction)
 
-        toolbarS = self.addToolBar('Simuation')
+        toolbarS = self.addToolBar('Simluation')
         toolbarS.addAction(self.runAction)
         toolbarS.addAction(self.codegenAction)
         toolbarS.addAction(self.setCodegenAction)
