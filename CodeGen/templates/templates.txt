@@ -1,0 +1,7 @@
+sim.tmf			Template for simulation (no RT)
+rt.tmf			Template for RT execution
+rt_co.tmf			Template for RT execution (incl. CAN Synch command)
+rt_pi.tmf			Template for RT execution with cross compilation for Raspberry PI
+fmurt.tmf		Template for simulation with libraries for FMU blocks (Functional Mockup Interface)
+fmusim.tmf		Template for RT execution with libraries for FMU blocks (Functional Mockup Interface)
+rt_digi.tmf		Template for RT execution with Digilent libraries
