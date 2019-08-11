@@ -388,8 +388,8 @@ class Scene(QGraphicsScene):
         cmd += 'import matplotlib.pyplot as plt\n'
         cmd += 'import numpy as np\n\n'
         cmd += 'os.system("./' + self.mainw.filename + ' -f ' + self.Tf + '")\n'
-        fnm = './' + self.mainw.filename + '_gen'
-        cmd += 'os.system("' + 'rm -r ' + fnm+'" )'
+        fnm = self.mainw.filename
+        cmd += 'os.system("' + 'rm -r ' + fnm + ' ' + fnm + '_gen' + '" )'
         
         try:
             os.mkdir(TEMP + '/' + self.mainw.filename + '_gen')
