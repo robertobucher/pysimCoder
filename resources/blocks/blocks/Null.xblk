@@ -1,1 +1,1 @@
-{"lib": "output", "name": "NULL", "ip": 1, "op": 0, "stin": 1, "stout": 1, "icon": "NULL", "params": "nullBlk"}
+{"lib": "output", "name": "NULL", "ip": 1, "op": 0, "stin": 1, "stout": 0, "icon": "NULL", "params": "nullBlk"}
