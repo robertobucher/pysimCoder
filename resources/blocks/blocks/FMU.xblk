@@ -1,1 +1,1 @@
-{"lib": "nonlin", "name": "FMU", "ip": 1, "op": 1, "st": 1, "icon": "FMU", "params": "FmuBlk|IN_REF: ['u']|OUT_REF: ['y']|FMU_NAME (without ext): 'test'|Major step: 0.01|Feedthrough: 0"}
+{"lib": "nonlin", "name": "FMU", "ip": 1, "op": 1, "stin": 1, "stout": 1, "icon": "FMU", "params": "FmuBlk|IN_REF: ['u']|OUT_REF: ['y']|FMU_NAME (without ext): 'test'|Major step: 0.01|Feedthrough: 0"}

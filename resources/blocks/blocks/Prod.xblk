@@ -1,1 +1,1 @@
-{"lib": "math", "name": "Prod", "ip": 2, "op": 1, "st": 1, "icon": "PROD", "params": "prodBlk"}
+{"lib": "math", "name": "Prod", "ip": 2, "op": 1, "stin": 1, "stout": 1, "icon": "PROD", "params": "prodBlk"}

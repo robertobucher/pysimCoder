@@ -146,7 +146,7 @@ class SupsiSimMainWindow(QMainWindow):
         toolbarE.addAction(self.undoAction)
         #toolbarE.addAction(self.updateAction)
 
-        toolbarS = self.addToolBar('Simluation')
+        toolbarS = self.addToolBar('Simulation')
         toolbarS.addAction(self.runAction)
         toolbarS.addAction(self.codegenAction)
         toolbarS.addAction(self.setCodegenAction)
@@ -291,23 +291,24 @@ class SupsiSimMainWindow(QMainWindow):
         dialog = IO_Dialog(self)
         dialog.spbInput.setValue(item.inp)
         dialog.spbOutput.setValue(item.outp)
-        if item.inp == 0 or item.iosetble==False:
+        if item.insetble==False:
             dialog.spbInput.setEnabled(False)
-        if item.outp == 0 or item.iosetble==False:
+        if item.outsetble==False:
             dialog.spbOutput.setEnabled(False)
             
         name = item.name
         flip = item.flip
         icon = item.icon
         params = item.params
-        iosetble = item.iosetble
+        insetble = item.insetble
+        outsetble = item.outsetble
         width = item.width
         res = dialog.exec_()
-        if res == 1 and iosetble:
+        if res == 1 and (insetble or outsetble):
             item.remove()
             inp = dialog.spbInput.value()
             outp = dialog.spbOutput.value()
-            b = Block(None, self.scene, name, inp, outp, iosetble, icon, params, width, flip)
+            b = Block(None, self.scene, name, inp, outp, insetble, outsetble, icon, params, width, flip)
             b.setPos(self.scene.evpos)
             ok = True
         else:

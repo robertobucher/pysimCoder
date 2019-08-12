@@ -1,1 +1,1 @@
-{"lib": "linear", "name": "LTI_discrete", "ip": 1, "op": 1, "st": 1, "icon": "DSS", "params": "dssBlk|System: sys|Initial conditions: 0"}
+{"lib": "linear", "name": "LTI_discrete", "ip": 1, "op": 1, "stin": 1, "stout": 1, "icon": "DSS", "params": "dssBlk|System: sys|Initial conditions: 0"}

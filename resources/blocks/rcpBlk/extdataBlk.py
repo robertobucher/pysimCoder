@@ -1,26 +1,26 @@
 from supsisim.RCPblk import RCPblk
 from scipy import size
 
-def extdataBlk(pout, length, fname):
+def extdataBlk(pout, ch, datasize, fname):
     """
 
-    Call:   extdataBlk(pout, length, fname)
+    Call:   extdataBlk(pout, ch, len, fname)
 
     Parameters
     ----------
        pout: connected output port(s)
-       length : Data length
+       ch : Channels
+       len : Data length
        fname : File name
 
     Returns
     -------
-        blk  : RCPblk
+       blk: RCPblk
 
     """
+
+    if(size(pout) != ch):
+        raise ValueError("Block should have %i output port; received %i." % (ch,size(pout)))
     
-    if(size(pout) != 1):
-        raise ValueError("Block should have 1 output port; received %i." % size(pout))
-
-    blk = RCPblk('extdata',[],pout,[0,0],0,[],[length,0],fname)
+    blk = RCPblk('extdata', [], pout, [0,0], 0, [], [ch, datasize, 0], fname)
     return blk
-

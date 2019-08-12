@@ -1,1 +1,1 @@
-{"lib": "comedi", "name": "AD", "ip": 0, "op": 1, "st": 0, "icon": "AD", "params": "comediADBlk|Device: '/dev/comedi0'|Channel: 0|Range: 0"}
+{"lib": "comedi", "name": "AD", "ip": 0, "op": 1, "stin": 0, "stout": 0, "icon": "AD", "params": "comediADBlk|Device: '/dev/comedi0'|Channel: 0|Range: 0"}

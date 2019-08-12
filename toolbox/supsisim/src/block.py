@@ -14,23 +14,24 @@ class Block(QGraphicsPathItem):
         super(Block, self).__init__(parent)
         self.scene.addItem(self)
  
-        if len(args) == 10:
-            parent, self.scene, self.name, self.inp, self.outp, self.iosetble, self.icon, self.params, self.width, self.flip = args
+        if len(args) == 11:
+            parent, self.scene, self.name, self.inp, self.outp, self.insetble, self.outsetble, self.icon, self.params, self.width, self.flip = args
         elif len(args) == 3:
             parent, self.scene, strBlk = args
             ln = strBlk.split('@')
             self.name = str(ln[0])
             self.inp = int(ln[1])
             self.outp = int(ln[2])
-            self.icon = ln[4]
-            self.params = ln[5]
-            self.width = int(ln[6])
+            self.icon = ln[5]
+            self.params = ln[6]
+            self.width = int(ln[7])
             self.flip = False
-            io = int(ln[3])
-            iosetble = (io==1)
-            self.iosetble = iosetble
+            stbin = int(ln[3])
+            stbout = int(ln[4])
+            self.insetble = (stbin==1)
+            self.outsetble = (stbout==1)
         else:
-            raise ValueError('Needs 10 or 3 arguments; received %i.' % len(args))
+            raise ValueError('Needs 11 or 3 arguments; received %i.' % len(args))
 
         self.line_color = QtCore.Qt.black
         self.fill_color = QtCore.Qt.black
@@ -137,7 +138,7 @@ class Block(QGraphicsPathItem):
 
     def clone(self, pt):
         b = Block(None, self.scene, self.name, self.inp, self.outp,
-                      self.iosetble, self.icon, self.params, self.flip)
+                      self.insetble, self.outsetble, self.icon, self.params, self.flip)
         b.setPos(self.scenePos().__add__(pt))
 
     def setFlip(self, flip=None):
@@ -191,10 +192,17 @@ class Block(QGraphicsPathItem):
         etree.SubElement(blk,'name').text = self.name
         etree.SubElement(blk,'inp').text = self.inp.__str__()
         etree.SubElement(blk,'outp').text = self.outp.__str__()
-        if self.iosetble:
-            etree.SubElement(blk,'ioset').text = '1'
+        
+        if self.insetble:
+            etree.SubElement(blk,'inset').text = '1'
         else:
-            etree.SubElement(blk,'ioset').text = '0'
+            etree.SubElement(blk,'inset').text = '0'
+        if self.outsetble:
+            etree.SubElement(blk,'outset').text = '1'
+        else:
+            etree.SubElement(blk,'outset').text = '0'
+
+            
         etree.SubElement(blk,'icon').text = self.icon
         etree.SubElement(blk,'params').text = self.params
         etree.SubElement(blk,'width').text = self.width.__str__()

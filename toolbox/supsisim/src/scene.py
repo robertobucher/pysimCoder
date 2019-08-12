@@ -203,10 +203,17 @@ class Scene(QGraphicsScene):
         except:
             width = BWmin
         # --------------------------------------------------
-            
-        b = Block(None, self, item.findtext('name'),
+
+        try:
+            b = Block(None, self, item.findtext('name'),
                       int(item.findtext('inp')), int(item.findtext('outp')),
-                      item.findtext('ioset')=='1', item.findtext('icon'),
+                      item.findtext('inset')=='1', item.findtext('outset')==1, item.findtext('icon'),
+                      item.findtext('params'), width, item.findtext('flip')=='1' )
+        except:
+            # Compatibility of files from previous versions
+            b = Block(None, self, item.findtext('name'),
+                      int(item.findtext('inp')), int(item.findtext('outp')),
+                      item.findtext('ioset')=='1', item.findtext('ioset')=='1', item.findtext('icon'),
                       item.findtext('params'), width, item.findtext('flip')=='1' )
         b.setPos(float(item.findtext('posX')), float(item.findtext('posY')))
 

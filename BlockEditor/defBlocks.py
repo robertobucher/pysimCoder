@@ -137,10 +137,14 @@ class MainWindow(QMainWindow, form_class):
             self.edName.setText(d['name'])
             self.spInputs.setValue(d['ip'])
             self.spOutputs.setValue(d['op'])
-            if d['st'] == 1:
-                self.ckbsettable.setCheckState(Qt.Checked)
+            if d['stin'] == 1:
+                self.ckbinsettable.setCheckState(Qt.Checked)
             else:
-                self.ckbsettable.setCheckState(Qt.Unchecked)
+                self.ckbinsettable.setCheckState(Qt.Unchecked)
+            if d['stout'] == 1:
+                self.ckboutsettable.setCheckState(Qt.Checked)
+            else:
+                self.ckboutsettable.setCheckState(Qt.Unchecked)
                     
             self.edIcon.setText(d['icon'])
             self.params2grid(d['params'])
@@ -201,10 +205,16 @@ class MainWindow(QMainWindow, form_class):
         d['name'] = self.edName.text().__str__()
         d['ip'] = self.spInputs.value()
         d['op'] = self.spOutputs.value()
-        if self.ckbsettable.checkState() == Qt.Checked:
-            d['st'] = 1
+        
+        if self.ckbinsettable.checkState() == Qt.Checked:
+            d['stin'] = 1
         else:
-            d['st'] = 0    
+            d['stin'] = 0    
+        if self.ckboutsettable.checkState() == Qt.Checked:
+            d['stout'] = 1
+        else:
+            d['stout'] = 0
+            
         d['icon'] = self.edIcon.text().__str__()
         return d
         

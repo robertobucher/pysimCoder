@@ -1,1 +1,1 @@
-{"lib": "can Faulhaber 5XXX", "name": "FH_5XXX_setTQ", "ip": 1, "op": 0, "st": 0, "icon": "MOT_TQ", "params": "FH_5XXX_setTQBlk|Device ID: 0x01"}
+{"lib": "can Faulhaber 5XXX", "name": "FH_5XXX_setTQ", "ip": 1, "op": 0, "stin": 0, "stout": 0, "icon": "MOT_TQ", "params": "FH_5XXX_setTQBlk|Device ID: 0x01"}

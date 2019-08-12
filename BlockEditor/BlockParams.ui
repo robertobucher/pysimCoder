@@ -18,7 +18,7 @@
     <property name="geometry">
      <rect>
       <x>40</x>
-      <y>50</y>
+      <y>30</y>
       <width>91</width>
       <height>21</height>
      </rect>
@@ -34,7 +34,7 @@
     <property name="geometry">
      <rect>
       <x>40</x>
-      <y>90</y>
+      <y>70</y>
       <width>91</width>
       <height>21</height>
      </rect>
@@ -50,7 +50,7 @@
     <property name="geometry">
      <rect>
       <x>370</x>
-      <y>50</y>
+      <y>30</y>
       <width>91</width>
       <height>21</height>
      </rect>
@@ -66,7 +66,7 @@
     <property name="geometry">
      <rect>
       <x>370</x>
-      <y>90</y>
+      <y>70</y>
       <width>91</width>
       <height>21</height>
      </rect>
@@ -82,7 +82,7 @@
     <property name="geometry">
      <rect>
       <x>40</x>
-      <y>130</y>
+      <y>110</y>
       <width>91</width>
       <height>21</height>
      </rect>
@@ -98,7 +98,7 @@
     <property name="geometry">
      <rect>
       <x>40</x>
-      <y>180</y>
+      <y>190</y>
       <width>91</width>
       <height>21</height>
      </rect>
@@ -114,7 +114,7 @@
     <property name="geometry">
      <rect>
       <x>160</x>
-      <y>50</y>
+      <y>30</y>
       <width>113</width>
       <height>21</height>
      </rect>
@@ -124,7 +124,7 @@
     <property name="geometry">
      <rect>
       <x>160</x>
-      <y>90</y>
+      <y>70</y>
       <width>113</width>
       <height>21</height>
      </rect>
@@ -134,7 +134,7 @@
     <property name="geometry">
      <rect>
       <x>490</x>
-      <y>50</y>
+      <y>30</y>
       <width>53</width>
       <height>22</height>
      </rect>
@@ -147,7 +147,7 @@
     <property name="geometry">
      <rect>
       <x>490</x>
-      <y>90</y>
+      <y>70</y>
       <width>53</width>
       <height>22</height>
      </rect>
@@ -160,7 +160,7 @@
     <property name="geometry">
      <rect>
       <x>160</x>
-      <y>130</y>
+      <y>110</y>
       <width>113</width>
       <height>21</height>
      </rect>
@@ -170,7 +170,7 @@
     <property name="geometry">
      <rect>
       <x>160</x>
-      <y>180</y>
+      <y>190</y>
       <width>301</width>
       <height>21</height>
      </rect>
@@ -252,12 +252,12 @@ after</string>
      <bool>true</bool>
     </property>
    </widget>
-   <widget class="QCheckBox" name="ckbsettable">
+   <widget class="QCheckBox" name="ckbinsettable">
     <property name="geometry">
      <rect>
-      <x>390</x>
-      <y>130</y>
-      <width>111</width>
+      <x>380</x>
+      <y>110</y>
+      <width>141</width>
       <height>23</height>
      </rect>
     </property>
@@ -265,7 +265,23 @@ after</string>
      <enum>Qt::RightToLeft</enum>
     </property>
     <property name="text">
-     <string>Settable:     </string>
+     <string>Input Settable:     </string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="ckboutsettable">
+    <property name="geometry">
+     <rect>
+      <x>370</x>
+      <y>140</y>
+      <width>151</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="layoutDirection">
+     <enum>Qt::RightToLeft</enum>
+    </property>
+    <property name="text">
+     <string>OutputSettable:     </string>
     </property>
    </widget>
   </widget>
@@ -275,7 +291,7 @@ after</string>
      <x>0</x>
      <y>0</y>
      <width>750</width>
-     <height>22</height>
+     <height>20</height>
     </rect>
    </property>
   </widget>

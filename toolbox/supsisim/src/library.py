@@ -38,11 +38,16 @@ class CompViewer(QGraphicsScene):
     def mouseMoveEvent(self, event):
         if event.buttons() == QtCore.Qt.LeftButton and isinstance(self.actComp, Block):
             mimeData = QtCore.QMimeData()
-            if self.actComp.iosetble:
-                io = '1'
+            if self.actComp.insetble:
+                insetble = '1'
             else:
-                io = '0'
-            data = self.actComp.name+'@'+self.actComp.inp.__str__()+'@'+self.actComp.outp.__str__() + '@' + io +'@' + self.actComp.icon + '@' + self.actComp.params + '@' + self.actComp.width.__str__()
+                insetble = '0'
+            if self.actComp.outsetble:
+                outsetble = '1'
+            else:
+                outsetble = '0'
+                
+            data = self.actComp.name+'@'+self.actComp.inp.__str__()+'@'+self.actComp.outp.__str__() + '@' + insetble +'@' + outsetble + '@' + self.actComp.icon + '@' + self.actComp.params + '@' + self.actComp.width.__str__()
             mimeData.setText(data)
             drag = QDrag(self.parent)
             drag.setMimeData(mimeData)
@@ -91,8 +96,9 @@ class Library(QMainWindow):
             except:
                 w = BWmin
                 
-            io = (el['st'] == 1)
-            b = Block(None, diagram, el['name'], el['ip'], el['op'], io, el['icon'], el['params'], w, False)
+            stbin = (el['stin'] == 1)
+            stbout = (el['stout'] == 1)
+            b = Block(None, diagram, el['name'], el['ip'], el['op'], stbin, stbout, el['icon'], el['params'], w, False)
             px = (i-1) % 2
             py = (i-1)/2
             b.setPos(px*150,py*200)
