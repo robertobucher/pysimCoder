@@ -66,8 +66,8 @@ static void inout(python_block *block)
   for(i=0;i<intPar[0]; i++){
     y = block->y[i];
     y[0] = pData[i*npts+block->intPar[2]];
-    block->intPar[2] = ++(block->intPar[2]) % block->intPar[1];
   }
+  block->intPar[2] = ++(block->intPar[2]) % block->intPar[1];
 }
 
 static void update(python_block *block)
