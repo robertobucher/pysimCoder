@@ -207,7 +207,7 @@ class Scene(QGraphicsScene):
         try:
             b = Block(None, self, item.findtext('name'),
                       int(item.findtext('inp')), int(item.findtext('outp')),
-                      item.findtext('inset')=='1', item.findtext('outset')==1, item.findtext('icon'),
+                      item.findtext('inset')=='1', item.findtext('outset')=='1', item.findtext('icon'),
                       item.findtext('params'), width, item.findtext('flip')=='1' )
         except:
             # Compatibility of files from previous versions
