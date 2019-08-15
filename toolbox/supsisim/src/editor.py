@@ -236,7 +236,18 @@ class Editor(QtCore.QObject):
             
         for item in items:
             if isinstance(item, QGraphicsItem):
+                return(item)
+        return None
+
+    def itemByDraw(self, pos):
+        items =  self.scene.items(QtCore.QRectF(pos-QtCore.QPointF(DB,DB), QtCore.QSizeF(2*DB,2*DB)))
+        for item in items:
+            if isinstance(item, Node):
                 return item
+            
+        for item in items:
+            if isinstance(item, InPort):
+                return(item)
         return None
 
     def itemIsPortIn(self, pos):
@@ -271,16 +282,12 @@ class Editor(QtCore.QObject):
         self.scene.mainw.view.setCursor(pointer)        
             
     def setMouseByDraw(self, item):
-        if isinstance(item, Block):
-            pointer = QtCore.Qt.ArrowCursor
-        elif isinstance(item, InPort) and len(item.connections)==0:
+        if isinstance(item, InPort) and len(item.connections)==0:
             pointer = QtCore.Qt.CrossCursor
         elif isinstance(item, Node) and len(item.port_in.connections) == 0:
             pointer = QtCore.Qt.CrossCursor
-        elif isinstance(item, Connection):
-            pointer = QtCore.Qt.PointingHandCursor
         else:
-            pointer = QtCore.Qt.ArrowCursor
+            pointer = QtCore.Qt.DragLinkCursor
         self.scene.mainw.view.setCursor(pointer)        
             
     def PDM(self, obj, event):    # Dummy function - No action
@@ -471,9 +478,8 @@ class Editor(QtCore.QObject):
             self.state = IDLE
        
     def P10(self, obj, event):
-        item = self.itemAt(event.scenePos())
+        item = self.itemByDraw(event.scenePos())
         self.setMouseByDraw(item)
-        #pt = self.genInterPoint(event.scenePos())
         self.conn.pos2 = event.scenePos()
         self.conn.update_path()
 

@@ -16,7 +16,7 @@ PLOT_LEN = 2048
 DOUBLE_SIZE = 8
 PACKET_LEN = NIN * PACKET_NUM * DOUBLE_SIZE
 PLOT_LINE_COLORS = ['y', 'g', 'r', 'b', 'c', 'm', 'k', 'w']
-PLOT_WINDOM_SIZE = (1200, NIN*200)
+PLOT_WINDOM_SIZE = (1000, 600)
 TIMER_PERIOD = 50
 
 # connect to model
@@ -35,12 +35,12 @@ win.resize(PLOT_WINDOM_SIZE[0], PLOT_WINDOM_SIZE[1])
 pg.setConfigOptions(antialias=True, useWeave=True)
 plots = []
 curves = []
+p = win.addPlot(title="u"+str(i))
+plots.append(p)
 # add plots for all inputs to blk
 for i in range(NIN):
-    p = win.addPlot(title="u"+str(i))
     p.showGrid(x=True, y=True)
     c = PLOT_LINE_COLORS[i % len(PLOT_LINE_COLORS)]
-    plots.append(p)
     curves.append(p.plot(pen=c))
     win.nextRow()
 

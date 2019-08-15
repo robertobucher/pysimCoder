@@ -199,7 +199,7 @@ static void end(python_block *block)
   canClose();
 }
 
-void FH_5XXX_INIT_(int flag, python_block *block)
+void FH_5XXX_INIT(int flag, python_block *block)
 {
   if (flag==END){     /* termination */ 
     end(block);
@@ -209,7 +209,7 @@ void FH_5XXX_INIT_(int flag, python_block *block)
   }
 }
 
-void FH_3XXX_INIT_(int flag, python_block *block)
+void FH_3XXX_INIT(int flag, python_block *block)
 {
   if (flag==END){     /* termination */ 
     end(block);

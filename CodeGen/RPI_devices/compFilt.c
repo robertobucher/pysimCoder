@@ -26,7 +26,10 @@ static void init(python_block *block)
   double *accY = block->u[1];
   double *accZ = block->u[2];
 
-  realPar[2] = atan2f(accX[0], sqrt(accY[0]*accY[0]+accZ[0]*accZ[0]));
+  double sign = 1.0;
+  if(accZ[0]<0) sign=-1.0;
+  
+  realPar[2] = atan2f(accX[0], sign*sqrt(accY[0]*accY[0]+accZ[0]*accZ[0]));
 }
 
 static void inout(python_block *block)
@@ -45,7 +48,9 @@ static void update(python_block *block)
   double *accZ = block->u[2];
   double *vY = block->u[3];
 
-  double acc = atan2f(accX[0], sqrt(accY[0]*accY[0]+accZ[0]*accZ[0]));
+  double sign = 1.0;
+  if(accZ[0]<0) sign=-1.0;
+  double acc = atan2f(accX[0], sign*sqrt(accY[0]*accY[0]+accZ[0]*accZ[0]));
   realPar[2] = (realPar[2]+vY[0]*realPar[1])*realPar[0] + acc*(1-realPar[0]);
 }
 
