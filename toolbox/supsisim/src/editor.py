@@ -310,7 +310,12 @@ class Editor(QtCore.QObject):
     def P01(self, obj, event):
         self.scene.currentItem = self.itemAt(event.scenePos())
         self.state = LEFTMOUSEPRESSED
- 
+        item = self.itemIsNode(event.scenePos())
+        if isinstance(item, Node):
+            self.oldPos = item.scenePos()
+        else:
+            self.oldPos = None
+            
     def P02(self, obj, event):
         item = self.itemAt(event.scenePos())
         self.deselect_all()
@@ -362,11 +367,17 @@ class Editor(QtCore.QObject):
 
     def P06(self, obj, event):
         item = self.itemAt(event.scenePos())
+        if isinstance(item, Node):
+            try:
+                item.setPos(self.oldPos)
+            except:
+                pass
         if isinstance(item, Block) or isinstance(item, Node):
             self.scene.DgmToUndo()
                         
     def P07(self, obj, event):
         item = self.itemAt(event.scenePos())
+        
         if self.scene.currentItem != None:
             self.deselect_all()
             try:
@@ -390,6 +401,7 @@ class Editor(QtCore.QObject):
                 self.conn.pos2 = item.scenePos()
 
         if  isinstance(item, Node):
+            item.setPos(self.oldPos)
             self.scene.DgmToUndo()
             self.state = DRAWFROMOUTPORT
             self.conn = Connection(None, self.scene)
