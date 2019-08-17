@@ -1,0 +1,13 @@
+Folder for the Raspberry PI libraries
+
+In particular, the specific RPI libraries can be downloaded using
+
+wget http://robertobucher.dti.supsi.ch/wp-content/uploads/2017/03/RaspLibs.zip + unzip
+
+libcrypt.a
+libm.a
+libpthread.a
+librt.a
+libwiringPi.a
+libwiringPiDev.a
+

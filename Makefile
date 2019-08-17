@@ -25,14 +25,12 @@ modules:
 	cd toolbox/PyQT; python setup.py install
 
 fmu:
-	cd CodeGen/fmu; rm -rf lib; mkdir lib; make all; make install
+	cd CodeGen/fmu; make all; make install
 
 lib:
-	cd CodeGen; rm -rf lib; mkdir lib
 	cd CodeGen/devices; make reduced
 
 full_lib:
-	cd CodeGen; rm -rf lib; mkdir lib
 	cd CodeGen/devices; make all
 
 link:
