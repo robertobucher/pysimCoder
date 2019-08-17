@@ -24,7 +24,6 @@ Gpi=tf([Ti,1],[Ti,0])
 print("PI part is: ", Gpi)
 plt.figure()
 bode(g,dB=True,linestyle='dashed');
-plt.hold
 bode(Gpi*g,dB=True);
 plt.legend((['G(s)','Gpi(s)*G(s)']),prop={'size':10})
 plt.show()
@@ -50,7 +49,6 @@ print("Lead part is: ", Glead)
 
 plt.figure()
 bode(g,dB=True,linestyle='dashed');
-plt.hold
 bode(Gpi*g,dB=True,linestyle='dotted');
 bode(Gpi*Glead*g, dB=True);
 plt.legend((['G(s)','Gpi(s)*G(s)','Gpi(s)*GLead(s)*G(s)']),prop={'size':10})
@@ -63,7 +61,6 @@ K=1/mag[0]
 print("Gain to have MAG at gwc 0dB: ", K)
 plt.figure()
 bode(g,dB=True,linestyle='dashed');
-plt.hold
 bode(Gpi*g,dB=True,linestyle='dotted');
 bode(Gpi*Glead*g, dB=True,linestyle='-.');
 bode(K*Gpi*Glead*g, dB=True);

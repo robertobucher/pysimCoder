@@ -1,6 +1,6 @@
 <root>
   <Date>
-    <SavingDate>17.08.2019 - 10:17:58</SavingDate>
+    <SavingDate>17.08.2019 - 10:17:30</SavingDate>
   </Date>
   <Simulation>
     <Template>rt.tmf</Template>
@@ -9,32 +9,6 @@
     <ParScript>/home/bucher/CACSD/pysimCoder/Tests/ControlDesign/BallOnWheel/BoWKane.py</ParScript>
     <Tf>10</Tf>
   </Simulation>
-  <block>
-    <name>FH_5XXX_INIT</name>
-    <inp>0</inp>
-    <outp>0</outp>
-    <inset>0</inset>
-    <outset>0</outset>
-    <icon>FH_5XXX_INIT</icon>
-    <params>FH_5XXX_INIT_Blk|Device ID: 0x01|Pos Prop. gain: 0|Pos Deriv. gain: 0|V Prop. gain:0|V Intg gain:0|TQ Prop. gain:0|TQ Intg gain:0| Encoder reset (1-&gt;Yes, 0-&gt;No):1</params>
-    <width>80</width>
-    <flip>0</flip>
-    <posX>-410.0</posX>
-    <posY>-260.0</posY>
-  </block>
-  <block>
-    <name>Init_enc</name>
-    <inp>1</inp>
-    <outp>1</outp>
-    <inset>0</inset>
-    <outset>0</outset>
-    <icon>INIT</icon>
-    <params>init_encBlk|Trigger Time: 4.5|Default Output: 0|Offset: 0</params>
-    <width>80</width>
-    <flip>0</flip>
-    <posX>-110.0</posX>
-    <posY>70.0</posY>
-  </block>
   <block>
     <name>FH_5XXX_setTQ</name>
     <inp>1</inp>
@@ -45,21 +19,8 @@
     <params>FH_5XXX_setTQBlk|Device ID: 0x01</params>
     <width>80</width>
     <flip>0</flip>
-    <posX>870.0</posX>
+    <posX>890.0</posX>
     <posY>-110.0</posY>
-  </block>
-  <block>
-    <name>FH_5XXX_ENC</name>
-    <inp>0</inp>
-    <outp>1</outp>
-    <inset>0</inset>
-    <outset>0</outset>
-    <icon>ENC</icon>
-    <params>FH_5XXX_ENCBlk|Device ID: 0x01|Resolution: enc_w</params>
-    <width>80</width>
-    <flip>0</flip>
-    <posX>-80.0</posX>
-    <posY>-130.0</posY>
   </block>
   <block>
     <name>FH_5XXX_AD</name>
@@ -73,6 +34,58 @@
     <flip>0</flip>
     <posX>-440.0</posX>
     <posY>70.0</posY>
+  </block>
+  <block>
+    <name>FH_5XXX_INIT</name>
+    <inp>0</inp>
+    <outp>0</outp>
+    <inset>0</inset>
+    <outset>0</outset>
+    <icon>FH_5XXX_INIT</icon>
+    <params>FH_5XXX_INIT_Blk|Device ID: 0x01|Pos Prop. gain: 0|Pos Deriv. gain: 0|V Prop. gain:0|V Intg gain:0|TQ Prop. gain:0|TQ Intg gain:0| Encoder reset (1-&gt;Yes, 0-&gt;No):1</params>
+    <width>80</width>
+    <flip>0</flip>
+    <posX>-380.0</posX>
+    <posY>-250.0</posY>
+  </block>
+  <block>
+    <name>FH_5XXX_ENC</name>
+    <inp>0</inp>
+    <outp>1</outp>
+    <inset>0</inset>
+    <outset>0</outset>
+    <icon>ENC</icon>
+    <params>FH_5XXX_ENCBlk|Device ID: 0x01|Resolution: 1</params>
+    <width>80</width>
+    <flip>0</flip>
+    <posX>-70.0</posX>
+    <posY>-130.0</posY>
+  </block>
+  <block>
+    <name>Const</name>
+    <inp>0</inp>
+    <outp>1</outp>
+    <inset>0</inset>
+    <outset>0</outset>
+    <icon>CONST</icon>
+    <params>constBlk|Value: D0</params>
+    <width>80</width>
+    <flip>0</flip>
+    <posX>-280.0</posX>
+    <posY>190.0</posY>
+  </block>
+  <block>
+    <name>Sub</name>
+    <inp>2</inp>
+    <outp>1</outp>
+    <inset>0</inset>
+    <outset>0</outset>
+    <icon>PM</icon>
+    <params>sumBlk|Gains: [1,-1]</params>
+    <width>80</width>
+    <flip>0</flip>
+    <posX>-130.0</posX>
+    <posY>90.0</posY>
   </block>
   <block>
     <name>RT Plot</name>
@@ -137,7 +150,7 @@
     <width>80</width>
     <flip>0</flip>
     <posX>30.0</posX>
-    <posY>70.0</posY>
+    <posY>90.0</posY>
   </block>
   <block>
     <name>LTI_discrete1</name>
@@ -192,15 +205,19 @@
     <posY>-40.0</posY>
   </block>
   <node>
-    <posX>-190.0</posX>
+    <posX>-200.0</posX>
+    <posY>110.0</posY>
+  </node>
+  <node>
+    <posX>-50.0</posX>
+    <posY>90.0</posY>
+  </node>
+  <node>
+    <posX>-200.0</posX>
     <posY>70.0</posY>
   </node>
   <node>
     <posX>-360.0</posX>
-    <posY>70.0</posY>
-  </node>
-  <node>
-    <posX>-40.0</posX>
     <posY>70.0</posY>
   </node>
   <node>
@@ -245,7 +262,7 @@
   </node>
   <node>
     <posX>150.0</posX>
-    <posY>70.0</posY>
+    <posY>90.0</posY>
   </node>
   <node>
     <posX>320.0</posX>
@@ -268,22 +285,10 @@
     <posY>-90.0</posY>
   </node>
   <connection>
-    <pos1X>-190.0</pos1X>
-    <pos1Y>70.0</pos1Y>
-    <pos2X>-154.0</pos2X>
-    <pos2Y>70.0</pos2Y>
-  </connection>
-  <connection>
-    <pos1X>-236.0</pos1X>
-    <pos1Y>70.0</pos1Y>
-    <pos2X>-190.0</pos2X>
-    <pos2Y>70.0</pos2Y>
-  </connection>
-  <connection>
-    <pos1X>-360.0</pos1X>
-    <pos1Y>70.0</pos1Y>
-    <pos2X>-324.0</pos2X>
-    <pos2Y>70.0</pos2Y>
+    <pos1X>780.0</pos1X>
+    <pos1Y>-110.0</pos1Y>
+    <pos2X>846.0</pos2X>
+    <pos2Y>-110.0</pos2Y>
   </connection>
   <connection>
     <pos1X>-396.0</pos1X>
@@ -292,15 +297,51 @@
     <pos2Y>70.0</pos2Y>
   </connection>
   <connection>
-    <pos1X>-40.0</pos1X>
-    <pos1Y>70.0</pos1Y>
+    <pos1X>-26.0</pos1X>
+    <pos1Y>-130.0</pos1Y>
+    <pos2X>70.0</pos2X>
+    <pos2Y>-130.0</pos2Y>
+  </connection>
+  <connection>
+    <pos1X>-200.0</pos1X>
+    <pos1Y>110.0</pos1Y>
+    <pos2X>-174.0</pos2X>
+    <pos2Y>110.0</pos2Y>
+  </connection>
+  <connection>
+    <pos1X>-236.0</pos1X>
+    <pos1Y>190.0</pos1Y>
+    <pos2X>-200.0</pos2X>
+    <pos2Y>110.0</pos2Y>
+  </connection>
+  <connection>
+    <pos1X>-50.0</pos1X>
+    <pos1Y>90.0</pos1Y>
     <pos2X>-14.0</pos2X>
+    <pos2Y>90.0</pos2Y>
+  </connection>
+  <connection>
+    <pos1X>-86.0</pos1X>
+    <pos1Y>90.0</pos1Y>
+    <pos2X>-50.0</pos2X>
+    <pos2Y>90.0</pos2Y>
+  </connection>
+  <connection>
+    <pos1X>-200.0</pos1X>
+    <pos1Y>70.0</pos1Y>
+    <pos2X>-174.0</pos2X>
     <pos2Y>70.0</pos2Y>
   </connection>
   <connection>
-    <pos1X>-66.0</pos1X>
+    <pos1X>-236.0</pos1X>
     <pos1Y>70.0</pos1Y>
-    <pos2X>-40.0</pos2X>
+    <pos2X>-200.0</pos2X>
+    <pos2Y>70.0</pos2Y>
+  </connection>
+  <connection>
+    <pos1X>-360.0</pos1X>
+    <pos1Y>70.0</pos1Y>
+    <pos2X>-324.0</pos2X>
     <pos2Y>70.0</pos2Y>
   </connection>
   <connection>
@@ -338,12 +379,6 @@
     <pos1Y>80.0</pos1Y>
     <pos2X>420.0</pos2X>
     <pos2Y>-90.0</pos2Y>
-  </connection>
-  <connection>
-    <pos1X>-36.0</pos1X>
-    <pos1Y>-130.0</pos1Y>
-    <pos2X>70.0</pos2X>
-    <pos2Y>-130.0</pos2Y>
   </connection>
   <connection>
     <pos1X>341.0</pos1X>
@@ -407,15 +442,15 @@
   </connection>
   <connection>
     <pos1X>150.0</pos1X>
-    <pos1Y>70.0</pos1Y>
+    <pos1Y>90.0</pos1Y>
     <pos2X>150.0</pos2X>
     <pos2Y>40.0</pos2Y>
   </connection>
   <connection>
     <pos1X>74.0</pos1X>
-    <pos1Y>70.0</pos1Y>
+    <pos1Y>90.0</pos1Y>
     <pos2X>150.0</pos2X>
-    <pos2Y>70.0</pos2Y>
+    <pos2Y>90.0</pos2Y>
   </connection>
   <connection>
     <pos1X>524.0</pos1X>
@@ -433,12 +468,6 @@
     <pos1X>734.0</pos1X>
     <pos1Y>-110.0</pos1Y>
     <pos2X>780.0</pos2X>
-    <pos2Y>-110.0</pos2Y>
-  </connection>
-  <connection>
-    <pos1X>780.0</pos1X>
-    <pos1Y>-110.0</pos1Y>
-    <pos2X>826.0</pos2X>
     <pos2Y>-110.0</pos2Y>
   </connection>
   <connection>

@@ -225,15 +225,7 @@ def build_step_up(T1, T2, R1, R2):
     vals[0:N1]=R1
     vals[N1:N2]=R2
 
-    #plt.plot(Tbase,vals)
-    #plt.grid()
-    #plt.show()
-    np.savetxt('swingup.dat',vals)
-
 build_step_up(0.5,4,0.4,-0.4)
-
-Amp = 0.59
-F = 0.75
 
 Amp = 0.59
 F = 0.75
