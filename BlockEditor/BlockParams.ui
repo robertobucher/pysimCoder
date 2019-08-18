@@ -265,7 +265,7 @@ after</string>
      <enum>Qt::RightToLeft</enum>
     </property>
     <property name="text">
-     <string>Input Settable:     </string>
+     <string>Input settable:     </string>
     </property>
    </widget>
    <widget class="QCheckBox" name="ckboutsettable">
@@ -281,7 +281,7 @@ after</string>
      <enum>Qt::RightToLeft</enum>
     </property>
     <property name="text">
-     <string>OutputSettable:     </string>
+     <string>Output settable:     </string>
     </property>
    </widget>
   </widget>

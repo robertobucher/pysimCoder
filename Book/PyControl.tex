@@ -7,7 +7,7 @@ I prepared a VirtualBox disk image \cite{VIRTUALBOX} with a Debian distribution
 and all the required packages. VirtualBox is available for Windows, Linux, 
 OS X and Solaris. All the features described in this document are available.
 
-Please contact me via email to receive the link to the zipped file.
+Please contact me via email to receive the link to the files.
 
 \section{Linux}
 
@@ -27,13 +27,13 @@ from the SciPy download page~\cite{SCIPYDOWNLOAD}, and install them from a
 Linux 
 shell.
 
-Under Debian jessie we can use the apt manager to install the 
+Under Debian we can use the apt manager to install the 
 following packages:
 \begin{itemize}
-\item python-numpy (Vers. $\geq$ 1.8.2)
-\item python-scipy (Vers. $\geq$ 0.14)
+\item python-numpy
+\item python-scipy
 \item python-matplotlib 
-\item python-sympy (Vers. $\geq$ 0.7.5)
+\item python-sympy
 \item python-setuptools
 \item python-psutils
 \item jupyter
@@ -587,14 +587,11 @@ dt = 0.01
 
 \section{Conversions}
 
-The Python control system toolbox only implements conversion from continuous 
-time systems to discrete-time systems ( \textbf{c2d} ) with the methods 
+The Python control system toolbox only implements conversion from continuous time systems to discrete-time systems ( \textbf{c2d} ) with the methods 
 ``zoh'', ``tustin'' and ``matched''. No conversion from discrete to continuous 
 has been implemented yet.
 
-The supsictrl.ctr\_repl package implements both functions \textbf{c2d} and 
-\textbf{d2c} with the methods ``zoh', ''foh``, ''tustin`` and ''matched`` 
-(''matched`` is only implemented in c2d).
+The supsictrl.ctr\_repl package implements the function \textbf{d2c} with the methods ``zoh', ''foh``and ''tustin``.
 
 \begin{code}
 In [1]: from control import *
@@ -630,24 +627,22 @@ dt = 0.01
 \begin{code}
 In [1]: from control import *
 
-In [2]: from control.Matlab import c2d
+In [2]: from supsictrl.ctrl_repl import d2c
 
-In [3]: from supsictrl.ctrl_repl import d2c
+In [3]: g=tf(1,[1,1,1])
 
-In [4]: g=tf(1,[1,1,1])
+In [4]: gd =c2d(g,0.01)
 
-In [5]: gd =c2d(g,0.01)
+In [5]: g2=d2c(gd)
 
-In [6]: g2=d2c(gd)
-
-In [7]: print g
+In [6]: print g
 
      1
 -----------
 s^2 + s + 1
 
 
-In [8]: print g2
+In [7]: print g2
 
 1.729e-14 s + 1
 ---------------
@@ -811,11 +806,11 @@ In [4]: g = tf(1,[1,1,1])
 
 In [5]: gz=c2d(g,0.1)
 
-In [6]: t=arange(0,16,0.1)
+In [6]: t=np.arange(0,16,0.1)
 
 In [7]: t1,y = step_response(gz,t)
 
-In [8]: plt.step(t,y[0]) # transpose col matrix y[0]
+In [8]: plt.step(t,y) 
    ...: plt.grid()
    ...: plt.xlabel('t')
    ...: plt.ylabel('y')
@@ -834,11 +829,11 @@ In [4]: g = tf(1,[1,1,1])
 
 In [5]: gz=c2d(g,0.1)
 
-In [6]: t=arange(0,16,0.1)
+In [6]: t=np.arange(0,16,0.1)
 
 In [7]: y,t1 = step(gz,t)
 
-In [8]: plt.step(t,y[0])  # get first row from y matrix
+In [8]: plt.step(t,y) 
    ...: plt.grid()
    ...: plt.xlabel('t')
    ...: plt.ylabel('y')
@@ -1230,7 +1225,7 @@ In [1]: from control import *
 
 In [2]: g=tf(1,[1,2,3,0])
 
-In [3]: rlocus(g); grid()
+In [3]: rlocus(g);
 \end{lstlisting}
 
 or alternatively
@@ -1242,7 +1237,7 @@ In [2]: g=tf(1,[1,2,3,0])
 
 In [3]: k=logspace(-3,3,100)
 
-In [4]: root_locus(g,k); grid()
+In [4]: root_locus(g,k);
 \end{lstlisting}
 
 \end{minipage}%
@@ -1275,7 +1270,102 @@ More details about the Kane's method are available at~\cite{KANE1},
 In the next sections we present the modelling of 3 plants that we can find in 
 our laboratories and that are quite familiar to us.
 
-\section{Model of a DC motor}
+\section{Model of a DC motor (Lagrange method)} 
+\subsection{Plant}
+In this first example we model a DC servo motor with a current input in order 
+to find its state-space representation. The motor is characterized by a torque 
+constant $k_t$, an inertia (motor+load) $J$ and a friction constant $D_m$.
+
+The input of the plant is the current $I$ and the output is the position 
+$\varphi$. The rotation center is the point \textbf{O}, the main coordinates 
+system is \textbf{N} and we add a local reference frame \textbf{Nr} which 
+rotates with the load (angle $\varphi$ and speed $\omega$).
+
+\subsection{Modules and constants}
+\begin{code}
+In [1]: from sympy import symbols, Matrix,pi
+   ...: from sympy.physics.mechanics import *
+   ...: import numpy as np
+   ...: 
+   ...: # Modeling the system with Lagrange method
+   ...: 
+   ...: # Signals
+   ...: ph = dynamicsymbols('ph')    # motor angle
+   ...: w  = dynamicsymbols('ph', 1)     # motor rot. speed
+   ...: I  = dynamicsymbols('I')     # input current
+   ...: 
+   ...: # Constants
+   ...: Dm = symbols('Dm')           # friction
+   ...: M, J = symbols('M J')        # Mass and inertia
+   ...: t = symbols('t')             # time
+   ...: kt  = symbols('kt')          # torque constant
+   ...: 
+\end{code}
+
+\subsection{Reference frames}
+\begin{code}
+In [2]: # Reference frame for the motor and Load
+   ...: N = ReferenceFrame('N')
+   ...: 
+   ...: O = Point('O')		# center of rotation
+   ...: O.set_vel(N,0)
+   ...: 
+   ...: # Reference frames for the rotating disk
+   ...: Nr = N.orientnew('Nr', 'Axis',[ph, N.x])    # rotating reference (load)
+   ...: 
+\end{code}
+
+\subsection{Body and inertia of the load}
+\begin{code}
+In [3]: # Mechanics
+   ...: Io = J*outer(Nr.x, Nr.x)
+   ...: 
+   ...: InT = (Io, O)
+   ...: 
+   ...: B = RigidBody('B', O, Nr, M, InT)
+   ...: B.potential_energy = 0
+   ...: 
+\end{code}
+
+\subsection{Forces and torques}
+In order to find the dynamic model of the plant we need some other definitions, 
+in particular the relation between angle $\varphi$ and angular velocity 
+$\omega$, the forces and torques applied to the system and a vector that 
+contains the rigid bodies of the system.
+
+\begin{code}
+In [4]: # Forces and torques
+   ...: forces = [(Nr,(kt*I-Dm*w)*N.x)]
+\end{code}
+
+\subsection{Model}
+
+Using the Lagranges's method is now possible to find the dynamic matrices related to the plant.
+
+\begin{code}
+In [5]: # Lagrange model
+   ...: L = Lagrangian(N, B)    # Lagrange operator
+   ...: LM = LagrangesMethod(L, [ph], forcelist = forces, frame = N)
+   ...: LM.form_lagranges_equations()
+   ...: 
+   ...: # symbolically linearize about arbitrary equilibrium
+   ...: MM, linear_state_matrix, linear_input_matrix, inputs = LM.linearize(q_ind = [ph], qd_ind = [w])
+   ...: 
+\end{code}
+
+\subsection{State-space matrices}
+From the results of the Kane's model identification, we can now extract the 
+matrices $A$ and $B$ of the state-space representation.
+
+\begin{code}
+In [6]: print(linear_state_matrix)
+   ...: print(linear_input_matrix)
+   ...: 
+Matrix([[0, 1], [0, -Dm]])
+Matrix([[0], [kt]])
+\end{code}
+
+\section{Model of a DC motor (Kane method)} 
 \subsection{Plant}
 In this first example we model a DC servo motor with a current input in order 
 to find its state-space representation. The motor is characterized by a torque 
@@ -1398,7 +1488,8 @@ In [6]: print A
  [kt/J]]
 \end{code}
 
-\section{Model of the inverted pendulum}
+
+\section{Model of the inverted pendulum - Lagrange}
 
 The second example is represented by the classical inverted pendulum as shown 
 in figure~\ref{F9a}.
@@ -1420,6 +1511,122 @@ in figure~\ref{F9a}.
 \label{F9_a}
 \vspace{8mm}
 \end{figure}
+
+The global reference frame is \textbf{Nf} ($x$, $y$)
+The point \textbf{P} is the center of mass of the pendulum. The car is moving 
+with speed \textbf{v} and position \textbf{C}.
+The pole is rotating with the angle \textbf{th} and angular velocity 
+\textbf{w}, 
+In addition to the main coordinate frame \textbf{Nf} ($x$, $y$), we define a 
+local body-fixed frame to the pendulum \textbf{Npend} ($x_1$, $y_1$).
+
+\subsection{Modules and constants}
+\begin{code}
+In [1]: from sympy import symbols, Matrix, pi, cos, sin
+   ...: from sympy.physics.mechanics import *
+   ...: import numpy as np
+   ...: 
+   ...: # Modeling the system with Kane method
+   ...: 
+   ...: # Signals
+   ...: x, th  = dynamicsymbols('x th')
+   ...: v, w = dynamicsymbols('x th', 1)
+   ...: F = dynamicsymbols('F')
+   ...: d = symbols('d')
+   ...: 
+   ...: # Constants
+   ...: m, r = symbols('m r')
+   ...: M = symbols('M')
+   ...: g, t = symbols('g t')
+   ...: Ic = symbols('Ic')
+   ...: 
+\end{code}
+
+\subsection{Frames - Car and pendulum}
+\begin{code}
+In [2]: # Frames and Coord. system
+   ...: 
+   ...: # Car
+   ...: Nf = ReferenceFrame('Nf')
+   ...: C = Point('C')                         
+   ...: C.set_vel(Nf, v*Nf.x)
+   ...: Car = Particle('Car',C,M)
+   ...: 
+   ...: # Pendulum
+   ...: A = Nf.orientnew('A','Axis',[th,Nf.z])
+   ...: A.set_ang_vel(Nf,w*Nf.z)
+   ...: 
+   ...: P = C.locatenew('P',r*A.x)
+   ...: P.v2pt_theory(C,Nf,A)
+   ...: Pa = Particle('Pa', P, m)
+   ...: 
+\end{code}
+
+\subsection{Points, bodies, masses and inertias}
+\begin{code}
+In [3]: I = outer (Nf.z, Nf.z)
+   ...: Inertia_tuple = (Ic*I, P)
+   ...: Bp = RigidBody('Bp', P, A, m, Inertia_tuple)
+   ...: 
+   ...: Bp.potential_energy = m*g*r*sin(th)
+   ...: Car.potential_energy = 0
+   ...: 
+\end{code}
+
+\subsection{Forces, frictions and gravity}
+\begin{code}
+In [4]: # Forces and torques
+   ...: forces = [(C,F*Nf.x-d*v*Nf.x),(P,0*Nf.y)]
+   ...: 
+\end{code}
+
+\subsection{Final model and linearized state-space matrices}
+\begin{code}
+In [5]: # Lagrange operator
+   ...: L = Lagrangian(Nf, Car, Bp)
+   ...: 
+   ...: # Lagrange model
+   ...: LM = LagrangesMethod(L, [x, th], forcelist = forces, frame = Nf)
+   ...: LM.form_lagranges_equations()
+   ...: 
+   ...: # Equilibrium point
+   ...: eq_pt = [0.0, pi/2,0.0,0.0]
+   ...: eq_dict = dict(zip([x,th,v,w], eq_pt))
+   ...: 
+   ...: # symbolically linearize about arbitrary equilibrium
+   ...: MM, linear_state_matrix, linear_input_matrix, inputs = LM.linearize(q_ind = [x, th], qd_ind = [v, w])
+   ...: 
+   ...: f_p_lin = linear_state_matrix.subs(eq_dict)
+   ...: f_B_lin = linear_input_matrix.subs(eq_dict)
+   ...: 
+   ...: MM = MM.subs(eq_dict)
+   ...: 
+   ...: Atmp = MM.inv() * f_p_lin
+   ...: Btmp = MM.inv() * f_B_lin
+   ...: 
+\end{code}
+
+\begin{code}
+In [6]: Atmp
+Out[6]: 
+Matrix([
+[0,                                                  0,                                                     1, 0],
+[0,                                                  0,                                                     0, 1],
+[0,   g*m**2*r**2/(-m**2*r**2 + (Ic + m*r**2)*(M + m)), -d*(Ic + m*r**2)/(-m**2*r**2 + (Ic + m*r**2)*(M + m)), 0],
+[0, g*m*r*(M + m)/(-m**2*r**2 + (Ic + m*r**2)*(M + m)),           -d*m*r/(-m**2*r**2 + (Ic + m*r**2)*(M + m)), 0]])
+\end{code}
+
+\begin{code}
+In [7]: Btmp
+Out[7]: 
+Matrix([
+[                                                 0],
+[                                                 0],
+[(Ic + m*r**2)/(-m**2*r**2 + (Ic + m*r**2)*(M + m))],
+[          m*r/(-m**2*r**2 + (Ic + m*r**2)*(M + m))]])
+\end{code}
+
+\section{Model of the inverted pendulum - Kane}
 
 The global reference frame is \textbf{Nf} ($x$, $y$)
 The point \textbf{P} is the center of mass of the pendulum. The car is moving 
@@ -1554,7 +1761,7 @@ B=\left[\begin{matrix}0\\0\\\frac{Jc + m r^{2}}{Jc M + Jc m + M m
 r^{2}}\\\frac{m r}{Jc M + Jc m + M m r^{2}}\end{matrix}\right]
 $$
 
-\section{Model of the Ball-on-Wheel plant}
+\section{Model of the Ball-on-Wheel plant - Lagrange}
 
 A more complex plant is represented by the Ball-on-Wheel system of 
 figure~\ref{F9b}, where a ball must be maintened in the unstable equilibrium 
@@ -1571,6 +1778,173 @@ point on the top of a bike wheel.
 \caption{Ball-On-Wheel plant}
 \label{F9b}
 \end{figure}
+
+In this system we have 4 reference frames. The frame \textbf{N} is the main 
+reference frame, \textbf{N0} rotates with the line connecting the centers of 
+mass of the wheel (\textbf{O}) and of the ball (\textbf{CM2}), \textbf{N1} 
+($x_1$, $y_1$) rotates with the wheel and \textbf{N2} ($x_2$, $y_2$) is 
+body-fixed to the ball.
+
+The radius of the wheel and of the ball are respectively $R_1$ and $R_2$. The 
+non sliding condition is given by
+
+$$
+R_1 \cdot ph_0=R_1 \cdot ph_1 + R_2 \cdot ph_2
+$$
+
+The input of the system is represented by the torque $T$ applied to the wheel.
+
+\subsection{Modules and constants}
+\begin{code}
+In [1]: from sympy import symbols, Matrix, pi, sin, cos
+   ...: from sympy.physics.mechanics import *
+   ...: # Lagrange Model of the system
+   ...: # Index _b: angle between Wheel center and Ball CM
+   ...: # Index _w: Wheel
+   ...: # Index _roll: Ball
+   ...: 
+   ...: # Dynamic symbols
+   ...: phi_b, phi_w, phi_roll = dynamicsymbols('phi_b phi_w phi_roll')
+   ...: w_b, w_w = dynamicsymbols('phi_b phi_w', 1)
+   ...: w_roll = dynamicsymbols('w_roll')
+   ...: T = dynamicsymbols('T')
+   ...: 
+   ...: # Symbols
+   ...: J_w, J_b = symbols('J_w J_b')
+   ...: M_w, M_b = symbols('M_w M_b')
+   ...: R_w, R_b = symbols('R_w R_b')
+   ...: d_w     = symbols('d_w')
+   ...: g      = symbols('g')
+   ...: t      = symbols('t')
+   ...: 
+\end{code}
+
+\subsection{Reference frames}
+\begin{code}
+In [2]: # Mechanical system
+   ...: N = ReferenceFrame('N')
+   ...: 
+   ...: O = Point('O')
+   ...: O.set_vel(N,0)
+   ...: 
+   ...: # Roll conditions
+   ...: phi_roll = -(phi_w*R_w-phi_b*R_w)/R_b
+   ...: w_roll = phi_roll.diff(t)
+   ...: 
+   ...: # Rotating axes
+   ...: # Ball rotation
+   ...: # Wheel rotation
+   ...: # Ball position
+   ...: N_b = N.orientnew('N_b','Axis',[phi_b,N.y])
+   ...: N_w = N.orientnew('N_w','Axis',[phi_w,N.y])
+   ...: N_roll = N.orientnew('N_roll','Axis',[phi_roll,N.y])
+   ...: 
+   ...: N_w.set_ang_vel(N,w_w*N.y)
+   ...: N_roll.set_ang_vel(N,w_roll*N.y)
+   ...: N_b.set_ang_vel(N, w_b*N.y)
+   ...: 
+\end{code}
+
+\subsection{Centers of mass of the ball}
+\begin{code}
+In [3]: # Ball Center of mass
+   ...: CM2 = O.locatenew('CM2',(R_w+R_b)*N_b.z)
+   ...: CM2.v2pt_theory(O,N,N_b)
+   ...: 
+Out[3]: (R_b + R_w)*phi_b'*N_b.x
+\end{code}
+
+\subsection{Masses and inertias}
+\begin{code}
+In [4]: # Inertia
+   ...: Iy = outer(N.y,N.y)
+   ...: In1T = (J_w*Iy, O)       # Wheel
+   ...: In2T = (J_b*Iy, CM2)   # Ball
+   ...: 
+   ...: # Bodies
+   ...: B_w = RigidBody('B_w', O, N_w, M_w, In1T)
+   ...: B_r = RigidBody('B_r', CM2, N_roll, M_b, In2T)
+   ...: 
+   ...: B_r.potential_energy = (R_w+R_b)*M_b*g*sin(phi_b)
+   ...: B_w.potential_energy = 0
+   ...: 
+\end{code}
+
+\subsection{Forces and torques}
+\begin{code}
+In [5]: forces = [(N_roll, 0*N.y) , (N_w, T*N.y) ]
+\end{code}
+
+\subsection{Kane's model and linearized state-space matrices}
+\begin{code}
+In [6]: # Lagrange operator
+   ...: L = Lagrangian(N,  B_r,  B_w)
+   ...: 
+   ...: # Lagrange model
+   ...: LM = LagrangesMethod(L, [phi_b, phi_w], forcelist = forces,   frame = N)
+   ...: LM.form_lagranges_equations()
+   ...: 
+   ...: # Equilibrium point
+   ...: eq_pt = [pi/2, 0, 0, 0]
+   ...: eq_dict = dict(zip([phi_b, phi_w, w_b, w_w], eq_pt))
+   ...: 
+   ...: MM, linear_state_matrix, linear_input_matrix, inputs = LM.linearize(q_ind=[phi_b, phi_w], qd_ind = [w_b, w_w])
+   ...: 
+   ...: f_p_lin = linear_state_matrix.subs(eq_dict)
+   ...: f_B_lin = linear_input_matrix.subs(eq_dict)
+   ...: 
+   ...: MM = MM.subs(eq_dict)
+   ...: 
+   ...: Atmp = MM.inv() * f_p_lin
+   ...: Btmp = MM.inv() * f_B_lin
+   ...: 
+
+\end{code}
+
+\begin{code}
+In [7]: Atmp
+Out[7]: 
+Matrix([
+[                                                                                                                                       0, 0, 1, 0],
+[                                                                                                                                       0, 0, 0, 1],
+[M_b*g*(R_b + R_w)*(J_b*R_w**2/R_b**2 + J_w)/(-J_b**2*R_w**4/R_b**4 + (J_b*R_w**2/R_b**2 + J_w)*(J_b*R_w**2/R_b**2 + M_b*(R_b + R_w)**2)), 0, 0, 0],
+[      J_b*M_b*R_w**2*g*(R_b + R_w)/(R_b**2*(-J_b**2*R_w**4/R_b**4 + (J_b*R_w**2/R_b**2 + J_w)*(J_b*R_w**2/R_b**2 + M_b*(R_b + R_w)**2))), 0, 0, 0]])
+
+In [8]: Btmp
+Out[8]: 
+Matrix([
+[                                                                                                                                    0],
+[                                                                                                                                    0],
+[                     J_b*R_w**2/(R_b**2*(-J_b**2*R_w**4/R_b**4 + (J_b*R_w**2/R_b**2 + J_w)*(J_b*R_w**2/R_b**2 + M_b*(R_b + R_w)**2)))],
+[(J_b*R_w**2/R_b**2 + M_b*(R_b + R_w)**2)/(-J_b**2*R_w**4/R_b**4 + (J_b*R_w**2/R_b**2 + J_w)*(J_b*R_w**2/R_b**2 + M_b*(R_b + R_w)**2))]])
+\end{code}
+
+or as formula
+
+$$
+A=\left[\begin{smallmatrix}0 & 0 & 1 & 0\\0 & 0 & 0 & 1\\\frac{J_{2} M_{2} 
+R_{1}^{2} g}{J_{1} J_{2} R_{1} + J_{1} J_{2} R_{2} + J_{1} M_{2} R_{1} 
+R_{2}^{2} + J_{1} M_{2} R_{2}^{3} + J_{2} M_{2} R_{1}^{3} + J_{2} M_{2} 
+R_{1}^{2} R_{2}} & \frac{J_{2} M_{2} R_{1} R_{2} g}{J_{1} J_{2} R_{1} + J_{1} 
+J_{2} R_{2} + J_{1} M_{2} R_{1} R_{2}^{2} + J_{1} M_{2} R_{2}^{3} + J_{2} M_{2} 
+R_{1}^{3} + J_{2} M_{2} R_{1}^{2} R_{2}} & 0 & 0\\\frac{J_{1} M_{2} R_{1} R_{2} 
+g}{\left(R_{1} + R_{2}\right) \left(J_{1} J_{2} + J_{1} M_{2} R_{2}^{2} + J_{2} 
+M_{2} R_{1}^{2}\right)} & \frac{J_{1} M_{2} R_{2}^{2} g}{\left(R_{1} + 
+R_{2}\right) \left(J_{1} J_{2} + J_{1} M_{2} R_{2}^{2} + J_{2} M_{2} 
+R_{1}^{2}\right)} & 0 & 0\end{smallmatrix}\right]
+$$
+
+and
+
+$$
+B=\left[\begin{smallmatrix}0\\0\\\frac{M_{2}^{2} R_{1}^{2} 
+R_{2}^{2}}{\left(J_{1} + M_{2} R_{1}^{2}\right) \left(J_{1} J_{2} + J_{1} M_{2} 
+R_{2}^{2} + J_{2} M_{2} R_{1}^{2}\right)} + \frac{1}{J_{1} + M_{2} 
+R_{1}^{2}}\\- \frac{M_{2} R_{1} R_{2}}{J_{1} J_{2} + J_{1} M_{2} R_{2}^{2} + 
+J_{2} M_{2} R_{1}^{2}}\end{smallmatrix}\right]
+$$
+
+\section{Model of the Ball-on-Wheel plant - Kane}
 
 In this system we have 4 reference frames. The frame \textbf{N} is the main 
 reference frame, \textbf{N0} rotates with the line connecting the centers of 
@@ -1709,31 +2083,6 @@ Matrix([
 J2*M2*R1**2)]])
 \end{code}
 
-or as formula
-
-$$
-A=\left[\begin{smallmatrix}0 & 0 & 1 & 0\\0 & 0 & 0 & 1\\\frac{J_{2} M_{2} 
-R_{1}^{2} g}{J_{1} J_{2} R_{1} + J_{1} J_{2} R_{2} + J_{1} M_{2} R_{1} 
-R_{2}^{2} + J_{1} M_{2} R_{2}^{3} + J_{2} M_{2} R_{1}^{3} + J_{2} M_{2} 
-R_{1}^{2} R_{2}} & \frac{J_{2} M_{2} R_{1} R_{2} g}{J_{1} J_{2} R_{1} + J_{1} 
-J_{2} R_{2} + J_{1} M_{2} R_{1} R_{2}^{2} + J_{1} M_{2} R_{2}^{3} + J_{2} M_{2} 
-R_{1}^{3} + J_{2} M_{2} R_{1}^{2} R_{2}} & 0 & 0\\\frac{J_{1} M_{2} R_{1} R_{2} 
-g}{\left(R_{1} + R_{2}\right) \left(J_{1} J_{2} + J_{1} M_{2} R_{2}^{2} + J_{2} 
-M_{2} R_{1}^{2}\right)} & \frac{J_{1} M_{2} R_{2}^{2} g}{\left(R_{1} + 
-R_{2}\right) \left(J_{1} J_{2} + J_{1} M_{2} R_{2}^{2} + J_{2} M_{2} 
-R_{1}^{2}\right)} & 0 & 0\end{smallmatrix}\right]
-$$
-
-and
-
-$$
-B=\left[\begin{smallmatrix}0\\0\\\frac{M_{2}^{2} R_{1}^{2} 
-R_{2}^{2}}{\left(J_{1} + M_{2} R_{1}^{2}\right) \left(J_{1} J_{2} + J_{1} M_{2} 
-R_{2}^{2} + J_{2} M_{2} R_{1}^{2}\right)} + \frac{1}{J_{1} + M_{2} 
-R_{1}^{2}}\\- \frac{M_{2} R_{1} R_{2}}{J_{1} J_{2} + J_{1} M_{2} R_{2}^{2} + 
-J_{2} M_{2} R_{1}^{2}}\end{smallmatrix}\right]
-$$
-
 \chapter{Control design}
 
 \section{PI+Lead design example}
@@ -1838,25 +2187,22 @@ In [15]: Ti=0.15
 
 In [16]: Gpi=tf([Ti,1],[Ti,0])
 
-In [17: print "PI part is: ", Gpi
+In [17]: print "PI part is: ", Gpi
 PI part is:  
 0.15 s + 1
 ----------
   0.15 s
 
 
-In [18: figure()
-Out[18: <matplotlib.figure.Figure at 0x7f85b47eaa10>
+In [18]: figure()
+Out[18]: <matplotlib.figure.Figure at 0x7f85b47eaa10>
 
-In [19: bode(g,dB=True,linestyle='dashed');
+In [19]: bode(g,dB=True,linestyle='dashed');
 
-In [20 hold
-Out[20 <function matplotlib.pyplot.hold>
+In [20]: bode(Gpi*g,dB=True);
 
-In [21 bode(Gpi*g,dB=True);
-
-In [22: legend((['G(s)','Gpi(s)*G(s)']),prop={'size':10})
-Out[22: 
+In [21]: legend((['G(s)','Gpi(s)*G(s)']),prop={'size':10})
+Out[21]: 
 (<matplotlib.axes.AxesSubplot at 0x7f85b4806250>,
  <matplotlib.legend.Legend at 0x7f85b4303850>)
 \end{code}
@@ -1877,19 +2223,19 @@ Now we can get the $PM$ at the frequency $\omega_{gc}$ in order to calculate
 the additional phase contribution of the lead part of the controller.
 
 \begin{code}
-In [23: mag,phase,omega = bode(Gpi*g,[wgc],Plot=False)
+In [22]: mag,phase,omega = bode(Gpi*g,[wgc],Plot=False)
 
-In [24: ph = phase[0]
+In [23]: ph = phase[0]
 
-In [25: if ph>=0:
+In [24]: if ph>=0:
     ...:     ph = phase[0]-360;
     ...:     
 
-In [26: Phase = -180+desiredPM
+In [2]: Phase = -180+desiredPM
 
-In [27: dPM = Phase-ph
+In [26]: dPM = Phase-ph
 
-In [28: print "Additional phase from Lead part: ", dPM
+In [27]: print "Additional phase from Lead part: ", dPM
 Additional phase from Lead part:  61.4144232114
 \end{code}
 
@@ -1897,39 +2243,36 @@ Now it is possible to calculate the lead controller by finding the values of
 $\alpha$ and $T_D$.
 
 \begin{code}
-In [29]: # Lead part
+In [28]: # Lead part
 
-In [30]: dPMrad = dPM/180*pi
+In [29]: dPMrad = dPM/180*pi
 
-In [31]: alfa = (1+sin(dPMrad))/(1-sin(dPMrad));
+In [30]: alfa = (1+sin(dPMrad))/(1-sin(dPMrad));
 
-In [32]: print "Alpha is: ", alfa
+In [31]: print "Alpha is: ", alfa
 Alpha is:  15.4073552425
 
-In [33]: TD = 1/(sqrt(alfa)*wgc);
+In [32]: TD = 1/(sqrt(alfa)*wgc);
 
-In [34]: Glead = tf([alfa*TD,1],[TD,1])
+In [33]: Glead = tf([alfa*TD,1],[TD,1])
 
-In [35]: print "Lead part is: ", Glead
+In [34]: print "Lead part is: ", Glead
 Lead part is:  
  0.3925 s + 1
 -------------
 0.02548 s + 1
 
 
-In [36]: figure()
-Out[36]: <matplotlib.figure.Figure at 0x7f85b43462d0>
+In [35]: figure()
+Out[35]: <matplotlib.figure.Figure at 0x7f85b43462d0>
 
-In [37]: bode(g,dB=True,linestyle='dashed');
+In [36]: bode(g,dB=True,linestyle='dashed');
 
-In [38]: hold
-Out[38]: <function matplotlib.pyplot.hold>
+In [37]: bode(Gpi*Glead*g, dB=True);
 
-In [39]: bode(Gpi*Glead*g, dB=True);
-
-In [40]: 
+In [38]: 
 legend((['G(s)','Gpi(s)*G(s)','Gpi(s)*GLead(s)*G(s)']),prop={'size':10})
-Out[40]: 
+Out[38]: 
 (<matplotlib.axes.AxesSubplot at 0x7f85b43736d0>,
  <matplotlib.legend.Legend at 0x7f85b3b1f450>)
 \end{code}
@@ -1951,32 +2294,29 @@ the bode gain plot in order to obtain the required crossover frequency
 $\omega_{gc}$.
 
 \begin{code}
-In [41]: mag,phase,omega = bode(Gpi*Glead*g,[wgc],Plot=False)
+In [39]: mag,phase,omega = bode(Gpi*Glead*g,[wgc],Plot=False)
 
-In [42]: print "Phase at wgc is: ", phase[0]
+In [40]: print "Phase at wgc is: ", phase[0]
 Phase at wgc is:  -120.0
 
-In [43]: K=1/mag[0]
+In [41]: K=1/mag[0]
 
-In [44]: print "Gain to have MAG at gwc 0dB: ", K
+In [42]: print "Gain to have MAG at gwc 0dB: ", K
 Gain to have MAG at gwc 0dB:  23.8177769548
 
-In [45]: figure()
-Out[45]: <matplotlib.figure.Figure at 0x7f85b3a703d0>
+In [43]: figure()
+Out[43]: <matplotlib.figure.Figure at 0x7f85b3a703d0>
 
-In [46]: bode(g,dB=True,linestyle='dashed');
+In [44]: bode(g,dB=True,linestyle='dashed');
 
-In [47]: hold
-Out[47]: <function matplotlib.pyplot.hold>
+In [45]: bode(Gpi*Glead*g, dB=True,linestyle='-.');
 
-In [48]: bode(Gpi*Glead*g, dB=True,linestyle='-.');
+In [46]: bode(K*Gpi*Glead*g, dB=True);
 
-In [49]: bode(K*Gpi*Glead*g, dB=True);
-
-In [50]: 
+In [47]: 
 legend((['G(s)','Gpi(s)*G(s)','Gpi(s)*GLead(s)*G(s)',
 'K*Gpi(s)*GLead(s)*G(s)']),prop={'size':10})
-Out[50]: 
+Out[47]: 
 (<matplotlib.axes.AxesSubplot at 0x7f85b3a76690>,
  <matplotlib.legend.Legend at 0x7f85b33e6f90>)
 \end{code}
@@ -1997,35 +2337,35 @@ and K*Gpi*GLead*G}
 Now it is possible to simulate the controlled system after closing the loop.
 
 \begin{code}
-In [51]: Contr = K*Gpi*Glead
+In [48]: Contr = K*Gpi*Glead
 
-In [52]: print "Full controller: ", Contr
+In [49]: print "Full controller: ", Contr
 Full controller:  
 1.402 s^2 + 12.92 s + 23.82
 ---------------------------
    0.003821 s^2 + 0.15 s
 
-In [53]: mag,phase,omega = bode(K*Gpi*Glead*g,[wgc],Plot=False)
+In [50]: mag,phase,omega = bode(K*Gpi*Glead*g,[wgc],Plot=False)
 
-In [54]: print "Data at wgc - wgc: ", omega[0], "Magnitude: ",mag[0], "Phase: 
+In [51]: print "Data at wgc - wgc: ", omega[0], "Magnitude: ",mag[0], "Phase: 
 ",phase[0]
 Data at wgc - wgc:  10 Magnitude:  1.0 Phase:  -120.0
 
-In [55]: gt=feedback(K*Gpi*Glead*g,1)
+In [52]: gt=feedback(K*Gpi*Glead*g,1)
 
-In [56]: t=linspace(0,1.5,300)
+In [53]: t=linspace(0,1.5,300)
 
-In [57]: y,t = step(gt,t)
+In [54]: y,t = step(gt,t)
 
-In [58]: figure()
-Out[58]: <matplotlib.figure.Figure at 0x7f85b3514290>
+In [55]: figure()
+Out[55]: <matplotlib.figure.Figure at 0x7f85b3514290>
 
-In [59]: plot(t,y), xlabel('t'), ylabel('y'), title('Step response of the 
+In [56]: plot(t,y), xlabel('t'), ylabel('y'), title('Step response of the 
 controlled plant')
-Out[59]: 
+Out[56]: 
 ([<matplotlib.lines.Line2D at 0x7f85b34252d0>],
 
-In [60]: grid()
+In [57]: grid()
 \end{code}
 
 The simulation of the controlled plant with a step input is shown in 
@@ -2167,7 +2507,7 @@ For the state controller design we need to model our motor in the state-space
 form. We define the continuous-state and the discrete-state space model
 
 \begin{code}
-In [24]: # Design Controller Motor 1
+In [24]: # Controller Design Motor 1
 
 In [25]: a=[[0,1],[0,-Dm/Jm]]
 
@@ -2475,7 +2815,8 @@ The parameters in the window represent:
 \item [Function] is the name of the ``.py'' block which translates the block into the RCPBlk class objects (see code generation)
 \item [Inputs]: number of the input ports
 \item [Outputs]: number of the output ports
-\item [Settable]is a flag which indicates if the numer of ports can be changed or not
+\item [input settable]is a flag which indicates if the number of input ports can be changed or not
+\item [output settable]is a flag which indicates if the number of output ports can be changed or not
 \item [Bottom window] is a grid which contains the parameters of the block (Label+default value)
 \end{description}
 
@@ -2624,7 +2965,7 @@ The file is defined as a Python dictionary:
 
 \scriptsize
 \begin{verbatim}
-{"lib": "math", "name": "Sum", "ip": 2, "op": 1, "st": 1, "icon": "SUM", "params": "sumBlk|Gains: [1,-1]"}
+{"lib": "math", "name": "Sum", "ip": 2, "op": 1, "stin": 1, "stout": 0, "icon": "SUM", "params": "sumBlk|Gains: [1,-1]"}
 \end{verbatim}
 \normalsize
 
@@ -2636,7 +2977,8 @@ using the following fields:
 \item [``name''] the default name of the block
 \item [``ip''] number of inputs
 \item [``op''] number of outputs
-\item [``st''] flag which indicates if the number of I/O can be modified
+\item [``stin''] flag which indicates if the number of inputs can be modified
+\item [``stout''] flag which indicates if the number of outputs can be modified
 \item [``icon'']the name of the ``.svg'' file with the icon of the block
 \item [``param''] the parameters of the block
 \end{description}
@@ -2730,7 +3072,7 @@ the following infos
 
 \tiny
 \begin{verbatim}
-{"lib": "input", "name": "PulseGenerator", "ip": 0, "op": 1, "st": 0, "icon": 
+{"lib": "input", "name": "PulseGenerator", "ip": 0, "op": 1, "stin": 0, "stout"; 0, "icon": 
 "SQUARE", "params": "squareBlk|Amplitude: 1|Period: 4|Width: 2|Bias: 0|Delay: 
 0"}
 \end{verbatim}
