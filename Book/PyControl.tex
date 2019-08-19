@@ -1875,7 +1875,7 @@ In [4]: # Inertia
 In [5]: forces = [(N_roll, 0*N.y) , (N_w, T*N.y) ]
 \end{code}
 
-\subsection{Kane's model and linearized state-space matrices}
+\subsection{Lagrange's model and linearized state-space matrices}
 \begin{code}
 In [6]: # Lagrange operator
    ...: L = Lagrangian(N,  B_r,  B_w)
@@ -2880,7 +2880,8 @@ clicking with the right mouse button a popup menu is opened with the following
 commands:
 
 \begin{description}
-\item[Delete conncetion] deletes the pointed connection
+\item[Start connection] Insert a node and start a new connection
+\item[Delete connection] deletes the pointed connection
 \item [Insert node] inserts a new node on the connection. This is needed for 
 examples if we have to draw a new connection.
 \end{description}
@@ -3414,6 +3415,46 @@ Sympy can deliver a symbolic description of the system and through a python
 \textit{dictionary} it is possible to easily obtain the numerical matrices of 
 the state-space representation of the plant.
 
+\begin{code}
+In [1]: # Real plants parameters
+   ...: # Motor 1
+   ...: jm1 = 0.0000085  # inertia [kg*m2]
+   ...: kt1 = 0.0000382  # Torque constant
+   ...: d1 = 0.0002953  # Damp
+   ...: 
+   ...: # Last motor 1
+   ...: rho_ac = 7900  # density [g/m3]
+   ...: rv1 = 0.065    # radius [m] 
+   ...: hv1 = 0.01     # thickness [m]
+   ...: mv1 = ((rho_ac*(rv1**2))*np.pi)*hv1   # mass [kg]
+   ...: jv1 = (mv1*(rv1**2))/2   # inertia [kg*m2]
+   ...: J1 = jv1+jm1   # total inertia[kg*m2]
+   ...: 
+\end{code}
+
+\begin{code}
+In [2]: # Motor 2
+   ...: jm2 = 0.000003   # inertia [kg*m2]
+   ...: kt2 = 0.0000205  # Torque constant
+   ...: d2 = 0.0004001 # damp
+   ...: 
+   ...: # Last motor 2
+   ...: rho_ac = 7900   # density [kg/m3]
+   ...: rv2 = 0.065     # radius [m] 
+   ...: hv2 = 0.01      # thickness [m]
+   ...: mv2 = ((rho_ac*(rv2**2))*np.pi)*hv2   # mass [kg]
+   ...: jv2 = (mv2*(rv2**2))/2              # inertia [kg*m2]
+   ...: J2 = jv2+jm2                   # total inertia [km*m2]
+   ...: 
+\end{code}
+
+\begin{code}
+In [3]: # Spring         
+   ...: d = 0.0027836   # damp
+   ...: c = 0.4797954   # spring factor
+   ...: 
+\end{code}
+ 
 \begin{code}
 
 In [4]: A
