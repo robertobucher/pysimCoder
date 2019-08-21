@@ -1283,7 +1283,7 @@ rotates with the load (angle $\varphi$ and speed $\omega$).
 
 \subsection{Modules and constants}
 \begin{code}
-In [1]: from sympy import symbols, Matrix,pi
+In [1]: from sympy import symbols, Matrix, pi
    ...: from sympy.physics.mechanics import *
    ...: import numpy as np
    ...: 
@@ -1298,7 +1298,7 @@ In [1]: from sympy import symbols, Matrix,pi
    ...: Dm = symbols('Dm')           # friction
    ...: M, J = symbols('M J')        # Mass and inertia
    ...: t = symbols('t')             # time
-   ...: kt  = symbols('kt')          # torque constant
+   ...: kt  = symbols('kt')
    ...: 
 \end{code}
 
@@ -1312,18 +1312,19 @@ In [2]: # Reference frame for the motor and Load
    ...: 
    ...: # Reference frames for the rotating disk
    ...: Nr = N.orientnew('Nr', 'Axis',[ph, N.x])    # rotating reference (load)
+   ...: Nr.set_ang_vel(N,w*N.x)
    ...: 
 \end{code}
 
 \subsection{Body and inertia of the load}
 \begin{code}
 In [3]: # Mechanics
-   ...: Io = J*outer(Nr.x, Nr.x)
+   ...: Io = outer(Nr.x, Nr.x)
    ...: 
-   ...: InT = (Io, O)
+   ...: InT = (J*Io, O)
    ...: 
-   ...: B = RigidBody('B', O, Nr, M, InT)
-   ...: B.potential_energy = 0
+   ...: Last = RigidBody('Last', O, Nr, M, InT)
+   ...: Last.potential_energy = 0
    ...: 
 \end{code}
 
@@ -1344,7 +1345,7 @@ Using the Lagranges's method is now possible to find the dynamic matrices relate
 
 \begin{code}
 In [5]: # Lagrange model
-   ...: L = Lagrangian(N, B)    # Lagrange operator
+   ...: L = Lagrangian(N, Last)    # Lagrange operator
    ...: LM = LagrangesMethod(L, [ph], forcelist = forces, frame = N)
    ...: LM.form_lagranges_equations()
    ...: 
@@ -1358,11 +1359,14 @@ From the results of the Kane's model identification, we can now extract the
 matrices $A$ and $B$ of the state-space representation.
 
 \begin{code}
-In [6]: print(linear_state_matrix)
-   ...: print(linear_input_matrix)
+In [6]: A = MM.inv() * linear_state_matrix
+   ...: B = MM.inv() * linear_input_matrix
    ...: 
-Matrix([[0, 1], [0, -Dm]])
-Matrix([[0], [kt]])
+   ...: print(A)
+   ...: print(B)
+   ...: 
+Matrix([[0, 1], [0, -Dm/J]])
+Matrix([[0], [kt/J]])
 \end{code}
 
 \section{Model of a DC motor (Kane method)} 
@@ -2627,7 +2631,7 @@ figure~\ref{F16}.
 \label{F16}
 \end{figure}
 
-It is not possible to simulate the resulting system in Python because of:
+It is not possible to simulate the resulting system in a Python shell because of:
 
 \begin{itemize}
 \item The controller is discrete and the plant is continuous. At present it is 
@@ -2642,7 +2646,10 @@ output from a single input.
 saturation in the final system).
 \end{itemize}
 
+A possible method for the simulation of hybrid systems is described in chapter~\ref{ch:hybsim}.
+
 \chapter{Hybrid simulation and code generation}
+\label{ch:hybsim}
 
 \section{Basics}
 
@@ -2837,8 +2844,66 @@ These informations are used to generate the ``.py'' which can be modified and sa
 
 The ``.py'' file must be moved in the folder ``resources/blocks/rcpBlk'', the ``*.c* file must be edited and stored under ''CodeGen/devices``.
 
-\subsection{Personalize the most used blocks}
+\section{Special libraries and blocks}
+
+\subsection{The ''tab`` of the library}
+
+All the blocks are available in different ''tabs`` on the left of the library panel.
+
+\subsubsection{The common tab - Personalize the most used blocks}
 A special file ``common.blks'' is defined in the ``resources/block/block'' folder. This file contains a list of blocks, that the user can modify to have its own most used blocks. The blocks are shown in the library both in the ``common'' tab and in the specific tab.
+
+\subsubsection{The input tab}
+Different signals are available as input signals: Step, Pulse generator, Sinus signal, Const value. 
+
+The ``Ext data'' block, in particular, allows to get the signal values from a file (more input signals are possible). The signals are periodical repeated.
+
+\subsubsection{The output tab}
+Here the user can find different output blocks, for plotting, display or save signal values. The ``RT Plot'' block shows the signals in real time during the execution of the generated application.
+
+Another ``strange'' block is represented by the ``NULL'' block, which is used to collect signals from outputs that are not used in the simulation or in the real time application.
+
+\subsubsection{The linear tab}
+This tab contains the block representing dynamic systems. A dynamic system can be represented by a transfer function or by a state space representation, both in continous (LTI\_continous) and in discrete (LTI\_discrete) time.
+
+\subsubsection{The nonlinear tab}
+Non linearity are available as block in this tab. 3 particular blocks have been implemented:
+
+\begin{description}
+\item[Switch] switches from input 1 to input 2 depending on the value on input 3 and the compare condition given in the block parameters. The ``Persistent'' value disable the possibility to change back from one input to the other
+\item[Generic\_C\_Block] is used for specific functions not already implemented in the available list of blocks. It is possible to program these functions in C. The skeleton of the function can be generated using the ``gen\_pydev'' script.
+\item[FMU] FMI defines a standardized interface to be used in computer simulations to develop complex cyber-physical systems. Using this block it is possible to integrate in the block diagram FMI for Cosimulation impemented as FMU 2.0. At present it is not possible to use this block for FMI 1.0 and for FMU saved as ``model exchange''.
+\end{description}
+
+\subsubsection{The math tab}
+The blocks here implement some mathematical functions, linear and nonlinear.
+
+\subsubsection{The socket tab}
+The blocks here can be used to perform communication using UDP or UNIX sockets.
+
+\subsubsection{The can Faulhaber 3XXX tab}
+The blocks here impement the functions related to the MCDC 3002 S and the MCBL 3002 S motion controllers with can interface from Faulhaber.
+
+\subsubsection{The can Faulhaber 5XXX tab}
+The blocks here impement the functions related to the MC 5004, theMC 5005 and the MC 5010 with can interface from Faulhaber.
+
+\subsubsection{The can Maxon tab}
+The blocks here implement the functions related with the motion controllers (in particular the EPOS controllers) with can bus from Maxon Motor.
+
+\subsubsection{The can generic tab}
+Some generic can blocks are available here.
+
+\subsubsection{The COMEDI tab}
+Here the user can find blocks for the Linux control and measurement device interface.
+
+\subsubsection{The Raspberry tab}
+The pysimCoder application can generate code for the Raspberry PI platform. Here the user can find some particular blocks for specific functions (IMU platform, PWM etc.)
+
+\subsubsection{The Route tab}
+The MUX and DEMUX blocks in this tab are only defined for future works. \textbf{At present, thay should be not used!}
+
+\subsubsection{The Digilent tab}
+The blocks here can be used together with the Digilent Analog 2 USB oscilloscope.
 
 \section{The editor window}
 
