@@ -17,10 +17,10 @@ def getXMLindex(file,ref):
     return ind
 
 def FmuBlk(*args):
-    if len(args) == 7:
-        pin, pout, IN_ref, OUT_ref, file, dt, ft = args
-    elif len(args) == 6:
-        pout, IN_ref, OUT_ref, file, dt, ft = args
+    if len(args) == 8:
+        pin, pout, IN_ref, OUT_ref, file, ts, dt, ft = args
+    elif len(args) == 7:
+        pout, IN_ref, OUT_ref, file, ts, dt, ft = args
         pin = []
     else:
          raise ValueError("Not enough arguments received!")
@@ -60,5 +60,5 @@ def FmuBlk(*args):
 
     system('rm -fr ' + name)
             
-    blk = RCPblk('FMUinterface',pin,pout,[0,0],ft,[dt],intPar, file)
+    blk = RCPblk('FMUinterface',pin,pout,[0,0],ft,[ts, dt],intPar, file)
     return blk

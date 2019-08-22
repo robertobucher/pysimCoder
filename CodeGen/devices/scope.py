@@ -17,7 +17,7 @@ DOUBLE_SIZE = 8
 PACKET_LEN = NIN * PACKET_NUM * DOUBLE_SIZE
 PLOT_LINE_COLORS = ['y', 'g', 'r', 'b', 'c', 'm', 'k', 'w']
 PLOT_WINDOM_SIZE = (1000, 600)
-TIMER_PERIOD = 50
+TIMER_PERIOD = 20
 
 # connect to model
 sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)

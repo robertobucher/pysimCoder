@@ -101,15 +101,16 @@ static void inout(python_block *block)
   int len_in = block->nin;
   int len_out = block->nout;
   
-  double t;
-  double dt = realPar[0];
+  double ts = realPar[0];;
+  double dt = realPar[1];
   double *u;
   double *y;
   
   struct fmustruct *strFMU =  (struct fmustruct *) block->ptrPar;
   fmi2Component  c = strFMU->c;
 
-  t = get_run_time();
+  double t = get_run_time();
+  double tend = t + ts;
  
   /* Update the outputs */
   ret = strFMU->fmu->getReal(c, &intPar[2+len_in], len_out, out);
@@ -132,9 +133,12 @@ static void inout(python_block *block)
   
   /* Perform the integration step */
   do{
-    ret = strFMU->fmu->doStep(c, t, dt, fmi2True);
-  }while(ret!=fmi2OK);
-  
+    t +=dt;
+    do{
+      ret = strFMU->fmu->doStep(c, t, dt, fmi2True);
+    }while(ret!=fmi2OK);
+    t += dt;
+  }while(t<tend);
 }
 
 static void end(python_block *block)
