@@ -191,9 +191,9 @@ def genCode(model, Tsamp, blocks, rkstep = 10):
         blk = Blocks[n]
         strLn = "  " + blk.fcn + "(INIT, &block_" + model + "[" + str(n) + "]);\n"
         f.write(strLn)
-    f.write("\n")
+    f.write("}\n")
 
-     f.write("/* ISR function */\n\n")
+    f.write("/* ISR function */\n\n")
     strLn = "int " + model + "_isr(double t)\n"
     strLn += "{\n"
     f.write(strLn)
