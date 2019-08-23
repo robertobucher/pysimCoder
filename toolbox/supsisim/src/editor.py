@@ -14,6 +14,7 @@ IDLE = 0
 LEFTMOUSEPRESSED = 1
 ITEMSELECTED = 2
 DRAWFROMOUTPORT = 3
+MOVE_CONNECTION = 4
 
 MOUSEMOVE = 0
 LEFTMOUSEPRESSED = 1
@@ -50,8 +51,10 @@ class Editor(QtCore.QObject):
         deleteBlkAction.triggered.connect(self.deleteBlock)
 
         self.subMenuNode = QMenu()
+        nodeMoveAction = self.subMenuNode.addAction('Move node')
         nodeDelAction = self.subMenuNode.addAction('Delete node')
         nodeBindAction = self.subMenuNode.addAction('Bind node')
+        nodeMoveAction.triggered.connect(self.moveNode)
         nodeDelAction.triggered.connect(self.deleteNode)
         nodeBindAction.triggered.connect(self.bindNode)
         
@@ -79,11 +82,11 @@ class Editor(QtCore.QObject):
         # KEY_DEL                            5
         # KEY_ESC                            6
 
-
         self.Fun = [[self.P00, self.P01, self.P02, self.PDM, self.P03, self.P04, self.P05],
                         [self.P06, self.PDM, self.PDM, self.P07, self.PDM, self.PDM, self.PDM],
                         [self.P12, self.P01, self.P02, self.P11, self.P03, self.P04, self.P05],
-                        [self.P10, self.P08, self.P09, self.PDM, self.PDM, self.PDM, self.P09]]
+                        [self.P10, self.P08, self.P09, self.PDM, self.PDM, self.PDM, self.P09],
+                        [self.P13, self.PDM, self.P05, self.P14, self.PDM, self.PDM, self.P05]]
                 
     def parBlock(self):
         self.scene.DgmToUndo()
@@ -177,6 +180,10 @@ class Editor(QtCore.QObject):
                 pt = QtCore.QPointF(p1.x(),p2.y())            
         return pt
 
+    def moveNode(self):
+        self.scene.DgmToUndo()
+        self.state = MOVE_CONNECTION
+    
     def deleteNode(self):
         self.scene.DgmToUndo()
         self.scene.item.remove()
@@ -508,7 +515,19 @@ class Editor(QtCore.QObject):
     def P12(self, obj, event):
         item = self.itemAt(event.scenePos())
         self.setMouseInitDraw(item)
-                 
+                    
+    def P13(self, obj, event):
+        if isinstance(self.scene.item,Node):
+            self.scene.item.setPos(event.scenePos())
+        else:
+            print('Connection')
+                    
+    def P14(self, obj, event):
+        if isinstance(self.scene.item,Node):
+            self.state = IDLE            
+        else:
+            print('Connection')
+                  
     def eventFilter(self, obj, event):
         ev = -1
         if event.type() ==  QtCore.QEvent.GraphicsSceneMouseMove:

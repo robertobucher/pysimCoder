@@ -193,20 +193,7 @@ def genCode(model, Tsamp, blocks, rkstep = 10):
         f.write(strLn)
     f.write("\n")
 
-    for n in range(0,N):
-        blk = Blocks[n]
-        strLn = "  " + blk.fcn + "(OUT, &block_" + model + "[" + str(n) + "]);\n"
-#        f.write(strLn)
-    f.write("\n")
-
-    for n in range(0,N):
-        blk = Blocks[n]
-        if (blk.nx[1] != 0):
-            strLn = "  " + blk.fcn + "(STUPD, &block_" + model + "[" + str(n) + "]);\n"
-            f.write(strLn)
-    f.write("}\n\n")
-
-    f.write("/* ISR function */\n\n")
+     f.write("/* ISR function */\n\n")
     strLn = "int " + model + "_isr(double t)\n"
     strLn += "{\n"
     f.write(strLn)
