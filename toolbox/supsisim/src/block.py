@@ -148,9 +148,6 @@ class Block(QGraphicsPathItem):
             self.setTransform(QTransform.fromScale(-1, 1))
         else:
             self.setTransform(QTransform.fromScale(1, 1))
-        for p in self.ports():
-            p.setFlip()
-        #self.setIcon()
         self.flipLabel()
 
     def setLabel(self, p):
