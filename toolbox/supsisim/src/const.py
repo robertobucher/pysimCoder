@@ -1,7 +1,7 @@
 import os
 
 GRID = 10
-PW = 8
+PW = 6
 
 BWmin = 80
 BHmin = 60

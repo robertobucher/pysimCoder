@@ -73,8 +73,9 @@ class InPort(Port):
     
     def setup(self):
         self.setPen(self.line_color)
-        self.setBrush(self.fill_color)
-        self.p.addRect(-PW/2, -PW/2, PW, PW)
+        self.p.moveTo(-PW, -PW)
+        self.p.lineTo(0.0,0.0)
+        self.p.lineTo(-PW, PW)             
         self.setPath(self.p)
         self.setFlag(QGraphicsItem.ItemSendsScenePositionChanges)
 
@@ -92,8 +93,9 @@ class OutPort(Port):
     
     def setup(self):
         self.setPen(self.line_color)
-        self.setBrush(self.fill_color)
-        self.p.addEllipse(-PW/2, -PW/2, PW, PW)
+        self.p.moveTo(0.0, -PW)
+        self.p.lineTo(PW,0.0)
+        self.p.lineTo(0.0, PW)
         self.setPath(self.p)
         self.setFlag(QGraphicsItem.ItemSendsScenePositionChanges)
          

@@ -76,7 +76,7 @@ class Block(QGraphicsPathItem):
         pos = -PD*(self.inp-1)/2
         port = InPort(self, self.scene)
         port.block = self
-        xpos = -(self.w+PW)/2
+        xpos = -(self.w)/2
         port.setPos(xpos, pos+n*PD)
         return port
 
@@ -84,7 +84,7 @@ class Block(QGraphicsPathItem):
         pos = -PD*(self.outp-1)/2
         port = OutPort(self, self.scene)
         port.block = self
-        xpos = (self.w+PW)/2
+        xpos = (self.w)/2
         port.setPos(xpos, pos+n*PD)
         return port
 
