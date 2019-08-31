@@ -144,6 +144,20 @@ skeleton program</string>
      </rect>
     </property>
    </widget>
+   <widget class="QPushButton" name="btnGenHelp">
+    <property name="geometry">
+     <rect>
+      <x>590</x>
+      <y>90</y>
+      <width>161</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Generate
+Help skeleton</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
