@@ -73,6 +73,7 @@ class InPort(Port):
     
     def setup(self):
         self.setPen(self.line_color)
+        self.setBrush(self.fill_color)
         self.p.moveTo(-PW, -PW)
         self.p.lineTo(0.0,0.0)
         self.p.lineTo(-PW, PW)             
@@ -93,6 +94,7 @@ class OutPort(Port):
     
     def setup(self):
         self.setPen(self.line_color)
+        self.setBrush(self.fill_color)
         self.p.moveTo(0.0, -PW)
         self.p.lineTo(PW,0.0)
         self.p.lineTo(0.0, PW)

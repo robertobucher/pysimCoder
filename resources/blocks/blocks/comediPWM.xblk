@@ -1,0 +1,1 @@
+{"lib": "comedi", "name": "PWM", "ip": 1, "op": 0, "stin": 0, "stout": 0, "icon": "PWM", "params": "comediPWMBlk|Device: '/dev/comedi0'|Channel: 0|Prescaler: 0|Output pin: 0"}
