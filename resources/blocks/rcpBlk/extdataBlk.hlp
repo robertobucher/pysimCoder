@@ -1,0 +1,8 @@
+This block implements input signals read from an externel file.
+
+The data are put repetively to the out as periodic signal.
+
+Parameters:
+Channels: number of signals in output
+Data lenght
+Filename (the values are stored in column without the time)

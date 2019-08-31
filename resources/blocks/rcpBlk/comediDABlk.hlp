@@ -1,0 +1,4 @@
+Implementation of a COMEDI Digital to Analog interface
+
+Parameters:
+Device, channel and range (card specific!)

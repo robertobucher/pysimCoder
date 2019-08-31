@@ -1,0 +1,5 @@
+This block implements a Unix Socket Server, which can receive signals from a client and put them into the block diagram.
+
+Parameters:
+Socket: the socket name
+Defaul output: the output before arriving of data

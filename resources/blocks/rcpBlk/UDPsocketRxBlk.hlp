@@ -1,0 +1,5 @@
+This block implements a UDP socket, which can receive signals from a client and put them into the block diagram.
+
+Parameters:
+IP address of sender (or "0.0.0.0" for all)
+Port

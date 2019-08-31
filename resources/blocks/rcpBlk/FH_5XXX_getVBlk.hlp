@@ -1,0 +1,3 @@
+This block implements the speed input interface of a MC5XXX Faulhaber motion controller.
+
+In the Block diagram shoud be present the FH5XXX_INIT block!

@@ -1,0 +1,3 @@
+Tis block can be used to initialize a generic input after a given time.
+
+The block put in output the default value till reaching the "trigger time" and then put the difference between input signal and offset.

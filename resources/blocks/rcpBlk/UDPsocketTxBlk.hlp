@@ -1,0 +1,5 @@
+This Block implements a UDP sender
+
+Parameters
+IP address of the receiver
+Port

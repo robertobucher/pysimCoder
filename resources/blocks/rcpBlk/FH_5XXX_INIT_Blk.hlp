@@ -1,0 +1,6 @@
+This file implements the initialisation of a MC5XXX Faulhaber motion controllers.
+
+Parameters:
+Device ID
+Controllers Values (if "0" -> no change of the internal saved parameters)
+Flag for encoder reset

@@ -1,7 +1,7 @@
 #import sys
 
-from pyqt5 import QDialog, QGridLayout, QLabel, QLineEdit, QPushButton, QListWidget, QtCore
-from supsisim.const import pyrun
+from pyqt5 import QDialog, QGridLayout, QLabel, QLineEdit, QPushButton, QListWidget, QtCore, QMessageBox
+from supsisim.const import pyrun, respath
 import subprocess
 
 class BlkDlg(QDialog):
@@ -23,18 +23,35 @@ class BlkDlg(QDialog):
         
         self.pbOK = QPushButton('OK')
         self.pbCANCEL = QPushButton('CANCEL')
-        grid.addWidget(self.pbOK,N,0)
-        grid.addWidget(self.pbCANCEL,N,1)
+        self.pbHELP = QPushButton('HELP')
+        grid.addWidget(self.pbHELP,N,0)
+        grid.addWidget(self.pbOK,N+1,0)
+        grid.addWidget(self.pbCANCEL,N+1,1)
+        self.pbHELP.clicked.connect(self.blkHelp)
         self.pbOK.clicked.connect(self.accept)
         self.pbCANCEL.clicked.connect(self.reject)
         self.setLayout(grid)
 
+    def blkHelp(self):
+        fn = respath + 'blocks/rcpBlk/' + self.fname + '.hlp'
+        try:
+            f = open(fn,'r')
+        except:
+            f = open(respath + 'blocks/rcpBlk/noHelp.hlp', 'r')
+        text = f.read()
+        msg = QMessageBox(self)
+        msg.setIcon(QMessageBox.Information)
+        msg.setWindowTitle('Help for ' + self.fname)
+        msg.setText(text)
+        msg.exec_()
+    
     def parseParams(self, line):
         ln = line.split('|')
         N = len(ln)
         lab = []
         val = []
         self.blkID = ln[0]
+        self.fname = ln[0]
         for n in range(1,N):
             ll = ln[n].split(':')
             lab.append(ll[0].__str__())

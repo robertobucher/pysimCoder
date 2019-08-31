@@ -1,0 +1,7 @@
+Implementation of a CAN bus generic message to be received
+
+Parameters
+Device ID: can ID
+Return ID: Return ID in the return message
+Message Index and subindex
+Multiplication factor of the return value

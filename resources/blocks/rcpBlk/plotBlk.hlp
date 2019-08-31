@@ -1,0 +1,2 @@
+This block implements the plotting of the input signals.
+The plot is stored under the tmp folder and can be opend with a double click

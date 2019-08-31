@@ -1,0 +1,4 @@
+Implementation of a COMEDI digital output interface
+
+Parameters:
+Device, channel and threshold for output "1"

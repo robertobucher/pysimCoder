@@ -1,0 +1,6 @@
+This block initialize a Maxon EPOS motion controller for different operations
+
+Parameters:
+Device ID
+Controllers values
+Operation mode

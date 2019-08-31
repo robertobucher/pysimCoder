@@ -1,0 +1,4 @@
+This block implements a deadzone non linearity
+
+Parameters:
+Limits of the deadzone

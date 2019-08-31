@@ -1,0 +1,7 @@
+Implementation of a generic CAN bus medssage send
+
+Parameters:
+Device ID
+Index and sunindex
+Data type (byte, word, dword)
+Using the input of the block

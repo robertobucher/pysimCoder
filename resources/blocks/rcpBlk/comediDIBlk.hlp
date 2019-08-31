@@ -1,0 +1,4 @@
+Implementation of a COMEDI Digital Input interface.
+
+Parameters:
+Device and channel
