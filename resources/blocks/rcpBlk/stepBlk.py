@@ -1,7 +1,7 @@
 from supsisim.RCPblk import RCPblk
 from scipy import size
 
-def stepBlk(pout, initTime, Val):
+def stepBlk(pout, initTime, iVal, fVal):
     """
 
     Call:   stepBlk(pout, initTime, Val)
@@ -20,6 +20,6 @@ def stepBlk(pout, initTime, Val):
     
     if(size(pout) != 1):
         raise ValueError("Block should have 1 output port; received %i." % size(pout))
-    blk = RCPblk('step',[],pout,[0,0],0,[initTime, Val],[])
+    blk = RCPblk('step',[],pout,[0,0],0,[initTime, iVal, fVal],[])
     return blk
 

@@ -20,7 +20,7 @@ DEBUG = False
 class SupsiSimMainWindow(QMainWindow):
     def __init__(self, library, fname, mypath, runflag, parent=None):
         super(SupsiSimMainWindow, self).__init__(parent)
-        self.resize(1024, 768)
+        self.resize(1024, 800)
         self.centralWidget = QWidget(self)
         self.verticalLayout = QVBoxLayout(self.centralWidget)
         #self.verticalLayout.setMargin(0)

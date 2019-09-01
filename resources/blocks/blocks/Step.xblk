@@ -1,1 +1,1 @@
-{"lib": "input", "name": "Step", "ip": 0, "op": 1, "stin": 0, "stout": 0, "icon": "STEP", "params": "stepBlk|Step Time: 1|Step Value: 1"}
+{"lib": "input", "name": "Step", "ip": 0, "op": 1, "stin": 0, "stout": 0, "icon": "STEP", "params": "stepBlk|Step Time: 1|Initial Value: 0|Final Value: 1"}

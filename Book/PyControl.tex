@@ -2840,9 +2840,9 @@ The second step is to call the application ``xblk2Blk'' (see figure~\ref{Fig:xbl
 
 After opening the ``.xblk'' file, it is possible to set a name and a type of each parameters of the block.
 
-These informations are used to generate the ``.py'' which can be modified and saved, and the `*.c* skeleton, which should be modified for the specific block tasks.
+These informations are used to generate the ``.py'' which can be modified and saved, the help file, incomplete (``.hlp'' extension``) and the `*.c* skeleton, which should be modified for the specific block tasks.
 
-The ``.py'' file must be moved in the folder ``resources/blocks/rcpBlk'', the ``*.c* file must be edited and stored under ''CodeGen/devices``.
+The ``.py'' and the ``.hlp'' files must be moved in the folder ``resources/blocks/rcpBlk'', the ``*.c* file must be edited and stored under ''CodeGen/devices``.
 
 \section{Special libraries and blocks}
 
@@ -3110,7 +3110,7 @@ is responsible to fill all the RCPblk fields.
 
 \section{Special dialog box for the block parameters}
 Usually, the graphic editor build a simple dialog box to enter the block 
-parameters. 
+parameters. In this dialoh, a ``HELP'' button open a MessageBox showing the block specific help text.
 
 In special cases, it is possible to write a special function to 
 enter the parameters.. In this case, the user should provide this function in 
@@ -3189,8 +3189,7 @@ Integer parameters : []
 
 \section{The parameters for the code generation}
 
-Before clicking on the ``code generation'' tool on the toolbar, the user should 
-fill some parameters in a dialog box (see figure~\ref{codedlg}).
+Before clicking on the ``code generation'' tool on the toolbar, the user should fill some parameters in a dialog box (see figure~\ref{codedlg}).
 
  \begin{figure}[htbp]	% Step
  \centering
