@@ -11,7 +11,6 @@ FMUDIR = ../fmu
 ######DBG = -g -fPIC
 DBG = -g
 
-
 OBJEX = $(SRC:.c=.o)
 DEFINES = -D PLOTTER_SCRIPT=\"$(CWD)/scope.py\"
 CC_FLAGS = -c $(DBG) -I$(RTPYINC) 

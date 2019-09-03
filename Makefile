@@ -8,15 +8,10 @@ PYCTL = export PYSUPSICTRL=$(CWD)
 
 addfiles:
 	git clone https://github.com/python-control/python-control.git
-	#wget https://codeload.github.com/python-control/python-control/zip/master -O python-control-master.zip
 	git clone https://github.com/python-control/Slycot
-	#wget https://codeload.github.com/python-control/Slycot/zip/master -O Slycot-master.zip
 
-	#unzip python-control-master.zip
-	#unzip Slycot-master.zip
 	cd python-control; python setup.py install
 	cd Slycot; python setup.py install
-	#rm -rf python-control-master Slycot-master python-control-master.zip Slycot-master.zip 
 	rm -rf python-control Slycot
 
 modules:
@@ -47,6 +42,10 @@ link:
 
 driver:
 	cd DriverNRT; make; make install
+
+RaspLib:
+	cd CodeGen/RPI_devices; make; make install
+	cd CodeGen/lib_Pi; wget get robertobucher.dti.supsi.ch/wp-content/uploads/2017/03/RaspLibs.zip; unzip RaspLibs.zip; rm *.zip
 
 user:
 	echo $(PYCTL) >> ~/.bashrc
