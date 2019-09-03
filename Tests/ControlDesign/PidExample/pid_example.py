@@ -10,7 +10,7 @@ from supsictrl.ctrl_utils import *
 from supsictrl.ctrl_repl import *
 
 g=tf([1],[1,6,5])
-bode(g,dB=True);
+bode_plot(g);
 plt.legend(['G(s)'],prop={'size':10})
 plt.show()
 # savefig('bodeplant.eps')

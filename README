@@ -13,6 +13,11 @@ liblapack-dev
 python-pyqtgraph
 libopenblas-dev
 
+Recommended packages
+
+libcomedi-dev (to use the COMEDI blocks)
+libxml2-dev (to use the FMU block)
+
 Install the packages:
 - Launch "make" as superuser
 - Launch "make user" as normal user

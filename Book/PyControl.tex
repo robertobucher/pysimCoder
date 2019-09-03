@@ -40,8 +40,14 @@ following packages:
 \item jupyter-qtconsole
 \end{itemize}
 
-Under Debian and Ubuntu it is possible to check if all the required development 
-packages are correctly installed using the shell command
+Other recommended modules:
+
+\begin{itemize}
+\item libcomedi-dev (for COMEDI blocks)
+\item libxml2-dev (for the FMU block)
+\end{itemize}
+
+Under Debian and Ubuntu it is possible to check if all the required development packages are correctly installed using the shell command
 
 \begin{verbatim}
 sudo apt-get build-dep python-scipy
@@ -2577,7 +2583,7 @@ In [46]: k=place(Phi_f,G_f,cl_polesd)
 \subsection{Observer design}
 
 Now we can implement the observer: in this example we choose a reduced-order 
-observer and we can use the function provided by the yottalab module to obtain
+observer and we can use the function provided by the pysimCoder module to obtain
 it.
 
 \begin{code}
@@ -2597,7 +2603,7 @@ In [52]: r_obs=red_obs(sys,T,[p_od])
 
 \subsection{Controller in compact form}
 
-The yottalab function \textbf{comp\_form\_i} allows to integrate the controller 
+The pysimCoder function \textbf{comp\_form\_i} allows to integrate the controller 
 gains and the observer into an unique block.
 
 \begin{code}
@@ -3551,7 +3557,7 @@ In [10]: D2
 Out[10]: [0]
 \end{code}
 
-The control system toolbox and the additional ``yottalab.py'' package contain 
+The control system toolbox and the additional ``pysimCoder.py'' package contain 
 all the functions required for the design of the controller. In this case
 we design a discrete-state feedback controller with integral part for 
 eliminating steady-state errors. The states are estimated with a reduced-order 
@@ -3559,7 +3565,7 @@ observer.
 In addition, an anti-windup mechanism has been implemented. The sampling time 
 is set to 10 ms.
 
-The yottalab module offers 3 functions that facilitate the controller 
+The pysimCoder module offers 3 functions that facilitate the controller 
 design:
 
 \begin{itemize}
