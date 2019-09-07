@@ -44,24 +44,23 @@ def d2c(sys,method='zoh'):
     d = sys.D
     Ts = sys.dt
     n = np.shape(a)[0]
-    nb = p.shape(b)[1]
+    nb = np.shape(b)[1]
     nc = np.shape(c)[0]
     tol=1e-12
     
     if method=='zoh':
-        if n==1:
-            if b[0,0]==1:
-                A = 0
-                B = b/sys.dt
-                C = c
-                D = d
+        if n==1 and b[0,0]==1:
+            A = 0
+            B = b/sys.dt
+            C = c
+            D = d
         else:
             tmp1 = np.hstack((a,b))
             tmp2 = np.hstack((np.zeros((nb, n)), np.eye(nb)))
             tmp = np.vstack((tmp1, tmp2))
             s = la.logm(tmp)
             s = s/Ts
-            if la.norm(np. imag(s), np.inf) > sqrt(sp.finfo(float).eps):
+            if la.norm(np. imag(s), np.inf) > np.sqrt(sp.finfo(float).eps):
                 print('Warning: accuracy may be poor')
             s = np.real(s)
             A = s[0:n,0:n]
@@ -93,7 +92,7 @@ def d2c(sys,method='zoh'):
             print('d2c: some poles very close to one. May get bad results.')
         
         I = np.mat(np.eye(n,n))
-        tk = 2 / sqrt (Ts)
+        tk = 2 / np.sqrt (Ts)
         A = (2/Ts)*(a-I)*la.inv(a+I)
         iab = la.inv(I+a)*b
         B = tk*iab
