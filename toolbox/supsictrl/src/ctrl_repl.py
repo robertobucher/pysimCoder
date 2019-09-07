@@ -49,7 +49,7 @@ def d2c(sys,method='zoh'):
     tol=1e-12
     
     if method=='zoh':
-        if n==1 and b[0,0]==1:
+        if n==1 and a[0,0]==1:
             A = 0
             B = b/sys.dt
             C = c
