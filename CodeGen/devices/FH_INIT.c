@@ -50,7 +50,7 @@ static BYTE data_H_3XXX[DATA_SIZE_HOMING][8]= {
 };
 static BYTE data_H_5XXX[DATA_SIZE_HOMING][8]= {
   {0x2f, 0x60, 0x60, 0x00, 0x06, 0x00, 0x00, 0x00},
-  {0x2f, 0x98, 0x60, 0x00, 0x23, 0x00, 0x00, 0x00},
+  {0x2f, 0x98, 0x60, 0x00, 0x25, 0x00, 0x00, 0x00},
 };
 
 #define DATA_CTR_X 2
@@ -91,7 +91,7 @@ static void init5(python_block *block)
     usleep(50000);
   }
    
-  if (block->realPar[0] > 0.0){
+  if (block->realPar[0] > 0.0){        /* Position controller parameters  */
       cval = (unsigned char) ((int) block->realPar[0] & 0x0000FFFF);
       data_ctr_X[3][4] = cval;
       cval = (unsigned char) ((int) block->realPar[1] & 0x0000FFFF);
@@ -102,7 +102,7 @@ static void init5(python_block *block)
       }
   }
 
-  if (block->realPar[2] > 0.0){
+  if (block->realPar[2] > 0.0){    /* Speed Controller parameters  */
       cval = (unsigned char) ((int) block->realPar[2] & 0x0000FFFF);
       data_ctr_V[3][4] = cval;
       cval = (unsigned char) ((int) block->realPar[3] & 0x0000FFFF);
@@ -113,7 +113,7 @@ static void init5(python_block *block)
       }
   }
 
-  if (block->realPar[4] > 0.0){
+  if (block->realPar[4] > 0.0){   /* Torque controller parameters  */
       cval = (unsigned char) ((int) block->realPar[4] & 0x0000FFFF);
       data_ctr_TQ[3][4] = cval;
       cval = (unsigned char) ((int) block->realPar[5] & 0x0000FFFF);
@@ -124,7 +124,7 @@ static void init5(python_block *block)
       }
   }
     
-  if(block->intPar[1]){
+  if(block->intPar[1]){    /* Homing method: set position as 0  */
     for(i=0;i<DATA_SIZE_HOMING;i++){
       sendMsg(0x600+block->intPar[0],data_H_5XXX[i],8);  /* Set this position to 0 */
       usleep(50000);
@@ -157,7 +157,7 @@ static void init3(python_block *block)
     usleep(50000);
   }
 
-  if (block->realPar[0] > 0.0){
+  if (block->realPar[0] > 0.0){        /* Position controller parameters  */
       cval = (unsigned char) ((int) block->realPar[0] & 0x0000FFFF);
       data_ctr_X[3][4] = cval;
       cval = (unsigned char) ((int) block->realPar[1] & 0x0000FFFF);
@@ -168,7 +168,7 @@ static void init3(python_block *block)
       }
   }
 
-  if (block->realPar[2] > 0.0){
+  if (block->realPar[2] > 0.0){    /* Speed Controller parameters  */
       cval = (unsigned char) ((int) block->realPar[2] & 0x0000FFFF);
       data_ctr_V[3][4] = cval;
       cval = (unsigned char) ((int) block->realPar[3] & 0x0000FFFF);
