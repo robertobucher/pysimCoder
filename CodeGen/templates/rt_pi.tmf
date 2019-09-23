@@ -10,7 +10,7 @@ USERLIB = $(PYUSERBLKS)/lib/userpyblk.a
 RM = rm -f
 FILES_TO_CLEAN = *.o $(MODEL)
 
-CC = arm-linux-gnueabihf-gcc-8
+CC = arm-linux-gnueabihf-gcc
 CC_OPTIONS = -g
 
 MAIN = python_main_rt

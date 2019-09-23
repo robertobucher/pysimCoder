@@ -10,7 +10,7 @@ CWD = $(shell pwd)
 ######DBG = -g -fPIC
 DBG = -g
 
-CC = arm-linux-gnueabihf-gcc-8
+CC = arm-linux-gnueabihf-gcc
 AR = arm-linux-gnueabihf-ar
 OBJEX = $(SRC:.c=.o)
 #CC_FLAGS = -c $(DBG) -I$(RTPYINC)
