@@ -2,7 +2,7 @@
 from supsisim.RCPblk import RCPblk
 from scipy import size
 
-def compFiltBlk(pin, pout, alfa, ts):
+def compFiltBlk(pin, pout, alfa):
     """
 
     Call:   compFiltBlk(pin, pout, alfa, ts)
@@ -20,5 +20,5 @@ def compFiltBlk(pin, pout, alfa, ts):
 
     """
 
-    blk = RCPblk('compFilt', pin, pout, [0,1], 0, [alfa, ts, 0.0], [])
+    blk = RCPblk('compFilt', pin, pout, [0,1], 0, [alfa, 0.0, 0.0], [])
     return blk

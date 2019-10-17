@@ -119,7 +119,7 @@ static int resolve(char *buffer, int *nType, unsigned long *dwPort,
 /* do a linux like open of the device */
 HANDLE LINUX_CAN_Open(const char *szDeviceName, int nFlag)
 {
-#ifndef NO_RT
+#if !defined(NO_RT) && !defined(__COBALT__)
 	char DeviceName[15];
 #endif
 	struct pcan_handle *desc = NULL;
@@ -133,7 +133,7 @@ HANDLE LINUX_CAN_Open(const char *szDeviceName, int nFlag)
 	desc->szVersionString[0] = 0;
 	desc->szDevicePath[0] = 0;
 
-#ifndef NO_RT
+#if !defined(NO_RT) && !defined(__COBALT__)
 	sscanf(szDeviceName, "/dev/%s", DeviceName);
 	desc->fd = rt_dev_open(DeviceName, nFlag);
 #else

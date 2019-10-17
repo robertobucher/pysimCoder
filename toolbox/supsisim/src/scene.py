@@ -2,7 +2,6 @@ from pyqt5 import QGraphicsView, QGraphicsScene, QGraphicsItem, QPainter, QtCore
 
 from supsisim.block import Block
 from supsisim.port import Port, InPort, OutPort
-from supsisim.node import Node
 from supsisim.connection import Connection
 from supsisim.dialg import RTgenDlg
 from supsisim.const import pyrun, TEMP, respath, BWmin
@@ -50,13 +49,10 @@ class Scene(QGraphicsScene):
     def DgmToMsg(self):
         items = self.items()
         dgmBlocks = []
-        dgmNodes = []
         dgmConnections = []
         for item in items:
             if isinstance(item, Block):
                 dgmBlocks.append(item)
-            elif isinstance(item, Node):
-                dgmNodes.append(item)
             elif isinstance(item, Connection):
                 dgmConnections.append(item)
             else:
@@ -72,8 +68,6 @@ class Scene(QGraphicsScene):
         etree.SubElement(sim,'ParScript').text = self.script
         etree.SubElement(sim,'Tf').text = self.Tf
         for item in dgmBlocks:
-            item.save(root)
-        for item in dgmNodes:
             item.save(root)
         for item in dgmConnections:
             item.save(root)
@@ -109,9 +103,6 @@ class Scene(QGraphicsScene):
         blocks = root.findall('block')
         for item in blocks:
             self.loadBlock(item)
-        nodes = root.findall('node')
-        for item in nodes:
-            self.loadNode(item)
         connections = root.findall('connection')
         for item in connections:
             self.loadConn(item)
@@ -143,45 +134,12 @@ class Scene(QGraphicsScene):
         
     def updateDgm(self):
         items = self.items()
-        for item in items:
-            if isinstance(item, Node):
-                    if len(item.port_in.connections)==0 and len(item.port_out.connections)==0:
-                            item.remove()
                     
-        for item in items:
-            if isinstance(item, Node):
-                pN = item.pos()                   
-                try:
-                    Cn =  item.port_in.connections[0]
-                    if isinstance(Cn.port1, OutPort):
-                        pC = Cn.pos1
-                        pN.setY(pC.y())
-                        item.setPos(pN)
-                        Cn.pos2 = pN
-                        Cn.update_path()
-                except:
-                    pass
-                    
-        for item in items:
-            if isinstance(item, Node):
-                pN = item.pos()
-                try:
-                    Cn =  item.port_out.connections[0]
-                    if isinstance(Cn.port2, InPort):
-                        pC = Cn.pos2
-                        pN.setY(pC.y())
-                        item.setPos(pN)
-                        Cn.pos1 = pN
-                        Cn.update_path()
-                except:
-                    pass
-                        
         for item in items:
             if isinstance(item, Block):
                 pos = item.pos()
                 item.setPos(pos)
                     
-
     def saveDgm(self,fname):
         f = open(fname,'w')
         msg = self.DgmToMsg()
@@ -217,10 +175,6 @@ class Scene(QGraphicsScene):
                       item.findtext('params'), width, item.findtext('flip')=='1' )
         b.setPos(float(item.findtext('posX')), float(item.findtext('posY')))
 
-    def loadNode(self, item):
-        n = Node(None, self)
-        n.setPos(float(item.findtext('posX')), float(item.findtext('posY')))       
-
     def find_itemAt(self, pos):
         items = self.items(QtCore.QRectF(pos-QtCore.QPointF(1,1), QtCore.QSizeF(3,3)))
         for item in items:
@@ -230,11 +184,7 @@ class Scene(QGraphicsScene):
     
     def loadConn(self, item):
         c = Connection(None, self)
-        pt1 = QtCore.QPointF(float(item.findtext('pos1X')), float(item.findtext('pos1Y')))
-        pt2 = QtCore.QPointF(float(item.findtext('pos2X')), float(item.findtext('pos2Y')))
-        c.pos1 = pt1
-        c.pos2 = pt2
-        c.update_ports_from_pos()
+        c.load(item)            
         
     def setParamsBlk(self):
         self.mainw.paramsBlock()
@@ -257,45 +207,51 @@ class Scene(QGraphicsScene):
         self.Tf = str(dialog.Tf.text())
         
     def codegen(self, flag):
-        items = self.items()
-        dgmBlocks = []
-        for item in items:
-            if isinstance(item, Block):
-                dgmBlocks.append(item)
-            else:
-                pass
-        
-        nid = 1
-        for item in dgmBlocks:
-            for thing in item.childItems():
-                if isinstance(thing, OutPort):
-                    thing.nodeID = str(nid)
-                    nid += 1
-        for item in dgmBlocks:
-            for thing in item.childItems():
-                if isinstance(thing, InPort):
-                    c = thing.connections[0]
-                    while not isinstance(c.port1, OutPort):
-                        try:
-                            c = c.port1.parent.port_in.connections[0]
-                        except (AttributeError, ValueError):
-                            raise ValueError('Problem in diagram: outputs connected together!')
-                    thing.nodeID = c.port1.nodeID
-        self.generateCCode()
         try:
-            os.mkdir('./' + self.mainw.filename + '_gen')
-        except:
-            pass
-        if flag:
-            if self.mainw.runflag:
-                cmd = pyrun + ' tmp.py'
-                try:
-                    p = subprocess.Popen(cmd, shell=True)
-                except:
+            items = self.items()
+            dgmBlocks = []
+            for item in items:
+                if isinstance(item, Block):
+                    dgmBlocks.append(item)
+                else:
                     pass
-                p.wait()
-            else:
-                print('Generate code -> run -i tmp.py')
+
+            nid = 1
+            for item in dgmBlocks:
+                for thing in item.childItems():
+                    if isinstance(thing, OutPort):
+                        thing.nodeID = str(nid)
+                        nid += 1
+            for item in dgmBlocks:
+                for thing in item.childItems():
+                    if isinstance(thing, InPort):
+                        c = thing.connections[0]
+                        while not isinstance(c.port1, OutPort):
+                            try:
+                                c = c.port1.parent.port_in.connections[0]
+                            except (AttributeError, ValueError):
+                                raise ValueError('Problem in diagram: outputs connected together!')
+                        thing.nodeID = c.port1.nodeID
+            self.generateCCode()
+            try:
+                os.mkdir('./' + self.mainw.filename + '_gen')
+            except:
+                pass
+            if flag:
+                if self.mainw.runflag:
+                    cmd = pyrun + ' tmp.py'
+                    try:
+                        p = subprocess.Popen(cmd, shell=True)
+                    except:
+                        pass
+                    p.wait()
+                else:
+                    print('Generate code -> run -i tmp.py')
+            return True
+        
+        except:
+            self.mainw.status.showMessage('Error by Code generation!')
+            return False
         
     def blkInstance(self, item):
         ln = item.params.split('|')
@@ -390,50 +346,44 @@ class Scene(QGraphicsScene):
         fn.close()
 
     def simrun(self):
-        self.codegen(False)
-        cmd  = '\n'
-        cmd += 'import matplotlib.pyplot as plt\n'
-        cmd += 'import numpy as np\n\n'
-        cmd += 'os.system("./' + self.mainw.filename + ' -f ' + self.Tf + '")\n'
-        fnm = self.mainw.filename
-        cmd += 'os.system("' + 'rm -r ' + fnm + ' ' + fnm + '_gen' + '" )'
-        
-        try:
-            os.mkdir(TEMP + '/' + self.mainw.filename + '_gen')
-        except:
-            pass
-        f = open('tmp.py','a')
-        f.write(cmd)
-        f.close()
-        if self.mainw.runflag:
-            cmd = pyrun + ' tmp.py'
+        if self.codegen(False):
+            cmd  = '\n'
+            cmd += 'import matplotlib.pyplot as plt\n'
+            cmd += 'import numpy as np\n\n'
+            cmd += 'os.system("./' + self.mainw.filename + ' -f ' + self.Tf + '")\n'
+            fnm = self.mainw.filename
+            cmd += 'os.system("' + 'rm -r ' + fnm + ' ' + fnm + '_gen' + '" )'
+
             try:
-                os.system(cmd)
-                self.mainw.status.showMessage('Simulation finished')
+                os.mkdir(TEMP + '/' + self.mainw.filename + '_gen')
             except:
                 pass
-        else:
-            print('Simulate system -> run -i tmp.py')
+            f = open('tmp.py','a')
+            f.write(cmd)
+            f.close()
+            if self.mainw.runflag:
+                cmd = pyrun + ' tmp.py'
+                try:
+                    os.system(cmd)
+                    self.mainw.status.showMessage('Simulation finished')
+                except:
+                    pass
+            else:
+                print('Simulate system -> run -i tmp.py')
          
     def debugInfo(self):
         items = self.items()
         dgmBlocks = []
-        dgmNodes = []
         dgmConnections = []
         for item in items:
             if isinstance(item, Block):
                 dgmBlocks.append(item)
-            elif isinstance(item, Node):
-                dgmNodes.append(item)
             elif isinstance(item, Connection):
                 dgmConnections.append(item)
             else:
                 pass
         print('Blocks:')
         for item in dgmBlocks:
-            print(item)
-        print('\nNodes:')
-        for item in dgmNodes:
             print(item)
         print('\nConnections:')
         for item in dgmConnections:

@@ -1,1 +1,1 @@
-{"lib": "Socket", "name": "UDPsocketRx", "ip": 0, "op": 1, "stin": 0, "stout": 1, "icon": "UDPSOCK", "params": "UDPsocketRxBlk|IP Addr: '0.0.0.0'| Port:5000"}
+{"lib": "Communication", "name": "UDPsocketRx", "ip": 0, "op": 1, "stin": 0, "stout": 1, "icon": "UDPSOCK", "params": "UDPsocketRxBlk|IP Addr: '0.0.0.0'| Port:5000"}

@@ -2,7 +2,6 @@ Implementation of a complementary filter for the Raspberry PI uC.
 
 Parameters:
 alpha value
-sampling time
 
 The inputs are:
 Ax, Ay, Az and Gy

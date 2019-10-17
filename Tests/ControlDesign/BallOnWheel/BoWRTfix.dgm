@@ -1,6 +1,6 @@
 <root>
   <Date>
-    <SavingDate>17.08.2019 - 10:17:30</SavingDate>
+    <SavingDate>15.10.2019 - 13:27:46</SavingDate>
   </Date>
   <Simulation>
     <Template>rt.tmf</Template>
@@ -98,7 +98,7 @@
     <width>80</width>
     <flip>0</flip>
     <posX>590.0</posX>
-    <posY>80.0</posY>
+    <posY>90.0</posY>
   </block>
   <block>
     <name>Switch</name>
@@ -123,7 +123,7 @@
     <params>constBlk|Value: 0</params>
     <width>80</width>
     <flip>0</flip>
-    <posX>320.0</posX>
+    <posX>290.0</posX>
     <posY>-30.0</posY>
   </block>
   <block>
@@ -201,291 +201,127 @@
     <params>stepBlk|Step Time: 5|Step Value: 1</params>
     <width>80</width>
     <flip>0</flip>
-    <posX>570.0</posX>
-    <posY>-40.0</posY>
+    <posX>550.0</posX>
+    <posY>0.0</posY>
   </block>
-  <node>
-    <posX>-200.0</posX>
-    <posY>110.0</posY>
-  </node>
-  <node>
-    <posX>-50.0</posX>
-    <posY>90.0</posY>
-  </node>
-  <node>
-    <posX>-200.0</posX>
-    <posY>70.0</posY>
-  </node>
-  <node>
-    <posX>-360.0</posX>
-    <posY>70.0</posY>
-  </node>
-  <node>
-    <posX>150.0</posX>
-    <posY>-170.0</posY>
-  </node>
-  <node>
-    <posX>70.0</posX>
-    <posY>-130.0</posY>
-  </node>
-  <node>
-    <posX>420.0</posX>
-    <posY>-90.0</posY>
-  </node>
-  <node>
-    <posX>420.0</posX>
-    <posY>80.0</posY>
-  </node>
-  <node>
-    <posX>340.0</posX>
-    <posY>40.0</posY>
-  </node>
-  <node>
-    <posX>150.0</posX>
-    <posY>40.0</posY>
-  </node>
-  <node>
-    <posX>390.0</posX>
-    <posY>-130.0</posY>
-  </node>
-  <node>
-    <posX>390.0</posX>
-    <posY>-30.0</posY>
-  </node>
-  <node>
-    <posX>110.0</posX>
-    <posY>-210.0</posY>
-  </node>
-  <node>
-    <posX>110.0</posX>
-    <posY>-260.0</posY>
-  </node>
-  <node>
-    <posX>150.0</posX>
-    <posY>90.0</posY>
-  </node>
-  <node>
-    <posX>320.0</posX>
-    <posY>-170.0</posY>
-  </node>
-  <node>
-    <posX>590.0</posX>
-    <posY>-130.0</posY>
-  </node>
-  <node>
-    <posX>780.0</posX>
-    <posY>-110.0</posY>
-  </node>
-  <node>
-    <posX>630.0</posX>
-    <posY>-40.0</posY>
-  </node>
-  <node>
-    <posX>630.0</posX>
-    <posY>-90.0</posY>
-  </node>
   <connection>
-    <pos1X>780.0</pos1X>
+    <pos1X>730.0</pos1X>
     <pos1Y>-110.0</pos1Y>
-    <pos2X>846.0</pos2X>
+    <pos2X>850.0</pos2X>
     <pos2Y>-110.0</pos2Y>
+    <pt>790.0,-110.0</pt>
+    <pt>790.0,-110.0</pt>
   </connection>
   <connection>
-    <pos1X>-396.0</pos1X>
-    <pos1Y>70.0</pos1Y>
-    <pos2X>-360.0</pos2X>
-    <pos2Y>70.0</pos2Y>
-  </connection>
-  <connection>
-    <pos1X>-26.0</pos1X>
+    <pos1X>520.0</pos1X>
     <pos1Y>-130.0</pos1Y>
-    <pos2X>70.0</pos2X>
+    <pos2X>650.0</pos2X>
     <pos2Y>-130.0</pos2Y>
-  </connection>
-  <connection>
-    <pos1X>-200.0</pos1X>
-    <pos1Y>110.0</pos1Y>
-    <pos2X>-174.0</pos2X>
-    <pos2Y>110.0</pos2Y>
-  </connection>
-  <connection>
-    <pos1X>-236.0</pos1X>
-    <pos1Y>190.0</pos1Y>
-    <pos2X>-200.0</pos2X>
-    <pos2Y>110.0</pos2Y>
-  </connection>
-  <connection>
-    <pos1X>-50.0</pos1X>
-    <pos1Y>90.0</pos1Y>
-    <pos2X>-14.0</pos2X>
-    <pos2Y>90.0</pos2Y>
-  </connection>
-  <connection>
-    <pos1X>-86.0</pos1X>
-    <pos1Y>90.0</pos1Y>
-    <pos2X>-50.0</pos2X>
-    <pos2Y>90.0</pos2Y>
-  </connection>
-  <connection>
-    <pos1X>-200.0</pos1X>
-    <pos1Y>70.0</pos1Y>
-    <pos2X>-174.0</pos2X>
-    <pos2Y>70.0</pos2Y>
-  </connection>
-  <connection>
-    <pos1X>-236.0</pos1X>
-    <pos1Y>70.0</pos1Y>
-    <pos2X>-200.0</pos2X>
-    <pos2Y>70.0</pos2Y>
-  </connection>
-  <connection>
-    <pos1X>-360.0</pos1X>
-    <pos1Y>70.0</pos1Y>
-    <pos2X>-324.0</pos2X>
-    <pos2Y>70.0</pos2Y>
-  </connection>
-  <connection>
-    <pos1X>150.0</pos1X>
-    <pos1Y>-170.0</pos1Y>
-    <pos2X>206.0</pos2X>
-    <pos2Y>-170.0</pos2Y>
-  </connection>
-  <connection>
-    <pos1X>420.0</pos1X>
-    <pos1Y>80.0</pos1Y>
-    <pos2X>546.0</pos2X>
-    <pos2Y>80.0</pos2Y>
-  </connection>
-  <connection>
-    <pos1X>150.0</pos1X>
-    <pos1Y>40.0</pos1Y>
-    <pos2X>150.0</pos2X>
-    <pos2Y>-170.0</pos2Y>
-  </connection>
-  <connection>
-    <pos1X>420.0</pos1X>
-    <pos1Y>-90.0</pos1Y>
-    <pos2X>436.0</pos2X>
-    <pos2Y>-90.0</pos2Y>
-  </connection>
-  <connection>
-    <pos1X>70.0</pos1X>
-    <pos1Y>-130.0</pos1Y>
-    <pos2X>206.0</pos2X>
-    <pos2Y>-130.0</pos2Y>
-  </connection>
-  <connection>
-    <pos1X>420.0</pos1X>
-    <pos1Y>80.0</pos1Y>
-    <pos2X>420.0</pos2X>
-    <pos2Y>-90.0</pos2Y>
-  </connection>
-  <connection>
-    <pos1X>341.0</pos1X>
-    <pos1Y>40.0</pos1Y>
-    <pos2X>420.0</pos2X>
-    <pos2Y>80.0</pos2Y>
-  </connection>
-  <connection>
-    <pos1X>150.0</pos1X>
-    <pos1Y>40.0</pos1Y>
-    <pos2X>341.0</pos2X>
-    <pos2Y>40.0</pos2Y>
-  </connection>
-  <connection>
-    <pos1X>390.0</pos1X>
-    <pos1Y>-130.0</pos1Y>
-    <pos2X>436.0</pos2X>
-    <pos2Y>-130.0</pos2Y>
-  </connection>
-  <connection>
-    <pos1X>390.0</pos1X>
-    <pos1Y>-30.0</pos1Y>
-    <pos2X>390.0</pos2X>
-    <pos2Y>-130.0</pos2Y>
-  </connection>
-  <connection>
-    <pos1X>364.0</pos1X>
-    <pos1Y>-30.0</pos1Y>
-    <pos2X>390.0</pos2X>
-    <pos2Y>-30.0</pos2Y>
-  </connection>
-  <connection>
-    <pos1X>110.0</pos1X>
-    <pos1Y>-210.0</pos1Y>
-    <pos2X>206.0</pos2X>
-    <pos2Y>-210.0</pos2Y>
-  </connection>
-  <connection>
-    <pos1X>294.0</pos1X>
-    <pos1Y>-170.0</pos1Y>
-    <pos2X>320.0</pos2X>
-    <pos2Y>-170.0</pos2Y>
-  </connection>
-  <connection>
-    <pos1X>110.0</pos1X>
-    <pos1Y>-260.0</pos1Y>
-    <pos2X>110.0</pos2X>
-    <pos2Y>-210.0</pos2Y>
-  </connection>
-  <connection>
-    <pos1X>320.0</pos1X>
-    <pos1Y>-170.0</pos1Y>
-    <pos2X>436.0</pos2X>
-    <pos2Y>-170.0</pos2Y>
-  </connection>
-  <connection>
-    <pos1X>-36.0</pos1X>
-    <pos1Y>-260.0</pos1Y>
-    <pos2X>110.0</pos2X>
-    <pos2Y>-260.0</pos2Y>
-  </connection>
-  <connection>
-    <pos1X>150.0</pos1X>
-    <pos1Y>90.0</pos1Y>
-    <pos2X>150.0</pos2X>
-    <pos2Y>40.0</pos2Y>
-  </connection>
-  <connection>
-    <pos1X>74.0</pos1X>
-    <pos1Y>90.0</pos1Y>
-    <pos2X>150.0</pos2X>
-    <pos2Y>90.0</pos2Y>
-  </connection>
-  <connection>
-    <pos1X>524.0</pos1X>
-    <pos1Y>-130.0</pos1Y>
-    <pos2X>590.0</pos2X>
-    <pos2Y>-130.0</pos2Y>
+    <pt>590.0,-130.0</pt>
+    <pt>590.0,-130.0</pt>
   </connection>
   <connection>
     <pos1X>590.0</pos1X>
-    <pos1Y>-130.0</pos1Y>
-    <pos2X>646.0</pos2X>
+    <pos1Y>0.0</pos1Y>
+    <pos2X>650.0</pos2X>
+    <pos2Y>-90.0</pos2Y>
+    <pt>620.0,0.0</pt>
+    <pt>620.0,-90.0</pt>
+  </connection>
+  <connection>
+    <pos1X>70.0</pos1X>
+    <pos1Y>90.0</pos1Y>
+    <pos2X>550.0</pos2X>
+    <pos2Y>90.0</pos2Y>
+    <pt>170.0,90.0</pt>
+    <pt>190.0,90.0</pt>
+    <pt>400.0,90.0</pt>
+    <pt>420.0,90.0</pt>
+    <pt>490.0,90.0</pt>
+    <pt>490.0,90.0</pt>
+  </connection>
+  <connection>
+    <pos1X>70.0</pos1X>
+    <pos1Y>90.0</pos1Y>
+    <pos2X>440.0</pos2X>
+    <pos2Y>-90.0</pos2Y>
+    <pt>170.0,90.0</pt>
+    <pt>190.0,90.0</pt>
+    <pt>400.0,90.0</pt>
+    <pt>420.0,90.0</pt>
+    <pt>420.0,-90.0</pt>
+  </connection>
+  <connection>
+    <pos1X>330.0</pos1X>
+    <pos1Y>-30.0</pos1Y>
+    <pos2X>440.0</pos2X>
     <pos2Y>-130.0</pos2Y>
+    <pt>370.0,-30.0</pt>
+    <pt>370.0,-130.0</pt>
   </connection>
   <connection>
-    <pos1X>734.0</pos1X>
-    <pos1Y>-110.0</pos1Y>
-    <pos2X>780.0</pos2X>
-    <pos2Y>-110.0</pos2Y>
+    <pos1X>290.0</pos1X>
+    <pos1Y>-170.0</pos1Y>
+    <pos2X>440.0</pos2X>
+    <pos2Y>-170.0</pos2Y>
+    <pt>370.0,-170.0</pt>
+    <pt>370.0,-170.0</pt>
   </connection>
   <connection>
-    <pos1X>614.0</pos1X>
-    <pos1Y>-40.0</pos1Y>
-    <pos2X>630.0</pos2X>
-    <pos2Y>-40.0</pos2Y>
+    <pos1X>70.0</pos1X>
+    <pos1Y>90.0</pos1Y>
+    <pos2X>210.0</pos2X>
+    <pos2Y>-170.0</pos2Y>
+    <pt>170.0,90.0</pt>
+    <pt>190.0,90.0</pt>
+    <pt>190.0,-170.0</pt>
   </connection>
   <connection>
-    <pos1X>630.0</pos1X>
-    <pos1Y>-40.0</pos1Y>
-    <pos2X>630.0</pos2X>
-    <pos2Y>-90.0</pos2Y>
+    <pos1X>-30.0</pos1X>
+    <pos1Y>-130.0</pos1Y>
+    <pos2X>210.0</pos2X>
+    <pos2Y>-130.0</pos2Y>
+    <pt>90.0,-130.0</pt>
+    <pt>90.0,-130.0</pt>
   </connection>
   <connection>
-    <pos1X>630.0</pos1X>
-    <pos1Y>-90.0</pos1Y>
-    <pos2X>646.0</pos2X>
-    <pos2Y>-90.0</pos2Y>
+    <pos1X>-40.0</pos1X>
+    <pos1Y>-260.0</pos1Y>
+    <pos2X>210.0</pos2X>
+    <pos2Y>-210.0</pos2Y>
+    <pt>90.0,-260.0</pt>
+    <pt>90.0,-210.0</pt>
+  </connection>
+  <connection>
+    <pos1X>-90.0</pos1X>
+    <pos1Y>90.0</pos1Y>
+    <pos2X>-10.0</pos2X>
+    <pos2Y>90.0</pos2Y>
+    <pt>-50.0,90.0</pt>
+    <pt>-50.0,90.0</pt>
+  </connection>
+  <connection>
+    <pos1X>-240.0</pos1X>
+    <pos1Y>190.0</pos1Y>
+    <pos2X>-170.0</pos2X>
+    <pos2Y>110.0</pos2Y>
+    <pt>-200.0,190.0</pt>
+    <pt>-200.0,110.0</pt>
+  </connection>
+  <connection>
+    <pos1X>-400.0</pos1X>
+    <pos1Y>70.0</pos1Y>
+    <pos2X>-320.0</pos2X>
+    <pos2Y>70.0</pos2Y>
+    <pt>-360.0,70.0</pt>
+    <pt>-360.0,70.0</pt>
+  </connection>
+  <connection>
+    <pos1X>-240.0</pos1X>
+    <pos1Y>70.0</pos1Y>
+    <pos2X>-170.0</pos2X>
+    <pos2Y>70.0</pos2Y>
+    <pt>-200.0,70.0</pt>
+    <pt>-200.0,70.0</pt>
   </connection>
 </root>

@@ -14,6 +14,7 @@ double NAME(MODEL,_get_tsamp)(void);
 
 static volatile int end = 0;
 static double T = 0.0;
+static double Tsamp;
 
 /* Options presettings */
 static char rtversion[] = "0.9";
@@ -26,6 +27,11 @@ double FinalTime = 0.0;
 double get_run_time()
 {
   return(T);
+}
+
+double get_Tsamp()
+{
+  return(Tsamp);
 }
 
 void endme(int n)
@@ -86,7 +92,7 @@ static void proc_opt(int argc, char *argv[])
 
 int main(int argc,char** argv)
 {
-  double Tsamp = NAME(MODEL,_get_tsamp)();
+  Tsamp = NAME(MODEL,_get_tsamp)();
 
   proc_opt(argc, argv);
 
@@ -106,6 +112,7 @@ int main(int argc,char** argv)
     /* Check task end */
     if((FinalTime >0) && (T >= FinalTime)) break;
   }
-  NAME(MODEL,_end)();  
+  NAME(MODEL,_end)();
+  return(0);
 }
 

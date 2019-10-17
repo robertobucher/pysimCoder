@@ -1,9 +1,6 @@
 from pyqt5 import QGraphicsPathItem, QPainterPath, QPen, QtCore
 
-from supsisim.port import InNodePort, OutNodePort
 from supsisim.const import GRID, NW
-
-from lxml import etree
 
 class Node(QGraphicsPathItem):
     """A block holds ports that can be connected to."""
@@ -17,33 +14,14 @@ class Node(QGraphicsPathItem):
 
     def __str__(self):
         txt = 'Node\n'
-        for thing in self.childItems():
-            print(thing)
         return txt
         
     def setup(self):
         p = QPainterPath()
-        #p.addRect(-NW/2, -NW/2, NW, NW)
         p.addEllipse(-NW/2, -NW/2, NW, NW)
         self.setPath(p)
-
-        self.add_inPort()
-        self.add_outPort()
-        self.setFlag(self.ItemIsMovable)
-        self.setFlag(self.ItemIsSelectable)
-        
-    def add_inPort(self):
-        port = InNodePort(self, self.scene)
-        self.port_in = port
-        return port
-
-    def add_outPort(self):
-        port = OutNodePort(self, self.scene)
-        self.port_out = port
-        return port
-
-    def ports(self):
-        return self.port
+        #self.setFlag(self.ItemIsMovable)
+        #self.setFlag(self.ItemIsSelectable)
 
     def paint(self, painter, option, widget):
         painter.setPen(QPen(self.line_color))
@@ -56,14 +34,9 @@ class Node(QGraphicsPathItem):
         painter.drawPath(self.path())
 
     def remove(self):
-      for thing in self.childItems():
-        try:
-          thing.remove()
-        except:
-          pass
       self.scene.removeItem(self)
 
-    def setPos(self, *args):
+      def setPos(self, *args):
         if len(args) == 1:
             pt = self.gridPos(args[0])
             super(Node, self).setPos(pt)
@@ -77,16 +50,7 @@ class Node(QGraphicsPathItem):
          x = gr * ((pt.x() + gr /2) // gr)
          y = gr * ((pt.y() + gr /2) // gr)
          return QtCore.QPointF(x,y)
-       
-    def clone(self, pt):
-        n = Node(None, self.scene)
-        n.setPos(self.scenePos().__add__(pt))
-       
-    def save(self, root):
-        node = etree.SubElement(root,'node')
-        etree.SubElement(node,'posX').text = self.pos().x().__str__()
-        etree.SubElement(node,'posY').text = self.pos().y().__str__()
-
+     
 
         
 

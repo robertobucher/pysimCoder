@@ -40,7 +40,7 @@
 #define __ioctl(x, y, z)	rt_dev_ioctl(x, y, z)
 #define __close(fp)		rt_dev_close(fp)
 
-#define __fprintf		rt_fprintf
+#define __fprintf		fprintf
 
 #else
 static inline int __open(const char *pfn, int flg)

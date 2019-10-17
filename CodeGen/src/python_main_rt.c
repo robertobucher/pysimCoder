@@ -27,6 +27,7 @@ double NAME(MODEL,_get_tsamp)(void);
 
 static volatile int end = 0;
 static double T = 0.0;
+static double Tsamp;
 
 /* Options presettings */
 static char rtversion[] = "0.9";
@@ -38,6 +39,11 @@ double FinalTime = 0.0;
 double get_run_time()
 {
   return(T);
+}
+
+double get_Tsamp()
+{
+  return(Tsamp);
 }
 
 static inline void tsnorm(struct timespec *ts)
@@ -70,7 +76,7 @@ void *rt_task(void *p)
 
   mlockall(MCL_CURRENT | MCL_FUTURE);
 
-  double Tsamp = NAME(MODEL,_get_tsamp)();
+  Tsamp = NAME(MODEL,_get_tsamp)();
 
   t_isr.tv_sec =  0L;
   t_isr.tv_nsec = (long)(1e9*Tsamp);
@@ -200,6 +206,6 @@ int main(int argc,char** argv)
   ap=pthread_create(&thrd,NULL,rt_task,NULL);
 
   pthread_join(thrd,NULL);
-  close(fd);
+  return(0);
 }
 

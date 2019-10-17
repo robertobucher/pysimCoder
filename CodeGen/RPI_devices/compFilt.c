@@ -19,6 +19,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 #include <pyblock.h>
 #include <math.h>
 
+double get_Tsamp();
+
 static void init(python_block *block)
 {
   double * realPar = block->realPar;
@@ -28,7 +30,8 @@ static void init(python_block *block)
 
   double sign = 1.0;
   if(accZ[0]<0) sign=-1.0;
-  
+
+  realPar[1] = get_Tsamp();
   realPar[2] = atan2f(accX[0], sign*sqrt(accY[0]*accY[0]+accZ[0]*accZ[0]));
 }
 

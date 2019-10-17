@@ -1,1 +1,1 @@
-{"lib": "Socket", "name": "UnixSkClient", "ip": 1, "op": 0, "stin": 1, "stout": 0, "icon": "UNIXSOCK", "params": "unixsocketCBlk|Socket: 'bsock'"}
+{"lib": "Communication", "name": "UnixSkClient", "ip": 1, "op": 0, "stin": 1, "stout": 0, "icon": "UNIXSOCK", "params": "unixsocketCBlk|Socket: 'bsock'"}

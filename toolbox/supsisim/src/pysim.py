@@ -6,7 +6,7 @@ if sys.version_info>(3,0):
     
 from pyqt5 import QApplication, QtCore
 
-from supsisim.pyEdit import SupsiSimMainWindow
+from supsisim.pyEdit import NewEditorMainWindow
 from supsisim.library import Library
 
 class supsisimul():
@@ -24,8 +24,8 @@ class supsisimul():
         library = Library()
         library.setGeometry(20, 20, 400, 980)
         library.show()
-        main = SupsiSimMainWindow(library, self.fname, self.mypath, self.runflag)
-        main.setGeometry(500,100,1024,800)
+        main = NewEditorMainWindow(library, self.fname, self.mypath, self.runflag)
+        main.setGeometry(500,100,1024,768)
 
         main.show()
         ret = app.exec_()

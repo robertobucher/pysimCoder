@@ -106,11 +106,11 @@ from control.mateqn import *
 
 # Continous system
 # states: x, phi, v, omega
-sys = ss(A,B,C,D)
+invPend = ss(A,B,C,D)
 
 # discrete-time model
 ts = 0.01
-sysd = c2d(sys,ts,'zoh')
+sysd = c2d(invPend,ts,'zoh')
 
 # LQR Controller design
 ##############################################################################

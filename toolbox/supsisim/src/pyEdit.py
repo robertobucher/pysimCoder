@@ -7,7 +7,6 @@ from pyqt5 import QMainWindow, QWidget, QVBoxLayout,  QAction, QMessageBox, \
                    QPrintDialog, QtCore
 
 from supsisim.block import Block
-from supsisim.node import Node
 from supsisim.connection import Connection
 from supsisim.editor import Editor
 from supsisim.library import Library
@@ -17,10 +16,10 @@ from supsisim.const import respath, pycmd
 
 DEBUG = False
 
-class SupsiSimMainWindow(QMainWindow):
+class NewEditorMainWindow(QMainWindow):
     def __init__(self, library, fname, mypath, runflag, parent=None):
-        super(SupsiSimMainWindow, self).__init__(parent)
-        self.resize(1024, 800)
+        super(NewEditorMainWindow, self).__init__(parent)
+        self.resize(1024, 768)
         self.centralWidget = QWidget(self)
         self.verticalLayout = QVBoxLayout(self.centralWidget)
         #self.verticalLayout.setMargin(0)
@@ -46,6 +45,7 @@ class SupsiSimMainWindow(QMainWindow):
         self.evpos = QtCore.QPointF(0,0)
         self.editor = Editor(self)
         self.editor.install(self.scene)
+        self.editor.redrawNodes()
         self.status.showMessage('Ready')
 
         self.modified = False
@@ -70,6 +70,12 @@ class SupsiSimMainWindow(QMainWindow):
                                                 shortcut = 'Ctrl+S',
                                                 statusTip = 'Save File',
                                                 triggered = self.saveFile)
+        
+        self.saveFileAsAction = QAction(QIcon(mypath+'filesaveas.png'),
+                                                '&Save as', self,
+                                                shortcut = 'Ctrl+A',
+                                                statusTip = 'Save File As...',
+                                                triggered = self.saveFileAs)
 
         self.copyAction = QAction(QIcon(mypath+'copy.png'),
                                             '&Copy', self,
@@ -137,6 +143,7 @@ class SupsiSimMainWindow(QMainWindow):
         toolbarF.addAction(self.newFileAction)
         toolbarF.addAction(self.openFileAction)
         toolbarF.addAction(self.saveFileAction)
+        toolbarF.addAction(self.saveFileAsAction)
         toolbarF.addAction(self.printAction)
         toolbarF.addAction(self.exitAction)
 
@@ -162,6 +169,7 @@ class SupsiSimMainWindow(QMainWindow):
         fileMenu = menubar.addMenu('&File')
         fileMenu.addAction(self.openFileAction)
         fileMenu.addAction(self.saveFileAction)
+        fileMenu.addAction(self.saveFileAsAction)
         fileMenu.addSeparator()
         fileMenu.addAction(self.exitAction)
         
@@ -188,12 +196,6 @@ class SupsiSimMainWindow(QMainWindow):
 
     def pasteAct(self):
         if self.scene.selection != []:
-            for item in self.scene.selection:
-                if isinstance(item, Block) or isinstance(item, Node):
-                    try:
-                        item.clone(QtCore.QPointF(200,200))
-                    except:
-                        pass
             for item in self.scene.selection:
                 if isinstance(item, Connection):
                     try:
@@ -253,7 +255,7 @@ class SupsiSimMainWindow(QMainWindow):
                 self.saveFile()
             elif ret == QMessageBox.Cancel:
                 return
-            self.scene.newDgm()
+        self.scene.newDgm()            
                 
         filename = QFileDialog.getOpenFileName(self, 'Open', '.', filter='*.dgm')
         filename = filename[0]
@@ -263,9 +265,23 @@ class SupsiSimMainWindow(QMainWindow):
             self.path = str(fname.absolutePath())
             self.setWindowTitle(self.filename)
             self.scene.loadDgm(self.getFullFileName())
+            self.editor.redrawNodes()
             self.modified = False
         
     def saveFile(self):
+        if self.filename == 'untitled':
+            self.saveFileAs()
+        else:
+            filename = self.filename
+            if filename != '':
+                fname = QtCore.QFileInfo(filename)
+                self.filename = str(fname.baseName())
+                self.path = str(fname.absolutePath())
+                self.setWindowTitle(self.filename)
+                self.scene.saveDgm(self.getFullFileName())
+                self.modified = False
+
+    def saveFileAs(self):
         filename = QFileDialog.getSaveFileName(self, 'Save', self.path+'/'+self.filename, filter='*.dgm')
         filename = filename[0]
         if filename != '':
@@ -333,17 +349,18 @@ class SupsiSimMainWindow(QMainWindow):
     def setcodegenAct(self):
         self.scene.codegenDlg()
 
-    def closeEvent(self,event):
+    def closeEvent(self,event):          
         try:
             os.remove('tmp.py')
         except:
             pass
-
+        
         if self.modified:
             ret = self.askSaving()
             if ret == QMessageBox.Save:
                 self.saveFile()
             elif ret == QMessageBox.Cancel:
+                event.ignore()
                 return
             
         self.library.closeFlag = True

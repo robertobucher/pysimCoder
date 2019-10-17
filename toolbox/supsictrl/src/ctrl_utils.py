@@ -347,7 +347,6 @@ def wn2ts(wn, xi):
 class StatePrt:
     """
     StatePrt(fun, [xmin, xmax], [ymin, ymax], Points=20)
-
     The function "fun" is defined as
     def fun(t, x):
         .....

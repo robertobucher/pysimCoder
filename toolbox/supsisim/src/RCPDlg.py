@@ -2,6 +2,7 @@
 
 from pyqt5 import QDialog, QGridLayout, QLabel, QLineEdit, QPushButton, QListWidget, QtCore, QMessageBox
 from supsisim.const import pyrun, respath
+
 import subprocess
 
 class BlkDlg(QDialog):

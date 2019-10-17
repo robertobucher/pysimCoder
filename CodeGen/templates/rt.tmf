@@ -24,7 +24,7 @@ else
      LIB = $(LIBDIR)/libpyblk.a
 endif
 
-CFLAGS = $(CC_OPTIONS) -O2 -I$(INCDIR) $(C_FLAGS) -DMODEL=$(MODEL) 
+CFLAGS = $(CC_OPTIONS) -Wall -O2 -I$(INCDIR) $(C_FLAGS) -DMODEL=$(MODEL) 
 
 $(MAIN).c: $(MAINDIR)/$(MAIN).c $(MODEL).c
 	cp $< .

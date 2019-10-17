@@ -1,6 +1,6 @@
 <root>
   <Date>
-    <SavingDate>17.08.2019 - 10:17:58</SavingDate>
+    <SavingDate>15.10.2019 - 13:26:16</SavingDate>
   </Date>
   <Simulation>
     <Template>rt.tmf</Template>
@@ -10,160 +10,17 @@
     <Tf>10</Tf>
   </Simulation>
   <block>
-    <name>FH_5XXX_INIT</name>
-    <inp>0</inp>
-    <outp>0</outp>
-    <inset>0</inset>
-    <outset>0</outset>
-    <icon>FH_5XXX_INIT</icon>
-    <params>FH_5XXX_INIT_Blk|Device ID: 0x01|Pos Prop. gain: 0|Pos Deriv. gain: 0|V Prop. gain:0|V Intg gain:0|TQ Prop. gain:0|TQ Intg gain:0| Encoder reset (1-&gt;Yes, 0-&gt;No):1</params>
-    <width>80</width>
-    <flip>0</flip>
-    <posX>-410.0</posX>
-    <posY>-260.0</posY>
-  </block>
-  <block>
-    <name>Init_enc</name>
-    <inp>1</inp>
-    <outp>1</outp>
-    <inset>0</inset>
-    <outset>0</outset>
-    <icon>INIT</icon>
-    <params>init_encBlk|Trigger Time: 4.5|Default Output: 0|Offset: 0</params>
-    <width>80</width>
-    <flip>0</flip>
-    <posX>-110.0</posX>
-    <posY>70.0</posY>
-  </block>
-  <block>
-    <name>FH_5XXX_setTQ</name>
-    <inp>1</inp>
-    <outp>0</outp>
-    <inset>0</inset>
-    <outset>0</outset>
-    <icon>MOT_TQ</icon>
-    <params>FH_5XXX_setTQBlk|Device ID: 0x01</params>
-    <width>80</width>
-    <flip>0</flip>
-    <posX>870.0</posX>
-    <posY>-110.0</posY>
-  </block>
-  <block>
-    <name>FH_5XXX_ENC</name>
+    <name>Step</name>
     <inp>0</inp>
     <outp>1</outp>
     <inset>0</inset>
     <outset>0</outset>
-    <icon>ENC</icon>
-    <params>FH_5XXX_ENCBlk|Device ID: 0x01|Resolution: enc_w</params>
+    <icon>STEP</icon>
+    <params>stepBlk|Step Time: 5|Step Value: 1</params>
     <width>80</width>
     <flip>0</flip>
-    <posX>-80.0</posX>
-    <posY>-130.0</posY>
-  </block>
-  <block>
-    <name>FH_5XXX_AD</name>
-    <inp>0</inp>
-    <outp>1</outp>
-    <inset>0</inset>
-    <outset>0</outset>
-    <icon>AD</icon>
-    <params>FH_5XXX_ADBlk|Device ID: 0x01|Channel: 0</params>
-    <width>80</width>
-    <flip>0</flip>
-    <posX>-440.0</posX>
-    <posY>70.0</posY>
-  </block>
-  <block>
-    <name>RT Plot</name>
-    <inp>1</inp>
-    <outp>0</outp>
-    <inset>0</inset>
-    <outset>0</outset>
-    <icon>PLOT</icon>
-    <params>scopeStream</params>
-    <width>80</width>
-    <flip>0</flip>
-    <posX>590.0</posX>
-    <posY>80.0</posY>
-  </block>
-  <block>
-    <name>Switch</name>
-    <inp>3</inp>
-    <outp>1</outp>
-    <inset>0</inset>
-    <outset>0</outset>
-    <icon>SWITCH</icon>
-    <params>switchBlk|Condition [0 &lt; or 1 &gt;] : 1|Compare Value: 0.5|Persistence [0 no or 1 yes]: 0</params>
-    <width>80</width>
-    <flip>0</flip>
-    <posX>480.0</posX>
-    <posY>-130.0</posY>
-  </block>
-  <block>
-    <name>Const2</name>
-    <inp>0</inp>
-    <outp>1</outp>
-    <inset>0</inset>
-    <outset>0</outset>
-    <icon>CONST</icon>
-    <params>constBlk|Value: 0</params>
-    <width>80</width>
-    <flip>0</flip>
-    <posX>320.0</posX>
-    <posY>-30.0</posY>
-  </block>
-  <block>
-    <name>Const1</name>
-    <inp>0</inp>
-    <outp>1</outp>
-    <inset>0</inset>
-    <outset>0</outset>
-    <icon>CONST</icon>
-    <params>constBlk|Value: 0</params>
-    <width>80</width>
-    <flip>0</flip>
-    <posX>-80.0</posX>
-    <posY>-260.0</posY>
-  </block>
-  <block>
-    <name>Gain</name>
-    <inp>1</inp>
-    <outp>1</outp>
-    <inset>0</inset>
-    <outset>0</outset>
-    <icon>MULT</icon>
-    <params>matmultBlk|Gains: D2PHI</params>
-    <width>80</width>
-    <flip>0</flip>
-    <posX>30.0</posX>
-    <posY>70.0</posY>
-  </block>
-  <block>
-    <name>LTI_discrete1</name>
-    <inp>1</inp>
-    <outp>1</outp>
-    <inset>0</inset>
-    <outset>0</outset>
-    <icon>DSS</icon>
-    <params>dssBlk|System: gz|Initial conditions: 0</params>
-    <width>80</width>
-    <flip>0</flip>
-    <posX>-280.0</posX>
-    <posY>70.0</posY>
-  </block>
-  <block>
-    <name>LTI_discrete</name>
-    <inp>3</inp>
-    <outp>1</outp>
-    <inset>0</inset>
-    <outset>0</outset>
-    <icon>DSS</icon>
-    <params>dssBlk|System: ctr|Initial conditions: 0</params>
-    <width>80</width>
-    <flip>0</flip>
-    <posX>250.0</posX>
-    <posY>-170.0</posY>
+    <posX>560.0</posX>
+    <posY>-10.0</posY>
   </block>
   <block>
     <name>Prod</name>
@@ -179,284 +36,267 @@
     <posY>-110.0</posY>
   </block>
   <block>
-    <name>Step</name>
+    <name>LTI_discrete</name>
+    <inp>3</inp>
+    <outp>1</outp>
+    <inset>0</inset>
+    <outset>0</outset>
+    <icon>DSS</icon>
+    <params>dssBlk|System: ctr|Initial conditions: 0</params>
+    <width>80</width>
+    <flip>0</flip>
+    <posX>250.0</posX>
+    <posY>-170.0</posY>
+  </block>
+  <block>
+    <name>LTI_discrete1</name>
+    <inp>1</inp>
+    <outp>1</outp>
+    <inset>0</inset>
+    <outset>0</outset>
+    <icon>DSS</icon>
+    <params>dssBlk|System: gz|Initial conditions: 0</params>
+    <width>80</width>
+    <flip>0</flip>
+    <posX>-280.0</posX>
+    <posY>70.0</posY>
+  </block>
+  <block>
+    <name>Gain</name>
+    <inp>1</inp>
+    <outp>1</outp>
+    <inset>0</inset>
+    <outset>0</outset>
+    <icon>MULT</icon>
+    <params>matmultBlk|Gains: D2PHI</params>
+    <width>80</width>
+    <flip>0</flip>
+    <posX>30.0</posX>
+    <posY>70.0</posY>
+  </block>
+  <block>
+    <name>Const1</name>
     <inp>0</inp>
     <outp>1</outp>
     <inset>0</inset>
     <outset>0</outset>
-    <icon>STEP</icon>
-    <params>stepBlk|Step Time: 5|Step Value: 1</params>
+    <icon>CONST</icon>
+    <params>constBlk|Value: 0</params>
     <width>80</width>
     <flip>0</flip>
-    <posX>570.0</posX>
-    <posY>-40.0</posY>
-  </block>
-  <node>
-    <posX>-190.0</posX>
-    <posY>70.0</posY>
-  </node>
-  <node>
-    <posX>-360.0</posX>
-    <posY>70.0</posY>
-  </node>
-  <node>
-    <posX>-40.0</posX>
-    <posY>70.0</posY>
-  </node>
-  <node>
-    <posX>150.0</posX>
-    <posY>-170.0</posY>
-  </node>
-  <node>
-    <posX>70.0</posX>
-    <posY>-130.0</posY>
-  </node>
-  <node>
-    <posX>420.0</posX>
-    <posY>-90.0</posY>
-  </node>
-  <node>
-    <posX>420.0</posX>
-    <posY>80.0</posY>
-  </node>
-  <node>
-    <posX>340.0</posX>
-    <posY>40.0</posY>
-  </node>
-  <node>
-    <posX>150.0</posX>
-    <posY>40.0</posY>
-  </node>
-  <node>
-    <posX>390.0</posX>
-    <posY>-130.0</posY>
-  </node>
-  <node>
-    <posX>390.0</posX>
-    <posY>-30.0</posY>
-  </node>
-  <node>
-    <posX>110.0</posX>
-    <posY>-210.0</posY>
-  </node>
-  <node>
-    <posX>110.0</posX>
+    <posX>-80.0</posX>
     <posY>-260.0</posY>
-  </node>
-  <node>
-    <posX>150.0</posX>
-    <posY>70.0</posY>
-  </node>
-  <node>
-    <posX>320.0</posX>
-    <posY>-170.0</posY>
-  </node>
-  <node>
-    <posX>590.0</posX>
+  </block>
+  <block>
+    <name>Const2</name>
+    <inp>0</inp>
+    <outp>1</outp>
+    <inset>0</inset>
+    <outset>0</outset>
+    <icon>CONST</icon>
+    <params>constBlk|Value: 0</params>
+    <width>80</width>
+    <flip>0</flip>
+    <posX>270.0</posX>
+    <posY>-30.0</posY>
+  </block>
+  <block>
+    <name>Switch</name>
+    <inp>3</inp>
+    <outp>1</outp>
+    <inset>0</inset>
+    <outset>0</outset>
+    <icon>SWITCH</icon>
+    <params>switchBlk|Condition [0 &lt; or 1 &gt;] : 1|Compare Value: 0.5|Persistence [0 no or 1 yes]: 0</params>
+    <width>80</width>
+    <flip>0</flip>
+    <posX>480.0</posX>
     <posY>-130.0</posY>
-  </node>
-  <node>
-    <posX>780.0</posX>
+  </block>
+  <block>
+    <name>RT Plot</name>
+    <inp>1</inp>
+    <outp>0</outp>
+    <inset>0</inset>
+    <outset>0</outset>
+    <icon>PLOT</icon>
+    <params>scopeStream</params>
+    <width>80</width>
+    <flip>0</flip>
+    <posX>670.0</posX>
+    <posY>70.0</posY>
+  </block>
+  <block>
+    <name>FH_5XXX_AD</name>
+    <inp>0</inp>
+    <outp>1</outp>
+    <inset>0</inset>
+    <outset>0</outset>
+    <icon>AD</icon>
+    <params>FH_5XXX_ADBlk|Device ID: 0x01|Channel: 0</params>
+    <width>80</width>
+    <flip>0</flip>
+    <posX>-440.0</posX>
+    <posY>70.0</posY>
+  </block>
+  <block>
+    <name>FH_5XXX_ENC</name>
+    <inp>0</inp>
+    <outp>1</outp>
+    <inset>0</inset>
+    <outset>0</outset>
+    <icon>ENC</icon>
+    <params>FH_5XXX_ENCBlk|Device ID: 0x01|Resolution: enc_w</params>
+    <width>80</width>
+    <flip>0</flip>
+    <posX>-80.0</posX>
+    <posY>-130.0</posY>
+  </block>
+  <block>
+    <name>FH_5XXX_setTQ</name>
+    <inp>1</inp>
+    <outp>0</outp>
+    <inset>0</inset>
+    <outset>0</outset>
+    <icon>MOT_TQ</icon>
+    <params>FH_5XXX_setTQBlk|Device ID: 0x01</params>
+    <width>80</width>
+    <flip>0</flip>
+    <posX>870.0</posX>
     <posY>-110.0</posY>
-  </node>
-  <node>
-    <posX>630.0</posX>
-    <posY>-40.0</posY>
-  </node>
-  <node>
-    <posX>630.0</posX>
-    <posY>-90.0</posY>
-  </node>
+  </block>
+  <block>
+    <name>Init_enc</name>
+    <inp>1</inp>
+    <outp>1</outp>
+    <inset>0</inset>
+    <outset>0</outset>
+    <icon>INIT</icon>
+    <params>init_encBlk|Trigger Time: 4.5|Default Output: 0|Offset: 0</params>
+    <width>80</width>
+    <flip>0</flip>
+    <posX>-110.0</posX>
+    <posY>70.0</posY>
+  </block>
+  <block>
+    <name>FH_5XXX_INIT</name>
+    <inp>0</inp>
+    <outp>0</outp>
+    <inset>0</inset>
+    <outset>0</outset>
+    <icon>FH_5XXX_INIT</icon>
+    <params>FH_5XXX_INIT_Blk|Device ID: 0x01|Pos Prop. gain: 0|Pos Deriv. gain: 0|V Prop. gain:0|V Intg gain:0|TQ Prop. gain:0|TQ Intg gain:0| Encoder reset (1-&gt;Yes, 0-&gt;No):1</params>
+    <width>80</width>
+    <flip>0</flip>
+    <posX>-410.0</posX>
+    <posY>-260.0</posY>
+  </block>
   <connection>
-    <pos1X>-190.0</pos1X>
-    <pos1Y>70.0</pos1Y>
-    <pos2X>-154.0</pos2X>
-    <pos2Y>70.0</pos2Y>
+    <pos1X>730.0</pos1X>
+    <pos1Y>-110.0</pos1Y>
+    <pos2X>830.0</pos2X>
+    <pos2Y>-110.0</pos2Y>
+    <pt>780.0,-110.0</pt>
+    <pt>780.0,-110.0</pt>
   </connection>
   <connection>
-    <pos1X>-236.0</pos1X>
-    <pos1Y>70.0</pos1Y>
-    <pos2X>-190.0</pos2X>
-    <pos2Y>70.0</pos2Y>
+    <pos1X>520.0</pos1X>
+    <pos1Y>-130.0</pos1Y>
+    <pos2X>650.0</pos2X>
+    <pos2Y>-130.0</pos2Y>
+    <pt>590.0,-130.0</pt>
+    <pt>590.0,-130.0</pt>
   </connection>
   <connection>
-    <pos1X>-360.0</pos1X>
-    <pos1Y>70.0</pos1Y>
-    <pos2X>-324.0</pos2X>
-    <pos2Y>70.0</pos2Y>
-  </connection>
-  <connection>
-    <pos1X>-396.0</pos1X>
-    <pos1Y>70.0</pos1Y>
-    <pos2X>-360.0</pos2X>
-    <pos2Y>70.0</pos2Y>
-  </connection>
-  <connection>
-    <pos1X>-40.0</pos1X>
-    <pos1Y>70.0</pos1Y>
-    <pos2X>-14.0</pos2X>
-    <pos2Y>70.0</pos2Y>
-  </connection>
-  <connection>
-    <pos1X>-66.0</pos1X>
-    <pos1Y>70.0</pos1Y>
-    <pos2X>-40.0</pos2X>
-    <pos2Y>70.0</pos2Y>
-  </connection>
-  <connection>
-    <pos1X>150.0</pos1X>
-    <pos1Y>-170.0</pos1Y>
-    <pos2X>206.0</pos2X>
-    <pos2Y>-170.0</pos2Y>
-  </connection>
-  <connection>
-    <pos1X>420.0</pos1X>
-    <pos1Y>80.0</pos1Y>
-    <pos2X>546.0</pos2X>
-    <pos2Y>80.0</pos2Y>
-  </connection>
-  <connection>
-    <pos1X>150.0</pos1X>
-    <pos1Y>40.0</pos1Y>
-    <pos2X>150.0</pos2X>
-    <pos2Y>-170.0</pos2Y>
-  </connection>
-  <connection>
-    <pos1X>420.0</pos1X>
-    <pos1Y>-90.0</pos1Y>
-    <pos2X>436.0</pos2X>
+    <pos1X>600.0</pos1X>
+    <pos1Y>-10.0</pos1Y>
+    <pos2X>650.0</pos2X>
     <pos2Y>-90.0</pos2Y>
+    <pt>630.0,-10.0</pt>
+    <pt>630.0,-90.0</pt>
   </connection>
   <connection>
     <pos1X>70.0</pos1X>
-    <pos1Y>-130.0</pos1Y>
-    <pos2X>206.0</pos2X>
-    <pos2Y>-130.0</pos2Y>
-  </connection>
-  <connection>
-    <pos1X>420.0</pos1X>
-    <pos1Y>80.0</pos1Y>
-    <pos2X>420.0</pos2X>
-    <pos2Y>-90.0</pos2Y>
-  </connection>
-  <connection>
-    <pos1X>-36.0</pos1X>
-    <pos1Y>-130.0</pos1Y>
-    <pos2X>70.0</pos2X>
-    <pos2Y>-130.0</pos2Y>
-  </connection>
-  <connection>
-    <pos1X>341.0</pos1X>
-    <pos1Y>40.0</pos1Y>
-    <pos2X>420.0</pos2X>
-    <pos2Y>80.0</pos2Y>
-  </connection>
-  <connection>
-    <pos1X>150.0</pos1X>
-    <pos1Y>40.0</pos1Y>
-    <pos2X>341.0</pos2X>
-    <pos2Y>40.0</pos2Y>
-  </connection>
-  <connection>
-    <pos1X>390.0</pos1X>
-    <pos1Y>-130.0</pos1Y>
-    <pos2X>436.0</pos2X>
-    <pos2Y>-130.0</pos2Y>
-  </connection>
-  <connection>
-    <pos1X>390.0</pos1X>
-    <pos1Y>-30.0</pos1Y>
-    <pos2X>390.0</pos2X>
-    <pos2Y>-130.0</pos2Y>
-  </connection>
-  <connection>
-    <pos1X>364.0</pos1X>
-    <pos1Y>-30.0</pos1Y>
-    <pos2X>390.0</pos2X>
-    <pos2Y>-30.0</pos2Y>
-  </connection>
-  <connection>
-    <pos1X>110.0</pos1X>
-    <pos1Y>-210.0</pos1Y>
-    <pos2X>206.0</pos2X>
-    <pos2Y>-210.0</pos2Y>
-  </connection>
-  <connection>
-    <pos1X>294.0</pos1X>
-    <pos1Y>-170.0</pos1Y>
-    <pos2X>320.0</pos2X>
-    <pos2Y>-170.0</pos2Y>
-  </connection>
-  <connection>
-    <pos1X>110.0</pos1X>
-    <pos1Y>-260.0</pos1Y>
-    <pos2X>110.0</pos2X>
-    <pos2Y>-210.0</pos2Y>
-  </connection>
-  <connection>
-    <pos1X>320.0</pos1X>
-    <pos1Y>-170.0</pos1Y>
-    <pos2X>436.0</pos2X>
-    <pos2Y>-170.0</pos2Y>
-  </connection>
-  <connection>
-    <pos1X>-36.0</pos1X>
-    <pos1Y>-260.0</pos1Y>
-    <pos2X>110.0</pos2X>
-    <pos2Y>-260.0</pos2Y>
-  </connection>
-  <connection>
-    <pos1X>150.0</pos1X>
     <pos1Y>70.0</pos1Y>
-    <pos2X>150.0</pos2X>
-    <pos2Y>40.0</pos2Y>
-  </connection>
-  <connection>
-    <pos1X>74.0</pos1X>
-    <pos1Y>70.0</pos1Y>
-    <pos2X>150.0</pos2X>
+    <pos2X>630.0</pos2X>
     <pos2Y>70.0</pos2Y>
+    <pt>140.0,70.0</pt>
+    <pt>400.0,70.0</pt>
+    <pt>480.0,70.0</pt>
+    <pt>480.0,70.0</pt>
   </connection>
   <connection>
-    <pos1X>524.0</pos1X>
-    <pos1Y>-130.0</pos1Y>
-    <pos2X>590.0</pos2X>
-    <pos2Y>-130.0</pos2Y>
-  </connection>
-  <connection>
-    <pos1X>590.0</pos1X>
-    <pos1Y>-130.0</pos1Y>
-    <pos2X>646.0</pos2X>
-    <pos2Y>-130.0</pos2Y>
-  </connection>
-  <connection>
-    <pos1X>734.0</pos1X>
-    <pos1Y>-110.0</pos1Y>
-    <pos2X>780.0</pos2X>
-    <pos2Y>-110.0</pos2Y>
-  </connection>
-  <connection>
-    <pos1X>780.0</pos1X>
-    <pos1Y>-110.0</pos1Y>
-    <pos2X>826.0</pos2X>
-    <pos2Y>-110.0</pos2Y>
-  </connection>
-  <connection>
-    <pos1X>614.0</pos1X>
-    <pos1Y>-40.0</pos1Y>
-    <pos2X>630.0</pos2X>
-    <pos2Y>-40.0</pos2Y>
-  </connection>
-  <connection>
-    <pos1X>630.0</pos1X>
-    <pos1Y>-40.0</pos1Y>
-    <pos2X>630.0</pos2X>
+    <pos1X>70.0</pos1X>
+    <pos1Y>70.0</pos1Y>
+    <pos2X>440.0</pos2X>
     <pos2Y>-90.0</pos2Y>
+    <pt>140.0,70.0</pt>
+    <pt>400.0,70.0</pt>
+    <pt>400.0,70.0</pt>
+    <pt>400.0,-90.0</pt>
   </connection>
   <connection>
-    <pos1X>630.0</pos1X>
-    <pos1Y>-90.0</pos1Y>
-    <pos2X>646.0</pos2X>
-    <pos2Y>-90.0</pos2Y>
+    <pos1X>290.0</pos1X>
+    <pos1Y>-170.0</pos1Y>
+    <pos2X>440.0</pos2X>
+    <pos2Y>-170.0</pos2Y>
+    <pt>370.0,-170.0</pt>
+    <pt>370.0,-170.0</pt>
+  </connection>
+  <connection>
+    <pos1X>310.0</pos1X>
+    <pos1Y>-30.0</pos1Y>
+    <pos2X>440.0</pos2X>
+    <pos2Y>-130.0</pos2Y>
+    <pt>350.0,-30.0</pt>
+    <pt>350.0,-130.0</pt>
+  </connection>
+  <connection>
+    <pos1X>70.0</pos1X>
+    <pos1Y>70.0</pos1Y>
+    <pos2X>210.0</pos2X>
+    <pos2Y>-170.0</pos2Y>
+    <pt>140.0,70.0</pt>
+    <pt>140.0,-170.0</pt>
+  </connection>
+  <connection>
+    <pos1X>-70.0</pos1X>
+    <pos1Y>70.0</pos1Y>
+    <pos2X>-10.0</pos2X>
+    <pos2Y>70.0</pos2Y>
+    <pt>-40.0,70.0</pt>
+    <pt>-40.0,70.0</pt>
+  </connection>
+  <connection>
+    <pos1X>-240.0</pos1X>
+    <pos1Y>70.0</pos1Y>
+    <pos2X>-150.0</pos2X>
+    <pos2Y>70.0</pos2Y>
+    <pt>-190.0,70.0</pt>
+    <pt>-190.0,70.0</pt>
+  </connection>
+  <connection>
+    <pos1X>-400.0</pos1X>
+    <pos1Y>70.0</pos1Y>
+    <pos2X>-320.0</pos2X>
+    <pos2Y>70.0</pos2Y>
+    <pt>-360.0,70.0</pt>
+    <pt>-360.0,70.0</pt>
+  </connection>
+  <connection>
+    <pos1X>-40.0</pos1X>
+    <pos1Y>-130.0</pos1Y>
+    <pos2X>210.0</pos2X>
+    <pos2Y>-130.0</pos2Y>
+    <pt>90.0,-130.0</pt>
+    <pt>90.0,-130.0</pt>
+  </connection>
+  <connection>
+    <pos1X>-40.0</pos1X>
+    <pos1Y>-260.0</pos1Y>
+    <pos2X>210.0</pos2X>
+    <pos2Y>-210.0</pos2Y>
+    <pt>90.0,-260.0</pt>
+    <pt>90.0,-210.0</pt>
   </connection>
 </root>

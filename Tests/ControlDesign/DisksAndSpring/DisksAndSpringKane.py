@@ -150,8 +150,10 @@ gz = c2d(gss,ts,'zoh')
 wn = 10
 
 xi1 = np.sqrt(2)/2 
-xi2 = np.sqrt(3)/2 
-#xi2 = 0.85
+xi2 = np.sqrt(3)/2
+xi2 = 0.85
+#xi1= 0.5
+#xi2= 0.55
 
 cl_p1 = [1,2*xi1*wn,wn**2]
 cl_p2 = [1,2*xi2*wn,wn**2]
@@ -170,8 +172,9 @@ G_f = np.vstack((gz.B,zeros((1,1))))
 k = place(Phi_f,G_f,cl_polesd)
 
 # Observer design - reduced order observer
+
 poli_of = 5*sp.roots(cl_poly1)     # Desired continous poles
-poli_o = 5*cl_poles[0:2]
+poli_o = 5*sp.roots(cl_p1)
 poli_oz = sp.exp(poli_o*ts) 
 poli_ozf = sp.exp(poli_of*ts)
 

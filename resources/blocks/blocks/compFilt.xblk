@@ -1,1 +1,1 @@
-{"lib": "Raspberry", "name": "CompFilter", "ip": 4, "op": 1, "stin": 0, "stout": 0, "icon": "COMPFILT", "params": "compFiltBlk|Alpha:0.999|Sampling Time:0.01"}
+{"lib": "Raspberry", "name": "CompFilter", "ip": 4, "op": 1, "stin": 0, "stout": 0, "icon": "COMPFILT", "params": "compFiltBlk|Alpha:0.999"}

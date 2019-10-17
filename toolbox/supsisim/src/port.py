@@ -25,7 +25,7 @@ class Port(QGraphicsPathItem):
             for conn in self.connections:
                 try:
                     conn.update_pos_from_ports()
-                    conn.update_path()
+                    #conn.redrawConnection()                                       
                 except AttributeError:
                     self.connections.remove(conn)
         return value
@@ -37,20 +37,10 @@ class Port(QGraphicsPathItem):
         return False
 
     def remove(self):
-        for conn in self.connections:
-            try:
-                conn.remove()
-            except:
-                pass
-        try:
-            self.scene().removeItem(self)
-        except AttributeError:
-            pass
-
-            try:
-                self.scene().removeItem(self)
-            except AttributeError:
-                pass
+        clist = self.connections.copy()
+        for el in clist:
+            el.remove()
+        self.scene().removeItem(self)
 
     def setFlip(self):
         isflipped = self.parent.flip
@@ -58,7 +48,7 @@ class Port(QGraphicsPathItem):
             self.setTransform(QTransform.fromScale(-1, 1))
         else:
             self.setTransform(QTransform.fromScale(1, 1))
-                
+                                             
 class InPort(Port):
     def __init__(self, parent, scene):
         super(InPort, self).__init__(parent, scene)
@@ -73,7 +63,7 @@ class InPort(Port):
     
     def setup(self):
         self.setPen(self.line_color)
-        self.setBrush(self.fill_color)
+        #self.setBrush(self.fill_color)
         self.p.moveTo(-PW, -PW)
         self.p.lineTo(0.0,0.0)
         self.p.lineTo(-PW, PW)             
@@ -101,29 +91,3 @@ class OutPort(Port):
         self.setPath(self.p)
         self.setFlag(QGraphicsItem.ItemSendsScenePositionChanges)
          
-class InNodePort(Port):
-    def __init__(self, parent, scene):
-        super(InNodePort, self).__init__(parent, scene)
-        self.setup()
-
-    def __str__(self):
-        txt  = 'Node In \n'
-        txt += 'Connections: ' + (len(self.connections)).__str__() + '\n'
-        return txt
-
-    def setup(self):
-        self.setFlag(QGraphicsItem.ItemSendsScenePositionChanges)
-
-class OutNodePort(Port):
-    def __init__(self, parent, scene):
-        super(OutNodePort, self).__init__(parent, scene)
-        self.setup()
-
-    def __str__(self):
-        txt  = 'Node Out \n'
-        txt += 'Connections: ' + (len(self.connections)).__str__() + '\n'
-        return txt
-
-    def setup(self):
-        self.setFlag(QGraphicsItem.ItemSendsScenePositionChanges)
-
