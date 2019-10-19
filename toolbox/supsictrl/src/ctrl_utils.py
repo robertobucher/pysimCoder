@@ -256,17 +256,17 @@ def set_aw(sys,poles):
     sys_fbk  =  ct.ss(sys_fbk)
     return sys_in, sys_fbk
 
-def matext(sys):
-    n = sys.A.shape[0]
-    if sys.isctime():
-         Aext=np.vstack((sys.A, -sys.C))
+def matext(syst):
+    n = syst.A.shape[0]
+    if syst.isctime():
+         Aext=np.vstack((syst.A, -syst.C))
          Aext =np.hstack((Aext, np.zeros((n+1,1)) ))
     else:
-        ts = sys.dt
-        Aext=np.vstack((sys.A,-sys.C*ts))
+        ts = syst.dt
+        Aext=np.vstack((syst.A,-sys.C*ts))
         Aext=np.hstack( (Aext, np.zeros((n+1,1))))
         Aext[n, n] = 1     
-    Bext=np.vstack((sys.B, np.zeros((1,1))))
+    Bext=np.vstack((syst.B, -syst.D))
     return Aext, Bext
         
 def grstep(sys, T = None):

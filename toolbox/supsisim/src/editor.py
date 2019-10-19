@@ -259,7 +259,22 @@ class Editor(QtCore.QObject):
                 
         node = Node(None, self.scene)
         node.setPos(pos)
-        
+
+    def redrawNodesFromPort(self, p):
+        N = len(p.connections)
+        for n in range(0,N):
+            pts1 = [p.connections[n].pos1]
+            for el in p.connections[n].connPoints:
+                pts1.append(el)
+            pts1.append(p.connections[n].pos2)
+            for m in range(n+1,N):
+                pts2 = [p.connections[m].pos1]
+                for el in p.connections[m].connPoints:
+                    pts2.append(el)
+                pts2.append(p.connections[m].pos2)
+
+                self.setNode(pts1, pts2)
+               
     def redrawNodes(self):
         for el in self.scene.items():
             if isinstance(el, Node):
@@ -268,19 +283,7 @@ class Editor(QtCore.QObject):
             if isinstance(item, Block):
                 for p in item.childItems():
                     if isinstance(p, OutPort):
-                        N = len(p.connections)
-                        for n in range(0,N):
-                            pts1 = [p.connections[n].pos1]
-                            for el in p.connections[n].connPoints:
-                                pts1.append(el)
-                            pts1.append(p.connections[n].pos2)
-                            for m in range(n+1,N):
-                                pts2 = [p.connections[m].pos1]
-                                for el in p.connections[m].connPoints:
-                                    pts2.append(el)
-                                pts2.append(p.connections[m].pos2)
-                                
-                                self.setNode(pts1, pts2)
+                        self.redrawNodesFromPort(p)
                                            
     def itemAt(self, pos):
         rect = QtCore.QRectF(pos+QtCore.QPointF(-DB,-DB), QtCore.QSizeF(2*DB,2*DB))
