@@ -263,7 +263,7 @@ def matext(syst):
          Aext =np.hstack((Aext, np.zeros((n+1,1)) ))
     else:
         ts = syst.dt
-        Aext=np.vstack((syst.A,-sys.C*ts))
+        Aext=np.vstack((syst.A,-syst.C*ts))
         Aext=np.hstack( (Aext, np.zeros((n+1,1))))
         Aext[n, n] = 1     
     Bext=np.vstack((syst.B, -syst.D))
