@@ -285,6 +285,11 @@ class Editor(QtCore.QObject):
                     if isinstance(p, OutPort):
                         self.redrawNodesFromPort(p)
                                            
+    def removeNodes(self):
+        for el in self.scene.items():
+            if isinstance(el, Node):
+                el.remove()
+                
     def itemAt(self, pos):
         rect = QtCore.QRectF(pos+QtCore.QPointF(-DB,-DB), QtCore.QSizeF(2*DB,2*DB))
         items =  self.scene.items(rect)
@@ -444,7 +449,7 @@ class Editor(QtCore.QObject):
 
     def P06(self, obj, event):                                     # LEFTMOUSEPRESSED + MOUSEMOVE
         self.redrawSelectedItems()
-        self.redrawNodes()
+        self.removeNodes()
         item = self.itemAt(event.scenePos())
                         
     def P07(self, obj, event):                                      # LEFTMOUSEPRESSED + MOUSERELEASED
