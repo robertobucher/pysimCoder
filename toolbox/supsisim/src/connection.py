@@ -125,10 +125,10 @@ class Connection(QGraphicsPathItem):
         N = len(self.connPoints)
         for n in range(0,N):
             self.connPoints[n] = self.connPoints[n]+delta
-        self.update_path()
         self.pos2 = self.port2.scenePos()
         self.connPoints[0].setY(self.pos1.y())
         self.connPoints[-1].setY(self.pos2.y())
+        self.update_path()
 
     def update_ports_from_pos(self):
         item = self.scene.find_itemAt(self.pos1)

@@ -106,7 +106,11 @@ class Scene(QGraphicsScene):
         connections = root.findall('connection')
         for item in connections:
             self.loadConn(item)
-        
+        try:
+            self.mainw.editor.redrawNodes()
+        except:
+            pass
+            
     def newDgm(self):
         self.clearDgm()
         self.addObjs=''
