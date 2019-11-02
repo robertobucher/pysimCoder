@@ -158,35 +158,50 @@ class Connection(QGraphicsPathItem):
         self.connPoints[N-1].setY(self.pos2.y())             
         self.update_path()      
         
-    def update_path(self, flag = 'noMoving'):
+    def update_path(self):
         p = QPainterPath()
         p.moveTo(self.pos1)
         for el in self.connPoints:
             p.lineTo(el)
-        if flag == 'moving':
-            if len(self.connPoints) == 0:
-                y = self.pos1.y()
-                pt =QtCore.QPointF(self.pos2.x(),y)
-            else:
-                pt_prev = self.connPoints[-1]
-                dx = np.abs(self.pos2.x()-pt_prev.x())
-                dy = np.abs(self.pos2.y()-pt_prev.y())
-                if dx > dy:
-                    pt = QtCore.QPointF(self.pos2.x(),pt_prev.y())
-                else:
-                    pt = QtCore.QPointF(pt_prev.x(),self.pos2.y())
-            p.lineTo(pt)
-        elif flag == 'movPort':
-            if len(self.connPoints) == 0:
-                pt_prev = self.pos1
-            else:
-                pt_prev = self.connPoints[-1]
+        p.lineTo(self.pos2)
+        self.setPath(p)
+
+    def update_path_draw2Port(self):
+        p = QPainterPath()
+        p.moveTo(self.pos1)
+        for el in self.connPoints:
+            p.lineTo(el)
+        if len(self.connPoints) == 0:
+            pt_prev = self.pos1
             pt1 = QtCore.QPointF((self.pos2.x()+pt_prev.x())/2, pt_prev.y())
             pt2 = QtCore.QPointF((self.pos2.x()+pt_prev.x())/2, self.pos2.y())
             p.lineTo(pt1)
-            p.lineTo(pt2)            
+            p.lineTo(pt2)
+        else:
+            pt_prev = self.connPoints[-1]
+            pt1 = QtCore.QPointF(pt_prev.x(), self.pos2.y())
+            p.lineTo(pt1)
         p.lineTo(self.pos2)
+        self.setPath(p)
 
+    def update_path_draw2Pt(self):
+        p = QPainterPath()
+        p.moveTo(self.pos1)
+        for el in self.connPoints:
+            p.lineTo(el)
+        if len(self.connPoints) == 0:
+            y = self.pos1.y()
+            pt =QtCore.QPointF(self.pos2.x(),y)
+        else:
+            pt_prev = self.connPoints[-1]
+            dx = np.abs(self.pos2.x()-pt_prev.x())
+            dy = np.abs(self.pos2.y()-pt_prev.y())
+            if dx > dy:
+                pt = QtCore.QPointF(self.pos2.x(),pt_prev.y())
+            else:
+                pt = QtCore.QPointF(pt_prev.x(),self.pos2.y())
+        p.lineTo(pt)
+        p.lineTo(self.pos2)
         self.setPath(p)
 
     def paint(self, painter, option, widget):
@@ -197,6 +212,15 @@ class Connection(QGraphicsPathItem):
         painter.setPen(pen)
         painter.drawPath(self.path())
 
+    def setPos(self, *args):
+        if len(args) == 1:
+            pt = self.gridPos(args[0])
+            super(Node, self).setPos(pt)
+        else:
+            pt = QtCore.QPointF(args[0],args[1])
+            pt = self.gridPos(pt)
+            super(Node, self).setPos(pt)
+            
     def remove(self):
         try:
             self.port1.connections.remove(self)

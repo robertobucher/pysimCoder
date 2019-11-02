@@ -134,6 +134,8 @@ class Editor(QtCore.QObject):
         self.scene.DgmToUndo()
         item = self.scene.item
         item.remove()
+        self.removeNodes()
+        self.redrawNodes()
 
     def connectInPort(self, item):
         if len(item.connections)==0:
@@ -148,16 +150,15 @@ class Editor(QtCore.QObject):
                 self.conn.connPoints.append(self.gridPos(pos2))
             else:
                 pt = self.conn.connPoints[-1]
-                pos1 = QtCore.QPointF((self.conn.pos2.x()+pt.x())/2, pt.y())
-                pos2 = QtCore.QPointF((self.conn.pos2.x()+pt.x())/2, self.conn.pos2.y())
+                pos1 = QtCore.QPointF(pt.x(), self.conn.pos2.y())
                 self.conn.connPoints.append(self.gridPos(pos1))
-                self.conn.connPoints.append(self.gridPos(pos2))
         self.conn.update_path()
         self.conn = None
  
     def deleteConn(self):
         self.scene.DgmToUndo()
         self.scene.item.remove()
+        self.removeNodes()
         self.redrawNodes()
 
     def find_exact_pos(self, c, pos):
@@ -440,6 +441,8 @@ class Editor(QtCore.QObject):
         for item in items:
             try:
                 item.remove()
+                self.removeNodes()
+                self.redrawNodes()
             except:
                 pass
         self.state = IDLE
@@ -505,9 +508,9 @@ class Editor(QtCore.QObject):
         self.setMouseByDraw(item)
         self.conn.pos2 = event.scenePos()
         if isinstance(item, InPort):
-            self.conn.update_path('movPort')
+            self.conn.update_path_draw2Port()
         else:
-            self.conn.update_path('moving')
+            self.conn.update_path_draw2Pt()
                     
     def P11(self, obj, event):                                      # ITEMSELECTED + MOUSEMOVE
         self.setMouseInitDraw(event.scenePos())
