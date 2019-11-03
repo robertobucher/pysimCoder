@@ -180,6 +180,12 @@ class Connection(QGraphicsPathItem):
         else:
             pt_prev = self.connPoints[-1]
             pt1 = QtCore.QPointF(pt_prev.x(), self.pos2.y())
+            if len(self.connPoints)>=2:
+                pt = self.connPoints[-2]
+                if pt.x() == pt_prev.x() == pt1.x() or \
+                   pt.y() == pt_prev.y() == pt1.y():
+                    self.connPoints.remove(pt_prev)
+            
             p.lineTo(pt1)
         p.lineTo(self.pos2)
         self.setPath(p)
@@ -200,6 +206,12 @@ class Connection(QGraphicsPathItem):
                 pt = QtCore.QPointF(self.pos2.x(),pt_prev.y())
             else:
                 pt = QtCore.QPointF(pt_prev.x(),self.pos2.y())
+            if len(self.connPoints)>=2:
+                pt1 = self.connPoints[-2]
+                if pt.x() == pt_prev.x() == pt1.x() or \
+                   pt.y() == pt_prev.y() == pt1.y():
+                    self.connPoints.remove(pt_prev)
+            
         p.lineTo(pt)
         p.lineTo(self.pos2)
         self.setPath(p)

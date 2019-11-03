@@ -13,8 +13,8 @@
     <name>Discrete_Controller</name>
     <inp>3</inp>
     <outp>1</outp>
-    <inset>0</inset>
-    <outset>0</outset>
+    <inset>1</inset>
+    <outset>1</outset>
     <icon>DSS</icon>
     <params>dssBlk|System: ctr|Initial conditions: 0</params>
     <width>80</width>
@@ -39,8 +39,8 @@
     <name>BoW_Plant</name>
     <inp>1</inp>
     <outp>2</outp>
-    <inset>0</inset>
-    <outset>0</outset>
+    <inset>1</inset>
+    <outset>1</outset>
     <icon>CSS</icon>
     <params>cssBlk|System: bow|Initial conditions: [0.1,0,0,0]</params>
     <width>80</width>

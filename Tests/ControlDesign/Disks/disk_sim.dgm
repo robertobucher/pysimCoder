@@ -1,6 +1,6 @@
 <root>
   <Date>
-    <SavingDate>14.10.2019 - 07:00:21</SavingDate>
+    <SavingDate>02.11.2019 - 10:59:29</SavingDate>
   </Date>
   <Simulation>
     <Template>rt.tmf</Template>
@@ -10,81 +10,16 @@
     <Tf>20</Tf>
   </Simulation>
   <block>
-    <name>RT Plot</name>
-    <inp>2</inp>
-    <outp>0</outp>
-    <inset>0</inset>
-    <outset>0</outset>
-    <icon>PLOT</icon>
-    <params>scopeStream</params>
-    <width>80</width>
-    <flip>0</flip>
-    <posX>590.0</posX>
-    <posY>-110.0</posY>
-  </block>
-  <block>
-    <name>LTI_discrete</name>
-    <inp>1</inp>
-    <outp>1</outp>
-    <inset>0</inset>
-    <outset>0</outset>
-    <icon>DSS</icon>
-    <params>dssBlk|System: gss_out|Initial conditions: 0</params>
-    <width>80</width>
-    <flip>1</flip>
-    <posX>70.0</posX>
-    <posY>50.0</posY>
-  </block>
-  <block>
-    <name>REF</name>
-    <inp>0</inp>
-    <outp>1</outp>
-    <inset>0</inset>
-    <outset>0</outset>
-    <icon>SQUARE</icon>
-    <params>squareBlk|Amplitude: 1|Period: 10|Width: 5|Bias: 0|Delay: 0</params>
-    <width>80</width>
-    <flip>0</flip>
-    <posX>-360.0</posX>
-    <posY>-130.0</posY>
-  </block>
-  <block>
-    <name>CTRIN</name>
-    <inp>2</inp>
-    <outp>1</outp>
-    <inset>0</inset>
-    <outset>0</outset>
-    <icon>DSS</icon>
-    <params>dssBlk|System: gss_in|Initial conditions: 0</params>
-    <width>80</width>
-    <flip>0</flip>
-    <posX>-170.0</posX>
-    <posY>-110.0</posY>
-  </block>
-  <block>
-    <name>SAT</name>
-    <inp>1</inp>
-    <outp>1</outp>
-    <inset>0</inset>
-    <outset>0</outset>
-    <icon>SATUR</icon>
-    <params>saturBlk|Upper saturation: 3000|Lower saturation: -3000</params>
-    <width>80</width>
-    <flip>0</flip>
-    <posX>130.0</posX>
-    <posY>-90.0</posY>
-  </block>
-  <block>
     <name>LTI_continous</name>
     <inp>1</inp>
     <outp>1</outp>
-    <inset>0</inset>
-    <outset>0</outset>
+    <inset>1</inset>
+    <outset>1</outset>
     <icon>CSS</icon>
     <params>cssBlk|System: g1|Initial conditions: 0</params>
     <width>80</width>
     <flip>0</flip>
-    <posX>360.0</posX>
+    <posX>390.0</posX>
     <posY>-90.0</posY>
   </block>
   <block>
@@ -100,77 +35,97 @@
     <posX>-10.0</posX>
     <posY>-90.0</posY>
   </block>
+  <block>
+    <name>SAT</name>
+    <inp>1</inp>
+    <outp>1</outp>
+    <inset>0</inset>
+    <outset>0</outset>
+    <icon>SATUR</icon>
+    <params>saturBlk|Upper saturation: 3000|Lower saturation: -3000</params>
+    <width>80</width>
+    <flip>0</flip>
+    <posX>130.0</posX>
+    <posY>-90.0</posY>
+  </block>
+  <block>
+    <name>CTRIN</name>
+    <inp>2</inp>
+    <outp>1</outp>
+    <inset>0</inset>
+    <outset>0</outset>
+    <icon>DSS</icon>
+    <params>dssBlk|System: gss_in|Initial conditions: 0</params>
+    <width>80</width>
+    <flip>0</flip>
+    <posX>-170.0</posX>
+    <posY>-110.0</posY>
+  </block>
+  <block>
+    <name>REF</name>
+    <inp>0</inp>
+    <outp>1</outp>
+    <inset>0</inset>
+    <outset>0</outset>
+    <icon>SQUARE</icon>
+    <params>squareBlk|Amplitude: 1|Period: 10|Width: 5|Bias: 0|Delay: 0</params>
+    <width>80</width>
+    <flip>0</flip>
+    <posX>-360.0</posX>
+    <posY>-130.0</posY>
+  </block>
+  <block>
+    <name>LTI_discrete</name>
+    <inp>1</inp>
+    <outp>1</outp>
+    <inset>0</inset>
+    <outset>0</outset>
+    <icon>DSS</icon>
+    <params>dssBlk|System: gss_out|Initial conditions: 0</params>
+    <width>80</width>
+    <flip>1</flip>
+    <posX>70.0</posX>
+    <posY>50.0</posY>
+  </block>
+  <block>
+    <name>RT Plot</name>
+    <inp>2</inp>
+    <outp>0</outp>
+    <inset>0</inset>
+    <outset>0</outset>
+    <icon>PLOT</icon>
+    <params>scopeStream</params>
+    <width>80</width>
+    <flip>0</flip>
+    <posX>590.0</posX>
+    <posY>-110.0</posY>
+  </block>
   <connection>
-    <pos1X>-320.0</pos1X>
-    <pos1Y>-130.0</pos1Y>
+    <pos1X>430.0</pos1X>
+    <pos1Y>-90.0</pos1Y>
     <pos2X>-210.0</pos2X>
-    <pos2Y>-130.0</pos2Y>
-    <pt>-250.0,-130.0</pt>
-    <pt>-250.0,-130.0</pt>
-  </connection>
-  <connection>
-    <pos1X>-130.0</pos1X>
-    <pos1Y>-110.0</pos1Y>
-    <pos2X>-50.0</pos2X>
-    <pos2Y>-110.0</pos2Y>
-    <pt>-90.0,-110.0</pt>
-    <pt>-90.0,-110.0</pt>
-  </connection>
-  <connection>
-    <pos1X>30.0</pos1X>
-    <pos1Y>-90.0</pos1Y>
-    <pos2X>90.0</pos2X>
     <pos2Y>-90.0</pos2Y>
-    <pt>60.0,-90.0</pt>
-    <pt>60.0,-90.0</pt>
+    <pt>490.0,-90.0</pt>
+    <pt>490.0,150.0</pt>
+    <pt>-260.0,150.0</pt>
+    <pt>-260.0,-90.0</pt>
+    <pt>-260.0,-90.0</pt>
   </connection>
   <connection>
-    <pos1X>170.0</pos1X>
-    <pos1Y>-90.0</pos1Y>
-    <pos2X>320.0</pos2X>
-    <pos2Y>-90.0</pos2Y>
-    <pt>250.0,-90.0</pt>
-    <pt>250.0,-90.0</pt>
-  </connection>
-  <connection>
-    <pos1X>170.0</pos1X>
-    <pos1Y>-90.0</pos1Y>
-    <pos2X>110.0</pos2X>
-    <pos2Y>50.0</pos2Y>
-    <pt>230.0,-90.0</pt>
-    <pt>230.0,50.0</pt>
-    <pt>170.0,50.0</pt>
-    <pt>170.0,50.0</pt>
-  </connection>
-  <connection>
-    <pos1X>30.0</pos1X>
-    <pos1Y>50.0</pos1Y>
-    <pos2X>-50.0</pos2X>
-    <pos2Y>-70.0</pos2Y>
-    <pt>-80.0,50.0</pt>
-    <pt>-80.0,-70.0</pt>
-    <pt>-60.0,-70.0</pt>
-    <pt>-60.0,-70.0</pt>
-  </connection>
-  <connection>
-    <pos1X>400.0</pos1X>
+    <pos1X>430.0</pos1X>
     <pos1Y>-90.0</pos1Y>
     <pos2X>550.0</pos2X>
     <pos2Y>-90.0</pos2Y>
-    <pt>480.0,-90.0</pt>
-    <pt>480.0,-90.0</pt>
+    <pt>490.0,-90.0</pt>
+    <pt>490.0,-90.0</pt>
   </connection>
   <connection>
-    <pos1X>400.0</pos1X>
+    <pos1X>170.0</pos1X>
     <pos1Y>-90.0</pos1Y>
-    <pos2X>-210.0</pos2X>
+    <pos2X>350.0</pos2X>
     <pos2Y>-90.0</pos2Y>
-    <pt>480.0,-90.0</pt>
-    <pt>480.0,160.0</pt>
-    <pt>-250.0,160.0</pt>
-    <pt>-250.0,-90.0</pt>
-    <pt>-230.0,-90.0</pt>
-    <pt>-230.0,-90.0</pt>
+    <pt>230.0,-90.0</pt>
+    <pt>230.0,-90.0</pt>
   </connection>
   <connection>
     <pos1X>-320.0</pos1X>
@@ -185,5 +140,49 @@
     <pt>520.0,-130.0</pt>
     <pt>550.0,-130.0</pt>
     <pt>550.0,-130.0</pt>
+  </connection>
+  <connection>
+    <pos1X>30.0</pos1X>
+    <pos1Y>50.0</pos1Y>
+    <pos2X>-50.0</pos2X>
+    <pos2Y>-70.0</pos2Y>
+    <pt>-80.0,50.0</pt>
+    <pt>-80.0,-70.0</pt>
+    <pt>-60.0,-70.0</pt>
+    <pt>-60.0,-70.0</pt>
+  </connection>
+  <connection>
+    <pos1X>170.0</pos1X>
+    <pos1Y>-90.0</pos1Y>
+    <pos2X>110.0</pos2X>
+    <pos2Y>50.0</pos2Y>
+    <pt>230.0,-90.0</pt>
+    <pt>230.0,50.0</pt>
+    <pt>170.0,50.0</pt>
+    <pt>170.0,50.0</pt>
+  </connection>
+  <connection>
+    <pos1X>30.0</pos1X>
+    <pos1Y>-90.0</pos1Y>
+    <pos2X>90.0</pos2X>
+    <pos2Y>-90.0</pos2Y>
+    <pt>60.0,-90.0</pt>
+    <pt>60.0,-90.0</pt>
+  </connection>
+  <connection>
+    <pos1X>-130.0</pos1X>
+    <pos1Y>-110.0</pos1Y>
+    <pos2X>-50.0</pos2X>
+    <pos2Y>-110.0</pos2Y>
+    <pt>-90.0,-110.0</pt>
+    <pt>-90.0,-110.0</pt>
+  </connection>
+  <connection>
+    <pos1X>-320.0</pos1X>
+    <pos1Y>-130.0</pos1Y>
+    <pos2X>-210.0</pos2X>
+    <pos2Y>-130.0</pos2Y>
+    <pt>-250.0,-130.0</pt>
+    <pt>-250.0,-130.0</pt>
   </connection>
 </root>
