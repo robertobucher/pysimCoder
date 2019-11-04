@@ -474,6 +474,7 @@ class Editor(QtCore.QObject):
         else:
             self.state = IDLE
 
+        item =  self.findOutPortAt(event.scenePos())
         if isinstance(item, OutPort):            
             self.scene.DgmToUndo()
             self.state = DRAWFROMOUTPORT
