@@ -573,7 +573,8 @@ class Editor(QtCore.QObject):
             if event.key() == QtCore.Qt.Key_Escape:
                 ev = 6
         if ev != -1:
-            #print('state->', self.state, 'event->',ev)
+            #if ev != 0:
+                #print('state->', self.state, 'event->',ev)
             fun = self.Fun[self.state][ ev]
             fun(obj, event)
                 
