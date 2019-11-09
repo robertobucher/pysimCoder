@@ -208,8 +208,12 @@ class Connection(QGraphicsPathItem):
                 pt = QtCore.QPointF(pt_prev.x(),self.pos2.y())
             if len(self.connPoints)>=2:
                 pt1 = self.connPoints[-2]
-                if pt.x() == pt_prev.x() == pt1.x() or \
-                   pt.y() == pt_prev.y() == pt1.y():
+                if pt.x() == pt_prev.x() == pt1.x() and \
+                   (pt_prev.y() < pt.y() < pt1.y() or pt1.y() < pt.y() < pt_prev.y()):
+                    self.connPoints.remove(pt_prev)
+                        
+                elif pt.y() == pt_prev.y() == pt1.y() and \
+                     (pt_prev.x() < pt.x() < pt1.x() or pt1.x() < pt.x() < pt_prev.x()):
                     self.connPoints.remove(pt_prev)
             
         p.lineTo(pt)
