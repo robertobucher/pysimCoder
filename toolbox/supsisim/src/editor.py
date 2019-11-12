@@ -218,46 +218,43 @@ class Editor(QtCore.QObject):
                     except:
                         pass
 
+    def clean_points(self, pts):
+        N = len(pts)
+        remPt = []
+        for n in range(1,N-1):
+            if pts[n-1].x() == pts[n].x() == pts[n+1].x() or\
+               pts[n-1].y() == pts[n].y() == pts[n+1].y():
+                remPt.append(pts[n])
+        for el in remPt:
+            pts.remove(el)
+        return pts
+        
+    def ptInLine(self, pt, p1, p2):
+        rect = QtCore.QRectF(p1-QtCore.QPointF(0.5,0.5), p2+QtCore.QPointF(0.5,0.5))
+        if rect.contains(pt):
+            return True
+        else:
+            return False
+        
     def setNode(self, pts1, pts2):
-        # Eliminate points in straight segments
-        N = len(pts1)
-        remPt = []
-        for n in range(1,N-1):
-            if pts1[n-1].x() == pts1[n].x() == pts1[n+1].x() or\
-               pts1[n-1].y() == pts1[n].y() == pts1[n+1].y():
-                remPt.append(pts1[n])
-        for el in remPt:
-            pts1.remove(el)
-            
-        N = len(pts2)
-        remPt = []
-        for n in range(1,N-1):
-            if pts2[n-1].x() == pts2[n].x() == pts2[n+1].x() or\
-               pts2[n-1].y() == pts2[n].y() == pts2[n+1].y():
-                remPt.append(pts2[n])
-        for el in remPt:
-            pts2.remove(el)
-            
+        pts1 = self.clean_points(pts1)
+        pts2 = self.clean_points(pts2)
         n = 0
         N = min(len(pts1), len(pts2))
         while pts1[n] == pts2[n] and n <N:
             n +=1
-        p11 = pts1[n-1]
-        p12 = pts1[n]
-        p21 = pts2[n-1]
-        p22 = pts2[n]
-        l1 = QtCore.QLineF(p11,p12)
-        l2 = QtCore.QLineF(p21,p22)
-        d1 = p12 - p11
-        d2 = p22 - p21
-        if d1.x()*d2.x() < 0 or d1.y()*d2.y() < 0:
-            pos = p11        
+        p1_prev = pts1[n-1]
+        p1 = pts1[n]
+        p2_prev = pts2[n-1]
+        p2 = pts2[n]
+ 
+        if self.ptInLine(p1, p2_prev, p2):
+            pos = p1
+        elif self.ptInLine(p2, p1_prev, p1):
+            pos = p2
         else:
-            if  l1.length() <= l2.length():
-                pos = p12
-            else:
-                pos = p22
-                
+            pos = p1_prev
+            
         node = Node(None, self.scene)
         node.setPos(pos)
 
@@ -284,7 +281,8 @@ class Editor(QtCore.QObject):
             if isinstance(item, Block):
                 for p in item.childItems():
                     if isinstance(p, OutPort):
-                        self.redrawNodesFromPort(p)
+                        if len(p.connections) > 1:
+                            self.redrawNodesFromPort(p)
                                            
     def removeNodes(self):
         for el in self.scene.items():
@@ -531,7 +529,7 @@ class Editor(QtCore.QObject):
             if ok:
                 self.currentPos = newPos
 
-    def P13(self, obj, event):
+    def P13(self, obj, event):                                         # MOVECONN + MOUSERELEASE
         item = self.scene.currentItem
         N = len(item.connPoints)
         oldPos = self.currentPos

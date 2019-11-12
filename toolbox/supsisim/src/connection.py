@@ -179,14 +179,14 @@ class Connection(QGraphicsPathItem):
             p.lineTo(pt2)
         else:
             pt_prev = self.connPoints[-1]
-            pt1 = QtCore.QPointF(pt_prev.x(), self.pos2.y())
+            pt = QtCore.QPointF(pt_prev.x(), self.pos2.y())
             if len(self.connPoints)>=2:
-                pt = self.connPoints[-2]
-                if pt.x() == pt_prev.x() == pt1.x() or \
-                   pt.y() == pt_prev.y() == pt1.y():
+                pt_2prev = self.connPoints[-2]
+                if pt_2prev.x() == pt_prev.x() == pt.x() or \
+                   pt_2prev.y() == pt_prev.y() == pt.y():
                     self.connPoints.remove(pt_prev)
             
-            p.lineTo(pt1)
+            p.lineTo(pt)
         p.lineTo(self.pos2)
         self.setPath(p)
 
@@ -206,15 +206,17 @@ class Connection(QGraphicsPathItem):
                 pt = QtCore.QPointF(self.pos2.x(),pt_prev.y())
             else:
                 pt = QtCore.QPointF(pt_prev.x(),self.pos2.y())
-            if len(self.connPoints)>=2:
-                pt1 = self.connPoints[-2]
-                if pt.x() == pt_prev.x() == pt1.x() and \
-                   (pt_prev.y() < pt.y() < pt1.y() or pt1.y() < pt.y() < pt_prev.y()):
-                    self.connPoints.remove(pt_prev)
+            if len(self.connPoints)==1:
+                pt_2prev = self.pos1;
+            else:
+                pt_2prev = self.connPoints[-2]
+            if pt.x() == pt_prev.x() == pt_2prev.x() and \
+               (pt_prev.y() < pt.y() < pt_2prev.y() or pt_2prev.y() < pt.y() < pt_prev.y()):
+                self.connPoints.remove(pt_prev)
                         
-                elif pt.y() == pt_prev.y() == pt1.y() and \
-                     (pt_prev.x() < pt.x() < pt1.x() or pt1.x() < pt.x() < pt_prev.x()):
-                    self.connPoints.remove(pt_prev)
+            elif pt.y() == pt_prev.y() == pt_2prev.y() and \
+                 (pt_prev.x() < pt.x() < pt_2prev.x() or pt_2prev.x() < pt.x() < pt_prev.x()):
+                self.connPoints.remove(pt_prev)
             
         p.lineTo(pt)
         p.lineTo(self.pos2)
