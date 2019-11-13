@@ -34,9 +34,9 @@ class Node(QGraphicsPathItem):
         painter.drawPath(self.path())
 
     def remove(self):
-      self.scene.removeItem(self)
+        self.scene.removeItem(self)
 
-      def setPos(self, *args):
+    def setPos(self, *args):
         if len(args) == 1:
             pt = self.gridPos(args[0])
             super(Node, self).setPos(pt)
