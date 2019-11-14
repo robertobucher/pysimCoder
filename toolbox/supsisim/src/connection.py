@@ -56,6 +56,16 @@ class Connection(QGraphicsPathItem):
                 pt = QtCore.QPointF(pt_prev.x(),pos.y())
         self.connPoints.append(pt)
 
+    def clean(self):
+        N = len(self.connPoints)
+        if N> 2:
+            remPt = []
+            for n in range(1, N-1):
+                if self.connPoints[n-1] == self.connPoints[n] == self.connPoints[n+1]:
+                    remPt.append(self.connPoints[n])
+            for el in remPt:
+                self.connPoints.remove(el)
+
     def move(self, npos, destPos):
         N = len(self.connPoints)
         initIndex = npos -1

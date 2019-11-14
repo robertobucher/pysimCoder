@@ -152,6 +152,7 @@ class Editor(QtCore.QObject):
                 pt = self.conn.connPoints[-1]
                 pos1 = QtCore.QPointF(pt.x(), self.conn.pos2.y())
                 self.conn.connPoints.append(self.gridPos(pos1))
+        self.conn.clean()
         self.conn.update_path()
         self.conn = None
  
@@ -222,7 +223,7 @@ class Editor(QtCore.QObject):
         N = len(pts)
         remPt = []
         for n in range(1,N-1):
-            if pts[n-1].x() == pts[n].x() == pts[n+1].x() or\
+            if pts[n-1].x() == pts[n].x() == pts[n+1].x() or \
                pts[n-1].y() == pts[n].y() == pts[n+1].y():
                 remPt.append(pts[n])
         for el in remPt:
