@@ -60,8 +60,8 @@ class Connection(QGraphicsPathItem):
         N = len(self.connPoints)
         if N> 2:
             remPt = []
-            for n in range(1, N-1):
-                if self.connPoints[n-1] == self.connPoints[n] == self.connPoints[n+1]:
+            for n in range(1, N-2):
+                if self.connPoints[n-1] == self.connPoints[n]:
                     remPt.append(self.connPoints[n])
             for el in remPt:
                 self.connPoints.remove(el)
