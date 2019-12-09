@@ -64,7 +64,7 @@ class Library(QMainWindow):
         QMainWindow.__init__(self, parent)
 
         self.centralWidget = QWidget()
-        self.resize(800, 500)
+        #self.resize(800, 500)
         self.setWindowTitle('Library')
         self.libConfig = []
         self.readLib()

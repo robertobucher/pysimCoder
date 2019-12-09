@@ -19,10 +19,8 @@ DEBUG = False
 class NewEditorMainWindow(QMainWindow):
     def __init__(self, library, fname, mypath, runflag, parent=None):
         super(NewEditorMainWindow, self).__init__(parent)
-        self.resize(1024, 768)
         self.centralWidget = QWidget(self)
         self.verticalLayout = QVBoxLayout(self.centralWidget)
-        #self.verticalLayout.setMargin(0)
         self.view = GraphicsView(self.centralWidget)
         self.view.setMouseTracking(True)
         self.scene = Scene(self)
