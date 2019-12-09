@@ -219,13 +219,17 @@ class Editor(QtCore.QObject):
                     except:
                         pass
 
-    def clean_points(self, pts):
+    def clean_points(self, pts, m):
         N = len(pts)
         remPt = []
         for n in range(1,N-1):
-            if pts[n-1].x() == pts[n].x() == pts[n+1].x() or \
-               pts[n-1].y() == pts[n].y() == pts[n+1].y():
-                remPt.append(pts[n])
+            if m=='x':
+                if pts[n-1].x() == pts[n].x() == pts[n+1].x():
+                    remPt.append(pts[n])
+            elif m=='y':
+                if pts[n-1].y() == pts[n].y() == pts[n+1].y():
+                    remPt.append(pts[n])
+                
         for el in remPt:
             pts.remove(el)
         return pts
@@ -238,8 +242,11 @@ class Editor(QtCore.QObject):
             return False
         
     def setNode(self, pts1, pts2):
-        pts1 = self.clean_points(pts1)
-        pts2 = self.clean_points(pts2)
+        pts1 = self.clean_points(pts1, 'x')
+        pts1 = self.clean_points(pts1, 'y')
+        pts2 = self.clean_points(pts2, 'x')
+        pts2 = self.clean_points(pts2, 'y')
+        
         n = 0
         N = min(len(pts1), len(pts2))
         while pts1[n] == pts2[n] and n <N:
