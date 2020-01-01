@@ -147,7 +147,7 @@ gss = ss(A,B,C2,D2)
 gz = c2d(gss,ts,'zoh')
 
 # Control design
-wn = 10
+wn = 9
 
 xi1 = np.sqrt(2)/2 
 xi2 = np.sqrt(3)/2
@@ -188,7 +188,7 @@ r_obs = red_obs(disksz ,T, poli_oz)
 f_obs = full_obs(disksz, poli_ozf)
 
 # Controller and observer in the same matrix -  Compact form
-contr_I = comp_form_i(disksz,r_obs,k,[0,1])
+contr_I = comp_form_i(disksz, r_obs,k,[0,1])
 
 # Implement anti windup
 [gss_in,gss_out] = set_aw(contr_I,[0.1, 0.1, 0.1])

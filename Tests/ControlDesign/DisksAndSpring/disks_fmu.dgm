@@ -1,27 +1,14 @@
 <root>
   <Date>
-    <SavingDate>12.10.2019 - 20:32:23</SavingDate>
+    <SavingDate>31.12.2019 - 17:18:58</SavingDate>
   </Date>
   <Simulation>
     <Template>fmusim.tmf</Template>
     <Ts>0.01</Ts>
     <AddObj></AddObj>
-    <ParScript>/home/bucher/Documents/PYTHON/newEditor2/ControlDesign/DisksAndSpring/DisksAndSpringKane.py</ParScript>
+    <ParScript>/home/bucher/CACSD/pysimCoder/Tests/ControlDesign/DisksAndSpring/DisksAndSpringKane.py</ParScript>
     <Tf>10.0</Tf>
   </Simulation>
-  <block>
-    <name>LTI_continous</name>
-    <inp>1</inp>
-    <outp>2</outp>
-    <inset>1</inset>
-    <outset>1</outset>
-    <icon>CSS</icon>
-    <params>cssBlk|System: gss1|Initial conditions: 0</params>
-    <width>80</width>
-    <flip>0</flip>
-    <posX>640.0</posX>
-    <posY>-20.0</posY>
-  </block>
   <block>
     <name>LTI_discrete0</name>
     <inp>1</inp>
@@ -100,56 +87,55 @@
     <posX>870.0</posX>
     <posY>-40.0</posY>
   </block>
+  <block>
+    <name>FMU</name>
+    <inp>1</inp>
+    <outp>2</outp>
+    <inset>1</inset>
+    <outset>1</outset>
+    <icon>FMU</icon>
+    <params>FmuBlk|IN_REF: ['u']|OUT_REF: ['y1', 'y2']|FMU_NAME (with ext): 'DisksAndSpring.fmu'|Sampling Time: 0.01|Major step: 0.001|Feedthrough: 0</params>
+    <width>80</width>
+    <flip>0</flip>
+    <posX>600.0</posX>
+    <posY>-20.0</posY>
+  </block>
   <connection>
-    <pos1X>680.0</pos1X>
+    <pos1X>640.0</pos1X>
     <pos1Y>0.0</pos1Y>
     <pos2X>-60.0</pos2X>
     <pos2Y>0.0</pos2Y>
-    <pt>740.0,0.0</pt>
-    <pt>740.0,190.0</pt>
-    <pt>-90.0,190.0</pt>
-    <pt>-90.0,0.0</pt>
-    <pt>-70.0,0.0</pt>
-    <pt>-70.0,0.0</pt>
+    <pt>710.0,0.0</pt>
+    <pt>710.0,190.0</pt>
+    <pt>-120.0,190.0</pt>
+    <pt>-120.0,0.0</pt>
   </connection>
   <connection>
-    <pos1X>680.0</pos1X>
+    <pos1X>640.0</pos1X>
     <pos1Y>-40.0</pos1Y>
     <pos2X>-60.0</pos2X>
     <pos2Y>-40.0</pos2Y>
-    <pt>760.0,-40.0</pt>
-    <pt>760.0,-40.0</pt>
-    <pt>790.0,-40.0</pt>
-    <pt>790.0,220.0</pt>
-    <pt>-120.0,220.0</pt>
-    <pt>-120.0,-40.0</pt>
-    <pt>-90.0,-40.0</pt>
-    <pt>-90.0,-40.0</pt>
-  </connection>
-  <connection>
-    <pos1X>680.0</pos1X>
-    <pos1Y>0.0</pos1Y>
-    <pos2X>830.0</pos2X>
-    <pos2Y>0.0</pos2Y>
-    <pt>760.0,0.0</pt>
-    <pt>760.0,0.0</pt>
-  </connection>
-  <connection>
-    <pos1X>680.0</pos1X>
-    <pos1Y>-40.0</pos1Y>
-    <pos2X>830.0</pos2X>
-    <pos2Y>-40.0</pos2Y>
-    <pt>760.0,-40.0</pt>
-    <pt>760.0,-40.0</pt>
+    <pt>740.0,-40.0</pt>
+    <pt>750.0,-40.0</pt>
+    <pt>750.0,200.0</pt>
+    <pt>-140.0,200.0</pt>
+    <pt>-140.0,-40.0</pt>
   </connection>
   <connection>
     <pos1X>400.0</pos1X>
     <pos1Y>-20.0</pos1Y>
-    <pos2X>600.0</pos2X>
+    <pos2X>360.0</pos2X>
+    <pos2Y>110.0</pos2Y>
+    <pt>480.0,-20.0</pt>
+    <pt>480.0,110.0</pt>
+  </connection>
+  <connection>
+    <pos1X>400.0</pos1X>
+    <pos1Y>-20.0</pos1Y>
+    <pos2X>560.0</pos2X>
     <pos2Y>-20.0</pos2Y>
-    <pt>470.0,-20.0</pt>
-    <pt>540.0,-20.0</pt>
-    <pt>540.0,-20.0</pt>
+    <pt>480.0,-20.0</pt>
+    <pt>480.0,-20.0</pt>
   </connection>
   <connection>
     <pos1X>280.0</pos1X>
@@ -160,16 +146,6 @@
     <pt>100.0,0.0</pt>
     <pt>120.0,0.0</pt>
     <pt>120.0,0.0</pt>
-  </connection>
-  <connection>
-    <pos1X>400.0</pos1X>
-    <pos1Y>-20.0</pos1Y>
-    <pos2X>360.0</pos2X>
-    <pos2Y>110.0</pos2Y>
-    <pt>470.0,-20.0</pt>
-    <pt>470.0,110.0</pt>
-    <pt>420.0,110.0</pt>
-    <pt>420.0,110.0</pt>
   </connection>
   <connection>
     <pos1X>-180.0</pos1X>
@@ -206,5 +182,21 @@
     <pos2Y>-80.0</pos2Y>
     <pt>-120.0,-80.0</pt>
     <pt>-120.0,-80.0</pt>
+  </connection>
+  <connection>
+    <pos1X>640.0</pos1X>
+    <pos1Y>-40.0</pos1Y>
+    <pos2X>830.0</pos2X>
+    <pos2Y>-40.0</pos2Y>
+    <pt>740.0,-40.0</pt>
+    <pt>740.0,-40.0</pt>
+  </connection>
+  <connection>
+    <pos1X>640.0</pos1X>
+    <pos1Y>0.0</pos1Y>
+    <pos2X>830.0</pos2X>
+    <pos2Y>0.0</pos2Y>
+    <pt>740.0,0.0</pt>
+    <pt>740.0,0.0</pt>
   </connection>
 </root>
