@@ -27,15 +27,16 @@ void step(int Flag, python_block *block)
 {
   double t;
   double initTime = block->realPar[0];
-  double Val = block->realPar[1];
+  double iVal = block->realPar[1];
+  double fVal = block->realPar[2];
   double * y;
 
   y = (double *) block->y[0];
   switch(Flag){
   case OUT:
     t = get_run_time();
-    if(t<initTime) y[0] = 0.0;
-    else           y[0] = Val;
+    if(t<initTime) y[0] = iVal;
+    else           y[0] = fVal;
     break;
   case INIT:
     y[0]=0.0;

@@ -2,9 +2,11 @@
 
 import os
 
-from pyqt5 import QMainWindow, QWidget, QVBoxLayout,  QAction, QMessageBox, \
-                   QFileDialog, QDialog, QPainter, QIcon, QPrinter, \
-                   QPrintDialog, QtCore
+from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout,  QAction, \
+    QMessageBox, QFileDialog, QDialog
+from PyQt5.QtGui import QPainter, QIcon
+from PyQt5.QtPrintSupport import QPrinter, QPrintDialog
+from PyQt5.QtCore import QPointF, QFileInfo
 
 from supsisim.block import Block
 from supsisim.connection import Connection
@@ -40,7 +42,7 @@ class NewEditorMainWindow(QMainWindow):
             
         self.setWindowTitle(self.filename)
         self.status = self.statusBar()
-        self.evpos = QtCore.QPointF(0,0)
+        self.evpos = QPointF(0,0)
         self.editor = Editor(self)
         self.editor.install(self.scene)
         self.editor.redrawNodes()
@@ -197,7 +199,7 @@ class NewEditorMainWindow(QMainWindow):
             for item in self.scene.selection:
                 if isinstance(item, Connection):
                     try:
-                        c = item.clone(QtCore.QPointF(200,200))
+                        c = item.clone(QPointF(200,200))
                         c.update_ports_from_pos()
                     except:
                         pass        
@@ -258,7 +260,7 @@ class NewEditorMainWindow(QMainWindow):
         filename = QFileDialog.getOpenFileName(self, 'Open', '.', filter='*.dgm')
         filename = filename[0]
         if filename != '':
-            fname = QtCore.QFileInfo(filename)
+            fname = QFileInfo(filename)
             self.filename = str(fname.baseName())
             self.path = str(fname.absolutePath())
             self.setWindowTitle(self.filename)
@@ -272,7 +274,7 @@ class NewEditorMainWindow(QMainWindow):
         else:
             filename = self.filename
             if filename != '':
-                fname = QtCore.QFileInfo(filename)
+                fname = QFileInfo(filename)
                 self.filename = str(fname.baseName())
                 self.path = str(fname.absolutePath())
                 self.setWindowTitle(self.filename)
@@ -283,7 +285,7 @@ class NewEditorMainWindow(QMainWindow):
         filename = QFileDialog.getSaveFileName(self, 'Save', self.path+'/'+self.filename, filter='*.dgm')
         filename = filename[0]
         if filename != '':
-            fname = QtCore.QFileInfo(filename)
+            fname = QFileInfo(filename)
             self.filename = str(fname.baseName())
             self.path = str(fname.absolutePath())
             self.setWindowTitle(self.filename)

@@ -1,4 +1,6 @@
-from pyqt5 import QGraphicsPathItem, QPainterPath, QPen, QtCore
+from PyQt5.QtWidgets import QGraphicsPathItem
+from PyQt5.QtGui import QPainterPath, QPen
+from PyQt5.QtCore import Qt, QPointF
 
 from supsisim.const import GRID, NW
 
@@ -8,8 +10,8 @@ class Node(QGraphicsPathItem):
         super(Node, self).__init__(parent)
         self.scene = scene
         self.scene.addItem(self)
-        self.line_color = QtCore.Qt.black
-        self.fill_color = QtCore.Qt.black
+        self.line_color = Qt.black
+        self.fill_color = Qt.black
         self.setup()
 
     def __str__(self):
@@ -26,8 +28,8 @@ class Node(QGraphicsPathItem):
     def paint(self, painter, option, widget):
         painter.setPen(QPen(self.line_color))
         if self.isSelected():
-            painter.setPen(QPen(QtCore.Qt.red))
-            painter.setBrush(QtCore.Qt.red)
+            painter.setPen(QPen(Qt.red))
+            painter.setBrush(Qt.red)
         else:
             painter.setPen(QPen(self.line_color))
         painter.setBrush(self.fill_color)
@@ -41,7 +43,7 @@ class Node(QGraphicsPathItem):
             pt = self.gridPos(args[0])
             super(Node, self).setPos(pt)
         else:
-            pt = QtCore.QPointF(args[0],args[1])
+            pt = QPointF(args[0],args[1])
             pt = self.gridPos(pt)
             super(Node, self).setPos(pt)
         
@@ -49,7 +51,7 @@ class Node(QGraphicsPathItem):
          gr = GRID
          x = gr * ((pt.x() + gr /2) // gr)
          y = gr * ((pt.y() + gr /2) // gr)
-         return QtCore.QPointF(x,y)
+         return QPointF(x,y)
      
 
         

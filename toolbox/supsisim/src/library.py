@@ -1,8 +1,11 @@
 #!/usr/bin/python
 
-from pyqt5 import QGraphicsScene, QMainWindow, QWidget, QVBoxLayout, \
-                   QHBoxLayout, QGraphicsView,QTabWidget, QApplication, \
-                   QTransform, QDrag, QtCore, QMenu, QMessageBox, QComboBox
+from PyQt5.QtWidgets import QGraphicsScene, QMainWindow, QWidget, QVBoxLayout, \
+    QHBoxLayout, QGraphicsView,QTabWidget, QApplication, \
+    QMenu, QMessageBox, QComboBox
+
+from PyQt5.QtGui import QTransform, QDrag
+from PyQt5.QtCore import Qt, QMimeData
 
 #import dircache
 import os
@@ -36,8 +39,8 @@ class CompViewer(QGraphicsScene):
         self.actComp = self.itemAt(x, y, t)
 
     def mouseMoveEvent(self, event):
-        if event.buttons() == QtCore.Qt.LeftButton and isinstance(self.actComp, Block):
-            mimeData = QtCore.QMimeData()
+        if event.buttons() == Qt.LeftButton and isinstance(self.actComp, Block):
+            mimeData = QMimeData()
             if self.actComp.insetble:
                 insetble = '1'
             else:
@@ -51,7 +54,7 @@ class CompViewer(QGraphicsScene):
             mimeData.setText(data)
             drag = QDrag(self.parent)
             drag.setMimeData(mimeData)
-            drag.exec_(QtCore.Qt.CopyAction)
+            drag.exec_(Qt.CopyAction)
 
     def mouseReleaseEvent(self, event):
         pass

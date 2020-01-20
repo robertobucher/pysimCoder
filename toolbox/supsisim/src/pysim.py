@@ -4,7 +4,10 @@ if sys.version_info>(3,0):
     import sip
     sip.setapi('QString', 1)
     
-from pyqt5 import QApplication, QtCore
+from PyQt5.QtWidgets import QApplication
+from PyQt5.QtCore import QFileInfo
+
+
 
 from supsisim.pyEdit import NewEditorMainWindow
 from supsisim.library import Library
@@ -12,7 +15,7 @@ from supsisim.library import Library
 class supsisimul():
     def __init__(self, filename = 'untitled', runflag = False):
         if filename!='untitled':
-            self.fname = QtCore.QFileInfo(filename)
+            self.fname = QFileInfo(filename)
             self.mypath = str(self.fname.absolutePath())
             self.fname = str(self.fname.baseName())
         else:

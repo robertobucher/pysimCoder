@@ -1,4 +1,6 @@
-from pyqt5 import QGraphicsPathItem, QPainterPath, QPen, QtCore
+from PyQt5.QtWidgets import QGraphicsPathItem
+from PyQt5.QtGui import QPainterPath, QPen
+from PyQt5.QtCore import Qt, QPointF
 
 import numpy as np
 from supsisim.const import LW, NW, DB
@@ -20,7 +22,7 @@ class Connection(QGraphicsPathItem):
         self.port2 = None
 
         self.connPoints = []
-        self.draw_color = QtCore.Qt.black
+        self.draw_color = Qt.black
         
         self.setup()
 
@@ -45,15 +47,15 @@ class Connection(QGraphicsPathItem):
     def addPoint(self, pos):
         if len(self.connPoints) == 0:
             y = self.pos1.y()
-            pt =QtCore.QPointF(pos.x(),y)
+            pt =QPointF(pos.x(),y)
         else:
             pt_prev = self.connPoints[-1]
             dx = np.abs(pos.x()-pt_prev.x())
             dy = np.abs(pos.y()-pt_prev.y())
             if dx > dy:
-                pt = QtCore.QPointF(pos.x(),pt_prev.y())
+                pt = QPointF(pos.x(),pt_prev.y())
             else:
-                pt = QtCore.QPointF(pt_prev.x(),pos.y())
+                pt = QPointF(pt_prev.x(),pos.y())
         self.connPoints.append(pt)
 
     def clean(self):
@@ -183,13 +185,13 @@ class Connection(QGraphicsPathItem):
             p.lineTo(el)
         if len(self.connPoints) == 0:
             pt_prev = self.pos1
-            pt1 = QtCore.QPointF((self.pos2.x()+pt_prev.x())/2, pt_prev.y())
-            pt2 = QtCore.QPointF((self.pos2.x()+pt_prev.x())/2, self.pos2.y())
+            pt1 = QPointF((self.pos2.x()+pt_prev.x())/2, pt_prev.y())
+            pt2 = QPointF((self.pos2.x()+pt_prev.x())/2, self.pos2.y())
             p.lineTo(pt1)
             p.lineTo(pt2)
         else:
             pt_prev = self.connPoints[-1]
-            pt = QtCore.QPointF(pt_prev.x(), self.pos2.y())
+            pt = QPointF(pt_prev.x(), self.pos2.y())
             if len(self.connPoints)>=2:
                 pt_2prev = self.connPoints[-2]
                 if pt_2prev.x() == pt_prev.x() == pt.x() or \
@@ -207,15 +209,15 @@ class Connection(QGraphicsPathItem):
             p.lineTo(el)
         if len(self.connPoints) == 0:
             y = self.pos1.y()
-            pt =QtCore.QPointF(self.pos2.x(),y)
+            pt =QPointF(self.pos2.x(),y)
         else:
             pt_prev = self.connPoints[-1]
             dx = np.abs(self.pos2.x()-pt_prev.x())
             dy = np.abs(self.pos2.y()-pt_prev.y())
             if dx > dy:
-                pt = QtCore.QPointF(self.pos2.x(),pt_prev.y())
+                pt = QPointF(self.pos2.x(),pt_prev.y())
             else:
-                pt = QtCore.QPointF(pt_prev.x(),self.pos2.y())
+                pt = QPointF(pt_prev.x(),self.pos2.y())
             if len(self.connPoints)==1:
                 pt_2prev = self.pos1;
             else:
@@ -236,7 +238,7 @@ class Connection(QGraphicsPathItem):
         pen = QPen(self.draw_color)
         pen.setWidth(LW)
         if self.isSelected():
-            pen.setStyle(QtCore.Qt.DotLine)
+            pen.setStyle(Qt.DotLine)
         painter.setPen(pen)
         painter.drawPath(self.path())
 
@@ -245,7 +247,7 @@ class Connection(QGraphicsPathItem):
             pt = self.gridPos(args[0])
             super(Node, self).setPos(pt)
         else:
-            pt = QtCore.QPointF(args[0],args[1])
+            pt = QPointF(args[0],args[1])
             pt = self.gridPos(pt)
             super(Node, self).setPos(pt)
             
@@ -274,8 +276,8 @@ class Connection(QGraphicsPathItem):
 
     def load(self, item):
         try:
-            pt1 = QtCore.QPointF(float(item.findtext('pos1X')), float(item.findtext('pos1Y')))
-            pt2 = QtCore.QPointF(float(item.findtext('pos2X')), float(item.findtext('pos2Y')))
+            pt1 = QPointF(float(item.findtext('pos1X')), float(item.findtext('pos1Y')))
+            pt2 = QPointF(float(item.findtext('pos2X')), float(item.findtext('pos2Y')))
             self.pos1 = pt1
             self.pos2 = pt2
             points = item.findall('pt')
@@ -283,7 +285,7 @@ class Connection(QGraphicsPathItem):
                 pt = el.text.split(',')
                 x = float(pt[0])
                 y = float(pt[1])
-                pt = QtCore.QPointF(float(pt[0]), float(pt[1]))
+                pt = QPointF(float(pt[0]), float(pt[1]))
                 self.connPoints.append(pt)
             self.update_ports_from_pos()
         except:

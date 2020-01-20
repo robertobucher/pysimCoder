@@ -127,9 +127,6 @@ A[3] = A[3]/J2
 B1[2] = B1[2]/J1
 B1[3] = B1[3]/J2
 
-print(A)
-print(B1)
-
 A = A.astype('float64')
 B1 = B1.astype('float64')
 

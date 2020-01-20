@@ -1,4 +1,6 @@
-from pyqt5  import QMenu, QGraphicsItem, QtCore, QTransform
+from PyQt5.QtWidgets import QMenu, QGraphicsItem
+from PyQt5.QtGui import QTransform
+from PyQt5.QtCore import Qt, QEvent, QObject, QPointF, QRectF, QSizeF
 
 from supsisim.port import Port, InPort, OutPort
 from supsisim.connection import Connection
@@ -24,7 +26,7 @@ MOUSEDOUBLECLICK = 4
 KEY_DEL = 5
 KEY_ESC = 6
     
-class Editor(QtCore.QObject):
+class Editor(QObject):
     """ Editor to handles events"""
     def __init__(self, parent):
         super(Editor, self).__init__(parent)
@@ -128,7 +130,7 @@ class Editor(QtCore.QObject):
     def cloneBlock(self):
         self.scene.DgmToUndo()
         item = self.scene.item
-        item.clone(QtCore.QPointF(100,100))
+        item.clone(QPointF(100,100))
 
     def deleteBlock(self):
         self.scene.DgmToUndo()
@@ -144,13 +146,13 @@ class Editor(QtCore.QObject):
             self.conn.port1.connections.append(self.conn)
             self.conn.port2.connections.append(self.conn)
             if len(self.conn.connPoints) == 0:
-                pos1 = QtCore.QPointF((self.conn.pos2.x()+self.conn.pos1.x())/2, self.conn.pos1.y())
-                pos2 = QtCore.QPointF((self.conn.pos2.x()+self.conn.pos1.x())/2, self.conn.pos2.y())
+                pos1 = QPointF((self.conn.pos2.x()+self.conn.pos1.x())/2, self.conn.pos1.y())
+                pos2 = QPointF((self.conn.pos2.x()+self.conn.pos1.x())/2, self.conn.pos2.y())
                 self.conn.connPoints.append(self.gridPos(pos1))
                 self.conn.connPoints.append(self.gridPos(pos2))
             else:
                 pt = self.conn.connPoints[-1]
-                pos1 = QtCore.QPointF(pt.x(), self.conn.pos2.y())
+                pos1 = QPointF(pt.x(), self.conn.pos2.y())
                 self.conn.connPoints.append(self.gridPos(pos1))
         self.conn.clean()
         self.conn.update_path()
@@ -172,7 +174,7 @@ class Editor(QtCore.QObject):
         for n in range(0,N-1):
             p1 = points[n]
             p2 = points[n+1]
-            rect = QtCore.QRectF(p1 - QtCore.QPointF(DB,DB) ,p2 + QtCore.QPointF(DB,DB))
+            rect = QRectF(p1 - QPointF(DB,DB) ,p2 + QPointF(DB,DB))
             if rect.contains(pos):
                 if p1.x() == p2.x():
                     pos.setX(p1.x())
@@ -235,7 +237,7 @@ class Editor(QtCore.QObject):
         return pts
         
     def ptInLine(self, pt, p1, p2):
-        rect = QtCore.QRectF(p1-QtCore.QPointF(0.5,0.5), p2+QtCore.QPointF(0.5,0.5))
+        rect = QRectF(p1-QPointF(0.5,0.5), p2+QPointF(0.5,0.5))
         if rect.contains(pt):
             return True
         else:
@@ -298,7 +300,7 @@ class Editor(QtCore.QObject):
                 el.remove()
                 
     def itemAt(self, pos):
-        rect = QtCore.QRectF(pos+QtCore.QPointF(-DB,-DB), QtCore.QSizeF(2*DB,2*DB))
+        rect = QRectF(pos+QPointF(-DB,-DB), QSizeF(2*DB,2*DB))
         items =  self.scene.items(rect)
 
         for item in items:
@@ -316,36 +318,36 @@ class Editor(QtCore.QObject):
         return None
 
     def itemByDraw(self, pos):
-        rect = QtCore.QRectF(pos-QtCore.QPointF(DB,DB), QtCore.QSizeF(2*DB,2*DB))
-        items =  self.scene.items(QtCore.QRectF(pos-QtCore.QPointF(DB,DB), QtCore.QSizeF(2*DB,2*DB)))
+        rect = QRectF(pos-QPointF(DB,DB), QSizeF(2*DB,2*DB))
+        items =  self.scene.items(QRectF(pos-QPointF(DB,DB), QSizeF(2*DB,2*DB)))
         for item in items:
             if isinstance(item, InPort):
                 return(item)
         return None
     
     def findInPortAt(self, pos):
-        items =  self.scene.items(QtCore.QRectF(pos-QtCore.QPointF(DB,DB), QtCore.QSizeF(2*DB,2*DB)))
+        items =  self.scene.items(QRectF(pos-QPointF(DB,DB), QSizeF(2*DB,2*DB)))
         for el in items:
             if isinstance(el, InPort):
                 return el
         return None
 
     def findOutPortAt(self, pos):
-        items =  self.scene.items(QtCore.QRectF(pos-QtCore.QPointF(DB,DB), QtCore.QSizeF(2*DB,2*DB)))
+        items =  self.scene.items(QRectF(pos-QPointF(DB,DB), QSizeF(2*DB,2*DB)))
         for el in items:
             if isinstance(el, OutPort):
                 return el
         return None
 
     def findBlockAt(self, pos):
-        items =  self.scene.items(QtCore.QRectF(pos-QtCore.QPointF(DB,DB), QtCore.QSizeF(2*DB,2*DB)))
+        items =  self.scene.items(QRectF(pos-QPointF(DB,DB), QSizeF(2*DB,2*DB)))
         for el in items:
             if isinstance(el, Block):
                 return el
         return None
 
     def findConnectionAt(self, pos):
-        items =  self.scene.items(QtCore.QRectF(pos-QtCore.QPointF(DB,DB), QtCore.QSizeF(2*DB,2*DB)))
+        items =  self.scene.items(QRectF(pos-QPointF(DB,DB), QSizeF(2*DB,2*DB)))
         for c in items:
             if isinstance(c, Connection):
                 points = [c.pos1]
@@ -356,7 +358,7 @@ class Editor(QtCore.QObject):
                 for n in range(0,N-1):
                     p1 = points[n]
                     p2 = points[n+1]
-                    rect = QtCore.QRectF(p1 - QtCore.QPointF(DB,DB) ,p2 + QtCore.QPointF(DB,DB))
+                    rect = QRectF(p1 - QPointF(DB,DB) ,p2 + QPointF(DB,DB))
                     if rect.contains(pos):
                         return c
         return None
@@ -366,22 +368,22 @@ class Editor(QtCore.QObject):
             el.setSelected(False)
 
     def setMouseInitDraw(self, pos):
-        pointer = QtCore.Qt.ArrowCursor
+        pointer = Qt.ArrowCursor
         if isinstance(self.findBlockAt(pos), Block):
-            pointer = QtCore.Qt.ArrowCursor
+            pointer = Qt.ArrowCursor
         elif isinstance(self.findOutPortAt(pos), OutPort):
-            pointer = QtCore.Qt.CrossCursor
+            pointer = Qt.CrossCursor
         elif isinstance(self.findConnectionAt(pos), Connection):
-            pointer = QtCore.Qt.PointingHandCursor
+            pointer = Qt.PointingHandCursor
         else:
-            pointer = QtCore.Qt.ArrowCursor
+            pointer = Qt.ArrowCursor
         self.scene.mainw.view.setCursor(pointer)        
             
     def setMouseByDraw(self, item):
         if isinstance(item, InPort) and len(item.connections)==0:
-            pointer = QtCore.Qt.CrossCursor
+            pointer = Qt.CrossCursor
         else:
-            pointer = QtCore.Qt.DragLinkCursor
+            pointer = Qt.DragLinkCursor
         self.scene.mainw.view.setCursor(pointer)        
             
     def PDM(self, obj, event):    # Dummy function - No action
@@ -558,25 +560,25 @@ class Editor(QtCore.QObject):
         
     def eventFilter(self, obj, event):
         ev = -1
-        if event.type() ==  QtCore.QEvent.GraphicsSceneMouseMove:
+        if event.type() ==  QEvent.GraphicsSceneMouseMove:
             ev = 0
              
-        if event.type() ==  QtCore.QEvent.GraphicsSceneMousePress:
-            if event.button() == QtCore.Qt.LeftButton:
+        if event.type() ==  QEvent.GraphicsSceneMousePress:
+            if event.button() == Qt.LeftButton:
                 ev = 1
-            if event.button() == QtCore.Qt.RightButton:
+            if event.button() == Qt.RightButton:
                 ev = 2
         
-        if event.type() == QtCore.QEvent.GraphicsSceneMouseRelease:
+        if event.type() == QEvent.GraphicsSceneMouseRelease:
             ev = 3
                 
-        if event.type() == QtCore.QEvent.GraphicsSceneMouseDoubleClick:
+        if event.type() == QEvent.GraphicsSceneMouseDoubleClick:
             ev = 4
 
-        if event.type() == QtCore.QEvent.KeyPress:
-            if event.key() == QtCore.Qt.Key_Delete:
+        if event.type() == QEvent.KeyPress:
+            if event.key() == Qt.Key_Delete:
                 ev = 5
-            if event.key() == QtCore.Qt.Key_Escape:
+            if event.key() == Qt.Key_Escape:
                 ev = 6
         if ev != -1:
             #if ev != 0:
@@ -590,5 +592,5 @@ class Editor(QtCore.QObject):
          gr = GRID
          x = gr * ((pt.x() + gr /2) // gr)
          y = gr * ((pt.y() + gr /2) // gr)
-         return QtCore.QPointF(x,y)
+         return QPointF(x,y)
 

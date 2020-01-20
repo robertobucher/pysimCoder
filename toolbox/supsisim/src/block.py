@@ -1,5 +1,6 @@
-from pyqt5  import QGraphicsPathItem, QGraphicsTextItem, QPainterPath, \
-                    QPen, QImage, QtCore, QTransform
+from PyQt5.QtWidgets import QGraphicsPathItem, QGraphicsTextItem
+from PyQt5.QtGui import QPainterPath, QPen, QImage, QTransform
+from PyQt5.QtCore import Qt, QPointF
 
 from supsisim.port import Port, InPort, OutPort
 from supsisim.const import GRID, PW, LW, BWmin, BHmin, PD, respath
@@ -33,8 +34,8 @@ class Block(QGraphicsPathItem):
         else:
             raise ValueError('Needs 11 or 3 arguments; received %i.' % len(args))
 
-        self.line_color = QtCore.Qt.black
-        self.fill_color = QtCore.Qt.black
+        self.line_color = Qt.black
+        self.fill_color = Qt.black
         self.setup()
         try:
             self.scene.blocks.add(self)
@@ -100,7 +101,7 @@ class Block(QGraphicsPathItem):
         pen.setBrush(self.line_color)
         pen.setWidth = LW
         if self.isSelected():
-            pen.setStyle(QtCore.Qt.DotLine)
+            pen.setStyle(Qt.DotLine)
         painter.setPen(pen)
         painter.drawPath(self.path())
         img = QImage(respath + 'blocks/Icons/' + self.icon + '.svg')
@@ -126,7 +127,7 @@ class Block(QGraphicsPathItem):
             pt = self.gridPos(args[0])
             super(Block, self).setPos(pt)
         else:
-            pt = QtCore.QPointF(args[0],args[1])
+            pt = QPointF(args[0],args[1])
             pt = self.gridPos(pt)
             super(Block, self).setPos(pt)
         
@@ -134,7 +135,7 @@ class Block(QGraphicsPathItem):
          gr = GRID
          x = gr * ((pt.x() + gr /2) // gr)
          y = gr * ((pt.y() + gr /2) // gr)
-         return QtCore.QPointF(x,y)
+         return QPointF(x,y)
 
     def clone(self, pt):
         b = Block(None, self.scene, self.name, self.inp, self.outp,

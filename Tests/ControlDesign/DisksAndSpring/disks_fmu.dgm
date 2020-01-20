@@ -1,6 +1,6 @@
 <root>
   <Date>
-    <SavingDate>31.12.2019 - 17:18:58</SavingDate>
+    <SavingDate>13.01.2020 - 09:13:10</SavingDate>
   </Date>
   <Simulation>
     <Template>fmusim.tmf</Template>
@@ -10,69 +10,17 @@
     <Tf>10.0</Tf>
   </Simulation>
   <block>
-    <name>LTI_discrete0</name>
+    <name>FMU</name>
     <inp>1</inp>
-    <outp>1</outp>
+    <outp>2</outp>
     <inset>1</inset>
     <outset>1</outset>
-    <icon>DSS</icon>
-    <params>dssBlk|System: gss_out|Initial conditions: 0</params>
-    <width>80</width>
-    <flip>1</flip>
-    <posX>320.0</posX>
-    <posY>110.0</posY>
-  </block>
-  <block>
-    <name>PulseGenerator</name>
-    <inp>0</inp>
-    <outp>1</outp>
-    <inset>0</inset>
-    <outset>0</outset>
-    <icon>SQUARE</icon>
-    <params>squareBlk|Amplitude: 1|Period: 10|Width: 5|Bias: 0|Delay: 0</params>
+    <icon>FMU</icon>
+    <params>FmuBlk|IN_REF: ['u']|OUT_REF: ['y1', 'y2']|FMU_NAME (with ext): 'DisksAndSpring.fmu'|Sampling Time: 0.01|Major step: 0.001|Feedthrough: 0</params>
     <width>80</width>
     <flip>0</flip>
-    <posX>-220.0</posX>
-    <posY>-80.0</posY>
-  </block>
-  <block>
-    <name>LTI_discrete</name>
-    <inp>3</inp>
-    <outp>1</outp>
-    <inset>1</inset>
-    <outset>1</outset>
-    <icon>DSS</icon>
-    <params>dssBlk|System: gss_in|Initial conditions: 0</params>
-    <width>80</width>
-    <flip>0</flip>
-    <posX>-20.0</posX>
-    <posY>-40.0</posY>
-  </block>
-  <block>
-    <name>Sum</name>
-    <inp>2</inp>
-    <outp>1</outp>
-    <inset>1</inset>
-    <outset>0</outset>
-    <icon>SUM</icon>
-    <params>sumBlk|Gains: [1,1]</params>
-    <width>80</width>
-    <flip>0</flip>
-    <posX>180.0</posX>
-    <posY>-20.0</posY>
-  </block>
-  <block>
-    <name>Saturation</name>
-    <inp>1</inp>
-    <outp>1</outp>
-    <inset>0</inset>
-    <outset>0</outset>
-    <icon>SATUR</icon>
-    <params>saturBlk|Upper saturation: 3000|Lower saturation: -3000</params>
-    <width>80</width>
-    <flip>0</flip>
-    <posX>360.0</posX>
-    <posY>-20.0</posY>
+    <posX>280.0</posX>
+    <posY>-50.0</posY>
   </block>
   <block>
     <name>RT Plot</name>
@@ -84,119 +32,171 @@
     <params>scopeStream</params>
     <width>80</width>
     <flip>0</flip>
-    <posX>870.0</posX>
-    <posY>-40.0</posY>
+    <posX>550.0</posX>
+    <posY>-70.0</posY>
   </block>
   <block>
-    <name>FMU</name>
+    <name>Saturation</name>
     <inp>1</inp>
-    <outp>2</outp>
-    <inset>1</inset>
-    <outset>1</outset>
-    <icon>FMU</icon>
-    <params>FmuBlk|IN_REF: ['u']|OUT_REF: ['y1', 'y2']|FMU_NAME (with ext): 'DisksAndSpring.fmu'|Sampling Time: 0.01|Major step: 0.001|Feedthrough: 0</params>
+    <outp>1</outp>
+    <inset>0</inset>
+    <outset>0</outset>
+    <icon>SATUR</icon>
+    <params>saturBlk|Upper saturation: 3000|Lower saturation: -3000</params>
     <width>80</width>
     <flip>0</flip>
-    <posX>600.0</posX>
-    <posY>-20.0</posY>
+    <posX>40.0</posX>
+    <posY>-50.0</posY>
+  </block>
+  <block>
+    <name>Sum</name>
+    <inp>2</inp>
+    <outp>1</outp>
+    <inset>1</inset>
+    <outset>0</outset>
+    <icon>SUM</icon>
+    <params>sumBlk|Gains: [1,1]</params>
+    <width>80</width>
+    <flip>0</flip>
+    <posX>-140.0</posX>
+    <posY>-50.0</posY>
+  </block>
+  <block>
+    <name>LTI_discrete</name>
+    <inp>3</inp>
+    <outp>1</outp>
+    <inset>1</inset>
+    <outset>1</outset>
+    <icon>DSS</icon>
+    <params>dssBlk|System: gss_in|Initial conditions: 0</params>
+    <width>80</width>
+    <flip>0</flip>
+    <posX>-340.0</posX>
+    <posY>-70.0</posY>
+  </block>
+  <block>
+    <name>PulseGenerator</name>
+    <inp>0</inp>
+    <outp>1</outp>
+    <inset>0</inset>
+    <outset>0</outset>
+    <icon>SQUARE</icon>
+    <params>squareBlk|Amplitude: 1|Period: 10|Width: 5|Bias: 0|Delay: 0</params>
+    <width>80</width>
+    <flip>0</flip>
+    <posX>-540.0</posX>
+    <posY>-110.0</posY>
+  </block>
+  <block>
+    <name>LTI_discrete0</name>
+    <inp>1</inp>
+    <outp>1</outp>
+    <inset>1</inset>
+    <outset>1</outset>
+    <icon>DSS</icon>
+    <params>dssBlk|System: gss_out|Initial conditions: 0</params>
+    <width>80</width>
+    <flip>1</flip>
+    <posX>0.0</posX>
+    <posY>80.0</posY>
   </block>
   <connection>
-    <pos1X>640.0</pos1X>
-    <pos1Y>0.0</pos1Y>
-    <pos2X>-60.0</pos2X>
-    <pos2Y>0.0</pos2Y>
-    <pt>710.0,0.0</pt>
-    <pt>710.0,190.0</pt>
-    <pt>-120.0,190.0</pt>
-    <pt>-120.0,0.0</pt>
+    <pos1X>320.0</pos1X>
+    <pos1Y>-30.0</pos1Y>
+    <pos2X>510.0</pos2X>
+    <pos2Y>-30.0</pos2Y>
+    <pt>420.00000000000006,-30.0</pt>
+    <pt>420.00000000000006,-30.0</pt>
   </connection>
   <connection>
-    <pos1X>640.0</pos1X>
-    <pos1Y>-40.0</pos1Y>
-    <pos2X>-60.0</pos2X>
-    <pos2Y>-40.0</pos2Y>
-    <pt>740.0,-40.0</pt>
-    <pt>750.0,-40.0</pt>
-    <pt>750.0,200.0</pt>
-    <pt>-140.0,200.0</pt>
-    <pt>-140.0,-40.0</pt>
+    <pos1X>320.0</pos1X>
+    <pos1Y>-70.0</pos1Y>
+    <pos2X>510.0</pos2X>
+    <pos2Y>-70.0</pos2Y>
+    <pt>420.00000000000006,-70.0</pt>
+    <pt>420.00000000000006,-70.0</pt>
   </connection>
   <connection>
-    <pos1X>400.0</pos1X>
-    <pos1Y>-20.0</pos1Y>
-    <pos2X>360.0</pos2X>
-    <pos2Y>110.0</pos2Y>
-    <pt>480.0,-20.0</pt>
-    <pt>480.0,110.0</pt>
+    <pos1X>-500.0</pos1X>
+    <pos1Y>-110.0</pos1Y>
+    <pos2X>-380.0</pos2X>
+    <pos2Y>-110.0</pos2Y>
+    <pt>-440.0,-110.0</pt>
+    <pt>-440.0,-110.0</pt>
   </connection>
   <connection>
-    <pos1X>400.0</pos1X>
-    <pos1Y>-20.0</pos1Y>
-    <pos2X>560.0</pos2X>
-    <pos2Y>-20.0</pos2Y>
-    <pt>480.0,-20.0</pt>
-    <pt>480.0,-20.0</pt>
+    <pos1X>-300.0</pos1X>
+    <pos1Y>-70.0</pos1Y>
+    <pos2X>-180.0</pos2X>
+    <pos2Y>-70.0</pos2Y>
+    <pt>-240.0,-70.0</pt>
+    <pt>-240.0,-70.0</pt>
   </connection>
   <connection>
-    <pos1X>280.0</pos1X>
-    <pos1Y>110.0</pos1Y>
-    <pos2X>140.0</pos2X>
-    <pos2Y>0.0</pos2Y>
-    <pt>100.0,110.0</pt>
-    <pt>100.0,0.0</pt>
-    <pt>120.0,0.0</pt>
-    <pt>120.0,0.0</pt>
+    <pos1X>-100.0</pos1X>
+    <pos1Y>-50.0</pos1Y>
+    <pos2X>0.0</pos2X>
+    <pos2Y>-50.0</pos2Y>
+    <pt>-50.0,-50.0</pt>
+    <pt>-50.0,-50.0</pt>
   </connection>
   <connection>
-    <pos1X>-180.0</pos1X>
-    <pos1Y>-80.0</pos1Y>
-    <pos2X>830.0</pos2X>
-    <pos2Y>-80.0</pos2Y>
-    <pt>-130.0,-80.0</pt>
-    <pt>-130.0,-180.0</pt>
-    <pt>700.0,-180.0</pt>
-    <pt>700.0,-80.0</pt>
-    <pt>750.0,-80.0</pt>
-    <pt>750.0,-80.0</pt>
+    <pos1X>-500.0</pos1X>
+    <pos1Y>-110.0</pos1Y>
+    <pos2X>510.0</pos2X>
+    <pos2Y>-110.0</pos2Y>
+    <pt>-450.0,-110.0</pt>
+    <pt>-450.0,-210.0</pt>
+    <pt>380.0,-210.0</pt>
+    <pt>380.0,-110.0</pt>
+    <pt>430.0,-110.0</pt>
+    <pt>430.0,-110.0</pt>
   </connection>
   <connection>
-    <pos1X>220.0</pos1X>
-    <pos1Y>-20.0</pos1Y>
-    <pos2X>320.0</pos2X>
-    <pos2Y>-20.0</pos2Y>
-    <pt>270.0,-20.0</pt>
-    <pt>270.0,-20.0</pt>
+    <pos1X>-40.0</pos1X>
+    <pos1Y>80.0</pos1Y>
+    <pos2X>-180.0</pos2X>
+    <pos2Y>-30.0</pos2Y>
+    <pt>-220.0,80.0</pt>
+    <pt>-220.0,-30.0</pt>
+    <pt>-200.0,-30.0</pt>
+    <pt>-200.0,-30.0</pt>
   </connection>
   <connection>
-    <pos1X>20.0</pos1X>
-    <pos1Y>-40.0</pos1Y>
-    <pos2X>140.0</pos2X>
-    <pos2Y>-40.0</pos2Y>
-    <pt>80.0,-40.0</pt>
-    <pt>80.0,-40.0</pt>
+    <pos1X>80.0</pos1X>
+    <pos1Y>-50.0</pos1Y>
+    <pos2X>240.0</pos2X>
+    <pos2Y>-50.0</pos2Y>
+    <pt>160.0,-50.0</pt>
+    <pt>160.0,-50.0</pt>
   </connection>
   <connection>
-    <pos1X>-180.0</pos1X>
-    <pos1Y>-80.0</pos1Y>
-    <pos2X>-60.0</pos2X>
-    <pos2Y>-80.0</pos2Y>
-    <pt>-120.0,-80.0</pt>
-    <pt>-120.0,-80.0</pt>
+    <pos1X>80.0</pos1X>
+    <pos1Y>-50.0</pos1Y>
+    <pos2X>40.0</pos2X>
+    <pos2Y>80.0</pos2Y>
+    <pt>160.0,-50.0</pt>
+    <pt>160.0,80.0</pt>
   </connection>
   <connection>
-    <pos1X>640.0</pos1X>
-    <pos1Y>-40.0</pos1Y>
-    <pos2X>830.0</pos2X>
-    <pos2Y>-40.0</pos2Y>
-    <pt>740.0,-40.0</pt>
-    <pt>740.0,-40.0</pt>
+    <pos1X>320.0</pos1X>
+    <pos1Y>-70.0</pos1Y>
+    <pos2X>-380.0</pos2X>
+    <pos2Y>-70.0</pos2Y>
+    <pt>420.00000000000006,-70.0</pt>
+    <pt>430.00000000000006,-70.0</pt>
+    <pt>430.00000000000006,170.0</pt>
+    <pt>-460.0,170.0</pt>
+    <pt>-460.0,-70.0</pt>
   </connection>
   <connection>
-    <pos1X>640.0</pos1X>
-    <pos1Y>0.0</pos1Y>
-    <pos2X>830.0</pos2X>
-    <pos2Y>0.0</pos2Y>
-    <pt>740.0,0.0</pt>
-    <pt>740.0,0.0</pt>
+    <pos1X>320.0</pos1X>
+    <pos1Y>-30.0</pos1Y>
+    <pos2X>-380.0</pos2X>
+    <pos2Y>-30.0</pos2Y>
+    <pt>389.99999999999994,-30.0</pt>
+    <pt>389.99999999999994,160.0</pt>
+    <pt>-440.0,160.0</pt>
+    <pt>-440.0,-30.0</pt>
   </connection>
 </root>

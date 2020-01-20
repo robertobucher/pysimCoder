@@ -1,4 +1,6 @@
-from pyqt5 import QGraphicsView, QGraphicsScene, QGraphicsItem, QPainter, QtCore
+from PyQt5.QtWidgets import QGraphicsItem, QGraphicsScene, QGraphicsView
+from PyQt5.QtGui import QPainter
+from PyQt5.QtCore import QRectF, QPointF, QSizeF
 
 from supsisim.block import Block
 from supsisim.port import Port, InPort, OutPort
@@ -14,7 +16,7 @@ class GraphicsView(QGraphicsView):
     def __init__(self, parent=None):
         super(GraphicsView, self).__init__(parent)
         self.setDragMode(QGraphicsView.RubberBandDrag)
-        self.setSceneRect(QtCore.QRectF(-2000, -2000, 4000, 4000))
+        self.setSceneRect(QRectF(-2000, -2000, 4000, 4000))
         self.setRenderHint(QPainter.Antialiasing)
         self.setRenderHint(QPainter.TextAntialiasing)
         self.setAcceptDrops(True)
@@ -180,7 +182,7 @@ class Scene(QGraphicsScene):
         b.setPos(float(item.findtext('posX')), float(item.findtext('posY')))
 
     def find_itemAt(self, pos):
-        items = self.items(QtCore.QRectF(pos-QtCore.QPointF(1,1), QtCore.QSizeF(3,3)))
+        items = self.items(QRectF(pos-QPointF(1,1), QSizeF(3,3)))
         for item in items:
             if isinstance(item, QGraphicsItem) and not isinstance(item, Connection):
                 return item

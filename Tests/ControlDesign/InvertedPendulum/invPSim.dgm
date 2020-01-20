@@ -1,25 +1,38 @@
 <root>
   <Date>
-    <SavingDate>13.10.2019 - 11:28:59</SavingDate>
+    <SavingDate>13.01.2020 - 13:49:31</SavingDate>
   </Date>
   <Simulation>
     <Template>sim.tmf</Template>
     <Ts>0.01</Ts>
     <AddObj></AddObj>
-    <ParScript>/home/bucher/Documents/PYTHON/newEditor2/ControlDesign/InvertedPendulum/invpendulumKane.py</ParScript>
+    <ParScript>/home/bucher/CACSD/pysimCoder/Tests/ControlDesign/InvertedPendulum/invpendulumKane.py</ParScript>
     <Tf>10</Tf>
   </Simulation>
   <block>
-    <name>RT Plot</name>
-    <inp>2</inp>
-    <outp>0</outp>
-    <inset>1</inset>
+    <name>InvPend_Plant</name>
+    <inp>1</inp>
+    <outp>2</outp>
+    <inset>0</inset>
     <outset>0</outset>
-    <icon>PLOT</icon>
-    <params>scopeStream</params>
+    <icon>CSS</icon>
+    <params>cssBlk|System: invPend|Initial conditions: [0,0.1,0,0]</params>
     <width>80</width>
     <flip>0</flip>
-    <posX>260.0</posX>
+    <posX>40.0</posX>
+    <posY>-100.0</posY>
+  </block>
+  <block>
+    <name>LQR_Controller</name>
+    <inp>3</inp>
+    <outp>1</outp>
+    <inset>0</inset>
+    <outset>0</outset>
+    <icon>DSS</icon>
+    <params>dssBlk|System: ctr|Initial conditions: 0</params>
+    <width>80</width>
+    <flip>0</flip>
+    <posX>-170.0</posX>
     <posY>-100.0</posY>
   </block>
   <block>
@@ -36,62 +49,29 @@
     <posY>-140.0</posY>
   </block>
   <block>
-    <name>LQR_Controller</name>
-    <inp>3</inp>
-    <outp>1</outp>
-    <inset>0</inset>
+    <name>RT Plot</name>
+    <inp>2</inp>
+    <outp>0</outp>
+    <inset>1</inset>
     <outset>0</outset>
-    <icon>DSS</icon>
-    <params>dssBlk|System: ctr|Initial conditions: 0</params>
+    <icon>PLOT</icon>
+    <params>scopeStream</params>
     <width>80</width>
     <flip>0</flip>
-    <posX>-170.0</posX>
+    <posX>260.0</posX>
     <posY>-100.0</posY>
   </block>
-  <block>
-    <name>InvPend_Plant</name>
-    <inp>1</inp>
-    <outp>2</outp>
-    <inset>0</inset>
-    <outset>0</outset>
-    <icon>CSS</icon>
-    <params>cssBlk|System: invPend|Initial conditions: [0,0.1,0,0]</params>
-    <width>80</width>
-    <flip>0</flip>
-    <posX>40.0</posX>
-    <posY>-100.0</posY>
-  </block>
-  <connection>
-    <pos1X>-370.0</pos1X>
-    <pos1Y>-140.0</pos1Y>
-    <pos2X>-210.0</pos2X>
-    <pos2Y>-140.0</pos2Y>
-    <pt>-290.0,-140.0</pt>
-    <pt>-290.0,-140.0</pt>
-  </connection>
-  <connection>
-    <pos1X>-130.0</pos1X>
-    <pos1Y>-100.0</pos1Y>
-    <pos2X>0.0</pos2X>
-    <pos2Y>-100.0</pos2Y>
-    <pt>-60.0,-100.0</pt>
-    <pt>-60.0,-100.0</pt>
-  </connection>
-  <connection>
-    <pos1X>80.0</pos1X>
-    <pos1Y>-120.0</pos1Y>
-    <pos2X>220.0</pos2X>
-    <pos2Y>-120.0</pos2Y>
-    <pt>150.0,-120.0</pt>
-    <pt>150.0,-120.0</pt>
-  </connection>
   <connection>
     <pos1X>80.0</pos1X>
     <pos1Y>-80.0</pos1Y>
-    <pos2X>220.0</pos2X>
-    <pos2Y>-80.0</pos2Y>
+    <pos2X>-210.0</pos2X>
+    <pos2Y>-60.0</pos2Y>
     <pt>150.0,-80.0</pt>
-    <pt>150.0,-80.0</pt>
+    <pt>150.0,30.0</pt>
+    <pt>-250.0,30.0</pt>
+    <pt>-250.0,-60.0</pt>
+    <pt>-230.0,-60.0</pt>
+    <pt>-230.0,-60.0</pt>
   </connection>
   <connection>
     <pos1X>80.0</pos1X>
@@ -110,13 +90,33 @@
   <connection>
     <pos1X>80.0</pos1X>
     <pos1Y>-80.0</pos1Y>
-    <pos2X>-210.0</pos2X>
-    <pos2Y>-60.0</pos2Y>
+    <pos2X>220.0</pos2X>
+    <pos2Y>-80.0</pos2Y>
     <pt>150.0,-80.0</pt>
-    <pt>150.0,30.0</pt>
-    <pt>-250.0,30.0</pt>
-    <pt>-250.0,-60.0</pt>
-    <pt>-230.0,-60.0</pt>
-    <pt>-230.0,-60.0</pt>
+    <pt>150.0,-80.0</pt>
+  </connection>
+  <connection>
+    <pos1X>80.0</pos1X>
+    <pos1Y>-120.0</pos1Y>
+    <pos2X>220.0</pos2X>
+    <pos2Y>-120.0</pos2Y>
+    <pt>150.0,-120.0</pt>
+    <pt>150.0,-120.0</pt>
+  </connection>
+  <connection>
+    <pos1X>-130.0</pos1X>
+    <pos1Y>-100.0</pos1Y>
+    <pos2X>0.0</pos2X>
+    <pos2Y>-100.0</pos2Y>
+    <pt>-60.0,-100.0</pt>
+    <pt>-60.0,-100.0</pt>
+  </connection>
+  <connection>
+    <pos1X>-370.0</pos1X>
+    <pos1Y>-140.0</pos1Y>
+    <pos2X>-210.0</pos2X>
+    <pos2Y>-140.0</pos2Y>
+    <pt>-290.0,-140.0</pt>
+    <pt>-290.0,-140.0</pt>
   </connection>
 </root>

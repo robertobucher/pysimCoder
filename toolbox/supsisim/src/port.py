@@ -1,4 +1,6 @@
-from pyqt5  import QGraphicsPathItem, QGraphicsItem, QPainterPath, QtCore, QTransform
+from PyQt5.QtWidgets import QGraphicsPathItem, QGraphicsItem
+from PyQt5.QtGui import QPainterPath, QTransform
+from PyQt5.QtCore import Qt
 
 from supsisim.const import PW
 
@@ -10,8 +12,8 @@ class Port(QGraphicsPathItem):
         #self.scene.addItem(self)
         self.block = None
         self.name = ''
-        self.line_color = QtCore.Qt.black
-        self.fill_color = QtCore.Qt.black
+        self.line_color = Qt.black
+        self.fill_color = Qt.black
         self.p = QPainterPath()
         self.connections = []
         self.nodeID = '0'

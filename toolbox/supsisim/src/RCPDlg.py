@@ -1,6 +1,9 @@
 #import sys
 
-from pyqt5 import QDialog, QGridLayout, QLabel, QLineEdit, QPushButton, QListWidget, QtCore, QMessageBox
+from PyQt5.QtWidgets import QDialog, QGridLayout, QLabel, QLineEdit, QPushButton, \
+    QListWidget, QMessageBox
+from PyQt5.QtCore import Qt
+
 from supsisim.const import pyrun, respath
 
 import subprocess
@@ -72,7 +75,7 @@ class ListDlg(QDialog):
     def __init__(self, list, parent=None):
         super(ListDlg, self).__init__(parent)
         layout = QGridLayout()
-        self.setWindowModality(QtCore.QtCore.Qt.ApplicationModal)
+        self.setWindowModality(Qt.ApplicationModal)
         self.resize(380, 180)
         self.listWdg = QListWidget()
         for item in list:
