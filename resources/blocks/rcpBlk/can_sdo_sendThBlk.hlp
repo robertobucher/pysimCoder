@@ -1,7 +1,7 @@
-Implementation of a generic CAN bus medssage send
+Implementation of a generic CAN bus message send
 
 Parameters:
-Device ID
-Index and sunindex
+Device ID (ex. 0x01)
+Index and subindex
 Data type (byte, word, dword)
 Using the input of the block

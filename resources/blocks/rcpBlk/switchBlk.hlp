@@ -1,3 +1,3 @@
-This block compare the signal on input 3 with the value of parameter 2 using the function given with parameters 1, and switch from input 1 to input 2.
+This block compare the signal on input 3 with the value of parameter 2 using the function given with parameters 1, and switch consequently from input 1 to input 2.
 
-The 3rd parameters gives info about the possibility to pass from input 2 to input 1 again (0 yes, 1 no).
+The 3rd parameters gives info about the possibility to pass from input 2 to input 1 again (0 yes, 1 no) or to block the changed situation.

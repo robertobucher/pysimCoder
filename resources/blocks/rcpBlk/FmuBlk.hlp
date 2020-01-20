@@ -8,3 +8,6 @@ Input and output names (fmu interfaces)
 FMU filename with extension
 Sampling time and major step for the FMU simulation
 Information about direct dependency of output from input
+
+More information about FMU and FMI at fmi-standard.org
+

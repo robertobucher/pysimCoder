@@ -1,3 +1,10 @@
 This block read the Accelerometers signals of a LSM9DS1 IMU platform on a Raspberry PI uC.
 
 The 3 outputs are Ax, Ay and Az.
+
+Parameters:
+CorrX:
+CorrY:
+CorrZ:
+
+represent the correction factors

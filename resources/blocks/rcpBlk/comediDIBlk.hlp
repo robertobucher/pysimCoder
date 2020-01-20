@@ -2,3 +2,5 @@ Implementation of a COMEDI Digital Input interface.
 
 Parameters:
 Device and channel
+
+For more details get the COMEDI documentation (www.comedi.org)

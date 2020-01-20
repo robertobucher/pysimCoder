@@ -9,4 +9,5 @@ Real, Integer parameters (as matrices)
 String parameter
 Function name
 
-The parameters are the same in pyblock.h reference
+The parameters are the same in pyblock.h reference.
+More info are described in this header file.

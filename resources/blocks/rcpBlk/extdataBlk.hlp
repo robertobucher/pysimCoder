@@ -4,5 +4,5 @@ The data are put repetively to the out as periodic signal.
 
 Parameters:
 Channels: number of signals in output
-Data lenght
+Data lenght (must be the same for all the outputs!)
 Filename (the values are stored in column without the time)

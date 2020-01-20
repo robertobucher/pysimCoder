@@ -1,3 +1,5 @@
 This block implements the speed output interface of a MCDC 3002 or a MCBL 3002 Faulhaber motion controller.
 
 In the Block diagram shoud be present the FH3XXX_INIT block!
+
+See the Faulhaber homepage for more details (www.faulhaber.com)

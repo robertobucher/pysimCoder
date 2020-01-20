@@ -2,3 +2,6 @@ Implementation of a COMEDI digital output interface
 
 Parameters:
 Device, channel and threshold for output "1"
+
+For more details get the COMEDI documentation (www.comedi.org)
+

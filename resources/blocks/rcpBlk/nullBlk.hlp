@@ -1,1 +1,4 @@
 Not used signals must be connecte to the inputs of this block.
+
+Attention: It is not possible to have unconnected signals in a block diagram yet!
+

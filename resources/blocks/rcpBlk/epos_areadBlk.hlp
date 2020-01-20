@@ -2,3 +2,6 @@ This Block implements the functions related to a Maxon EPOS motion controller fo
 
 Parameters:
 Device ID and channel number
+
+see the Maxon homepage for more details (www.maxon.com)
+

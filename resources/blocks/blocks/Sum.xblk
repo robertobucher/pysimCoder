@@ -1,1 +1,1 @@
-{"lib": "math", "name": "Sum", "ip": 2, "op": 1, "stin": 1, "stout": 0, "icon": "SUM", "params": "sumBlk|Gains: [1,-1]"}
+{"lib": "math", "name": "Sum", "ip": 2, "op": 1, "stin": 1, "stout": 0, "icon": "SUM", "params": "sumBlk|Gains: [1,1]"}

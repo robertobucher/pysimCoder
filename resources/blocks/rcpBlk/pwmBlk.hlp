@@ -1,2 +1,6 @@
 This block implement the PWM output for a Raspberry PI uC
 
+The input must be between -5 and 5.
+
+
+

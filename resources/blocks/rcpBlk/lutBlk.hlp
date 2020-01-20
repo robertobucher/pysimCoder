@@ -1,4 +1,4 @@
-This block implemets a polynomial output of the input signal.
+This block calculates the output with polynomial coefficients applied to the input value.
 
 The order of the polynom is given by the numebr of coefficients. The first coefficient is related to the higher exponent of the input signal.
 

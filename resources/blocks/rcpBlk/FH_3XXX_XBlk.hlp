@@ -3,3 +3,6 @@ This block implements the position output interface of a MCDC 3002 or a MCBL 300
 In the Block diagram shoud be present the FH3XXX_INIT block!
 
 The output is given as encoder value for the motor.
+
+See the Faulhaber homepage for more details (www.faulhaber.com)
+

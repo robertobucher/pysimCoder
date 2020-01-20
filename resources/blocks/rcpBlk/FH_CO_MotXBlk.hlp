@@ -1,3 +1,5 @@
 This block implement the Canopen output for the motor position for a MCDC 3002 or MCBL 3002 Faulhaber motion controller for synchronized output.
 
 In the Block diagram shoud be present the FH3XXX_INIT block!
+
+See the Faulhaber homepage for more details (www.faulhaber.com)

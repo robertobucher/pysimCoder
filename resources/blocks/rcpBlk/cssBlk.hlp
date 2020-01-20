@@ -4,4 +4,4 @@ It can be defined as transfer function (control.tf) or as state space system (co
 
 Parameters:
 LTI continous system
-Initial conditions of the state(s) as array, or "0"
+Initial conditions of the state(s) as array, or "0" (all states have 0 initial conditions)

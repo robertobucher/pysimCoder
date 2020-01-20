@@ -1,3 +1,10 @@
 This block read the Gyroscope signals of a LSM9DS1 IMU platform on a Raspberry PI uC.
 
 The 3 outputs are Gx, Gy and Gz.
+
+Parameters:
+CorrX:
+CorrY:
+CorrZ:
+
+represent the correction factors

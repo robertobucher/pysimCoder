@@ -2,3 +2,5 @@ Implementation of a COMEDI Analog to Digital converter
 
 Parameter
 Device, channel and range (card specific!)
+
+For more details get the COMEDI documentation (www.comedi.org)

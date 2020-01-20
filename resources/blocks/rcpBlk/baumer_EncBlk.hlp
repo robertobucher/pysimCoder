@@ -1,6 +1,6 @@
-This block implements the input of a Baumer differential encoder.
+This block implements the input of a Baumer differential encoder on the CABN bus.
 
 Parameters:
-Device ID: can bus device ID
+Device ID: can bus device ID (ex. 0x01)
 Resolution: Resolution of the encoder
-Encoder reset: 1 to zero the encoder at the beginning of the simulation
+Encoder reset: 1 or 0. Setting this value to 1 reset the encoder at the beginning of the simulation.
