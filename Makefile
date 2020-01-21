@@ -17,7 +17,6 @@ addfiles:
 modules:
 	cd toolbox/supsictrl; python setup.py install
 	cd toolbox/supsisim; python setup.py install
-	cd toolbox/PyQT; python setup.py install
 
 fmu:
 	cd CodeGen/fmu; make all; make install
