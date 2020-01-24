@@ -11,7 +11,6 @@ from PyQt5.QtCore import QPointF, QFileInfo, QMimeData
 from supsisim.block import Block
 from supsisim.connection import Connection
 from supsisim.editor import Editor
-from supsisim.library import Library
 from supsisim.scene import Scene, GraphicsView
 from supsisim.dialg import IO_Dialog
 from supsisim.const import respath, pycmd

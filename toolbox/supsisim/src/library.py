@@ -9,9 +9,8 @@ from PyQt5.QtWidgets import QGraphicsScene, QMainWindow, QWidget, QVBoxLayout, \
 from PyQt5.QtGui import QTransform, QDrag, QIcon
 from PyQt5.QtCore import Qt, QMimeData, QFileInfo
 
-from newEditor.const import respath
-
-from newEditor.pyEdit import NewEditorMainWindow
+from supsisim.const import respath
+from supsisim.pyEdit import NewEditorMainWindow
 
 #import dircache
 import os
