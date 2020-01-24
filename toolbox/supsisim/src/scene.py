@@ -244,15 +244,12 @@ class Scene(QGraphicsScene):
             except:
                 pass
             if flag:
-                if self.mainw.runflag:
-                    cmd = pyrun + ' tmp.py'
-                    try:
-                        p = subprocess.Popen(cmd, shell=True)
-                    except:
-                        pass
-                    p.wait()
-                else:
-                    print('Generate code -> run -i tmp.py')
+                cmd = pyrun + ' tmp.py'
+                try:
+                    p = subprocess.Popen(cmd, shell=True)
+                except:
+                    pass
+                p.wait()
             return True
         
         except:
@@ -292,15 +289,13 @@ class Scene(QGraphicsScene):
         return txt
     
     def generateCCode(self):
-        txt = ''
-        if self.mainw.runflag:
-            try:
-                f = open(self.script,'r')
-                txt = f.read()
-                f.close()
-                txt += '\n'
-            except:
-                pass
+        try:
+            f = open(self.script,'r')
+            txt = f.read()
+            f.close()
+            txt += '\n'
+        except:
+            pass
 
         items = self.items()
         dir1 = respath + 'blocks/rcpBlk'
@@ -367,15 +362,12 @@ class Scene(QGraphicsScene):
             f = open('tmp.py','a')
             f.write(cmd)
             f.close()
-            if self.mainw.runflag:
-                cmd = pyrun + ' tmp.py'
-                try:
-                    os.system(cmd)
-                    self.mainw.status.showMessage('Simulation finished')
-                except:
-                    pass
-            else:
-                print('Simulate system -> run -i tmp.py')
+            cmd = pyrun + ' tmp.py'
+            try:
+                os.system(cmd)
+                self.mainw.status.showMessage('Simulation finished')
+            except:
+                pass
          
     def debugInfo(self):
         items = self.items()
@@ -394,4 +386,3 @@ class Scene(QGraphicsScene):
         print('\nConnections:')
         for item in dgmConnections:
             print(item)
-       

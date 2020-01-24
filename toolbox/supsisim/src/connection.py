@@ -31,9 +31,9 @@ class Connection(QGraphicsPathItem):
         txt += 'Position 1 : ' + self.pos1.__str__() + '\n'
         txt += 'Position 2 : ' + self.pos2.__str__() + '\n'
         txt += 'Port1 :\n'
-        txt += self.port1.__str__() + '\n'
+        txt += self.port1.parent.name + '\n'
         txt += 'Port2 :\n'
-        txt += self.port2.__str__() + '\n'
+        txt += self.port2.parent.name + '\n'
         for el in self.connPoints:
             txt += el.__str__() + '\n'
         return txt

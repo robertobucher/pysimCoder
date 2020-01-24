@@ -1,11 +1,17 @@
 #!/usr/bin/python
 
-from PyQt5.QtWidgets import QGraphicsScene, QMainWindow, QWidget, QVBoxLayout, \
-    QHBoxLayout, QGraphicsView,QTabWidget, QApplication, \
-    QMenu, QMessageBox, QComboBox
+import os
 
-from PyQt5.QtGui import QTransform, QDrag
-from PyQt5.QtCore import Qt, QMimeData
+from PyQt5.QtWidgets import QGraphicsScene, QMainWindow, QWidget, QVBoxLayout, \
+    QHBoxLayout, QGraphicsView,QTabWidget, QApplication, QFileDialog, \
+    QAction,  QMenu, QMessageBox, QComboBox
+
+from PyQt5.QtGui import QTransform, QDrag, QIcon
+from PyQt5.QtCore import Qt, QMimeData, QFileInfo
+
+from newEditor.const import respath
+
+from newEditor.pyEdit import NewEditorMainWindow
 
 #import dircache
 import os
@@ -69,10 +75,19 @@ class Library(QMainWindow):
         self.centralWidget = QWidget()
         #self.resize(800, 500)
         self.setWindowTitle('Library')
+
+        self.addActions()
+        self.addMenubar()
+        self.addToolbars()
+       
+        self.path =  os.getcwd()
+        
         self.libConfig = []
         self.readLib()
         self.closeFlag = False
  
+        self.mainWins = []
+        
         self.tabs = QTabWidget()
         tabS = ''
 
@@ -121,6 +136,59 @@ class Library(QMainWindow):
         self.tabs.setTabPosition(QTabWidget.West)
         self.tabs.setCurrentIndex(index)
 
+    def addActions(self):
+        mypath = respath + '/icons/'
+
+        self.newFileAction = QAction(QIcon(mypath+'filenew.png'),
+                                     '&New', self,
+                                     shortcut = 'Ctrl+N',
+                                     statusTip = 'New File',
+                                     triggered = self.newFile)
+        
+        self.openFileAction = QAction(QIcon(mypath+'fileopen.png'),
+                                      '&Open', self,
+                                      shortcut = 'Ctrl+O',
+                                      statusTip = 'Open File',
+                                      triggered = self.openFile)
+
+        self.exitAction = QAction(QIcon(mypath+'exit.png'),
+                                '&Exit',self,
+                                  shortcut = 'Ctrl+X',
+                                  statusTip = 'Exit Application',
+                                  triggered = self.close)
+        
+    def newFile(self):
+        main = NewEditorMainWindow('untitled', self.path, self)
+        self.mainWins.append(main)
+        main.show()
+
+    def openFile(self):
+        filename = QFileDialog.getOpenFileName(self, 'Open', '.', filter='*.dgm')
+        filename = filename[0]
+        if filename != '':
+            self.fopen(filename)
+
+    def fopen(self, filename):
+        fname = QFileInfo(filename)
+        self.path = str(fname.absolutePath())
+        fn = str(fname.baseName())
+        main = NewEditorMainWindow(fn, self.path, self)
+        self.mainWins.append(main)
+        main.show()
+
+    def addToolbars(self):
+        toolbarF = self.addToolBar('File')
+        toolbarF.addAction(self.newFileAction)
+        toolbarF.addAction(self.openFileAction)
+        toolbarF.addAction(self.exitAction)
+        
+    def addMenubar(self):
+        menubar = self.menuBar()
+        fileMenu = menubar.addMenu('&File')
+        fileMenu.addAction(self.newFileAction)
+        fileMenu.addAction(self.openFileAction)
+        fileMenu.addAction(self.exitAction)
+       
     def getBlock(self,fn):
         f = open(fn,'r')
         d = f.read()
@@ -168,12 +236,14 @@ class Library(QMainWindow):
             pass
         
         self.libConfig = sorted(blkList, key=lambda k: (k['lib'].lower()))
-            
+
+    def closeWindow(self, mainW):
+        self.mainWins.remove(mainW)
+   
     def closeEvent(self,event):
-        if self.closeFlag:
-            event.accept()
-        else:
-            event.ignore()
+        for el in self.mainWins:
+            el.close()
+        event.accept()
 
 if __name__ == '__main__':
     import sys

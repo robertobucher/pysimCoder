@@ -48,8 +48,8 @@ class Block(QGraphicsPathItem):
         txt += 'Output ports :' + self.outp.__str__() + '\n'
         txt += 'Icon         :' + self.icon.__str__() + '\n'
         txt += 'Params       :' + self.params.__str__() + '\n'
-        for thing in self.childItems():
-            print(thing)
+        #for thing in self.childItems():
+            #txt += thing.__str__()
         return txt
         
     def setup(self):

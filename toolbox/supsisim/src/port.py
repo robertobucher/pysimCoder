@@ -58,14 +58,12 @@ class InPort(Port):
 
     def __str__(self):
         txt  = 'InPort \n'
-        txt += 'Parent : ' + self.parent.name + '\n'
         txt += 'Node ID :' + self.nodeID + '\n'
         txt += 'Connections: ' + (len(self.connections)).__str__() + '\n'
         return txt
     
     def setup(self):
         self.setPen(self.line_color)
-        #self.setBrush(self.fill_color)
         self.p.moveTo(-PW, -PW)
         self.p.lineTo(0.0,0.0)
         self.p.lineTo(-PW, PW)             
@@ -79,7 +77,6 @@ class OutPort(Port):
 
     def __str__(self):
         txt  = 'OutPort \n'
-        txt += 'Parent : ' + self.parent.name + '\n'
         txt += 'Node ID :' + self.nodeID + '\n'
         txt += 'Connections: ' + (len(self.connections)).__str__() + '\n'
         return txt

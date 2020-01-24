@@ -3,10 +3,10 @@
 import os
 
 from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout,  QAction, \
-    QMessageBox, QFileDialog, QDialog
+    QMessageBox, QFileDialog, QDialog, QApplication
 from PyQt5.QtGui import QPainter, QIcon
 from PyQt5.QtPrintSupport import QPrinter, QPrintDialog
-from PyQt5.QtCore import QPointF, QFileInfo
+from PyQt5.QtCore import QPointF, QFileInfo, QMimeData
 
 from supsisim.block import Block
 from supsisim.connection import Connection
@@ -16,10 +16,12 @@ from supsisim.scene import Scene, GraphicsView
 from supsisim.dialg import IO_Dialog
 from supsisim.const import respath, pycmd
 
+from lxml import etree
+
 DEBUG = False
 
 class NewEditorMainWindow(QMainWindow):
-    def __init__(self, library, fname, mypath, runflag, parent=None):
+    def __init__(self, fname, mypath, parent):
         super(NewEditorMainWindow, self).__init__(parent)
         self.centralWidget = QWidget(self)
         self.verticalLayout = QVBoxLayout(self.centralWidget)
@@ -35,8 +37,7 @@ class NewEditorMainWindow(QMainWindow):
         self.addToolbars()
         self.filename = fname
         self.path = mypath
-        self.library = library
-        self.runflag = runflag
+        self.library = parent
         if fname != 'untitled':
             self.scene.loadDgm(self.getFullFileName())
             
@@ -52,18 +53,6 @@ class NewEditorMainWindow(QMainWindow):
 
     def addactions(self):
         mypath = respath + '/icons/'
-
-        self.newFileAction = QAction(QIcon(mypath+'filenew.png'),
-                                                '&Open', self,
-                                                shortcut = 'Ctrl+N',
-                                                statusTip = 'New File',
-                                                triggered = self.newFile)
-        
-        self.openFileAction = QAction(QIcon(mypath+'fileopen.png'),
-                                                '&Open', self,
-                                                shortcut = 'Ctrl+O',
-                                                statusTip = 'Open File',
-                                                triggered = self.openFile)
 
         self.saveFileAction = QAction(QIcon(mypath+'filesave.png'),
                                                 '&Save', self,
@@ -140,8 +129,6 @@ class NewEditorMainWindow(QMainWindow):
                                              triggered = self.debugAct)                                           
     def addToolbars(self):
         toolbarF = self.addToolBar('File')
-        toolbarF.addAction(self.newFileAction)
-        toolbarF.addAction(self.openFileAction)
         toolbarF.addAction(self.saveFileAction)
         toolbarF.addAction(self.saveFileAsAction)
         toolbarF.addAction(self.printAction)
@@ -167,7 +154,6 @@ class NewEditorMainWindow(QMainWindow):
     def addMenubar(self):
         menubar = self.menuBar()
         fileMenu = menubar.addMenu('&File')
-        fileMenu.addAction(self.openFileAction)
         fileMenu.addAction(self.saveFileAction)
         fileMenu.addAction(self.saveFileAsAction)
         fileMenu.addSeparator()
@@ -193,17 +179,45 @@ class NewEditorMainWindow(QMainWindow):
         self.scene.selection = self.scene.items(p)
         if self.scene.selection == []:
             self.scene.selection = self.scene.selectedItems()
+        dgmBlocks = []
+        dgmConnections = []
+        for item in self.scene.selection:
+            if isinstance(item, Block):
+                dgmBlocks.append(item)
+            elif isinstance(item, Connection):
+                dgmConnections.append(item)
+            else:
+                pass
+
+        root = etree.Element('root')
+        for item in dgmBlocks:
+            item.save(root)
+        for item in dgmConnections:
+            item.save(root)
+        msg = etree.tostring(root, pretty_print=True)
+        clipboard = QApplication.clipboard()
+        mimeData = QMimeData()
+        mimeData.setText(msg.decode())
+        clipboard.setMimeData(mimeData)
 
     def pasteAct(self):
-        if self.scene.selection != []:
-            for item in self.scene.selection:
-                if isinstance(item, Connection):
-                    try:
-                        c = item.clone(QPointF(200,200))
-                        c.update_ports_from_pos()
-                    except:
-                        pass        
-
+        self.scene.DgmToUndo()
+        try:
+            msg = QApplication.clipboard().text()
+            root = etree.fromstring(msg)
+            blocks = root.findall('block')
+            for item in blocks:
+                self.scene.loadBlock(item)
+                connections = root.findall('connection')
+                for item in connections:
+                    self.scene.loadConn(item)
+            try:
+                self.editor.redrawNodes()
+            except:
+                pass
+        except:
+            pass
+        
     def undoAct(self):
          self.scene.undoDgm()
     
@@ -224,50 +238,6 @@ class NewEditorMainWindow(QMainWindow):
                                    QMessageBox.Cancel)
         return ret
             
-    def newFile(self):
-        fname = self.filename
-        try:
-            os.remove(fname+'.py')
-        except:
-            pass
-        if self.modified:
-            ret = self.askSaving()
-            if ret == QMessageBox.Save:
-                self.saveFile()
-            elif ret == QMessageBox.Cancel:
-                return
-            
-        self.scene.newDgm()
-        self.filename = 'untitled'
-        self.path = os.getcwd()
-        self.setWindowTitle(self.filename)
-        self.modified = False
-        
-    def openFile(self):
-        fname = self.filename
-        try:
-            os.remove(fname+'.py')
-        except:
-            pass
-        if self.modified:
-            ret = self.askSaving()
-            if ret == QMessageBox.Save:
-                self.saveFile()
-            elif ret == QMessageBox.Cancel:
-                return
-        self.scene.newDgm()            
-                
-        filename = QFileDialog.getOpenFileName(self, 'Open', '.', filter='*.dgm')
-        filename = filename[0]
-        if filename != '':
-            fname = QFileInfo(filename)
-            self.filename = str(fname.baseName())
-            self.path = str(fname.absolutePath())
-            self.setWindowTitle(self.filename)
-            self.scene.loadDgm(self.getFullFileName())
-            self.editor.redrawNodes()
-            self.modified = False
-        
     def saveFile(self):
         if self.filename == 'untitled':
             self.saveFileAs()
@@ -363,7 +333,6 @@ class NewEditorMainWindow(QMainWindow):
                 event.ignore()
                 return
             
-        self.library.closeFlag = True
-        self.library.close()
+        self.library.closeWindow(self)
         event.accept()
                 
