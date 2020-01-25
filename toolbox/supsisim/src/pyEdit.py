@@ -71,6 +71,12 @@ class NewEditorMainWindow(QMainWindow):
                                             statusTip = 'Copy',
                                             triggered = self.copyAct)
 
+        self.cutAction = QAction(QIcon(mypath+'cut.png'),
+                                            'C&ut', self,
+                                            shortcut = 'Ctrl+X',
+                                            statusTip = 'Cut',
+                                            triggered = self.cutAct)
+
         self.pasteAction = QAction(QIcon(mypath+'paste.png'),
                                              '&Paste', self,
                                              shortcut = 'Ctrl+V',
@@ -97,7 +103,7 @@ class NewEditorMainWindow(QMainWindow):
 
         self.exitAction = QAction(QIcon(mypath+'exit.png'),
                                             '&Exit',self,
-                                            shortcut = 'Ctrl+X',
+                                            shortcut = 'Ctrl+Q',
                                             statusTip = 'Exit Application',
                                             triggered = self.close)
                                             
@@ -134,6 +140,7 @@ class NewEditorMainWindow(QMainWindow):
         toolbarF.addAction(self.exitAction)
 
         toolbarE = self.addToolBar('Edit')
+        toolbarE.addAction(self.cutAction)
         toolbarE.addAction(self.copyAction)
         toolbarE.addAction(self.pasteAction)
         toolbarE.addAction(self.undoAction)
@@ -159,6 +166,7 @@ class NewEditorMainWindow(QMainWindow):
         fileMenu.addAction(self.exitAction)
         
         editMenu = menubar.addMenu('&Edit')
+        editMenu.addAction(self.cutAction)
         editMenu.addAction(self.copyAction)
         editMenu.addAction(self.pasteAction)
         editMenu.addAction(self.undoAction)
@@ -199,6 +207,10 @@ class NewEditorMainWindow(QMainWindow):
         mimeData.setText(msg.decode())
         clipboard.setMimeData(mimeData)
 
+    def cutAct(self):
+        self.copyAct()
+        self.editor.deleteSelected()
+            
     def pasteAct(self):
         self.scene.DgmToUndo()
         try:
@@ -206,10 +218,12 @@ class NewEditorMainWindow(QMainWindow):
             root = etree.fromstring(msg)
             blocks = root.findall('block')
             for item in blocks:
-                self.scene.loadBlock(item)
-                connections = root.findall('connection')
-                for item in connections:
-                    self.scene.loadConn(item)
+                self.scene.loadBlock(item, DP, DP)
+                #self.scene.loadBlock(item)
+            connections = root.findall('connection')
+            for item in connections:
+                self.scene.loadConn(item, DP, DP)
+                #self.scene.loadConn(item)
             try:
                 self.editor.redrawNodes()
             except:

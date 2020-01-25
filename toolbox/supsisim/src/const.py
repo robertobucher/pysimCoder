@@ -8,6 +8,7 @@ BHmin = 60
 PD = 40
 NW = 4
 LW =1.5
+DP = 100.0
 
 DB = 4
 

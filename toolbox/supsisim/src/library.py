@@ -12,9 +12,9 @@ from PyQt5.QtCore import Qt, QMimeData, QFileInfo
 from supsisim.const import respath
 from supsisim.pyEdit import NewEditorMainWindow
 
-#import dircache
 import os
 import json
+from lxml import etree
 
 from supsisim.block import Block
 from supsisim.const import respath, BWmin
@@ -45,18 +45,12 @@ class CompViewer(QGraphicsScene):
 
     def mouseMoveEvent(self, event):
         if event.buttons() == Qt.LeftButton and isinstance(self.actComp, Block):
+            root = etree.Element('root')
+            self.actComp.save(root)
+            msg = etree.tostring(root, pretty_print=True)           
             mimeData = QMimeData()
-            if self.actComp.insetble:
-                insetble = '1'
-            else:
-                insetble = '0'
-            if self.actComp.outsetble:
-                outsetble = '1'
-            else:
-                outsetble = '0'
-                
-            data = self.actComp.name+'@'+self.actComp.inp.__str__()+'@'+self.actComp.outp.__str__() + '@' + insetble +'@' + outsetble + '@' + self.actComp.icon + '@' + self.actComp.params + '@' + self.actComp.width.__str__()
-            mimeData.setText(data)
+            mimeData.setText(msg.decode())
+            
             drag = QDrag(self.parent)
             drag.setMimeData(mimeData)
             drag.exec_(Qt.CopyAction)
@@ -72,7 +66,6 @@ class Library(QMainWindow):
         QMainWindow.__init__(self, parent)
 
         self.centralWidget = QWidget()
-        #self.resize(800, 500)
         self.setWindowTitle('Library')
 
         self.addActions()

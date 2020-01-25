@@ -274,21 +274,28 @@ class Connection(QGraphicsPathItem):
         except:
             pass
 
-    def load(self, item):
+    def load(self, item, dx = 0.0, dy = 0.0):
         try:
             pt1 = QPointF(float(item.findtext('pos1X')), float(item.findtext('pos1Y')))
             pt2 = QPointF(float(item.findtext('pos2X')), float(item.findtext('pos2Y')))
-            self.pos1 = pt1
-            self.pos2 = pt2
+            dpt = QPointF(dx, dy)
+            self.pos1 = self.gridPos(pt1+dpt)
+            self.pos2 = self.gridPos(pt2+dpt)
             points = item.findall('pt')
             for el in points:
                 pt = el.text.split(',')
                 x = float(pt[0])
                 y = float(pt[1])
-                pt = QPointF(float(pt[0]), float(pt[1]))
+                pt = self.gridPos(QPointF(float(pt[0]), float(pt[1]))+dpt)
                 self.connPoints.append(pt)
             self.update_ports_from_pos()
         except:
             pass
             
+    def gridPos(self, pt):
+         gr = GRID
+         x = gr * ((pt.x() + gr /2) // gr)
+         y = gr * ((pt.y() + gr /2) // gr)
+         return QPointF(x,y)
+
 

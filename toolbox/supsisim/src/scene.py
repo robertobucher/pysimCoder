@@ -44,8 +44,13 @@ class Scene(QGraphicsScene):
 
     def dragLeaveEvent(self, event):
         self.DgmToUndo()
-        data = event.mimeData().text()
-        b = Block(None, self, data)
+        msg = event.mimeData().text()
+        root = etree.fromstring(msg)
+        item = root.findall('block')[0]
+        b = Block(None, self, item.findtext('name'),
+                      int(item.findtext('inp')), int(item.findtext('outp')),
+                      item.findtext('inset')=='1', item.findtext('outset')=='1', item.findtext('icon'),
+                      item.findtext('params'), int(item.findtext('width')), item.findtext('flip')=='1' )
         b.setPos(event.scenePos())
 
     def DgmToMsg(self):
@@ -160,14 +165,13 @@ class Scene(QGraphicsScene):
         self.MsgToDgm(msg)
         self.undoList = [msg]
               
-    def loadBlock(self, item):
+    def loadBlock(self, item, dx = 0, dy = 0):
         # --- For old files without block width ---
         try:
             width = int(item.findtext('width'))
         except:
             width = BWmin
         # --------------------------------------------------
-
         try:
             b = Block(None, self, item.findtext('name'),
                       int(item.findtext('inp')), int(item.findtext('outp')),
@@ -179,7 +183,7 @@ class Scene(QGraphicsScene):
                       int(item.findtext('inp')), int(item.findtext('outp')),
                       item.findtext('ioset')=='1', item.findtext('ioset')=='1', item.findtext('icon'),
                       item.findtext('params'), width, item.findtext('flip')=='1' )
-        b.setPos(float(item.findtext('posX')), float(item.findtext('posY')))
+        b.setPos(float(item.findtext('posX'))+dx, float(item.findtext('posY'))+dy)
 
     def find_itemAt(self, pos):
         items = self.items(QRectF(pos-QPointF(1,1), QSizeF(3,3)))
@@ -188,9 +192,9 @@ class Scene(QGraphicsScene):
                 return item
         return None
     
-    def loadConn(self, item):
+    def loadConn(self, item, dx = 0.0, dy = 0.0):
         c = Connection(None, self)
-        c.load(item)            
+        c.load(item, dx, dy)            
         
     def setParamsBlk(self):
         self.mainw.paramsBlock()

@@ -1,6 +1,6 @@
-from PyQt5.QtWidgets import QMenu, QGraphicsItem
+from PyQt5.QtWidgets import QMenu, QGraphicsItem, QApplication
 from PyQt5.QtGui import QTransform
-from PyQt5.QtCore import Qt, QEvent, QObject, QPointF, QRectF, QSizeF
+from PyQt5.QtCore import Qt, QEvent, QObject, QPointF, QRectF, QSizeF, QMimeData
 
 from supsisim.port import Port, InPort, OutPort
 from supsisim.connection import Connection
@@ -10,6 +10,7 @@ import supsisim.RCPDlg as pDlg
 from supsisim.const import GRID, DB
 from supsisim.node import Node
 import numpy as np
+from lxml import etree
 
 # States
 IDLE = 0
@@ -30,6 +31,7 @@ class Editor(QObject):
     """ Editor to handles events"""
     def __init__(self, parent):
         super(Editor, self).__init__(parent)
+        self.mainw = parent
         self.conn = None
         self.scene = None
         self.movBlk = False
@@ -42,6 +44,7 @@ class Editor(QObject):
         flpBlkAction = self.menuIOBlk.addAction('Flip Block')
         nameBlkAction = self.menuIOBlk.addAction('Change Name')
         cloneBlkAction = self.menuIOBlk.addAction('Clone Block')
+        copyBlkAction = self.menuIOBlk.addAction('Copy Block')
         deleteBlkAction = self.menuIOBlk.addAction('Delete Block')
         
         parBlkAction.triggered.connect(self.parBlock)
@@ -49,6 +52,7 @@ class Editor(QObject):
         nameBlkAction.triggered.connect(self.nameBlock)
         paramsBlkAction.triggered.connect(self.paramsBlock)
         cloneBlkAction.triggered.connect(self.cloneBlock)
+        copyBlkAction.triggered.connect(self.copyBlock)
         deleteBlkAction.triggered.connect(self.deleteBlock)
 
         self.subMenuConn = QMenu()
@@ -56,6 +60,10 @@ class Editor(QObject):
         connDelAction = self.subMenuConn.addAction('Delete connection')
         connAddAction.triggered.connect(self.addConn)
         connDelAction.triggered.connect(self.deleteConn)
+
+        self.subMenuEditor = QMenu()
+        pasteAction = self.subMenuEditor.addAction('Paste')
+        pasteAction.triggered.connect(self.pasteBlock)
 
         # Matrix has two index [state, event]
         # States:
@@ -130,8 +138,48 @@ class Editor(QObject):
     def cloneBlock(self):
         self.scene.DgmToUndo()
         item = self.scene.item
-        item.clone(QPointF(100,100))
+        item.clone(QPointF(DP,DP))
 
+    def copyBlock(self):
+        root = etree.Element('root')
+        item = self.scene.item
+        item.save(root)
+        msg = etree.tostring(root, pretty_print=True)
+        clipboard = QApplication.clipboard()
+        mimeData = QMimeData()
+        mimeData.setText(msg.decode())
+        clipboard.setMimeData(mimeData)
+
+    def pasteBlock(self):
+        self.scene.DgmToUndo()
+        try:
+            msg = QApplication.clipboard().text()
+            root = etree.fromstring(msg)
+            blocks = root.findall('block')
+            meanPosX = 0.0
+            meanPosY = 0.0
+            numBlk = 0
+            for item in blocks:
+                pBlkX = float(item.findtext('posX'))
+                pBlkY = float(item.findtext('posY'))
+                meanPosX = meanPosX + pBlkX
+                meanPosY = meanPosY + pBlkY
+                numBlk += 1
+            deltaPosX = self.scene.evpos.x()-meanPosX/numBlk
+            deltaPosY = self.scene.evpos.y()-meanPosY/numBlk
+            blocks = root.findall('block')            
+            for item in blocks:
+                self.scene.loadBlock(item, deltaPosX, deltaPosY)
+            connections = root.findall('connection')
+            for item in connections:
+                self.scene.loadConn(item, deltaPosX, deltaPosY)
+            try:
+                self.editor.redrawNodes()
+            except:
+                pass
+        except:
+            pass
+       
     def deleteBlock(self):
         self.scene.DgmToUndo()
         item = self.scene.item
@@ -251,22 +299,25 @@ class Editor(QObject):
         
         n = 0
         N = min(len(pts1), len(pts2))
-        while pts1[n] == pts2[n] and n <N:
-            n +=1
-        p1_prev = pts1[n-1]
-        p1 = pts1[n]
-        p2_prev = pts2[n-1]
-        p2 = pts2[n]
+        try:
+            while pts1[n] == pts2[n] and n<N:
+                n +=1
+            p1_prev = pts1[n-1]
+            p1 = pts1[n]
+            p2_prev = pts2[n-1]
+            p2 = pts2[n]
  
-        if self.ptInLine(p1, p2_prev, p2):
-            pos = p1
-        elif self.ptInLine(p2, p1_prev, p1):
-            pos = p2
-        else:
-            pos = p1_prev
+            if self.ptInLine(p1, p2_prev, p2):
+                pos = p1
+            elif self.ptInLine(p2, p1_prev, p1):
+                pos = p2
+            else:
+                pos = p1_prev
             
-        node = Node(None, self.scene)
-        node.setPos(pos)
+            node = Node(None, self.scene)
+            node.setPos(pos)
+        except:
+            pass
 
     def redrawNodesFromPort(self, p):
         N = len(p.connections)
@@ -362,6 +413,17 @@ class Editor(QObject):
                     if rect.contains(pos):
                         return c
         return None
+
+    def deleteSelected(self):
+        items = self.scene.selectedItems()
+        self.scene.DgmToUndo()
+        for item in items:
+            try:
+                item.remove()
+                self.editor.removeNodes()
+                self.editor.redrawNodes()
+            except:
+                pass
  
     def deselect_all(self):
         for el in self.scene.items():
@@ -434,6 +496,11 @@ class Editor(QObject):
                 except:
                     pass
 
+        if item == None:      
+            self.scene.evpos = event.scenePos()
+            self.subMenuEditor.exec_(event.screenPos())
+            
+
     def P03(self, obj, event):                                     # IDLE, ITEMSELECTED + MOUSEDOUBLECLICK
         item = self.findBlockAt(event.scenePos())
         self.deselect_all()
@@ -444,15 +511,7 @@ class Editor(QObject):
             self.paramsBlock()
 
     def P04(self, obj, event):                                     # ITEMSELECTED + KEY_DEL
-        items = self.scene.selectedItems()
-        self.scene.DgmToUndo()
-        for item in items:
-            try:
-                item.remove()
-                self.removeNodes()
-                self.redrawNodes()
-            except:
-                pass
+        self.deleteSelected()
         self.state = IDLE
 
     def P05(self, obj, event):                                     # ITEMSELECTED + KEY_ESC
