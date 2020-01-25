@@ -299,8 +299,8 @@ class Scene(QGraphicsScene):
             f.close()
             txt += '\n'
         except:
-            pass
-
+            txt = ''
+ 
         items = self.items()
         dir1 = respath + 'blocks/rcpBlk'
         dir2 = os.environ.get('PYUSERBLKS')
