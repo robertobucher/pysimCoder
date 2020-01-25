@@ -3,7 +3,7 @@ from PyQt5.QtGui import QPainterPath, QPen
 from PyQt5.QtCore import Qt, QPointF
 
 import numpy as np
-from supsisim.const import LW, NW, DB
+from supsisim.const import LW, DB, GRID
 from supsisim.port import InPort, OutPort
 from lxml import etree
 

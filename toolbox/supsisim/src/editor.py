@@ -7,7 +7,7 @@ from supsisim.connection import Connection
 from supsisim.block import Block
 from supsisim.dialg import BlockName_Dialog
 import supsisim.RCPDlg as pDlg
-from supsisim.const import GRID, DB
+from supsisim.const import GRID, DB, DP
 from supsisim.node import Node
 import numpy as np
 from lxml import etree
@@ -138,7 +138,7 @@ class Editor(QObject):
     def cloneBlock(self):
         self.scene.DgmToUndo()
         item = self.scene.item
-        item.clone(QPointF(DP,DP))
+        item.clone(QPointF(DP, DP))
 
     def copyBlock(self):
         root = etree.Element('root')
@@ -222,7 +222,7 @@ class Editor(QObject):
         for n in range(0,N-1):
             p1 = points[n]
             p2 = points[n+1]
-            rect = QRectF(p1 - QPointF(DB,DB) ,p2 + QPointF(DB,DB))
+            rect = QRectF(p1 - QPointF(DB, DB) ,p2 + QPointF(DB, DB))
             if rect.contains(pos):
                 if p1.x() == p2.x():
                     pos.setX(p1.x())
