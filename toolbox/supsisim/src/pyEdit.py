@@ -13,7 +13,7 @@ from supsisim.connection import Connection
 from supsisim.editor import Editor
 from supsisim.scene import Scene, GraphicsView
 from supsisim.dialg import IO_Dialog
-from supsisim.const import respath, pycmd
+from supsisim.const import respath, pycmd, DP
 
 from lxml import etree
 
