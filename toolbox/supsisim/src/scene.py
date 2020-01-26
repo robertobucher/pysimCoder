@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QGraphicsItem, QGraphicsScene, QGraphicsView
 from PyQt5.QtGui import QPainter
-from PyQt5.QtCore import QRectF, QPointF, QSizeF
+from PyQt5.QtCore import QRectF, QPointF, QSizeF, QEvent
 
 from supsisim.block import Block
 from supsisim.port import Port, InPort, OutPort
@@ -42,17 +42,27 @@ class Scene(QGraphicsScene):
 
         self.undoList = []
 
+    def dragMoveEvent(self, event):
+        if event.mimeData().hasText():
+            event.accept()
+        else:
+            event.ignore()
+            
     def dragLeaveEvent(self, event):
-        self.DgmToUndo()
-        msg = event.mimeData().text()
-        root = etree.fromstring(msg)
-        item = root.findall('block')[0]
-        b = Block(None, self, item.findtext('name'),
+        return
+
+    def dropEvent(self,event):
+        if event.mimeData().hasText():
+            self.DgmToUndo()
+            msg = event.mimeData().text()
+            root = etree.fromstring(msg)
+            item = root.findall('block')[0]
+            b = Block(None, self, item.findtext('name'),
                       int(item.findtext('inp')), int(item.findtext('outp')),
                       item.findtext('inset')=='1', item.findtext('outset')=='1', item.findtext('icon'),
                       item.findtext('params'), int(item.findtext('width')), item.findtext('flip')=='1' )
-        b.setPos(event.scenePos())
-
+            b.setPos(event.scenePos())
+       
     def DgmToMsg(self):
         items = self.items()
         dgmBlocks = []
