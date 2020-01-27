@@ -53,6 +53,18 @@ class NewEditorMainWindow(QMainWindow):
     def addactions(self):
         mypath = respath + '/icons/'
 
+        self.newFileAction = QAction(QIcon(mypath+'filenew.png'),
+                                     '&New', self,
+                                     shortcut = 'Ctrl+N',
+                                     statusTip = 'New File',
+                                     triggered = self.newFile)
+        
+        self.openFileAction = QAction(QIcon(mypath+'fileopen.png'),
+                                      '&Open', self,
+                                      shortcut = 'Ctrl+O',
+                                      statusTip = 'Open File',
+                                      triggered = self.openFile)
+
         self.saveFileAction = QAction(QIcon(mypath+'filesave.png'),
                                                 '&Save', self,
                                                 shortcut = 'Ctrl+S',
@@ -101,12 +113,6 @@ class NewEditorMainWindow(QMainWindow):
                                              statusTip = 'Print schematic',
                                              triggered = self.print_scheme)
 
-        self.exitAction = QAction(QIcon(mypath+'exit.png'),
-                                            '&Exit',self,
-                                            shortcut = 'Ctrl+Q',
-                                            statusTip = 'Exit Application',
-                                            triggered = self.close)
-                                            
         self.startPythonAction = QAction(QIcon(mypath+'python.png'),
                                                'Start iPython',self,
                                                statusTip = 'Start iPython',
@@ -134,11 +140,12 @@ class NewEditorMainWindow(QMainWindow):
                                              triggered = self.debugAct)                                           
     def addToolbars(self):
         toolbarF = self.addToolBar('File')
+        toolbarF.addAction(self.newFileAction)
+        toolbarF.addAction(self.openFileAction)
         toolbarF.addAction(self.saveFileAction)
         toolbarF.addAction(self.saveFileAsAction)
         toolbarF.addAction(self.printAction)
-        toolbarF.addAction(self.exitAction)
-
+ 
         toolbarE = self.addToolBar('Edit')
         toolbarE.addAction(self.cutAction)
         toolbarE.addAction(self.copyAction)
@@ -160,10 +167,10 @@ class NewEditorMainWindow(QMainWindow):
     def addMenubar(self):
         menubar = self.menuBar()
         fileMenu = menubar.addMenu('&File')
+        fileMenu.addAction(self.newFileAction)
+        fileMenu.addAction(self.openFileAction)
         fileMenu.addAction(self.saveFileAction)
         fileMenu.addAction(self.saveFileAsAction)
-        fileMenu.addSeparator()
-        fileMenu.addAction(self.exitAction)
         
         editMenu = menubar.addMenu('&Edit')
         editMenu.addAction(self.cutAction)
@@ -251,6 +258,25 @@ class NewEditorMainWindow(QMainWindow):
                                    QMessageBox.Cancel)
         return ret
             
+    def newFile(self):
+        main = NewEditorMainWindow('untitled', self.path, self.library)
+        self.library.mainWins.append(main)
+        main.show()
+
+    def openFile(self):
+        filename = QFileDialog.getOpenFileName(self, 'Open', '.', filter='*.dgm')
+        filename = filename[0]
+        if filename != '':
+            self.fopen(filename)
+
+    def fopen(self, filename):
+        fname = QFileInfo(filename)
+        self.path = str(fname.absolutePath())
+        fn = str(fname.baseName())
+        main = NewEditorMainWindow(fn, self.path, self.library)
+        self.library.mainWins.append(main)
+        main.show()
+        
     def saveFile(self):
         if self.filename == 'untitled':
             self.saveFileAs()
@@ -347,5 +373,4 @@ class NewEditorMainWindow(QMainWindow):
                 return
             
         self.library.closeWindow(self)
-        event.accept()
                 
