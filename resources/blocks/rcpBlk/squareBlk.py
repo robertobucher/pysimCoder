@@ -23,6 +23,6 @@ def squareBlk(pout, Amp, Period, Width, Bias, Delay):
     
     if(size(pout) != 1):
         raise ValueError("Block should have 1 output port; received %i." % size(pout))
-    blk = RCPblk('square',[],pout,[0,0],0,[Amp, Period, Width, Bias, Delay],[])
+    blk = RCPblk('squareSignal',[],pout,[0,0],0,[Amp, Period, Width, Bias, Delay],[])
     return blk
 

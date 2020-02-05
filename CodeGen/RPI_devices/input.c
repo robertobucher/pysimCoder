@@ -81,7 +81,7 @@ void sinus(int Flag, python_block *block)
   }
 }
 
-void square(int Flag, python_block *block)
+void squareSignal(int Flag, python_block *block)
 {
   double t;
   double *y = (double *) block->y[0];
