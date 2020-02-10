@@ -22,7 +22,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 #include <sys/ioctl.h>
 #include <linux/types.h>
 #include <linux/spi/spidev.h>
-#include <spiconf.h>
+#include <spiconfIMU.h>
 
 #define REG_OUT_X_L_XL 		0x28
 #define CTRL_REG6_XL		        0x20
@@ -33,10 +33,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 static void init(python_block *block)
 {
   int * intPar    = block->intPar;
-  intPar[0] = spiOpen();
+  intPar[0] = spiOpen_IMU();
   if(intPar[0] < 0) exit(1);
 
-  conf_reg(CTRL_REG6_XL, FS_2G_ODR_952Hz);
+  conf_reg_IMU(CTRL_REG6_XL, FS_2G_ODR_952Hz);
 }
 
 static void inout(python_block *block)
@@ -49,7 +49,7 @@ static void inout(python_block *block)
 
   IMU_data data;
 
-  data = imu_reg(REG_OUT_X_L_XL);
+  data = imu_reg_IMU(REG_OUT_X_L_XL);
   yX[0] = (double) data.X*G/1000*realPar[0];
   yY[0] = (double) data.Y*G/1000*realPar[1];
   yZ[0] = (double) data.Z*G/1000*realPar[2];
@@ -57,7 +57,7 @@ static void inout(python_block *block)
 
 static void end(python_block *block)
 {
-  spiClose();
+  spiClose_IMU();
 }
 
 void ImuAcc(int flag, python_block *block)

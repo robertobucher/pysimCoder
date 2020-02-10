@@ -23,7 +23,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 #include <unistd.h>
 #include <linux/types.h>
 #include <linux/spi/spidev.h>
-#include <spiconf.h>
+#include <spiconfIMU.h>
 
 #define CTRL_REG5_XL	        0x1F // enable accelerometer axis out
 #define ALL_AXIS			0x38
@@ -41,7 +41,7 @@ static uint16_t delay;
 
 static int fd;
 
-int conf_reg(uint8_t reg, uint8_t val)
+int conf_reg_IMU(uint8_t reg, uint8_t val)
 {
   int ret;
   uint8_t tx_conf[2] = {0};
@@ -62,7 +62,7 @@ int conf_reg(uint8_t reg, uint8_t val)
   return(ret);
 }
 
-IMU_data imu_reg(uint8_t reg)
+IMU_data imu_reg_IMU(uint8_t reg)
 {
   int ret;
   uint8_t tx_data[7] = {0};
@@ -91,7 +91,7 @@ IMU_data imu_reg(uint8_t reg)
   return(data);
 }
 
-int spiOpen()
+int spiOpen_IMU()
 {
   int ret;
 
@@ -112,7 +112,7 @@ int spiOpen()
   return fd;
 }
 
-void spiClose()
+void spiClose_IMU()
 {
   if(--dev_cnt == 0) close(fd);
 }
