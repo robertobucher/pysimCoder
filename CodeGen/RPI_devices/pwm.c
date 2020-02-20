@@ -19,6 +19,7 @@
 #include <pyblock.h>
 #include <wiringPi.h>
 #include <stdlib.h>
+#include <commonFun.h>
 
 #define RANGE  1024
 #define ZERO      512 
@@ -41,10 +42,16 @@ static void init(python_block *block)
 static void inout(python_block *block)
 {
   int * intPar    = block->intPar;
-  double *u = block->u[0];
+  double * realPar = block->realPar;
   
-  int val = (int) ((u[0]+VZERO)/VZERO*ZERO);
-  pwmWrite (intPar[0], val) ;
+  double *u = block->u[0];
+  double val = u[0];
+  if (val>realPar[1]) val = realPar[1];
+  if (val<realPar[0]) val = realPar[0];
+  
+  double value = (int) mapD2wD(val, realPar[0], realPar[1]);
+  
+  pwmWrite (intPar[0], (int) (value*RANGE)) ;
 }
 
 static void end(python_block *block)

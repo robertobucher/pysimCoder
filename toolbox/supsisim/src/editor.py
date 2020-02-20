@@ -420,11 +420,12 @@ class Editor(QObject):
         for item in items:
             try:
                 item.remove()
-                self.editor.removeNodes()
-                self.editor.redrawNodes()
+                self.removeNodes()
+                #self.redrawNodes()
             except:
                 pass
- 
+        self.redrawNodes()
+
     def deselect_all(self):
         for el in self.scene.items():
             el.setSelected(False)
