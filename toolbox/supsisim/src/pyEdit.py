@@ -198,10 +198,10 @@ class NewEditorMainWindow(QMainWindow):
         for item in self.scene.selection:
             if isinstance(item, Block):
                 dgmBlocks.append(item)
-            elif isinstance(item, Connection):
-                dgmConnections.append(item)
-            else:
-                pass
+        for item in self.scene.selection:
+            if isinstance(item, Connection):
+                if item.port1.parent in dgmBlocks and item.port2.parent in dgmBlocks:
+                    dgmConnections.append(item)
 
         root = etree.Element('root')
         for item in dgmBlocks:
@@ -217,6 +217,7 @@ class NewEditorMainWindow(QMainWindow):
     def cutAct(self):
         self.copyAct()
         self.editor.deleteSelected()
+        self.editor.redrawNodes()
             
     def pasteAct(self):
         self.scene.DgmToUndo()

@@ -420,12 +420,11 @@ class Editor(QObject):
         for item in items:
             try:
                 item.remove()
-                self.removeNodes()
-                #self.redrawNodes()
+                self.editor.removeNodes()
+                self.editor.redrawNodes()
             except:
                 pass
-        self.redrawNodes()
-
+ 
     def deselect_all(self):
         for el in self.scene.items():
             el.setSelected(False)
@@ -514,6 +513,7 @@ class Editor(QObject):
     def P04(self, obj, event):                                     # ITEMSELECTED + KEY_DEL
         self.deleteSelected()
         self.state = IDLE
+        self.redrawNodes()
 
     def P05(self, obj, event):                                     # ITEMSELECTED + KEY_ESC
         self.state = IDLE
@@ -645,7 +645,7 @@ class Editor(QObject):
                 #print('state->', self.state, 'event->',ev)
             fun = self.Fun[self.state][ ev]
             fun(obj, event)
-                
+                 
         return False
 
     def gridPos(self, pt):

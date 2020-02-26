@@ -23,7 +23,6 @@
 
 #define RANGE  1024
 #define ZERO      512 
-#define VZERO    5.0
 
 static void init(python_block *block)
 {
@@ -32,11 +31,11 @@ static void init(python_block *block)
     exit (1) ;
 
   pinMode (intPar[0], PWM_OUTPUT) ;    /* set PWM port as output */
-  pwmSetMode(PWM_MODE_BAL); 
-  pwmSetClock(250);
+  pwmSetMode(PWM_MODE_MS); 
+  pwmSetClock(2);
   pwmSetRange (RANGE) ;
 
-  pwmWrite (intPar[0], 0) ;
+  pwmWrite (intPar[0], ZERO) ;
 }
 
 static void inout(python_block *block)
