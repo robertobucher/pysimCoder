@@ -1,0 +1,1 @@
+{"lib": "Raspberry", "name": "pi_AD", "ip": 0, "op": 1, "stin": 0, "stout": 0, "icon": "AD", "params": "pi_ADBlk|Device:0|Channel:0|Vref:0.0"}

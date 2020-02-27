@@ -1,0 +1,4 @@
+Parameters
+Device: device number on the target board [0 or 1]
+Channel: channel of the ADC (0:3)
+Vref: Reference voltage
