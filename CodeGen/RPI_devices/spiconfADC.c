@@ -27,12 +27,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 #include <spiconfADC.h>
 #include <stdio.h>
 
-#define CTRL_REG5_XL	        0x1F // enable accelerometer axis out
-#define ALL_AXIS			0x38
-
-#define READ 			0x80
-#define WRITE			0x00
-
 static int dev_cnt = 0;
 
 static uint8_t mode=1;
