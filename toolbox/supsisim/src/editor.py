@@ -124,12 +124,17 @@ class Editor(QObject):
         params = item.params.split('|')
         blk = params[0]
         blk = blk.replace('Blk','Dlg')
-        if blk in dir(pDlg):
+        
+        streV = 'import ' + blk +  ' as dlg'
+        try:
+            exec(streV)
             name =  item.name.replace(' ','_')
-            cmd = 'pDlg.' + blk + '(' + str(item.inp) + ',' + str(item.outp) + ',"' + item.params + '"' +  ',"' +  name + '")'
+            cmd = 'dlg.' + blk + '(' + str(item.inp) + ',' + str(item.outp) + ',"' + item.params + '"' +  ',"' +  name + '")'
             pars = eval(cmd)
-        else:
+
+        except:
             pars = pDlg.parsDialog(item.params)
+            
         if pars != item.params:
             item.params = pars
         else:
