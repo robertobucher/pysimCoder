@@ -54,7 +54,7 @@ void css(int Flag, python_block *block)
   }
 
   switch(Flag){
-  case OUT:
+  case CG_OUT:
     iC = intPar[5];
     iD = intPar[6];
     iX = intPar[7];
@@ -70,7 +70,7 @@ void css(int Flag, python_block *block)
       y[0] = tmpY[i];
     }
     break;
-  case STUPD:
+  case CG_STUPD:
     iA = intPar[3];
     iB = intPar[4];
     iX = intPar[7];
@@ -109,8 +109,8 @@ void css(int Flag, python_block *block)
     
     for(i=0;i<nx;i++) X[i] = X[i] + tmpX1[i]/6 + tmpX2[i]/3 + tmpX3[i]/3 + tmpX4[i]/6;
     break;
-  case INIT:
-  case END:
+  case CG_INIT:
+  case CG_END:
     break;
   default:
     break;
@@ -128,17 +128,17 @@ void integral(int Flag, python_block *block)
   double *U = block->u[0];
 
   switch(Flag){
-  case OUT:
+  case CG_OUT:
     y = (double *) block->y[0];
     y[0] = realPar[1];
     break;
 
-  case STUPD:
+  case CG_STUPD:
     /* Runga Kutta */
     realPar[1] = realPar[1] + U[0]*h;
     break;
-  case INIT:
-  case END:
+  case CG_INIT:
+  case CG_END:
     break;
   default:
     break;
@@ -173,7 +173,7 @@ void dss(int Flag, python_block *block)
   }
 
   switch(Flag){
-  case OUT:
+  case CG_OUT:
     iC = intPar[5];
     iD = intPar[6];
     iX = intPar[7];
@@ -188,7 +188,7 @@ void dss(int Flag, python_block *block)
       y[0] = tmpY[i];
     }
     break;
-  case STUPD:
+  case CG_STUPD:
     iA = intPar[3];
     iB = intPar[4];
     iX = intPar[7];
@@ -199,8 +199,8 @@ void dss(int Flag, python_block *block)
     matmult(b,nx,ni,tmpU,ni,1,tmpBU);
     matsum(tmpAX,nx,1,tmpBU,nx,1,X);
     break;
-  case INIT:
-  case END:
+  case CG_INIT:
+  case CG_END:
     break;
   default:
     break;
@@ -214,15 +214,15 @@ void unitDelay(int Flag, python_block *block)
   double *u = block->u[0];
 
   switch(Flag){
-  case OUT:
+  case CG_OUT:
     y[0] = realPar[0];
     break;
 
-  case STUPD:
+  case CG_STUPD:
     realPar[0] = u[0];
     break;
-  case INIT:
-  case END:
+  case CG_INIT:
+  case CG_END:
     break;
   default:
     break;
@@ -246,9 +246,9 @@ void mxmult(int Flag, python_block *block)
   double * gain = block->realPar;
 
   switch(Flag){
-  case OUT:
-  case INIT:
-  case END:
+  case CG_OUT:
+  case CG_INIT:
+  case CG_END:
     for (i=0; i<nin; i++) {
       u = block->u[i];
       tmpU[i]=u[0];
@@ -273,9 +273,9 @@ void sum(int Flag, python_block *block)
   y = (double *) block->y[0];
 
   switch(Flag){
-  case OUT:
-  case INIT:
-  case END:
+  case CG_OUT:
+  case CG_INIT:
+  case CG_END:
     y[0] = 0.0;
     for (i=0;i<block->nin;i++){
       u = (double *) block->u[i];

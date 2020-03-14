@@ -49,7 +49,7 @@ void comedi_analog_output(int flag, python_block *block)
       
   switch(flag)
   {  
-      case INIT: //** Card and port init   
+      case CG_INIT: //** Card and port init   
         block->ptrPar = malloc(sizeof(ComediAnOut));
         if (block->ptrPar  == NULL ) 
           { //** in case of error exit 
@@ -83,7 +83,7 @@ void comedi_analog_output(int flag, python_block *block)
         comedi_data_write(AOdata->it, AOdata->subdev, AOdata->chan, AOdata->range, AOdata->aref, data)  ;
       break; 
       
-      case OUT:
+      case CG_OUT:
          AOdata = (ComediAnOut *) block->ptrPar ;
          u = block->u[0] ; //** get the input from Scilab/Python 
          volts = u[0] ;       
@@ -91,7 +91,7 @@ void comedi_analog_output(int flag, python_block *block)
 	 comedi_data_write(AOdata->it, AOdata->subdev, AOdata->chan, AOdata->range, AOdata->aref, data)  ;
       break;
       
-      case END:
+      case CG_END:
         AOdata = (ComediAnOut *) block->ptrPar ;
         volts  = 0.000 ; // zero on the output 
         data = comedi_from_phys(volts, AOdata->range_ds, AOdata->maxdata) ;

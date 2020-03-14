@@ -26,9 +26,9 @@ void absV(int Flag, python_block *block)
   double *u;  
 
   switch(Flag){
-  case OUT:
-  case INIT:
-  case END:
+  case CG_OUT:
+  case CG_INIT:
+  case CG_END:
     for(i=0;i<block->nin;i++){
       u = (double *) block->u[i];
       y = (double *) block->y[i];
@@ -49,9 +49,9 @@ void saturation(int Flag, python_block *block)
   double * y = (double *) block->y[0];
 
   switch(Flag){
-  case OUT:
-  case INIT:
-  case END:
+  case CG_OUT:
+  case CG_INIT:
+  case CG_END:
     out = u[0];
     if (out > satP) out = satP;
     if (out < satN) out = satN;
@@ -71,9 +71,9 @@ void prod(int Flag, python_block *block)
   y = (double *) block->y[0];
 
   switch(Flag){
-  case OUT:
-  case INIT:
-  case END:
+  case CG_OUT:
+  case CG_INIT:
+  case CG_END:
     y[0] = 1.0;
     for (i=0;i<block->nin;i++){
       u = (double *) block->u[i];
@@ -92,10 +92,10 @@ void lut(int Flag, python_block *block)
   double *u = block->u[0];  
 
   switch(Flag){
-  case INIT:
-  case END:
+  case CG_INIT:
+  case CG_END:
     break;
-  case OUT:
+  case CG_OUT:
     y[0] = block->realPar[0];
     for(i=1;i<block->intPar[0];i++){
       y[0] = y[0]*u[0] + block->realPar[i];
@@ -114,9 +114,9 @@ void deadzone(int Flag, python_block *block)
   double * y = (double *) block->y[0];
 
   switch(Flag){
-  case OUT:
-  case INIT:
-  case END:
+  case CG_OUT:
+  case CG_INIT:
+  case CG_END:
     if ((u[0] >= start) && (u[0] <= end)) y[0] = 0.0;
     else y[0] = u[0];
     break;
@@ -132,9 +132,9 @@ void trigo(int Flag, python_block *block)
   double *u;  
 
   switch(Flag){
-  case OUT:
-  case INIT:
-  case END:
+  case CG_OUT:
+  case CG_INIT:
+  case CG_END:
     u = (double *) block->u[0];
     y = (double *) block->y[0];
     switch(block->intPar[0]){

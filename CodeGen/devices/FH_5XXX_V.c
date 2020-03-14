@@ -69,13 +69,13 @@ static void end(python_block *block)
 
 void FH_5XXX_V(int Flag, python_block *block)
 {
-  if (Flag==OUT){          /* set output */
+  if (Flag==CG_OUT){          /* set output */
     inout(block);
   }
-  else if (Flag==END){     /* termination */ 
+  else if (Flag==CG_END){     /* termination */ 
     end(block);
   }
-  else if (Flag ==INIT){    /* initialisation */
+  else if (Flag ==CG_INIT){    /* initialisation */
     init(block);
   }
 }

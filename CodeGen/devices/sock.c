@@ -121,13 +121,13 @@ static void endC(python_block *block)
 
 void unixsockC(int flag, python_block *block)
 {
-  if (flag==OUT){          /* get input */
+  if (flag==CG_OUT){          /* get input */
     inoutC(block);
   }
-  else if (flag==END){     /* termination */ 
+  else if (flag==CG_END){     /* termination */ 
     endC(block);
   }
-  else if (flag ==INIT){    /* initialisation */
+  else if (flag ==CG_INIT){    /* initialisation */
     initC(block);
   }
 }
@@ -242,13 +242,13 @@ static void endS(python_block *block)
 
 void unixsockS(int flag, python_block *block)
 {
-  if (flag==OUT){          /* get input */
+  if (flag==CG_OUT){          /* get input */
     inoutS(block);
   }
-  else if (flag==END){     /* termination */ 
+  else if (flag==CG_END){     /* termination */ 
     endS(block);
   }
-  else if (flag ==INIT){    /* initialisation */
+  else if (flag ==CG_INIT){    /* initialisation */
     initS(block);
   }
 }

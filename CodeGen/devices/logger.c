@@ -17,13 +17,13 @@ static void logger_clean_up(struct _logger * logger);
 void logger(int flag, python_block * blk)
 {
 	switch (flag) {
-	case INIT:
+	case CG_INIT:
 		logger_init(blk);
 		break;
-	case OUT:
+	case CG_OUT:
 		logger_out(blk);
 		break;
-	case END:
+	case  CG_END:
 		logger_end(blk);
 		break;
 	}

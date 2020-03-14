@@ -51,7 +51,7 @@ void comedi_analog_input(int flag, python_block *block)
 
   switch (flag)
   {  
-      case INIT: //** Card and port init   
+      case CG_INIT: //** Card and port init   
         block->ptrPar = malloc(sizeof(ComediAnIn));
         if (block->ptrPar  == NULL ) 
           { //** in case of error exit
@@ -87,7 +87,7 @@ void comedi_analog_input(int flag, python_block *block)
  
        break; 
       
-      case OUT:
+      case CG_OUT:
         AIdata = (ComediAnIn *) block->ptrPar;
 
 	comedi_data_read(AIdata->it, AIdata->subdev, AIdata->chan, AIdata->range, AIdata->aref, &data);
@@ -103,7 +103,7 @@ void comedi_analog_input(int flag, python_block *block)
      
       break;
       
-      case END:
+      case CG_END:
       
       // comedi_close(it);
       

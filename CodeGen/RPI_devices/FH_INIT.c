@@ -201,20 +201,20 @@ static void end(python_block *block)
 
 void FH_5XXX_INIT(int flag, python_block *block)
 {
-  if (flag==END){     /* termination */ 
+  if (flag==CG_END){     /* termination */ 
     end(block);
   }
-  else if (flag ==INIT){    /* initialisation */
+  else if (flag ==CG_INIT){    /* initialisation */
     init5(block);
   }
 }
 
 void FH_3XXX_INIT(int flag, python_block *block)
 {
-  if (flag==END){     /* termination */ 
+  if (flag==CG_END){     /* termination */ 
     end(block);
   }
-  else if (flag ==INIT){    /* initialisation */
+  else if (flag ==CG_INIT){    /* initialisation */
     init3(block);
   }
 }

@@ -47,7 +47,7 @@ void comedi_digital_output(int flag, python_block *block)
   switch(flag) 
   {  
       
-      case INIT: //** Card and port init
+      case CG_INIT: //** Card and port init
         block->ptrPar = malloc(sizeof(ComediDigOut));
          if (block->ptrPar  == NULL ) 
            { //** in case of error exit 
@@ -73,7 +73,7 @@ void comedi_digital_output(int flag, python_block *block)
          comedi_dio_write(DOdata->it, DOdata->subdev, DOdata->chan, data)  ; /* clear the output */
       break; 
       
-      case OUT:
+      case CG_OUT:
          DOdata = (ComediDigOut *) block->ptrPar ;
          
          u = block->u[0] ; //** get the input from Scilab/Python
@@ -87,7 +87,7 @@ void comedi_digital_output(int flag, python_block *block)
 
       break;
       
-      case END:
+      case CG_END:
         DOdata = (ComediDigOut *) block->ptrPar ;
 	data = 0 ; //** low output 
 	comedi_dio_config(DOdata->it, DOdata->subdev, DOdata->chan, COMEDI_OUTPUT);

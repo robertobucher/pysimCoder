@@ -44,13 +44,13 @@ static void scope_end(python_block * blk);
 void scope(int flag, python_block * blk) 
 {
 	switch (flag) {
-	case INIT:
+	case CG_INIT:
 		scope_init(blk);
 		break;
-	case OUT:
+	case CG_OUT:
 		scope_out(blk);
 		break;
-	case END:
+	case CG_END:
 		scope_end(blk);
 		break;
 	}

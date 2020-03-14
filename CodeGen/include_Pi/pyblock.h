@@ -1,7 +1,7 @@
-#define INIT  1
-#define OUT   2
-#define STUPD 3
-#define END   4
+#define CG_INIT  1
+#define CG_OUT   2
+#define CG_STUPD 3
+#define CG_END   4
 
 typedef struct {
   int nin;             /* Number of inputs */

@@ -33,15 +33,15 @@ void step(int Flag, python_block *block)
 
   y = (double *) block->y[0];
   switch(Flag){
-  case OUT:
+  case CG_OUT:
     t = get_run_time();
     if(t<initTime) y[0] = iVal;
     else           y[0] = fVal;
     break;
-  case INIT:
+  case CG_INIT:
     y[0]=0.0;
     break;
-  case END:
+  case CG_END:
     y[0]=0.0;
     break;
   default:
@@ -62,7 +62,7 @@ void sinus(int Flag, python_block *block)
   double Delay = block->realPar[4];
 
   switch(Flag){
-  case OUT:
+  case CG_OUT:
     t = get_run_time();
     if(t<Delay) y[0] = 0.0;
     else {
@@ -70,10 +70,10 @@ void sinus(int Flag, python_block *block)
       y[0]=Amp*sin(w)+Bias;
     }
     break;
-  case INIT:
+  case CG_INIT:
     y[0]=0.0;
     break;
-  case END:
+  case CG_END:
     y[0]=0.0;
     break;
   default:
@@ -95,7 +95,7 @@ void squareSignal(int Flag, python_block *block)
   double v;
 
   switch(Flag){
-  case OUT:
+  case CG_OUT:
     t = get_run_time();
     if(t<Delay) y[0]=0.0;
     else{
@@ -105,10 +105,10 @@ void squareSignal(int Flag, python_block *block)
       else         y[0] = Bias;
     }      
     break;
-  case INIT:
+  case CG_INIT:
     y[0]=0.0;
     break;
-  case END:
+  case CG_END:
     y[0]=0.0;
     break;
   default:
@@ -123,9 +123,9 @@ void constant(int Flag, python_block *block)
   y = (double *) block->y[0];
 
   switch(Flag){
-  case OUT:
-  case INIT:
-  case END:
+  case CG_OUT:
+  case CG_INIT:
+  case CG_END:
     y[0] = block->realPar[0];
     break;
   default:

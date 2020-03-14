@@ -59,13 +59,13 @@ static void end(python_block *block)
 
 void can_sdo_recv(int flag, python_block *block)
 {
-  if (flag==OUT){          /* get input */
+  if (flag==CG_OUT){          /* get input */
     inout(block);
   }
-  else if (flag==END){     /* termination */ 
+  else if (flag==CG_END){     /* termination */ 
     end(block);
   }
-  else if (flag ==INIT){    /* initialisation */
+  else if (flag ==CG_INIT){    /* initialisation */
     init(block);
   }
 }

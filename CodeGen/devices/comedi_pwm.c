@@ -61,15 +61,15 @@ static void _comedi_pwm_out(double u, comedi_pwm * pwm);
 void comedi_pwm_generator(int flag, python_block * block)
 {
 	switch (flag) {
-	case INIT:
+	case CG_INIT:
 		comedi_pwm_init(block);
 		break;
 
-	case OUT:
+	case CG_OUT:
 		comedi_pwm_out(block);
 		break;
 
-	case END:
+	case CG_END:
 		comedi_pwm_end(block);
 		break;
 	}

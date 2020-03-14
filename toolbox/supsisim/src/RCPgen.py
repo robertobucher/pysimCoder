@@ -189,7 +189,7 @@ def genCode(model, Tsamp, blocks, rkstep = 10):
 
     for n in range(0,N):
         blk = Blocks[n]
-        strLn = "  " + blk.fcn + "(INIT, &block_" + model + "[" + str(n) + "]);\n"
+        strLn = "  " + blk.fcn + "(CG_INIT, &block_" + model + "[" + str(n) + "]);\n"
         f.write(strLn)
     f.write("}\n")
 
@@ -204,14 +204,14 @@ def genCode(model, Tsamp, blocks, rkstep = 10):
 
     for n in range(0,N):
         blk = Blocks[n]
-        strLn = "  " + blk.fcn + "(OUT, &block_" + model + "[" + str(n) + "]);\n"
+        strLn = "  " + blk.fcn + "(CG_OUT, &block_" + model + "[" + str(n) + "]);\n"
         f.write(strLn)
     f.write("\n")
 
     for n in range(0,N):
         blk = Blocks[n]
         if (blk.nx[1] != 0):
-            strLn = "  " + blk.fcn + "(STUPD, &block_" + model + "[" + str(n) + "]);\n"
+            strLn = "  " + blk.fcn + "(CG_STUPD, &block_" + model + "[" + str(n) + "]);\n"
             f.write(strLn)
     f.write("\n")
 
@@ -230,13 +230,13 @@ def genCode(model, Tsamp, blocks, rkstep = 10):
         for n in range(0,N):
             blk = Blocks[n]
             if (blk.nx[0] != 0):
-                strLn = "    " + blk.fcn + "(OUT, &block_" + model + "[" + str(n) + "]);\n"
+                strLn = "    " + blk.fcn + "(CG_OUT, &block_" + model + "[" + str(n) + "]);\n"
                 f.write(strLn)
 
         for n in range(0,N):
             blk = Blocks[n]
             if (blk.nx[0] != 0):
-                strLn = "    " + blk.fcn + "(STUPD, &block_" + model + "[" + str(n) + "]);\n"
+                strLn = "    " + blk.fcn + "(CG_STUPD, &block_" + model + "[" + str(n) + "]);\n"
                 f.write(strLn)
 
         f.write("  }\n")
@@ -249,7 +249,7 @@ def genCode(model, Tsamp, blocks, rkstep = 10):
     f.write(strLn)
     for n in range(0,N):
         blk = Blocks[n]
-        strLn = "  " + blk.fcn + "(END, &block_" + model + "[" + str(n) + "]);\n"
+        strLn = "  " + blk.fcn + "(CG_END, &block_" + model + "[" + str(n) + "]);\n"
         f.write(strLn)
     f.write("}\n\n")
     f.close()

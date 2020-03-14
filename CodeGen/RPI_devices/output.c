@@ -28,7 +28,7 @@ void print(int Flag, python_block *block)
   double *u;
 
   switch(Flag){
-  case OUT:
+  case CG_OUT:
     t = get_run_time();
     printf("%lf\t",t);
     for(i=0;i<block->nin;i++){
@@ -37,9 +37,9 @@ void print(int Flag, python_block *block)
     }
     printf("\n");
     break;
-  case INIT:
+  case CG_INIT:
     break;
-  case END:
+  case CG_END:
     break;
   default:
     break;

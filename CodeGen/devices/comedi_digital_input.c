@@ -45,7 +45,7 @@ void comedi_digital_input(int flag, python_block *block)
   switch(flag)
   {  
       
-      case INIT: //** Card and port init   
+      case CG_INIT: //** Card and port init   
         
         block->ptrPar = malloc(sizeof(ComediDigIn));
         if (block->ptrPar  == NULL ) 
@@ -69,7 +69,7 @@ void comedi_digital_input(int flag, python_block *block)
         comedi_dio_config(DIdata->it, DIdata->subdev, DIdata->chan, COMEDI_INPUT); //** configure as input 
        break; 
       
-      case OUT:
+      case CG_OUT:
         DIdata = (ComediDigIn *) block->ptrPar ;
         comedi_dio_read( DIdata->it, DIdata->subdev, DIdata->chan, &data);
         d_data = (double) data;
@@ -77,7 +77,7 @@ void comedi_digital_input(int flag, python_block *block)
         y[0] = d_data ;  
       break;
       
-      case END:
+      case CG_END:
           // comedi_close(it);
       break;	  
         
