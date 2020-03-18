@@ -13,7 +13,7 @@ FILES_TO_CLEAN = *.o $(MODEL)
 CC = gcc
 CC_OPTIONS = -g
 
-MAIN = python_main
+MAIN = linux_main
 ADD_FILES = $$ADD_FILES$$
 
 OBJSSTAN = $(MAIN).o $(MODEL).o $(ADD_FILES)

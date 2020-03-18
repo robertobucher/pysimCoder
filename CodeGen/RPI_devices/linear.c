@@ -120,8 +120,6 @@ void css(int Flag, python_block *block)
 void integral(int Flag, python_block *block)
 {
   double * realPar = block->realPar;
-  int * intPar    = block->intPar;
-  int i;
   double *y;
 
   double h = realPar[0];
