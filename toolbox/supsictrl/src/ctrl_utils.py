@@ -281,20 +281,30 @@ def grstep(sys, T = None):
 
     sys: system
     """
+    if T is None:
+         T = 10;
+         
     if np.isscalar(T):
         if sys.isctime():
             T = np.linspace(0,T)
         else:
             T = np.arange(0,T,sys.dt)
-
-    t, y = ct.step_response(sys, T)
+        t, y = ct.step_response(sys, T)
+    else:
+        t, y = ct.step_response(sys, T)        
 
     if len(y.shape)==2:
         N = y.shape[0]
         for n in range(0,N):
-            plt.plot(t,y[n])
+            if sys.isctime():
+                plt.plot(t,y[n])
+            else:
+                plt.step(t,y[n], where='post')
     else:
-        plt.plot(t,y)
+        if sys.isctime():
+            plt.plot(t,y)
+        else:
+            plt.step(t,y, where='post')
     plt.grid()
     plt.show()
         
