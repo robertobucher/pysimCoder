@@ -26,6 +26,9 @@ import scipy.integrate as ig
 import control as ct
 import matplotlib.pyplot as plt
 
+def set_mydefaults():
+    ct.set_defaults('bode', dB=True, deg=True, Hz=False, grid=True)
+    
 def full_obs(sys,poles):
     """Full order observer of the system sys
 
@@ -165,8 +168,7 @@ def comp_form(sys,obs,K):
 
 def comp_form_i(sys,obs,K,Cy = [[1]]):
     """Compact form Conroller+Observer+Integral part
-    Only for discrete systems!!!
-
+ 
     Call:
     contr = comp_form_i(sys,obs,K [,Cy])
 
@@ -183,11 +185,12 @@ def comp_form_i(sys,obs,K,Cy = [[1]]):
     Controller
 
     """
-    if sys.dt==None:
-        print('contr_form_i works only with discrete systems!')
-        return
+    if sys.isctime():
+        contFlag = True
+    else:
+        contFlag = False      
+        Ts  =  sys.dt
     
-    Ts  =  sys.dt
     ny = np.shape(sys.C)[0]
     nu = np.shape(sys.B)[1]
     nx = np.shape(sys.A)[0]
@@ -211,17 +214,27 @@ def comp_form_i(sys,obs,K,Cy = [[1]]):
 
     tmp1 = np.hstack((a-B_obsu*X*K*c,-B_obsu*X*Ke))
 
-    tmp2 = np.hstack((np.zeros((ni,no)),np.eye(ni,ni)))
+    if contFlag:
+        tmp2 = np.hstack((np.zeros((ni,no)),np.zeros((ni,ni))))
+    else:
+        tmp2 = np.hstack((np.zeros((ni,no)),np.eye(ni,ni)))   
     A_ctr = np.vstack((tmp1,tmp2))
 
     tmp1 = np.hstack((np.zeros((no,ni)),-B_obsu*X*K*D_obsy+B_obsy))
-    tmp2 = np.hstack((np.eye(ni,ni)*Ts,-Cy*Ts))
+    if contFlag:
+        tmp2 = np.hstack((np.eye(ni,ni),-Cy))
+    else:
+        tmp2 = np.hstack((np.eye(ni,ni)*Ts,-Cy*Ts))
     B_ctr = np.vstack((tmp1,tmp2))
 
     C_ctr = np.hstack((-X*K*c,-X*Ke))
     D_ctr = np.hstack((np.zeros((nu,ni)),-X*K*D_obsy))
 
-    contr = ct.StateSpace(A_ctr,B_ctr,C_ctr,D_ctr,sys.dt)
+    if contFlag:
+        contr = ct.StateSpace(A_ctr,B_ctr,C_ctr,D_ctr)
+    else:
+        contr = ct.StateSpace(A_ctr,B_ctr,C_ctr,D_ctr,sys.dt)
+        
     return contr
     
 def set_aw(sys,poles):
