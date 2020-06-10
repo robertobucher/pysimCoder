@@ -62,7 +62,6 @@ static inline double calcdiff(struct timespec t1, struct timespec t2)
   return (1e-6*diff);
 }
 
-
 void *rt_task(void *p)
 {
   struct timespec t_next, t_current, t_isr, T0;

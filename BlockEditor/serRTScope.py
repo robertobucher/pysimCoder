@@ -26,8 +26,10 @@ class rcvServer(threading.Thread):
         self.st = struct.Struct(self.N*'d')
        
     def run(self):
-        portName = self.mainw.edPortName.text()
-        self.port = ser.Serial(portName, 115200)
+        portN =  self.mainw.devCbBox.currentIndex()
+        portName = self.mainw.devCbBox.itemText(portN)
+        print(portName)
+        self.port = ser.Serial(portName, 12000000)
         T = 0.0
         L = 8*self.N
         
