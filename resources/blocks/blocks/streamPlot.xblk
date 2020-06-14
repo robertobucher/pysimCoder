@@ -1,1 +1,1 @@
-{"lib": "output", "name": "RT Plot", "ip": 1, "op": 0, "stin": 1, "stout": 0, "icon": "PLOT", "params": "scopeStream"}
+{"lib": "output", "name": "RT Plot", "ip": 1, "op": 0, "stin": 1, "stout": 0, "icon": "PLOT", "params": "scopeStream|Decimation:1"}
