@@ -7,7 +7,8 @@ import numpy as np
 import pyqtgraph as pg
 from pyqtgraph import QtGui, QtCore
 
-COL = 120
+COL = 170
+PENWIDTH = 2.0
 pg.setConfigOption('background', pg.mkColor((COL, COL, COL)))
 pg.setConfigOption('foreground', 'k')
 
@@ -45,7 +46,8 @@ plots.append(p)
 for i in range(NIN):
     p.showGrid(x=True, y=True)
     c = PLOT_LINE_COLORS[i % len(PLOT_LINE_COLORS)]
-    curves.append(p.plot(pen=c))
+    curves.append(p.plot(pen={'color':c, 'width' : PENWIDTH}))
+    #curves.append(p.plot(pen=c))
     win.nextRow()
 
 tdata = np.zeros(shape=(NIN, PLOT_LEN))
