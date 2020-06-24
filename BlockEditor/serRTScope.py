@@ -13,6 +13,9 @@ import numpy as np
 import serial as ser
 import struct
 
+COL = 220
+WIDTH = 2
+
 from qwt import QwtPlot, QwtPlotCurve, QwtPlotGrid
 
 path = os.environ.get('PYSUPSICTRL') + '/BlockEditor'
@@ -28,7 +31,7 @@ class rcvServer(threading.Thread):
     def run(self):
         portN =  self.mainw.devCbBox.currentIndex()
         portName = self.mainw.devCbBox.itemText(portN)
-        print(portName)
+
         self.port = ser.Serial(portName, 12000000)
         T = 0.0
         L = 8*self.N
@@ -39,7 +42,7 @@ class rcvServer(threading.Thread):
             
             if len(self.mainw.timebase) > self.mainw.Hist:
                 self.mainw.timebase = self.mainw.timebase[-self.mainw.Hist:]
-
+                
             val = self.port.read(L)
             data = self.st.unpack(val)
             
@@ -56,9 +59,9 @@ class dataPlot(QwtPlot):
     def __init__(self, N):
         QwtPlot.__init__(self)
         self.setTitle('Time signals')
-        self.setCanvasBackground(QBrush(QColor(0, 0, 0)))
+        self.setCanvasBackground(QBrush(QColor(COL, COL, COL)))
         grid = QwtPlotGrid()
-        pen = QPen(Qt.gray, 0, Qt.DashDotLine)
+        pen = QPen(Qt.black, 0, Qt.DashDotLine)
         grid.setPen(pen)
         grid.attach(self)
                                 
@@ -97,6 +100,7 @@ class MainWindow(QMainWindow, form_class):
                 self.x.append([])
                 cv = QwtPlotCurve()
                 pen = QPen(QColor(self.colors[n % 8]))
+                pen.setWidth(WIDTH)
                 cv.setPen(pen)
                 cv.setData([],[])
                 self.c.append(cv)
@@ -130,6 +134,7 @@ class MainWindow(QMainWindow, form_class):
                 self.c[n].setData(t,self.x[n])
             except:
                 pass
+        
         self.plot.replot()
 
 app = QtGui.QApplication(sys.argv)

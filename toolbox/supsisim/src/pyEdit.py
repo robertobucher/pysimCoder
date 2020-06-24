@@ -3,7 +3,7 @@
 import os
 
 from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout,  QAction, \
-    QMessageBox, QFileDialog, QDialog, QApplication
+    QMessageBox, QFileDialog, QDialog, QApplication, QComboBox
 from PyQt5.QtGui import QPainter, QIcon
 from PyQt5.QtPrintSupport import QPrinter, QPrintDialog
 from PyQt5.QtCore import QPointF, QFileInfo, QMimeData
@@ -35,7 +35,8 @@ class NewEditorMainWindow(QMainWindow):
         self.addMenubar()
         self.addToolbars()
         self.filename = fname
-        self.path = mypath
+        self.workingFolder = os.getcwd()
+        self.filePath = mypath
         self.library = parent
         if fname != 'untitled':
             self.scene.loadDgm(self.getFullFileName())
@@ -76,6 +77,12 @@ class NewEditorMainWindow(QMainWindow):
                                                 shortcut = 'Ctrl+A',
                                                 statusTip = 'Save File As...',
                                                 triggered = self.saveFileAs)
+
+        self.changeDirAction = QAction(QIcon(mypath+'folder.png'),
+                                                '&Change directory', self,
+                                                shortcut = 'Ctrl+D',
+                                                statusTip = 'Change directory...',
+                                                triggered = self.changeDirAct)
 
         self.copyAction = QAction(QIcon(mypath+'copy.png'),
                                             '&Copy', self,
@@ -137,14 +144,18 @@ class NewEditorMainWindow(QMainWindow):
         self.debugAction = QAction(QIcon(mypath+'debug.png'),
                                              'Debugging',self,
                                              statusTip = 'Debug infos',
-                                             triggered = self.debugAct)                                           
+                                             triggered = self.debugAct)
+        
     def addToolbars(self):
         toolbarF = self.addToolBar('File')
         toolbarF.addAction(self.newFileAction)
         toolbarF.addAction(self.openFileAction)
         toolbarF.addAction(self.saveFileAction)
         toolbarF.addAction(self.saveFileAsAction)
-        toolbarF.addAction(self.printAction)
+        toolbarF.addAction(self.changeDirAction)
+
+        toolbarP = self.addToolBar('Print')      
+        toolbarP.addAction(self.printAction)
  
         toolbarE = self.addToolBar('Edit')
         toolbarE.addAction(self.cutAction)
@@ -164,6 +175,13 @@ class NewEditorMainWindow(QMainWindow):
             toolbarD = self.addToolBar('Debug')
             toolbarD.addAction(self.debugAction)
 
+        toolbarDir = self.addToolBar('Folder')
+        self.actFolders = QComboBox()
+        self.actFolders.setSizeAdjustPolicy(QComboBox.AdjustToContents)
+        self.actFolders.addItem(os.getcwd())
+        toolbarDir.addWidget(self.actFolders)
+        self.actFolders.currentIndexChanged.connect(self.changeDir)
+ 
     def addMenubar(self):
         menubar = self.menuBar()
         fileMenu = menubar.addMenu('&File')
@@ -171,6 +189,7 @@ class NewEditorMainWindow(QMainWindow):
         fileMenu.addAction(self.openFileAction)
         fileMenu.addAction(self.saveFileAction)
         fileMenu.addAction(self.saveFileAsAction)
+        fileMenu.addAction(self.changeDirAction)
         
         editMenu = menubar.addMenu('&Edit')
         editMenu.addAction(self.cutAction)
@@ -185,7 +204,7 @@ class NewEditorMainWindow(QMainWindow):
         simMenu.addAction(self.codegenAction)
 
         setMenu = menubar.addMenu('Se&ttings')
-        setMenu.addAction(self.setCodegenAction)
+        setMenu.addAction(self.setCodegenAction)        
 
     def copyAct(self):
         self.scene.selection = []
@@ -246,7 +265,7 @@ class NewEditorMainWindow(QMainWindow):
         self.scene.updateDgm()
         
     def getFullFileName(self):
-        return(self.path + '/' + self.filename + '.dgm')
+        return(self.filePath + '/' + self.filename + '.dgm')
 
     def askSaving(self):
         items = self.scene.items()
@@ -260,21 +279,21 @@ class NewEditorMainWindow(QMainWindow):
         return ret
             
     def newFile(self):
-        main = NewEditorMainWindow('untitled', self.path, self.library)
+        main = NewEditorMainWindow('untitled', self.workingFolder, self.library)
         self.library.mainWins.append(main)
         main.show()
 
     def openFile(self):
-        filename = QFileDialog.getOpenFileName(self, 'Open', '.', filter='*.dgm')
+        filename = QFileDialog.getOpenFileName(self, 'Open', self.workingFolder, filter='*.dgm')
         filename = filename[0]
         if filename != '':
             self.fopen(filename)
 
     def fopen(self, filename):
         fname = QFileInfo(filename)
-        self.path = str(fname.absolutePath())
+        self.filePath = str(fname.absolutePath())
         fn = str(fname.baseName())
-        main = NewEditorMainWindow(fn, self.path, self.library)
+        main = NewEditorMainWindow(fn, self.filePath, self.library)
         self.library.mainWins.append(main)
         main.show()
         
@@ -286,22 +305,38 @@ class NewEditorMainWindow(QMainWindow):
             if filename != '':
                 fname = QFileInfo(filename)
                 self.filename = str(fname.baseName())
-                self.path = str(fname.absolutePath())
+                self.filePath = str(fname.absolutePath())
                 self.setWindowTitle(self.filename)
                 self.scene.saveDgm(self.getFullFileName())
                 self.modified = False
 
     def saveFileAs(self):
-        filename = QFileDialog.getSaveFileName(self, 'Save', self.path+'/'+self.filename, filter='*.dgm')
+        filename = QFileDialog.getSaveFileName(self, 'Save', self.workingFolder+'/'+self.filename, filter='*.dgm')
         filename = filename[0]
         if filename != '':
             fname = QFileInfo(filename)
             self.filename = str(fname.baseName())
-            self.path = str(fname.absolutePath())
+            self.filePath = str(fname.absolutePath())
             self.setWindowTitle(self.filename)
             self.scene.saveDgm(self.getFullFileName())
             self.modified = False
 
+    def setFolders(self, dirname):
+        itemIndex = self.actFolders.findText(dirname)
+        if itemIndex == -1:
+            self.actFolders.addItem(dirname);
+            self.actFolders.setCurrentIndex(self.actFolders.count()-1)
+        else:
+            self.actFolders.setCurrentIndex(itemIndex)
+
+    def changeDirAct(self):
+        newDir = QFileDialog.getExistingDirectory(self, 'Select a folder:', '.', QFileDialog.ShowDirsOnly)
+        self.setFolders(newDir)
+
+    def changeDir(self, index):
+        os.chdir(self.actFolders.itemText(index))
+        self.workingFolder =  self.actFolders.itemText(index)
+        
     def print_scheme(self):
         self.printer = QPrinter()
         printDialog = QPrintDialog(self.printer)

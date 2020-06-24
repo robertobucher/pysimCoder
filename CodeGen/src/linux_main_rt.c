@@ -62,7 +62,7 @@ static inline double calcdiff(struct timespec t1, struct timespec t2)
   return (1e-6*diff);
 }
 
-void *rt_task(void *p)
+static void *rt_task(void *p)
 {
   struct timespec t_next, t_current, t_isr, T0;
   struct sched_param param;
@@ -121,7 +121,8 @@ void *rt_task(void *p)
     clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &t_next, NULL);
     t_current = t_next;
   }
-  NAME(MODEL,_end)();  
+  NAME(MODEL,_end)();
+  pthread_exit(0);
 }
 
 void endme(int n)
@@ -180,8 +181,6 @@ static void proc_opt(int argc, char *argv[])
 int main(int argc,char** argv)
 {
   pthread_t thrd;
-  pthread_attr_t t_att;
-  int ap;
   int fd;
   int uid;
 
@@ -202,7 +201,7 @@ int main(int argc,char** argv)
 
   iopl(3);
 
-  ap=pthread_create(&thrd,NULL,rt_task,NULL);
+  pthread_create(&thrd,NULL,rt_task,NULL);
 
   pthread_join(thrd,NULL);
   return(0);
