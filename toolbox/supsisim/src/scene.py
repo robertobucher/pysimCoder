@@ -76,6 +76,8 @@ class Scene(QGraphicsScene):
                 pass
 
         root = etree.Element('root')
+        vers = etree.SubElement(root,'pysimCoder')
+        etree.SubElement(vers, 'pysimCoderVersion').text = '0.9'
         now = etree.SubElement(root,'Date')
         etree.SubElement(now, 'SavingDate').text = time.strftime("%d.%m.%Y - %H:%M:%S")
         sim = etree.SubElement(root,'Simulation')
