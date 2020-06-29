@@ -315,20 +315,11 @@ class Scene(QGraphicsScene):
  
         items = self.items()
         dir1 = respath + 'blocks/rcpBlk'
-        dir2 = os.environ.get('PYUSERBLKS')
         txt += 'import os\n'
         txt += 'from supsisim.RCPblk import RCPblk\n'
         txt += 'files = os.listdir("' + dir1 + '")\n'
         txt += 'for f in files:\n'
         txt += '    f = f.rstrip("*.py")\n'
-        txt += '    try:\n'
-        txt += '        cmd = "from " + f + " import *"\n'
-        txt += '        exec(cmd)\n'
-        txt += '    except:\n'
-        txt += '        pass\n'
-        txt += 'files = os.listdir("' + dir2 + '")\n'
-        txt += 'for f in files:\n'
-        txt += '    f = "rcpBlk." + f.rstrip("*.py")\n'
         txt += '    try:\n'
         txt += '        cmd = "from " + f + " import *"\n'
         txt += '        exec(cmd)\n'

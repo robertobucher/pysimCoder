@@ -32,7 +32,8 @@ link:
 	cp BlockEditor/gen_pydev $(BINDIR)/
 	cd $(CURDIR)/BlockEditor; chmod a+x *.py
 	cd $(CURDIR)/DriverNRT/; chmod a+x loadnrt
-	ln -s $(CURDIR)/BlockEditor/pysimCoder.py $(BINDIR)/pysimCoder
+	ln -s $(CURDIR)/pysimCoder $(BINDIR)/pysimCoder
+	ln -s $(CURDIR)/BlockEditor/pysimCoder.py $(BINDIR)/pysimCoder.py
 	ln -s $(CURDIR)/BlockEditor/pyParams.py $(BINDIR)/pyParams
 	ln -s $(CURDIR)/BlockEditor/defBlocks.py $(BINDIR)/defBlocks
 	ln -s $(CURDIR)/BlockEditor/dataplot.py $(BINDIR)/dataplot
@@ -50,9 +51,6 @@ user:
 	echo $(PYCTL) >> ~/.bashrc
 	echo 'export PYEDITOR=emacs' >> ~/.bashrc
 	echo 'export PYTHONPATH=$(HOME)/Documents/PYTHON:$(CURDIR)/resources/blocks/rcpBlk' >> ~/.bashrc
-	echo 'export PYUSERBLKS=$(HOME)/Documents/PYTHON/rcpBlk' >> ~/.bashrc
-	mkdir -p $(HOME)/Documents/PYTHON/rcpBlk/lib
-	cp ./userLib/* $(HOME)/Documents/PYTHON/rcpBlk/lib
 
 
 

@@ -54,12 +54,11 @@ Dm1=plsq[0][1]*Jm1           # Motor friction
 
 g1=tf([kt1/Jm1],[1,Dm1/Jm1,0])  # Transfer function
 
-"""
+
 Y1,T1 = step(g1,t1)
 plot(T1,Y1)
 plot(t1,y11)
 show()
-"""
 
 # Design Controller Motor 1
 a=[[0,1],[0,-Dm1/Jm1]]
@@ -81,12 +80,12 @@ xi=np.sqrt(2)/2
 
 cl_p1=[1,2*xi*wn,wn**2]
 cl_p2=[1,wn]
-cl_poly=sp.polymul(cl_p1,cl_p2)
-cl_poles=sp.roots(cl_poly);  # Desired continous poles
-cl_polesd=sp.exp(cl_poles*Ts)  # Desired discrete poles
+cl_poly=np.polymul(cl_p1,cl_p2)
+cl_poles=np.roots(cl_poly);  # Desired continous poles
+cl_polesd=np.exp(cl_poles*Ts)  # Desired discrete poles
 
-sz1=sp.shape(sys.A);
-sz2=sp.shape(sys.B);
+sz1=np.shape(sys.A);
+sz2=np.shape(sys.B);
 
 # Add discrete integrator for steady state zero error
 Phi_f=np.vstack((sys.A,-sys.C*Ts))
@@ -97,7 +96,7 @@ k=place(Phi_f,G_f,cl_polesd)
 
 #Reduced order observer
 p_oc=-10*max(abs(cl_poles))
-p_od=sp.exp(p_oc*Ts);
+p_od=np.exp(p_oc*Ts);
 
 T=[0,1]
 r_obs=red_obs(sys,T,[p_od])

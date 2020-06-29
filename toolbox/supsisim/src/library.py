@@ -190,7 +190,6 @@ class Library(QMainWindow):
         
     def readLib(self):
         commonDir = respath+'blocks/blocks'
-        userDir = os.environ.get('PYUSERBLKS')+'/blocks/'
         
         blkList = []
         try:
@@ -217,15 +216,6 @@ class Library(QMainWindow):
             if f.endswith('.xblk'):
                 d = self.getBlock(respath +'blocks/blocks/' + f)
                 blkList.append(d)
-
-        try:
-            files = os.listdir(userDir)
-            for f in sorted(files):
-                if f.endswith('.xblk'):
-                    d = self.getBlock(userDir + '/'  + f)
-                    blkList.append(d)
-        except:
-            pass
         
         self.libConfig = sorted(blkList, key=lambda k: (k['lib'].lower()))
 

@@ -106,7 +106,7 @@ int spiOpen_IMU()
     ret = ioctl(fd, SPI_IOC_WR_MAX_SPEED_HZ, &speed);
     ret = ioctl(fd, SPI_IOC_RD_MAX_SPEED_HZ, &speed);
 
-    conf_reg(CTRL_REG5_XL, ALL_AXIS);
+    conf_reg_IMU(CTRL_REG5_XL, ALL_AXIS);
   }
   dev_cnt++;
   return fd;

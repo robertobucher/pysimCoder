@@ -7,7 +7,6 @@ LIBDIR  = $(PYCODEGEN)/lib
 INCDIR  = $(PYCODEGEN)/include
 FMUINC = $(PYCODEGEN)/fmu/fmuinc
 FMILIB = $(PYCODEGEN)/fmu/lib/fmulib.a  -ldl -lxml2
-USERLIB = $(PYUSERBLKS)/lib/userpyblk.a
 
 RM = rm -f
 FILES_TO_CLEAN = *.o $(MODEL)
@@ -20,11 +19,7 @@ MAIN = linux_main
 
 OBJSSTAN = $(MAIN).o $(MODEL).o
 
-ifeq ($(shell test -e $(USERLIB) && echo -n yes),yes)
-     LIB = $(LIBDIR)/libpyblk.a $(USERLIB) $(FMILIB)
-else
-     LIB = $(LIBDIR)/libpyblk.a $(FMILIB)
-endif
+LIB = $(LIBDIR)/libpyblk.a $(FMILIB)
 
 CFLAGS = $(CC_OPTIONS) -O2 -I$(INCDIR) -I$(FMUINC) $(C_FLAGS) -DMODEL=$(MODEL) 
 
