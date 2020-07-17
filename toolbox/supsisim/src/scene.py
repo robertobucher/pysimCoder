@@ -255,6 +255,7 @@ class Scene(QGraphicsScene):
                                 raise ValueError('Problem in diagram: outputs connected together!')
                         thing.nodeID = c.port1.nodeID
             self.generateCCode()
+            self.mainw.statusLabel.setText('Code generation OK!')
             try:
                 os.mkdir('./' + self.mainw.filename + '_gen')
             except:
@@ -269,7 +270,7 @@ class Scene(QGraphicsScene):
             return True
         
         except:
-            self.mainw.status.showMessage('Error by Code generation!')
+            self.mainw.statusLabel.setText('Error by Code generation!')
             return False
         
     def blkInstance(self, item):
@@ -372,7 +373,7 @@ class Scene(QGraphicsScene):
             cmd = pyrun + ' tmp.py'
             try:
                 os.system(cmd)
-                self.mainw.status.showMessage('Simulation finished')
+                self.mainw.statusLabel.setText('Simulation finished')
             except:
                 pass
          

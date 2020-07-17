@@ -43,11 +43,13 @@ class NewEditorMainWindow(QMainWindow):
             
         self.setWindowTitle(self.filename)
         self.status = self.statusBar()
+        self.statusLabel = QLabel('')
+        self.status.addWidget(self.statusLabel)
         self.evpos = QPointF(0,0)
         self.editor = Editor(self)
         self.editor.install(self.scene)
         self.editor.redrawNodes()
-        self.status.showMessage('Ready')
+        self.statusLabel.setText('Ready')
 
         self.modified = False
 

@@ -629,6 +629,7 @@ class Editor(QObject):
             ev = 0
              
         if event.type() ==  QEvent.GraphicsSceneMousePress:
+            self.mainw.statusLabel.setText('')
             if event.button() == Qt.LeftButton:
                 ev = 1
             if event.button() == Qt.RightButton:
@@ -638,9 +639,11 @@ class Editor(QObject):
             ev = 3
                 
         if event.type() == QEvent.GraphicsSceneMouseDoubleClick:
+            self.mainw.statusLabel.setText('')
             ev = 4
 
         if event.type() == QEvent.KeyPress:
+            self.mainw.statusLabel.setText('')
             if event.key() == Qt.Key_Delete:
                 ev = 5
             if event.key() == Qt.Key_Escape:
