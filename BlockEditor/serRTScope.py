@@ -74,13 +74,37 @@ class MainWindow(QMainWindow, form_class):
 
         self.ServerActive = 0
         self.colors = ["red", "green", "blue","yellow", "cyan", "magenta", "white", "gray"]
+        self.ymin = -1
+        self.ymax = 1
+        self.autoAxis = True
 
     def connect_widget(self):
         self.pbStartServer.clicked.connect(self.pbServerClicked)
         self.edHist.textEdited.connect(self.edHistEdited)
+        self.ckAutoscale.stateChanged.connect(self.setAutoscale)
+        self.edYmax.editingFinished.connect(self.YAxes)
+        self.edYmin.editingFinished.connect(self.YAxes)
 
     def edHistEdited(self, val):
         self.Hist = int(val.__str__())
+
+    def setAutoscale(self):
+        if self.ckAutoscale.isChecked():
+            self.autoAxis = True
+            self.label_5.setEnabled(False)
+            self.label_6.setEnabled(False)
+            self.edYmin.setEnabled(False)
+            self.edYmax.setEnabled(False)
+        else:
+            self.autoAxis = False
+            self.label_5.setEnabled(True)
+            self.label_6.setEnabled(True)
+            self.edYmin.setEnabled(True)
+            self.edYmax.setEnabled(True)
+ 
+    def YAxes(self):
+        self.ymax = float(self.edYmax.text())
+        self.ymin = float(self.edYmin.text())
         
     def pbServerClicked(self):
         if self.ServerActive == 0:
@@ -134,8 +158,12 @@ class MainWindow(QMainWindow, form_class):
                 self.c[n].setData(t,self.x[n])
             except:
                 pass
-        
-        self.plot.replot()
+        if self.autoAxis:
+            self.plot.setAxisAutoScale(QwtPlot.yLeft)
+            self.plot.replot()
+        else:
+            self.plot.setAxisScale(QwtPlot.yLeft, self.ymin, self.ymax)
+            self.plot.replot()
 
 app = QtGui.QApplication(sys.argv)
 frame = MainWindow()

@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Dialog</class>
+ <widget class="QDialog" name="Dialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>671</width>
+    <height>270</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="windowTitle">
+   <string>Dialog</string>
+  </property>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>50</y>
+     <width>111</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Port name</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_2">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>90</y>
+     <width>111</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Signals</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_3">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>130</y>
+     <width>111</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>History</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_4">
+   <property name="geometry">
+    <rect>
+     <x>370</x>
+     <y>100</y>
+     <width>111</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Refresh time</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pbStartServer">
+   <property name="geometry">
+    <rect>
+     <x>400</x>
+     <y>40</y>
+     <width>211</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Start Server</string>
+   </property>
+  </widget>
+  <widget class="QSpinBox" name="sbNsig">
+   <property name="geometry">
+    <rect>
+     <x>150</x>
+     <y>80</y>
+     <width>101</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+   </property>
+   <property name="minimum">
+    <number>1</number>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="edHist">
+   <property name="geometry">
+    <rect>
+     <x>150</x>
+     <y>120</y>
+     <width>101</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>1000</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+   </property>
+  </widget>
+  <widget class="QSpinBox" name="sbRefT">
+   <property name="geometry">
+    <rect>
+     <x>510</x>
+     <y>90</y>
+     <width>91</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+   </property>
+   <property name="minimum">
+    <number>10</number>
+   </property>
+   <property name="maximum">
+    <number>20000</number>
+   </property>
+   <property name="singleStep">
+    <number>10</number>
+   </property>
+   <property name="value">
+    <number>100</number>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="devCbBox">
+   <property name="geometry">
+    <rect>
+     <x>150</x>
+     <y>40</y>
+     <width>161</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="editable">
+    <bool>true</bool>
+   </property>
+   <property name="currentIndex">
+    <number>0</number>
+   </property>
+   <item>
+    <property name="text">
+     <string>/dev/ttyACM0</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>/dev/ttyACM1</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>/dev/ttyACM2</string>
+    </property>
+   </item>
+  </widget>
+  <widget class="QCheckBox" name="ckAutoscale">
+   <property name="geometry">
+    <rect>
+     <x>100</x>
+     <y>200</y>
+     <width>85</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Autoscales</string>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_5">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>220</x>
+     <y>230</y>
+     <width>57</width>
+     <height>15</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>y-Min</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_6">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>220</x>
+     <y>190</y>
+     <width>57</width>
+     <height>15</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>y-Max</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="edYmin">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>310</x>
+     <y>220</y>
+     <width>81</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>-1.00</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="edYmax">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>310</x>
+     <y>180</y>
+     <width>81</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>1.00</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
