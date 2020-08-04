@@ -98,7 +98,6 @@ D=[[0], [0]]
 from supsictrl.ctrl_repl import *
 from supsictrl.ctrl_utils import *
 import numpy as np
-import scipy as sp
 from matplotlib.pyplot import *
 from control import *
 from control.matlab import *
@@ -121,13 +120,13 @@ R = [4e-6];
 # Observer design parameters
 ##############################################################################
 # Control design - Reduced order observer
-(preg,pvect) = sp.linalg.eig(A-B*k_lqr)
+(preg,pvect) = np.linalg.eig(A-B*k_lqr)
 rho=max(abs(preg));       # process spectral radius
 rhoamp=10;                # amplification of observer poles
 
 angle1 = 15*1j*np.pi/16
-poles_c = rhoamp*rho*sp.exp([angle1, -angle1])
-obs_poles = sp.exp(poles_c*ts)
+poles_c = rhoamp*rho*np.exp([angle1, -angle1])
+obs_poles = np.exp(poles_c*ts)
 
 T=[[0,0,1,0],[0,0,0,1]]
 obs=red_obs(sysd,T,obs_poles)
@@ -189,12 +188,12 @@ xi=np.sqrt(2)/2
 
 cl_p1=[1,2*xi*wn,wn**2]
 cl_p2=[1,wn]
-cl_poly=sp.polymul(cl_p1,cl_p2)
-cl_poles=sp.roots(cl_poly);  # Desired continous poles
-cl_polesd=sp.exp(cl_poles*ts)  # Desired discrete poles
+cl_poly=np.polymul(cl_p1,cl_p2)
+cl_poles=np.roots(cl_poly);  # Desired continous poles
+cl_polesd=np.exp(cl_poles*ts)  # Desired discrete poles
 
-sz1=sp.shape(Motd.A);
-sz2=sp.shape(Motd.B);
+sz1=np.shape(Motd.A);
+sz2=np.shape(Motd.B);
 
 # Add discrete integrator for steady state zero error
 Phi_f=np.vstack((Motd.A,-Motd.C*ts))
@@ -205,7 +204,7 @@ kmot=place(Phi_f,G_f,cl_polesd)
 
 #Reduced order observer
 p_oc=-10*max(abs(cl_poles))
-p_od=sp.exp(p_oc*ts);
+p_od=np.exp(p_oc*ts);
 
 T=[0,1]
 r_obs=red_obs(Motd,T,[p_od])

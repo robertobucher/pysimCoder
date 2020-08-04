@@ -316,7 +316,7 @@ class Scene(QGraphicsScene):
  
         items = self.items()
         dir1 = respath + 'blocks/rcpBlk'
-        txt += 'import os\n'
+        txt += 'import os\n\n'
         txt += 'from supsisim.RCPblk import RCPblk\n'
         txt += 'files = os.listdir("' + dir1 + '")\n'
         txt += 'for f in files:\n'

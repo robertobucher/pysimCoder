@@ -1,7 +1,6 @@
 from scipy.optimize import leastsq
 from scipy.signal import step2
 import numpy as np
-import scipy as sp
 from control import *
 from control.matlab import *
 from supsictrl.ctrl_repl import *

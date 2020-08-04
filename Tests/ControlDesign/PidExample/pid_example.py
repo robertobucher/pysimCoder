@@ -3,8 +3,7 @@
 import matplotlib.pyplot as plt
 from control import *
 from control.matlab import *
-from numpy import pi, linspace
-from scipy import sin, sqrt
+from numpy import pi, linspace,  sin, sqrt
 from supsisim.RCPblk import *
 from supsictrl.ctrl_utils import *
 from supsictrl.ctrl_repl import *

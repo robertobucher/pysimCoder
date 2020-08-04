@@ -2,7 +2,6 @@ from sympy import symbols, Matrix, pi
 from sympy.physics.mechanics import *
 import numpy as np
 from scipy.optimize import leastsq
-import scipy as sp
 import matplotlib.pyplot as plt
 from control import *
 import control.matlab as mt
@@ -220,7 +219,7 @@ xi1 = np.sqrt(2)/2
 xi2 = np.sqrt(3)/2
 cl_p1 = [1,2*xi1*wn,wn**2]
 cl_p2 =  [1,2*xi2*wn,wn**2]
-cl_poly = sp.polymul(cl_p1, cl_p2)
+cl_poly = np.polymul(cl_p1, cl_p2)
 
 cl_2poles = np.roots(cl_p1)
 cl_poles = np.roots(cl_poly)
@@ -232,7 +231,7 @@ Dd = bowD.D
 
 if Controller == 1:
     # Controller without integral part
-    cl_polesd = sp.exp(cl_poles*Ts)    # Desired discrete poles
+    cl_polesd = np.exp(cl_poles*Ts)    # Desired discrete poles
     k = place(Ad, Bd, cl_polesd)
 
 elif Controller == 2:
@@ -243,7 +242,7 @@ elif Controller == 2:
     k, S, E = rp.dlqr(Ad, Bd, Q, R)
 
     # Observer design parameters
-    preg = sp.log(E[0])/Ts
+    preg = np.log(E[0])/Ts
     w0 = max(abs(preg));       # process spectral radius
 
     # Modify poles for observer
@@ -254,7 +253,7 @@ if Observer == 1:
     # Reduced order observer
     T=[[0,0,1,0],[0,0,0,1]]
     obs_polesc = obs_k*cl_2poles
-    obs_polesd = sp.exp(obs_polesc*Ts)
+    obs_polesd = np.exp(obs_polesc*Ts)
     r_obs = red_obs(bowD,T, obs_polesd)
     # Put Observer and controller together (compact form)
     ctr = comp_form(bowD, r_obs, k)
@@ -262,7 +261,7 @@ if Observer == 1:
 elif Observer == 2:
     # Full Observer
     obs_polesc = obs_k*cl_poles
-    obs_polesd = sp.exp(obs_polesc*Ts)
+    obs_polesd = np.exp(obs_polesc*Ts)
     f_obs = full_obs(bowD, obs_polesd)
     # Put Observer and controller together (compact form)
     ctr = comp_form(bowD, f_obs, k)

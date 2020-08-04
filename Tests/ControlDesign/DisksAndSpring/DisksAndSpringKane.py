@@ -109,8 +109,6 @@ par_dict = dict(zip(pars, par_vals))
 f_A_lin = linear_state_matrix.subs(par_dict).subs(eq_dict)
 f_B_lin = linear_input_matrix.subs(par_dict).subs(eq_dict)
 
-from scipy import zeros
-import scipy as sp
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 from control import *
@@ -155,25 +153,25 @@ xi2 = 0.85
 cl_p1 = [1,2*xi1*wn,wn**2]
 cl_p2 = [1,2*xi2*wn,wn**2]
 cl_p3 = [1,wn]
-cl_poly1 = sp.polymul(cl_p1,cl_p2)
-cl_poly = sp.polymul(cl_poly1,cl_p3)
-cl_poles = sp.roots(cl_poly)     # Desired continous poles
-cl_polesd = sp.exp(cl_poles*ts)  # Desired discrete poles
+cl_poly1 = np.polymul(cl_p1,cl_p2)
+cl_poly = np.polymul(cl_poly1,cl_p3)
+cl_poles = np.roots(cl_poly)     # Desired continous poles
+cl_polesd = np.exp(cl_poles*ts)  # Desired discrete poles
 
 # Add discrete integrator for steady state zero error
 Phi_f = np.vstack((gz.A,-gz.C*ts))
 Phi_f = np.hstack((Phi_f,[[0],[0],[0],[0],[1]]))
-G_f = np.vstack((gz.B,zeros((1,1))))
+G_f = np.vstack((gz.B,np.zeros((1,1))))
 
 # Pole placement
 k = place(Phi_f,G_f,cl_polesd)
 
 # Observer design - reduced order observer
 
-poli_of = 5*sp.roots(cl_poly1)     # Desired continous poles
-poli_o = 5*sp.roots(cl_p1)
-poli_oz = sp.exp(poli_o*ts) 
-poli_ozf = sp.exp(poli_of*ts)
+poli_of = 5*np.roots(cl_poly1)     # Desired continous poles
+poli_o = 5*np.roots(cl_p1)
+poli_oz = np.exp(poli_o*ts) 
+poli_ozf = np.exp(poli_of*ts)
 
 disks = ss(A,B,C,D)
 disksz = StateSpace(gz.A,gz.B,C,D,ts)
