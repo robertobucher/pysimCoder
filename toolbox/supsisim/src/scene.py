@@ -9,6 +9,7 @@ from supsisim.dialg import RTgenDlg
 from supsisim.const import pyrun, TEMP, respath, BWmin
 from lxml import etree
 import os
+import sys
 import subprocess
 import time
 
@@ -39,6 +40,11 @@ class Scene(QGraphicsScene):
         self.Ts = '0.01'
         self.script = ''
         self.Tf = '10'
+
+        if sys.stdin.isatty():
+            self.terminalExist = True
+        else:
+            self.terminalExist = False
 
         self.undoList = []
 
@@ -261,7 +267,10 @@ class Scene(QGraphicsScene):
             except:
                 pass
             if flag:
-                cmd = pyrun + ' tmp.py'
+                if self.terminalExist:
+                    cmd = pyrun + ' tmp.py'
+                else:
+                    cmd = pyrun + ' tmp.py' + ' > tmp.log'
                 try:
                     p = subprocess.Popen(cmd, shell=True)
                 except:
@@ -370,7 +379,10 @@ class Scene(QGraphicsScene):
             f = open('tmp.py','a')
             f.write(cmd)
             f.close()
-            cmd = pyrun + ' tmp.py'
+            if self.terminalExist:
+                cmd = pyrun + ' tmp.py'
+            else:
+                cmd = pyrun + ' tmp.py' + ' > tmp.log'
             try:
                 os.system(cmd)
                 self.mainw.statusLabel.setText('Simulation finished')

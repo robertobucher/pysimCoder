@@ -19,27 +19,17 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-#include <unistd.h>
 #include <fcntl.h>
 #include <pthread.h>
 #include <sys/mman.h>
 
-#include <net/if.h>
-#include <sys/ioctl.h>
-#include <sys/socket.h>
-
-#include <linux/can.h>
-#include <linux/can/raw.h>
+#include <pcan.h>
+#include <libpcan.h>
 
 /* #define VERB */
 
-#define DWORD  unsigned int
-#define WORD   unsigned short
-#define BYTE   unsigned char
-
-static int s;                       /* CAN Socket */
+static void * canHandle;
 static int dev_cnt = 0;                    /* CAN devices counter */
-
 static volatile int endrcv = 0;
 static pthread_t  rt_rcv;
 
@@ -89,13 +79,12 @@ short get2ByteValue(int ID, WORD index, BYTE subindex)
   return(0);
 }
 
-void saveMsg(struct can_frame m)
+void saveMsg(TPCANMsg m)
 {
-  int ID = m.can_id;
-  
-  WORD *index = (WORD *) &(m.data[1]);
-  BYTE *subindex = (BYTE *) &(m.data[3]);
-  DWORD *value = (DWORD *) &(m.data[4]);
+  int ID = m.ID;
+  WORD *index = (WORD *) &(m.DATA[1]);
+  BYTE *subindex = (BYTE *) &(m.DATA[3]);
+  DWORD *value = (DWORD *) &(m.DATA[4]);
 
   struct CanMsg * el = msgIn;
   
@@ -109,14 +98,14 @@ void saveMsg(struct can_frame m)
   }
 }
   
-void saveMsg2(struct can_frame m)
+void saveMsg2(TPCANMsg m)
 {
-  int ID = m.can_id;
+  int ID = m.ID;
   
   WORD index = 0x00;
   BYTE subindex = 0x00;
-  DWORD value = (m.data[3] << 24)  + (m.data[2] << 16) +
-                             (m.data[5] << 8) + m.data[4];
+  DWORD value = (m.DATA[3] << 24)  + (m.DATA[2] << 16) +
+                             (m.DATA[5] << 8) + m.DATA[4];
 
   struct CanMsg * el = msgIn;
   
@@ -134,58 +123,88 @@ void sendMsg(WORD ID, BYTE DATA[], int len)
 {
   /* Procedure to send a CAN message */
 
-  struct can_frame msg;
+  TPCANMsg Tmsg;
 
-  memset(&msg, 0x00, sizeof(msg));
+  Tmsg.ID = ID;
+  Tmsg.MSGTYPE = MSGTYPE_STANDARD;
+  Tmsg.LEN = len;
+  int i, errno;
 
-  msg.can_id = ID;
-  msg.can_dlc = len;
-  int i;
-
-  memcpy(msg.data, DATA, msg.can_dlc);
+  memcpy(Tmsg.DATA, DATA, len);
   
 #ifdef VERB
-    printf("--> 0x%03x  %d   ",msg.can_id,msg.can_dlc);
-    for(i=0;i<msg.can_dlc;i++) printf("0x%02x  ",msg.data[i]);
+    printf("--> 0x%03x  %d   ",Tmsg.ID,Tmsg.LEN);
+    for(i=0;i<Tmsg.LEN;i++) printf("0x%02x  ",Tmsg.DATA[i]);
     printf("\n");    
 #endif
 
-    len = write(s, &msg, sizeof(struct can_frame));
+    errno = CAN_Write(canHandle,&Tmsg);
 }
 
-
-  
-int rcvMsg(BYTE DATA[], int timeout)
+int rcvMsgCob(int cob, BYTE DATA[], int timeout)
 {
-  struct can_frame msg;
-  int len;
+  TPCANRdMsg m;
+  int errno;
 
 #ifdef VERB
   int i;
 #endif
 
-  len = read(s, &msg, sizeof(struct can_frame));
+  do{
+    errno = LINUX_CAN_Read_Timeout(canHandle, &m, timeout);
+  }while(m.Msg.ID != cob);
 
+  if(errno==0){
 #ifdef VERB
-  printf("<-- 0x%03x  %d   ", msg.can_id, msg.can_dlc);
-  for(i=0;i<msg.can_dlc;i++) printf("0x%02x  ", msg.data[i]);
+    printf("<-- 0x%03x  %d   ",m.Msg.ID,m.Msg.LEN);
+    for(i=0;i<m.Msg.LEN;i++) printf("0x%02x  ",m.Msg.DATA[i]);
     printf("\n");    
 #endif
 
-  if(msg.can_dlc != 0) memcpy(DATA, msg.data, msg.can_dlc);
-  return msg.can_dlc;
+    if(m.Msg.LEN != 0) memcpy(DATA,m.Msg.DATA,m.Msg.LEN);
+    if(m.Msg.MSGTYPE & MSGTYPE_STATUS) CAN_Status(canHandle);
+    return m.Msg.LEN;
+  }
+  else return 0;
+}
+  
+
+int rcvMsg(BYTE DATA[], int timeout)
+{
+  TPCANRdMsg m;
+  int errno;
+
+#ifdef VERB
+  int i;
+#endif
+
+  errno = LINUX_CAN_Read_Timeout(canHandle, &m, timeout);
+
+  if(errno==0){
+#ifdef VERB
+    printf("<-- 0x%03x  %d   ",m.Msg.ID,m.Msg.LEN);
+    for(i=0;i<m.Msg.LEN;i++) printf("0x%02x  ",m.Msg.DATA[i]);
+    printf("\n");    
+#endif
+
+    if(m.Msg.LEN != 0) memcpy(DATA,m.Msg.DATA,m.Msg.LEN);
+    if(m.Msg.MSGTYPE & MSGTYPE_STATUS) CAN_Status(canHandle);
+    return m.Msg.LEN;
+  }
+  else return 0;
 }
 
 void *rcv(void *args)
 {
   /* Receiving thread scheduled as RT task */
 
-  struct can_frame msg;
-  int len;
-  
+  TPCANMsg m;
+  int errno;
 #ifdef VERB
   int i;
 #endif
+  int id, PDOn;
+  BYTE * data;
   struct sched_param param;
 
   param.sched_priority = (int) args;
@@ -197,46 +216,37 @@ void *rcv(void *args)
   mlockall(MCL_CURRENT | MCL_FUTURE);
 
   while (!endrcv) {       /* receiving loop */
-    len = read(s, &msg, sizeof(struct can_frame));
+    errno = CAN_Read(canHandle, &m);
 
 #ifdef VERB
-    printf("<-- 0x%03x  %d   ",msg.can_id, msg.can_dlc);
-    for(i=0;i<msg.can_dlc;i++) printf("0x%02x  ", msg.data[i]);
+    printf("<-- 0x%03x  %d   ",m.ID,m.LEN);
+    for(i=0;i<m.LEN;i++) printf("0x%02x  ",m.DATA[i]);
     printf("\n");    
 #endif
 
     /* Store messages  */
-    saveMsg(msg);    
+    if(m.DATA[0] != 0x01) saveMsg(m);
+    else                              saveMsg2(m);
+    
+    if(m.MSGTYPE & MSGTYPE_STATUS) CAN_Status(canHandle);
   }
   return 0;
 }
 
 int canOpen()
 {
-  struct sockaddr_can addr;
-  struct ifreq ifr;
-  int ret;
+  int bd;
+
+  char txt[VERSIONSTRING_LEN];
 
   if(!dev_cnt){  /* This task is performed only one time */
-    memset(&ifr, 0x00, sizeof(ifr));
-    memset(&addr,0x00, sizeof(addr));
+    bd = CAN_BAUD_500K;
+    canHandle = LINUX_CAN_Open("/dev/pcan32",O_RDWR);
+    /* canHandle = CAN_Open(HW_DONGLE_SJA_EPP, port,irq); */
 
-    s = socket(PF_CAN, SOCK_RAW, CAN_RAW);
-    if(!s) return -1;
-    
-    strcpy(ifr.ifr_name, "can0" );
-    ioctl(s, SIOCGIFINDEX, &ifr);
-
-    addr.can_family = AF_CAN;
-    addr.can_ifindex = ifr.ifr_ifindex;
-
-    int canfd_on = 1;
-    setsockopt(s, SOL_CAN_RAW, CAN_RAW_FD_FRAMES, &canfd_on, sizeof(canfd_on));
-
-    /* int loopback = 0; */
-    /* setsockopt(s, SOL_CAN_RAW, CAN_RAW_LOOPBACK, &loopback, sizeof(loopback)); */
-
-    ret = bind(s, (struct sockaddr *)&addr, sizeof(addr));
+    if(!canHandle) return -1;
+    CAN_VersionInfo(canHandle,txt);
+    CAN_Init(canHandle, bd, CAN_INIT_TYPE_ST);
   }
   dev_cnt++;
   return 0;
@@ -244,32 +254,19 @@ int canOpen()
 
 int canOpenTH()
 {
-  struct sockaddr_can addr;
-  struct ifreq ifr;
+  int bd;
   int priority = 90;
-  int ret;
+
+  char txt[VERSIONSTRING_LEN];
 
   if(!dev_cnt){  /* This task is performed only one time */
-    memset(&ifr, 0x00, sizeof(ifr));
-    memset(&addr,0x00, sizeof(addr));
+    bd = CAN_BAUD_500K;
+    canHandle = LINUX_CAN_Open("/dev/pcan32",O_RDWR);
+    /* canHandle = CAN_Open(HW_DONGLE_SJA_EPP, port,irq); */
 
-    s = socket(PF_CAN, SOCK_RAW, CAN_RAW);
-    if(!s) return -1;
-    
-    strcpy(ifr.ifr_name, "can0" );
-    ioctl(s, SIOCGIFINDEX, &ifr);
-
-    addr.can_family = AF_CAN;
-    addr.can_ifindex = ifr.ifr_ifindex;
-
-    int canfd_on = 1;
-    setsockopt(s, SOL_CAN_RAW, CAN_RAW_FD_FRAMES, &canfd_on, sizeof(canfd_on));
-    
-   /* int loopback = 0; */
-    /* setsockopt(s, SOL_CAN_RAW, CAN_RAW_LOOPBACK, &loopback, sizeof(loopback)); */
-
-    ret = bind(s, (struct sockaddr *)&addr, sizeof(addr));
-
+    if(!canHandle) return -1;
+    CAN_VersionInfo(canHandle,txt);
+    CAN_Init(canHandle, bd, CAN_INIT_TYPE_ST);
     pthread_create(&rt_rcv, NULL, rcv, (void *) priority);  /* Start receiving task */
   }
   
@@ -280,7 +277,7 @@ int canOpenTH()
 void canClose()
 {
   if(--dev_cnt == 0) {
-    close(s);
+    CAN_Close(canHandle);
   }
 }
 
