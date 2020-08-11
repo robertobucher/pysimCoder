@@ -1,0 +1,16 @@
+#!/usr/bin/sh
+
+export PYSUPSICTRL=/home/bucher/CACSD/pysimCoder
+export PYEDITOR=emacs
+export PYTHONPATH=/home/bucher/Documents/PYTHON:/home/bucher/CACSD/pysimCoder/resources/blocks/rcpBlk
+export PYUSERBLKS=/home/bucher/Documents/PYTHON/rcpBlk
+
+if [ -t 0 -a -t 1 ]
+then
+    pysimCoder.py $1
+else
+    pysimCoder.py $1 > /tmp/pysimCoder.log
+fi
+
+
+

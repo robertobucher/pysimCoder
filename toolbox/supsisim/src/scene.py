@@ -9,7 +9,6 @@ from supsisim.dialg import RTgenDlg
 from supsisim.const import pyrun, TEMP, respath, BWmin
 from lxml import etree
 import os
-import sys
 import subprocess
 import time
 
@@ -40,11 +39,6 @@ class Scene(QGraphicsScene):
         self.Ts = '0.01'
         self.script = ''
         self.Tf = '10'
-
-        if sys.stdin.isatty():
-            self.terminalExist = True
-        else:
-            self.terminalExist = False
 
         self.undoList = []
 
@@ -250,16 +244,21 @@ class Scene(QGraphicsScene):
                     if isinstance(thing, OutPort):
                         thing.nodeID = str(nid)
                         nid += 1
+                        
             for item in dgmBlocks:
                 for thing in item.childItems():
                     if isinstance(thing, InPort):
-                        c = thing.connections[0]
+                        try:
+                            c = thing.connections[0]
+                        except:
+                            print('Problem in diagram: input signals probably not connected!')
                         while not isinstance(c.port1, OutPort):
                             try:
                                 c = c.port1.parent.port_in.connections[0]
                             except (AttributeError, ValueError):
                                 raise ValueError('Problem in diagram: outputs connected together!')
                         thing.nodeID = c.port1.nodeID
+                        
             self.generateCCode()
             self.mainw.statusLabel.setText('Code generation OK!')
             try:
@@ -267,10 +266,7 @@ class Scene(QGraphicsScene):
             except:
                 pass
             if flag:
-                if self.terminalExist:
-                    cmd = pyrun + ' tmp.py'
-                else:
-                    cmd = pyrun + ' tmp.py' + ' > tmp.log'
+                cmd = pyrun + ' tmp.py'
                 try:
                     p = subprocess.Popen(cmd, shell=True)
                 except:
@@ -379,10 +375,7 @@ class Scene(QGraphicsScene):
             f = open('tmp.py','a')
             f.write(cmd)
             f.close()
-            if self.terminalExist:
-                cmd = pyrun + ' tmp.py'
-            else:
-                cmd = pyrun + ' tmp.py' + ' > tmp.log'
+            cmd = pyrun + ' tmp.py'
             try:
                 os.system(cmd)
                 self.mainw.statusLabel.setText('Simulation finished')

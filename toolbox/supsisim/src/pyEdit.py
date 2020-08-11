@@ -401,10 +401,6 @@ class NewEditorMainWindow(QMainWindow):
             os.remove('tmp.py')
         except:
             pass
-        try:
-            os.remove('tmp.log')
-        except:
-            pass
         
         if self.modified:
             ret = self.askSaving()
