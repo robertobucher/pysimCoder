@@ -1,0 +1,4 @@
+This block sends values from the briki card to the serial port, allowing to get them from an external system.
+
+Parameters:
+Port: device name 

@@ -1,15 +1,14 @@
-
 from supsisim.RCPblk import RCPblk
-from scipy import size
+from numpy import size
 
-def serialOutBlk(pin, decim):
+def serialOutBlk(pin, port):
     """
 
-    Call:   serialOut(pin, port)
+    Call:   serialIn(pout, port)
 
     Parameters
     ----------
-       pin: connected input port(s)
+       pout: connected output port(s)
        port : Port
 
     Returns
@@ -18,7 +17,5 @@ def serialOutBlk(pin, decim):
 
     """
 
-    decim = int(decim)
-    
-    blk = RCPblk('serialOut', pin, [], [0,0], 1, [], [decim, 0])
+    blk = RCPblk('serialOut', pin, [],  [0,0], 1, [], [0], port)
     return blk

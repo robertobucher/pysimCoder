@@ -22,34 +22,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 #include <fcntl.h> 
 #include <termios.h>
 #include <unistd.h> 
-#include <pthread.h>
-
-static void * getData(void * p)
-{
-  int i;
-  python_block *block = (python_block *) p;
-  int recv_len, maxlen;
-  int fd = block->intPar[0];
-  double *y;
-  double data[block->nout];
-
-  maxlen = block->nout*sizeof(double);
-
-  while(1){
-    recv_len = read(fd, (char *) data, maxlen);
-    for( i=0;i<block->nout;i++){
-      y = block->y[i];
-      y[0] = data[i];
-    }
-  }
-}
 
 static void init(python_block *block)
 {
   int * intPar    = block->intPar;
   int fd;
   struct termios ts;
-  pthread_t thrd;
 
   fd =  open(block->str, O_RDWR);
   if(fd == -1){
@@ -58,41 +36,49 @@ static void init(python_block *block)
   }
 
   tcgetattr(fd, &ts);
-  cfsetispeed(&ts, B115200);
- ts.c_cflag = (ts.c_cflag & ~CSIZE) | CS8;    
-  ts.c_iflag &= ~IGNBRK;        
-  ts.c_lflag = 0;                
+  cfsetospeed(&ts, B115200);
+  ts.c_cflag = (ts.c_cflag & ~CSIZE) | CS8;    
+  ts.c_oflag &= ~IGNBRK;        
+  ts.c_oflag = 0;                
   
   ts.c_oflag = 0;                
-  ts.c_cc[VMIN]  = 1;            
+  ts.c_cc[VMIN]  = 0;            
   ts.c_cc[VTIME] = 100;            
-
-  ts.c_iflag &= ~(IXON | IXOFF | IXANY); 
-
-  ts.c_cflag |= (CLOCAL | CREAD);
+  
+  ts.c_oflag &= ~(IXON | IXOFF | IXANY);
+ 
+  ts.c_cflag |= (CLOCAL);
   
   ts.c_cflag &= ~(PARENB | PARODD);     
   ts.c_cflag |= 0;
   ts.c_cflag &= ~CSTOPB;
   ts.c_cflag &= ~CRTSCTS;
   tcsetattr(fd, TCSANOW, &ts);
-  
+  tcflush( fd, TCIFLUSH );  
   intPar[0] = fd;
-  pthread_create(&thrd, NULL, getData, (void *) block);  
 }
 
 static void inout(python_block *block)
 {
+  int i, send_len;
+  int fd = block->intPar[0];
+  double *u;
+  double data[block->nin];
+  
+  for(i=0;i< block->nin;i++){
+    u = block->u[i];
+    data[i] = u[0];
+  }
+  send_len = write(fd, (char *) data, sizeof(data));
 }
 
 static void end(python_block *block)
 {
   int * intPar    = block->intPar;
-  
   close(intPar[0]);
 }
 
-void serialIn(int flag, python_block *block)
+void serialOut(int flag, python_block *block)
 {
   if (flag==CG_OUT){          /* get input */
     inout(block);
