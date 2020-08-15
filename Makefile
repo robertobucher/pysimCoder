@@ -52,5 +52,15 @@ user:
 	echo 'export PYEDITOR=emacs' >> ~/.bashrc
 	echo 'export PYTHONPATH=$(HOME)/Documents/PYTHON:$(CURDIR)/resources/blocks/rcpBlk' >> ~/.bashrc
 
+script:
+	echo $(PYCTL) > pysimCoder
+	echo 'export PYEDITOR=emacs' >> pysimCoder
+	echo 'export PYTHONPATH=$(CURDIR)/resources/blocks/rcpBlk' >> pysimCoder
+	cat launch.txt >> pysimCoder
+	chmod a+x pysimCoder
+
+
+
+
 
 

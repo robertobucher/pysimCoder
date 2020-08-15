@@ -19,8 +19,16 @@ if 3 == sys.version_info[0]:
         PYTHON + "-dev",
         PYTHON + "-distutils",
         PYTHON + "-testresources",
-        PYTHON + "-pyqt4",
+        PYTHON + "-pyqt5",
+        PYTHON + "-pyqt5.qtsvg",
         PYTHON + "-dbus.mainloop.qt",
+        PATHON + "-pyqtgraph",
+        PATHON + "-serial",
+        PYTHON + "-lxml",
+        PYTHON + "-setuptools",
+        PYTHON + "-simplejson",
+        PYTHON + "-skimage",
+        PYTHON + "-skimage-lib",
         PYTHON + "-tk",
     ]
 else:
@@ -29,7 +37,7 @@ else:
         "python-distutils",
         "python-testresources",
         "python-scipy",
-        "python-qt4",
+        "python-qt5",
         "python-qt4-dbus",
         "python-tk",
     ]
