@@ -85,9 +85,6 @@ SAMD21:
 	cd CodeGen/SAMD21/devices;make; make install; make clean
 	cd CodeGen/SAMD21/lib; wget robertobucher.dti.supsi.ch/wp-content/uploads/2017/03/core.zip; unzip core.zip; rm core.zip
 
-SAMD21:
-	cd CodeGen/SAMD21/devices;make; make install; make clean
-
 STM32H7:
 	cd CodeGen/STM32H7; make
 
