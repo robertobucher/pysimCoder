@@ -1,0 +1,1 @@
+{"lib": "SAMD21", "name": "DO", "ip": 1, "op": 0, "stin": 0, "stout": 0, "icon": "DO", "params": "brikiDOBlk|Channel: 0|Threshold:0.5"}

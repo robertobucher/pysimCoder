@@ -1,0 +1,1 @@
+{"lib": "STM32H7", "name": "AnalogOut", "ip": 1, "op": 0, "stin": 0, "stout": 0, "icon": "DA", "params": "stm32AOBlk|ch [0,1]:0|Umin [V]:0.0|Umax [V]:3.3"}

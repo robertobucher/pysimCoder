@@ -1,6 +1,6 @@
-export PYSUPSICTRL=/home/bucher/CACSD/pysimCoder
+export PYSUPSICTRL=/home/bucher/ToDo/extradisk/pysimCoder
 export PYEDITOR=emacs
-export PYTHONPATH=/home/bucher/CACSD/pysimCoder/resources/blocks/rcpBlk
+export PYTHONPATH=/home/bucher/ToDo/extradisk/pysimCoder/resources/blocks/rcpBlk
 
 if [ -t 0 -a -t 1 ]
 then

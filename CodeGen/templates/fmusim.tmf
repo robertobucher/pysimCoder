@@ -3,8 +3,8 @@ all: ../$(MODEL)
 
 PYCODEGEN = $(PYSUPSICTRL)/CodeGen
 MAINDIR = $(PYCODEGEN)/src
-LIBDIR  = $(PYCODEGEN)/lib
-INCDIR  = $(PYCODEGEN)/include
+LIBDIR  = $(PYCODEGEN)/LinuxRT/lib
+INCDIR  = $(PYCODEGEN)/LinuxRT/include
 FMUINC = $(PYCODEGEN)/fmu/fmuinc
 FMILIB = $(PYCODEGEN)/fmu/lib/fmulib.a  -ldl -lxml2
 

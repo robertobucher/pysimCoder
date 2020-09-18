@@ -3,8 +3,8 @@ all: ../$(MODEL)
 
 PYCODEGEN = $(PYSUPSICTRL)/CodeGen
 MAINDIR = $(PYCODEGEN)/src
-LIBDIR  = $(PYCODEGEN)/lib_Pi
-INCDIR  = $(PYCODEGEN)/include_Pi
+LIBDIR  = $(PYCODEGEN)/Raspberry_PI/lib
+INCDIR  = $(PYCODEGEN)/Raspberry_PI/include
 
 RM = rm -f
 FILES_TO_CLEAN = *.o $(MODEL)
@@ -12,7 +12,7 @@ FILES_TO_CLEAN = *.o $(MODEL)
 CC = arm-linux-gnueabihf-gcc
 CC_OPTIONS = -g
 
-MAIN = linux_main_rt
+MAIN = linux_main_pi
 ADD_FILES = $$ADD_FILES$$
 
 OBJSSTAN = $(MAIN).o $(MODEL).o $(ADD_FILES)

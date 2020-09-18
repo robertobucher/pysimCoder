@@ -1,0 +1,1 @@
+{"lib": "SAMD21", "name": "AnalogIn", "ip": 0, "op": 1, "stin": 0, "stout": 0, "icon": "AD", "params": "brikiAIBlk|Pin:26|Umin [V]:0.0|Umax [V]:3.3"}

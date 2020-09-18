@@ -1,0 +1,1 @@
+{"lib": "SAMD21", "name": "brikiDCMot", "ip": 1, "op": 0, "stin": 0, "stout": 0, "icon": "MOT_V", "params": "brikiDCMotBlk|Enable Pin:11|In1 Pin:13|In2 Pin:23"}

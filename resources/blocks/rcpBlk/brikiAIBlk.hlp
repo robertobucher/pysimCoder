@@ -1,0 +1,13 @@
+Parameters
+Input: Channel with value 0 to 5
+
+PIN
+A0   ->   26	
+A1   ->   27
+A2   ->   28
+A3   ->   29
+A4   ->   30
+A5   ->   31
+A9   ->   20   (Microphone)
+
+The input signal (0..3V) is automatically mapped to a value between Umin and Umax.

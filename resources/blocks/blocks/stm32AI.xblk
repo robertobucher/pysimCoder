@@ -1,0 +1,1 @@
+{"lib": "STM32H7", "name": "AnalogIn", "ip": 0, "op": 1, "stin": 0, "stout": 0, "icon": "AD", "params": "stm32AIBlk|Channel:0|Umin [V]:0.0|Umax [V]:3.3"}

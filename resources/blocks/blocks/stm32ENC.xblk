@@ -1,0 +1,1 @@
+{"lib": "STM32H7", "name": "stm32_ENC", "ip": 0, "op": 1, "stin": 0, "stout": 0, "icon": "ENC", "params": "stm32ENCBlk|Resolution:1000"}

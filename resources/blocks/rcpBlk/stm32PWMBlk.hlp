@@ -1,0 +1,11 @@
+Input voltage is mapped to 0-3.3 V
+
+Parameters
+Channel: PWM channel   (1-4)
+Umin [V]:  minimum voltage -> 0% PWM
+Umax [V]: maximum voltage -> 100% PWM
+
+Channel 1 --> PD12
+Channel 2 --> PD13
+Channel 3 --> PD14
+Channel 4 --> PD15

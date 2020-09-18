@@ -1,0 +1,1 @@
+{"lib": "STM32H7", "name": "ADS1018", "ip": 0, "op": 1, "stin": 0, "stout": 0, "icon": "AD", "params": "stm32Ads1018Blk|CS Port:'NSS'|CS PIN:0|Channel:0| Range:2| Single conversion [0=No, 1=Yes]: 0"}

@@ -1,0 +1,24 @@
+This block reads the Temperature of the Heater system
+
+Parameters
+CS Port:   use 'NSS' to use internal CS system in the SPI communication
+CS PIN:
+Channel [0..2]: Channel of the ads1018 ADC converter
+	0: Heater 1
+	1: Heater 2
+	2: Ambience Temperature
+
+Range [0..7]: Voltage range for the ADS1018
+      0:      +/-6.144V    (not used)
+      1:      +/-4.096      (not used)
+      2:      +/-2.048
+      3:      +/-1.024
+      4:      +/-0.512
+      5:      +/-0.256
+      6:      +/-0.256
+      7:      +/-0.256
+      
+Continous: If there is only 1 conversion in the diagram, it is possible to set this
+	   filed to 1, otherwise it is important to set t to 0!
+	   
+

@@ -1,0 +1,8 @@
+
+if [ -t 0 -a -t 1 ]
+then
+    pysimCoder.py $1
+else
+    pysimCoder.py $1 > /tmp/pysimCoder.log
+fi
+

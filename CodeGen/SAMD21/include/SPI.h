@@ -1,0 +1,262 @@
+/* 
+  SPI.h - SPI library for esp8266
+
+  Copyright (c) 2015 Hristo Gochkov. All rights reserved.
+  This file is part of the esp8266 core for Arduino environment.
+ 
+  This library is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Lesser General Public
+  License as published by the Free Software Foundation; either
+  version 2.1 of the License, or (at your option) any later version.
+
+  This library is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  Lesser General Public License for more details.
+
+  You should have received a copy of the GNU Lesser General Public
+  License along with this library; if not, write to the Free Software
+  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+*/
+#ifndef _SPI_H_INCLUDED
+#define _SPI_H_INCLUDED
+
+#ifdef BRIKI_MBC_WB_ESP // SPI.h for ESP32 mcu
+
+#include <stdlib.h>
+#include "pins_arduino.h"
+#include "esp32-hal-spi.h"
+
+class SPISettings
+{
+public:
+    SPISettings() :_clock(1000000), _bitOrder(SPI_MSBFIRST), _dataMode(SPI_MODE0) {}
+    SPISettings(uint32_t clock, uint8_t bitOrder, uint8_t dataMode) :_clock(clock), _bitOrder(bitOrder), _dataMode(dataMode) {}
+    uint32_t _clock;
+    uint8_t  _bitOrder;
+    uint8_t  _dataMode;
+};
+
+class SPIClass
+{
+private:
+    int8_t _spi_num;
+    spi_t * _spi;
+    bool _use_hw_ss;
+    int8_t _sck;
+    int8_t _miso;
+    int8_t _mosi;
+    int8_t _ss;
+    uint32_t _div;
+    uint32_t _freq;
+    bool _inTransaction;
+    void writePattern_(uint8_t * data, uint8_t size, uint8_t repeat);
+
+public:
+    SPIClass(uint8_t spi_bus=HSPI);
+    void begin(int8_t sck=-1, int8_t miso=-1, int8_t mosi=-1, int8_t ss=-1);
+    void end();
+
+    void setHwCs(bool use);
+    void setBitOrder(uint8_t bitOrder);
+    void setDataMode(uint8_t dataMode);
+    void setFrequency(uint32_t freq);
+    void setClockDivider(uint32_t clockDiv);
+    
+    uint32_t getClockDivider();
+
+    void beginTransaction(SPISettings settings);
+    void endTransaction(void);
+    void transfer(uint8_t * data, uint32_t size);
+    uint8_t transfer(uint8_t data);
+    uint16_t transfer16(uint16_t data);
+    uint32_t transfer32(uint32_t data);
+  
+    void transferBytes(uint8_t * data, uint8_t * out, uint32_t size);
+    void transferBits(uint32_t data, uint32_t * out, uint8_t bits);
+
+    void write(uint8_t data);
+    void write16(uint16_t data);
+    void write32(uint32_t data);
+    void writeBytes(const uint8_t * data, uint32_t size);
+    void writePixels(const void * data, uint32_t size);//ili9341 compatible
+    void writePattern(uint8_t * data, uint8_t size, uint32_t repeat);
+
+    spi_t * bus(){ return _spi; }
+};
+
+extern SPIClass SPI;
+
+#elif defined BRIKI_MBC_WB_SAMD // SPI.h for SAMD21 mcu
+
+#include <Arduino.h>
+
+// SPI_HAS_TRANSACTION means SPI has
+//   - beginTransaction()
+//   - endTransaction()
+//   - usingInterrupt()
+//   - SPISetting(clock, bitOrder, dataMode)
+#define SPI_HAS_TRANSACTION 1
+
+// SPI_HAS_NOTUSINGINTERRUPT means that SPI has notUsingInterrupt() method
+#define SPI_HAS_NOTUSINGINTERRUPT 1
+
+#define SPI_MODE0 0x02
+#define SPI_MODE1 0x00
+#define SPI_MODE2 0x03
+#define SPI_MODE3 0x01
+
+//#if defined(ARDUINO_ARCH_SAMD)
+  // The datasheet specifies a typical SPI SCK period (tSCK) of 42 ns,
+  // see "Table 36-48. SPI Timing Characteristics and Requirements",
+  // which translates into a maximum SPI clock of 23.8 MHz.
+  // Conservatively, the divider is set for a 12 MHz maximum SPI clock.
+  #define SPI_MIN_CLOCK_DIVIDER (uint8_t)(1 + ((F_CPU - 1) / 12000000))
+//#endif
+
+class SPISettings {
+  public:
+  SPISettings(uint32_t clock, BitOrder bitOrder, uint8_t dataMode) {
+    if (__builtin_constant_p(clock)) {
+      init_AlwaysInline(clock, bitOrder, dataMode);
+    } else {
+      init_MightInline(clock, bitOrder, dataMode);
+    }
+  }
+
+  // Default speed set to 4MHz, SPI mode set to MODE 0 and Bit order set to MSB first.
+  SPISettings() { init_AlwaysInline(4000000, MSBFIRST, SPI_MODE0); }
+
+  bool operator==(const SPISettings& rhs) const
+  {
+    if ((this->clockFreq == rhs.clockFreq) &&
+        (this->bitOrder == rhs.bitOrder) &&
+        (this->dataMode == rhs.dataMode)) {
+      return true;
+    }
+    return false;
+  }
+
+  bool operator!=(const SPISettings& rhs) const
+  {
+    return !(*this == rhs);
+  }
+
+  uint32_t getClockFreq() const {return clockFreq;}
+  uint8_t getDataMode() const {return (uint8_t)dataMode;}
+  BitOrder getBitOrder() const {return (bitOrder == MSB_FIRST ? MSBFIRST : LSBFIRST);}
+
+  private:
+  void init_MightInline(uint32_t clock, BitOrder bitOrder, uint8_t dataMode) {
+    init_AlwaysInline(clock, bitOrder, dataMode);
+  }
+
+  void init_AlwaysInline(uint32_t clock, BitOrder bitOrder, uint8_t dataMode) __attribute__((__always_inline__)) {
+    this->clockFreq = (clock >= (F_CPU / SPI_MIN_CLOCK_DIVIDER) ? F_CPU / SPI_MIN_CLOCK_DIVIDER : clock);
+
+    this->bitOrder = (bitOrder == MSBFIRST ? MSB_FIRST : LSB_FIRST);
+
+    switch (dataMode)
+    {
+      case SPI_MODE0:
+        this->dataMode = SERCOM_SPI_MODE_0; break;
+      case SPI_MODE1:
+        this->dataMode = SERCOM_SPI_MODE_1; break;
+      case SPI_MODE2:
+        this->dataMode = SERCOM_SPI_MODE_2; break;
+      case SPI_MODE3:
+        this->dataMode = SERCOM_SPI_MODE_3; break;
+      default:
+        this->dataMode = SERCOM_SPI_MODE_0; break;
+    }
+  }
+
+  uint32_t clockFreq;
+  SercomSpiClockMode dataMode;
+  SercomDataOrder bitOrder;
+
+  friend class SPIClass;
+};
+
+const SPISettings DEFAULT_SPI_SETTINGS = SPISettings();
+
+class SPIClass {
+  public:
+  SPIClass(SERCOM *p_sercom, uint8_t uc_pinMISO, uint8_t uc_pinSCK, uint8_t uc_pinMOSI, SercomSpiTXPad, SercomRXPad);
+
+  byte transfer(uint8_t data);
+  uint16_t transfer16(uint16_t data);
+  void transfer(void *buf, size_t count);
+  void transfer(void *buf, size_t count, void* dataRead);
+
+  // Transaction Functions
+  void usingInterrupt(int interruptNumber);
+  void notUsingInterrupt(int interruptNumber);
+  void beginTransaction(SPISettings settings);
+  void endTransaction(void);
+
+  // SPI Configuration methods
+  void attachInterrupt();
+  void detachInterrupt();
+
+  void begin();
+  void end();
+
+  void setBitOrder(BitOrder order);
+  void setDataMode(uint8_t uc_mode);
+  void setClockDivider(uint8_t uc_div);
+
+  private:
+  void init();
+  void config(SPISettings settings);
+
+  SERCOM *_p_sercom;
+  uint8_t _uc_pinMiso;
+  uint8_t _uc_pinMosi;
+  uint8_t _uc_pinSCK;
+
+  SercomSpiTXPad _padTx;
+  SercomRXPad _padRx;
+
+  SPISettings settings;
+
+  bool initialized;
+  uint8_t interruptMode;
+  char interruptSave;
+  uint32_t interruptMask;
+};
+
+#if SPI_INTERFACES_COUNT > 0
+  extern SPIClass SPI;
+#endif
+#if SPI_INTERFACES_COUNT > 1
+  extern SPIClass SPI1;
+#endif
+#if SPI_INTERFACES_COUNT > 2
+  extern SPIClass SPI2;
+#endif
+#if SPI_INTERFACES_COUNT > 3
+  extern SPIClass SPI3;
+#endif
+#if SPI_INTERFACES_COUNT > 4
+  extern SPIClass SPI4;
+#endif
+#if SPI_INTERFACES_COUNT > 5
+  extern SPIClass SPI5;
+#endif
+
+// For compatibility with sketches designed for AVR @ 16 MHz
+// New programs should use SPI.beginTransaction to set the SPI clock
+#if F_CPU == 48000000
+  #define SPI_CLOCK_DIV2   6
+  #define SPI_CLOCK_DIV4   12
+  #define SPI_CLOCK_DIV8   24
+  #define SPI_CLOCK_DIV16  48
+  #define SPI_CLOCK_DIV32  96
+  #define SPI_CLOCK_DIV64  192
+  #define SPI_CLOCK_DIV128 255
+#endif
+
+#endif
+
+#endif

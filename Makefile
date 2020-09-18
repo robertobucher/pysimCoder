@@ -1,5 +1,5 @@
-all: addfiles modules fmu full_lib driver link
-reduced: addfiles modules fmu lib driver link
+all: script addfiles modules fmu full_lib driver link
+reduced: script addfiles modules fmu lib driver link
 
 BINDIR = /usr/local/bin
 CURDIR = $(shell pwd)
@@ -15,20 +15,20 @@ addfiles:
 	rm -rf python-control Slycot
 
 modules:
-	cd toolbox/supsictrl; python setup.py install
-	cd toolbox/supsisim; python setup.py install
+	cd toolbox/supsictrl; python setup.py install; python setup.py clean --all
+	cd toolbox/supsisim; python setup.py install; python setup.py clean --all
 
 fmu:
-	cd CodeGen/fmu; make all; make install
+	cd CodeGen/LinuxRT/fmu; make all; make install
 
 lib:
-	cd CodeGen/devices; make reduced
+	cd CodeGen/LinuxRT/devices; make reduced
 
 full_lib:
-	cd CodeGen/devices; make all
+	cd CodeGen/LinuxRT/devices; make all
 
 link:
-	cd $(BINDIR); rm -f pysimCoder pyParams gen_pydev loadnrt defBlocks dataplot xblk2Blk
+	cd $(BINDIR); rm -f pysimCoder pysimCoder.py pyParams gen_pydev loadnrt defBlocks dataplot xblk2Blk
 	cp BlockEditor/gen_pydev $(BINDIR)/
 	cd $(CURDIR)/BlockEditor; chmod a+x *.py
 	cd $(CURDIR)/DriverNRT/; chmod a+x loadnrt
@@ -43,14 +43,14 @@ link:
 driver:
 	cd DriverNRT; make; make install
 
-RaspLib:
-	cd CodeGen/RPI_devices; make; make install
-	cd CodeGen/lib_Pi; wget get robertobucher.dti.supsi.ch/wp-content/uploads/2017/03/RaspLibs.zip; unzip RaspLibs.zip; rm *.zip
-
 user:
 	echo $(PYCTL) >> ~/.bashrc
 	echo 'export PYEDITOR=emacs' >> ~/.bashrc
 	echo 'export PYTHONPATH=$(HOME)/Documents/PYTHON:$(CURDIR)/resources/blocks/rcpBlk' >> ~/.bashrc
+	echo 'export ARDUINO_TOOLDIR=$(HOME)/.arduino15' >> ~/.bashrc
+	echo 'export ARDUINO_DIR=$(HOME)/sviluppo/arduino' >> ~/.bashrc
+	echo 'export SAMD21_HOME=$(CURDIR)/CodeGen/SAMD21' >> ~/.bashrc
+	echo 'export STM32H7_HOME=$(CURDIR)/CodeGen/STM32H7' >> ~/.bashrc
 
 script:
 	echo $(PYCTL) > pysimCoder
@@ -59,8 +59,32 @@ script:
 	cat launch.txt >> pysimCoder
 	chmod a+x pysimCoder
 
+clean:
+	rm -f CodeGen/LinuxRT/lib/*.a
+	rm -f CodeGen/LinuxRT/fmu/lib/*.a
+	cd CodeGen/LinuxRT/devices; make clean
+	rm -f CodeGen/Raspberry_PI/lib/*.a
+	cd CodeGen/Raspberry_PI/devices; make clean
+	rm -f CodeGen/SAMD21/lib/SAMD21lib.a
+	cd CodeGen/SAMD21/devices; make clean
+	rm -f CodeGen/STM32H7/lib/*.a
+	rm -f CodeGen/STM32H7/objects/obj/*.o
+	rm -rf resources/blocks/rcpBlk/__pycache__/
+	rm -rf /home/bucher/CACSD/pysimCoder/toolbox/supsictrl/build/
+	rm -rf /home/bucher/CACSD/pysimCoder/toolbox/supsisim/build/
 
+####### Optional targets ###########
+##### Specific compiler required!!! #####
+### Install al these targets as normal user ! 3####
 
+RaspLib:
+	cd CodeGen/Raspberry_PI/devices; make; make install; make clean
+	cd CodeGen/Raspberry_PI/lib; wget get robertobucher.dti.supsi.ch/wp-content/uploads/2017/03/RaspLibs.zip; unzip RaspLibs.zip; rm *.zip
 
+SAMD21:
+	cd CodeGen/SAMD21/devices;make; make install; make clean
+
+STM32H7:
+	cd CodeGen/STM32H7; make
 
 

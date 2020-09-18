@@ -1,0 +1,7 @@
+This block implements the "echo" function on an Arduino system.
+
+Parameters:
+Trigger Pin
+Echo Pin
+
+Both are digital I/O.

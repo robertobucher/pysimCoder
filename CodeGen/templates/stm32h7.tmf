@@ -1,0 +1,89 @@
+MODEL = $$MODEL$$
+
+all: $(MODEL).elf flash
+
+MAIN = stm32h7_main
+
+PYCODEGEN = $(PYSUPSICTRL)/CodeGen
+MAINDIR = $(PYCODEGEN)/src
+
+OBJSSTAN = $(MODEL).o $(MAIN).o 
+
+$(MAIN).c: $(MAINDIR)/$(MAIN).c $(MODEL).c
+	cp $< .
+
+# Directories
+BIN_DIR = /usr/bin
+
+GCC =$(BIN_DIR)/arm-none-eabi-gcc
+SIZE= $(BIN_DIR)/arm-none-eabi-size
+OBJDUMP = $(BIN_DIR)/arm-none-eabi-objdump
+OBJCOPY = $(BIN_DIR)/arm-none-eabi-objcopy
+
+CPU = -mcpu=cortex-m7
+
+OPENOCD_DIR = /usr/local/openocd
+FLASH = $(OPENOCD_DIR)/tools/bin/openocd
+
+GCC_FLAGS1 = \
+-std=gnu11 -g3
+
+GCC_FLAGS2 = \
+-O0 -ffunction-sections -fdata-sections -Wall -fstack-usage \
+-MMD -MP \
+--specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb
+
+DEFINES = \
+-DMODEL=$(MODEL) \
+-DUSE_HAL_DRIVER \
+-DCORE_CM7 \
+-DDEBUG \
+-DSTM32H745xx
+
+INCLUDES = \
+-I$(STM32H7_HOME)/objects/inc \
+-I$(STM32H7_HOME)/include \
+-I$(STM32H7_HOME)/OTG/STM32_USB_Device_Library/Core/Inc \
+-I$(STM32H7_HOME)/OTG/STM32_USB_Device_Library/Class/CDC/Inc \
+-I$(STM32H7_HOME)/OTG/USB_DEVICE/Target \
+-I$(STM32H7_HOME)/OTG/USB_DEVICE/App 
+
+LD_FLAGS = \
+-T$(STM32H7_HOME)/STM32H745ZITX_FLASH.ld \
+--specs=nosys.specs \
+-Wl,-Map="mytest.map" \
+-Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-d16 \
+-mfloat-abi=hard -mthumb \
+-Wl,--start-group -lc -lm -Wl,--end-group
+
+MYLIBS =  $(STM32H7_HOME)/lib/libpyBlk.a $(STM32H7_HOME)/lib/libOTG.a 
+MYHALLIB = $(STM32H7_HOME)/lib/libHAL.a
+
+FLASH_FLAGS = \
+-s $(OPENOCD_DIR) \
+-f $(OPENOCD_DIR)/stlink.cfg \
+-f $(OPENOCD_DIR)/stm32h7x.cfg
+
+objects.list1:$(STM32H7_HOME)/objects/objects.list1
+	cp $< .
+
+%.o: %.c
+	$(GCC) $< $(CPU) $(GCC_FLAGS1) $(DEFINES) -c $(INCLUDES) $(GCC_FLAGS2) -o $@
+
+$(MODEL).elf: $(OBJSSTAN) $(MYLIBS) objects.list1 $(MYHALLIB)
+	$(GCC) -o $(MODEL).elf @objects.list1 $(OBJSSTAN) $(MYLIBS)  \
+	$(MYHALLIB) $(CPU) -T$(STM32H7_HOME)/STM32H745ZITX_FLASH.ld \
+	--specs=nosys.specs -Wl,-Map="$(MODEL).map" \
+	-Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-d16 \
+	-mfloat-abi=hard -mthumb 	-Wl,--start-group -lc -lm -Wl,--end-group
+
+	$(SIZE) $(MODEL).elf
+	$(OBJDUMP) -h -s $(MODEL).elf > $(MODEL).list
+	$(OBJCOPY) -O binary $(MODEL).elf $(MODEL).bin
+
+flash: $(MODEL).elf
+	$(FLASH) $(FLASH_FLAGS) -c "program $^ verify reset exit"
+
+clean:
+	rm -f *.o *.d *.map *.elf *.bin *.hex *.su *.launch
+

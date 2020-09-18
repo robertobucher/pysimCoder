@@ -3,8 +3,8 @@ all: ../$(MODEL)
 
 PYCODEGEN = $(PYSUPSICTRL)/CodeGen
 MAINDIR = $(PYCODEGEN)/src
-LIBDIR  = $(PYCODEGEN)/lib
-INCDIR  = $(PYCODEGEN)/include 
+LIBDIR  = $(PYCODEGEN)/LinuxRT/lib
+INCDIR  = $(PYCODEGEN)/linuxRT/include 
 
 RM = rm -f
 FILES_TO_CLEAN = *.o $(MODEL)

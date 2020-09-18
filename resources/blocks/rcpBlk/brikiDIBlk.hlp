@@ -1,0 +1,5 @@
+Parameters
+Channel: Number is the same on the ABC Board for Digital and PWM
+
+Possible values are: 11, 13, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31
+
