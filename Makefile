@@ -79,7 +79,11 @@ clean:
 
 RaspLib:
 	cd CodeGen/Raspberry_PI/devices; make; make install; make clean
-	cd CodeGen/Raspberry_PI/lib; wget get robertobucher.dti.supsi.ch/wp-content/uploads/2017/03/RaspLibs.zip; unzip RaspLibs.zip; rm *.zip
+	cd CodeGen/Raspberry_PI/lib; wget robertobucher.dti.supsi.ch/wp-content/uploads/2017/03/RaspLibs.zip; unzip RaspLibs.zip; rm *.zip
+
+SAMD21:
+	cd CodeGen/SAMD21/devices;make; make install; make clean
+	cd CodeGen/SAMD21/lib; wget robertobucher.dti.supsi.ch/wp-content/uploads/2017/03/core.zip; unzip core.zip; rm core.zip
 
 SAMD21:
 	cd CodeGen/SAMD21/devices;make; make install; make clean
