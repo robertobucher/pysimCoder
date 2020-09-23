@@ -17,7 +17,8 @@ INODIR = $(ARDUINO_TOOLDIR)/packages/arduino/tools
 PACKAGES = $(ARDUINO_TOOLDIR)/packages
 
 # Tools
-BIN_DIR = $(ARDUINO_TOOLDIR)/packages/arduino/tools/arm-none-eabi-gcc/7-2017q4/bin
+#BIN_DIR = $(ARDUINO_TOOLDIR)/packages/arduino/tools/arm-none-eabi-gcc/7-2017q4/bin
+BIN_DIR = /usr/bin
 
 GCC = $(BIN_DIR)/arm-none-eabi-gcc
 G++ =$(BIN_DIR)/arm-none-eabi-g++

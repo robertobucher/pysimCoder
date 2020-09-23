@@ -2,9 +2,11 @@
 
 import sys
 
-from qwt.qt import QtGui, QtCore, uic
-from qwt.qt.QtGui import *
-from qwt.qt.QtCore import *
+from PyQt5 import QtGui, QtCore, uic
+from PyQt5.QtGui import *
+from PyQt5.QtCore import *
+from PyQt5.QtWidgets import QMainWindow, QApplication, QAction, QFileDialog, \
+    QMessageBox, QLabel, QLineEdit, QPushButton, QTableWidget, QTableWidgetItem
 
 import time
 import threading
@@ -165,7 +167,7 @@ class MainWindow(QMainWindow, form_class):
             self.plot.setAxisScale(QwtPlot.yLeft, self.ymin, self.ymax)
             self.plot.replot()
 
-app = QtGui.QApplication(sys.argv)
+app = QApplication(sys.argv)
 frame = MainWindow()
 frame.show()
 sys.exit(app.exec_())
