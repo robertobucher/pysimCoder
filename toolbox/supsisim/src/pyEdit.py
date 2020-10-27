@@ -6,7 +6,7 @@ from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout,  QAction, \
     QMessageBox, QFileDialog, QDialog, QApplication, QComboBox, QLabel
 from PyQt5.QtGui import QPainter, QIcon
 from PyQt5.QtPrintSupport import QPrinter, QPrintDialog
-from PyQt5.QtCore import QPointF, QFileInfo, QMimeData
+from PyQt5.QtCore import QPointF, QFileInfo, QMimeData, QSettings, QVariant
 
 from supsisim.block import Block
 from supsisim.connection import Connection
@@ -38,6 +38,16 @@ class NewEditorMainWindow(QMainWindow):
         self.workingFolder = os.getcwd()
         self.filePath = mypath
         self.library = parent
+        
+        settings = QSettings('SUPSI', 'pysimCoder')
+        try:
+            recFolders = settings.value('RecentFolders')
+            for el in recFolders:
+                self.setFolders(el)
+        except:
+            pass
+        self.actFolders.setCurrentIndex(0)
+                
         if fname != 'untitled':
             self.scene.loadDgm(self.getFullFileName())
             
@@ -86,6 +96,12 @@ class NewEditorMainWindow(QMainWindow):
                                                 statusTip = 'Change directory...',
                                                 triggered = self.changeDirAct)
 
+        self.clearDirAction = QAction(QIcon(mypath+'edit-clear.png'),
+                                                '&Clear directory list', self,
+                                                shortcut = 'Ctrl+L',
+                                                statusTip = 'Clear directory list',
+                                                triggered = self.clearDirAct)
+         
         self.copyAction = QAction(QIcon(mypath+'copy.png'),
                                             '&Copy', self,
                                             shortcut = 'Ctrl+C',
@@ -183,7 +199,8 @@ class NewEditorMainWindow(QMainWindow):
         self.actFolders.addItem(os.getcwd())
         toolbarDir.addWidget(self.actFolders)
         self.actFolders.currentIndexChanged.connect(self.changeDir)
- 
+        toolbarDir.addAction(self.clearDirAction)
+
     def addMenubar(self):
         menubar = self.menuBar()
         fileMenu = menubar.addMenu('&File')
@@ -248,11 +265,9 @@ class NewEditorMainWindow(QMainWindow):
             blocks = root.findall('block')
             for item in blocks:
                 self.scene.loadBlock(item, DP, DP)
-                #self.scene.loadBlock(item)
             connections = root.findall('connection')
             for item in connections:
                 self.scene.loadConn(item, DP, DP)
-                #self.scene.loadConn(item)
             try:
                 self.editor.redrawNodes()
             except:
@@ -335,10 +350,18 @@ class NewEditorMainWindow(QMainWindow):
         newDir = QFileDialog.getExistingDirectory(self, 'Select a folder:', '.', QFileDialog.ShowDirsOnly)
         self.setFolders(newDir)
 
+    def clearDirAct(self):
+        self.actFolders.clear()
+        self.actFolders.addItem(os.getcwd())
+        #self.changeDir(0)
+
     def changeDir(self, index):
-        os.chdir(self.actFolders.itemText(index))
-        self.workingFolder =  self.actFolders.itemText(index)
-        
+        try:
+            os.chdir(self.actFolders.itemText(index))
+            self.workingFolder =  self.actFolders.itemText(index)
+        except:
+            pass
+            
     def print_scheme(self):
         self.printer = QPrinter()
         printDialog = QPrintDialog(self.printer)
@@ -409,6 +432,16 @@ class NewEditorMainWindow(QMainWindow):
             elif ret == QMessageBox.Cancel:
                 event.ignore()
                 return
+
+        settings = QSettings('SUPSI', 'pysimCoder')
+        recFolders = []
+        for index in range(0, self.actFolders.count()):
+            recFolders.append(self.actFolders.itemText(index))
+        if recFolders:
+            recFolders = QVariant(recFolders)
+        else:
+            recFolders = QVariant()
             
+        settings.setValue('RecentFolders', recFolders)
         self.library.closeWindow(self)
                 

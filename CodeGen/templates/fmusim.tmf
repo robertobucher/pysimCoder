@@ -5,8 +5,8 @@ PYCODEGEN = $(PYSUPSICTRL)/CodeGen
 MAINDIR = $(PYCODEGEN)/src
 LIBDIR  = $(PYCODEGEN)/LinuxRT/lib
 INCDIR  = $(PYCODEGEN)/LinuxRT/include
-FMUINC = $(PYCODEGEN)/fmu/fmuinc
-FMILIB = $(PYCODEGEN)/fmu/lib/fmulib.a  -ldl -lxml2
+FMUINC = $(PYCODEGEN)/LinuxRT/fmu/fmuinc
+FMILIB = $(PYCODEGEN)/LinuxRT/fmu/lib/fmulib.a  -ldl -lxml2
 
 RM = rm -f
 FILES_TO_CLEAN = *.o $(MODEL)

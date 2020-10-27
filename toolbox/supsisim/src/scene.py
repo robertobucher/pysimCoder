@@ -5,6 +5,7 @@ from PyQt5.QtCore import QRectF, QPointF, QSizeF, QEvent
 from supsisim.block import Block
 from supsisim.port import Port, InPort, OutPort
 from supsisim.connection import Connection
+from supsisim.editor import IDLE
 from supsisim.dialg import RTgenDlg
 from supsisim.const import pyrun, TEMP, respath, BWmin
 from lxml import etree
@@ -154,6 +155,7 @@ class Scene(QGraphicsScene):
             self.mainw.modified = False
             
         self.MsgToDgm(msg)
+        self.mainw.editor.state = IDLE
         
     def updateDgm(self):
         items = self.items()

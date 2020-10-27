@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QMenu, QGraphicsItem, QApplication
+from PyQt5.QtWidgets import QMenu, QGraphicsItem, QApplication, QGraphicsView
 from PyQt5.QtGui import QTransform
 from PyQt5.QtCore import Qt, QEvent, QObject, QPointF, QRectF, QSizeF, QMimeData
 
@@ -17,7 +17,8 @@ IDLE = 0
 LEFTMOUSEPRESSED = 1
 ITEMSELECTED = 2
 DRAWFROMOUTPORT = 3
-MOVECONN = 4
+DRAWFROMINPORT = 4
+MOVECONN = 5
 
 MOUSEMOVE = 0
 LEFTMOUSEPRESSED = 1
@@ -70,8 +71,9 @@ class Editor(QObject):
         # IDLE                                  0
         # LEFTMOUSEPRESSED       1
         # ITEMSELECTED                 2
-        # DRAWFROMOUTPORT      3
-        # MOVECONN                      4
+         #DRAWFROMOUTPORT      3
+        # DRAWFROMINPORT          4
+        # MOVECONN                      5
         
         # Events
         # MOUSEMOVE                    0
@@ -85,7 +87,8 @@ class Editor(QObject):
         self.Fun = [[self.P00, self.P01, self.P02, self.PDM, self.P03, self.P04, self.P05],
                         [self.P06, self.PDM, self.PDM, self.P07, self.PDM, self.PDM, self.PDM],
                         [self.P11, self.P01, self.P02, self.PDM, self.P03, self.P04, self.P05],
-                        [self.P10, self.P08, self.P09, self.PDM, self.PDM, self.PDM, self.P09],
+                        [self.P10, self.P08, self.P09, self.P08, self.PDM, self.PDM, self.P09],
+                        [self.P15, self.P14, self.P09, self.P14, self.PDM, self.PDM, self.P09],
                         [self.P12, self.PDM, self.PDM, self.P13, self.PDM, self.PDM, self.PDM]]
               
     def install(self, scene):
@@ -211,30 +214,32 @@ class Editor(QObject):
         self.conn.update_path()
         self.conn = None
  
+    def connectOutPort(self, item):        
+        self.conn.port1 = item
+        self.conn.pos1 = item.scenePos()
+        self.conn.port1.connections.append(self.conn)
+        self.conn.port2.connections.append(self.conn)    
+
+        if len(self.conn.connPoints) == 0:
+            pos1 = QPointF((self.conn.pos2.x()+self.conn.pos1.x())/2, self.conn.pos1.y())
+            pos2 = QPointF((self.conn.pos2.x()+self.conn.pos1.x())/2, self.conn.pos2.y())
+            self.conn.connPoints.append(self.gridPos(pos1))
+            self.conn.connPoints.append(self.gridPos(pos2))
+        else:
+            pt = self.conn.connPoints[0]
+            pos1 = QPointF(pt.x(), self.conn.pos1.y())
+            self.conn.connPoints.insert(0,self.gridPos(pos1))
+                
+        self.conn.clean()
+        self.conn.update_path()
+        self.conn = None
+ 
     def deleteConn(self):
         self.scene.DgmToUndo()
         self.scene.item.remove()
         self.removeNodes()
         self.redrawNodes()
-
-    def find_exact_pos(self, c, pos):
-        # Find exact point on connection c
-        points = [c.pos1]
-        for el in c.connPoints:
-            points.append(el)
-        points.append(c.pos2)
-        N = len(points)
-        for n in range(0,N-1):
-            p1 = points[n]
-            p2 = points[n+1]
-            rect = QRectF(p1 - QPointF(DB, DB) ,p2 + QPointF(DB, DB))
-            if rect.contains(pos):
-                if p1.x() == p2.x():
-                    pos.setX(p1.x())
-                if p1.y() == p2.y():
-                    pos.setY(p1.y())
-                return n, pos
-        
+    
     def addConn(self):
         self.scene.DgmToUndo()
         c = self.scene.item
@@ -244,7 +249,7 @@ class Editor(QObject):
         self.conn.pos1 = c.pos1
 
         try:
-            npos, pos = self.find_exact_pos(c, posMouse)
+            npos, pos = c.find_exact_pos(posMouse)
         except:
             return
         N = len(c.connPoints)
@@ -262,7 +267,52 @@ class Editor(QObject):
             self.conn.connPoints.append(c.connPoints[n])
         self.conn.connPoints.append(pos)
         self.state = DRAWFROMOUTPORT
+        self.firstTime = True
 
+    def link2Connection(self, c):
+        posMouse = self.gridPos(self.conn.pos1)
+        
+        try:
+            npos, pos = c.find_exact_pos(posMouse)
+        except:
+            return
+
+        connPoints = self.conn.connPoints.copy()
+            
+        self.conn.pos1 = c.pos1
+        self.conn.port1 = c.port1
+
+        self.conn.connPoints.clear()
+        
+        for n in range(0,npos):
+            self.conn.connPoints.append(c.connPoints[n])
+        self.conn.connPoints.append(posMouse)
+
+        if len(connPoints) == 0:
+            pt_end = self.conn.pos2
+        else:
+            pt_end = connPoints[0]
+            
+        d = c.get_direction(posMouse)
+
+        if d == 'h':
+            pt =  QPointF(posMouse.x(), pt_end.y())
+            self.conn.connPoints.append(pt)
+        else:
+            pt1 = QPointF((posMouse.x()+pt_end.x())/2, posMouse.y())
+            pt2 = QPointF((posMouse.x()+pt_end.x())/2, pt_end.y())                        
+            self.conn.connPoints.append(pt1)
+            self.conn.connPoints.append(pt2)
+
+        for el in connPoints:
+            self.conn.connPoints.append(el)
+             
+        self.conn.port1.connections.append(self.conn)
+        self.conn.port2.connections.append(self.conn)
+        self.conn.clean()
+        self.conn.update_path()
+        self.conn = None
+    
     def redrawSelectedItems(self):
         for item in self.scene.selectedItems():
             if isinstance(item, Block):
@@ -377,8 +427,10 @@ class Editor(QObject):
         rect = QRectF(pos-QPointF(DB,DB), QSizeF(2*DB,2*DB))
         items =  self.scene.items(QRectF(pos-QPointF(DB,DB), QSizeF(2*DB,2*DB)))
         for item in items:
-            if isinstance(item, InPort):
+            if isinstance(item, Port):
                 return(item)
+            elif isinstance(item, Connection) and item != self.conn:
+                return item
         return None
     
     def findInPortAt(self, pos):
@@ -418,6 +470,13 @@ class Editor(QObject):
                     if rect.contains(pos):
                         return c
         return None
+    
+    def findOtherConnectionAt(self, pos, orig_c):
+        items =  self.scene.items(QRectF(pos-QPointF(DB,DB), QSizeF(2*DB,2*DB)))
+        for c in items:
+            if isinstance(c, Connection) and isinstance(c.port1, OutPort):
+                return(c)
+        return None
 
     def deleteSelected(self):
         items = self.scene.selectedItems()
@@ -436,11 +495,17 @@ class Editor(QObject):
 
     def setMouseInitDraw(self, pos):
         pointer = Qt.ArrowCursor
-        if isinstance(self.findBlockAt(pos), Block):
+        itemB = self.findBlockAt(pos)
+        itemOP = self.findOutPortAt(pos)
+        itemIP = self.findInPortAt(pos)
+        itemC = self.findConnectionAt(pos)
+        if isinstance(itemB, Block):
             pointer = Qt.ArrowCursor
-        elif isinstance(self.findOutPortAt(pos), OutPort):
+        elif isinstance(itemOP, OutPort) and len(itemOP.connections)==0:
             pointer = Qt.CrossCursor
-        elif isinstance(self.findConnectionAt(pos), Connection):
+        elif isinstance(itemIP, InPort) and len(itemIP.connections)==0:
+            pointer = Qt.CrossCursor
+        elif isinstance(itemC, Connection):
             pointer = Qt.PointingHandCursor
         else:
             pointer = Qt.ArrowCursor
@@ -449,6 +514,10 @@ class Editor(QObject):
     def setMouseByDraw(self, item):
         if isinstance(item, InPort) and len(item.connections)==0:
             pointer = Qt.CrossCursor
+        elif isinstance(item, OutPort):
+            pointer = Qt.CrossCursor
+        elif isinstance(item, Connection) and self.state==DRAWFROMINPORT:
+            pointer = Qt.CrossCursor            
         else:
             pointer = Qt.DragLinkCursor
         self.scene.mainw.view.setCursor(pointer)        
@@ -477,6 +546,29 @@ class Editor(QObject):
             self.deselect_all()
             self.scene.DgmToUndo()
             self.state = MOVECONN
+
+        elif self.findOutPortAt(event.scenePos()) != None:
+            item = self.findOutPortAt(event.scenePos())
+            self.scene.DgmToUndo()
+            self.state = DRAWFROMOUTPORT
+            self.conn = Connection(None, self.scene)
+            self.mainw.view.setDragMode(QGraphicsView.NoDrag)
+            self.conn.port1 = item
+            self.conn.pos1 = item.scenePos()
+            self.conn.pos2 = item.scenePos()
+            self.firstTime = True
+            
+        elif self.findInPortAt(event.scenePos()) != None:
+            item = self.findInPortAt(event.scenePos())
+            self.scene.DgmToUndo()
+            self.state = DRAWFROMINPORT
+            self.conn = Connection(None, self.scene)
+            self.mainw.view.setDragMode(QGraphicsView.NoDrag)
+            self.conn.port2 = item
+            self.conn.pos1 = item.scenePos()
+            self.conn.pos2 = item.scenePos()
+            self.firstTime = True
+            
         else:
             self.state = LEFTMOUSEPRESSED
             
@@ -546,28 +638,24 @@ class Editor(QObject):
             self.state = ITEMSELECTED
         else:
             self.state = IDLE
-
-        item =  self.findOutPortAt(event.scenePos())
-        if isinstance(item, OutPort):            
-            self.scene.DgmToUndo()
-            self.state = DRAWFROMOUTPORT
-            self.conn = Connection(None, self.scene)
-            self.conn.port1 = item
-            self.conn.pos1 = item.scenePos()
-            self.conn.pos2 = item.scenePos()
-
+        
     def P08(self, obj, event):                                      # DRAWFROMOUTPORT + LEFTMOUSEPRESSED
         item = self.findInPortAt(event.scenePos())
         if isinstance(item,InPort):
             self.connectInPort(item)
             self.redrawNodes()
             self.state = IDLE
+            self.mainw.view.setDragMode(QGraphicsView.RubberBandDrag)
         else:
             pt = self.gridPos(event.scenePos())
-            self.conn.addPoint(pt)
-            self.conn.pos2 = pt            
+            if self.firstTime:
+                self.firstTime = False
+            else:
+                self.conn.addPoint(pt)
+            if len(self.conn.connPoints)!=0:
+                self.conn.pos2 = pt            
             self.conn.update_path()
-                    
+                
     def P09(self, obj, event):                                      # DRAWFROMOUTPORT + RIGHTMOUSEPRESSED, KEY_ESC
         try:
             self.conn.remove()
@@ -582,9 +670,9 @@ class Editor(QObject):
         self.setMouseByDraw(item)
         self.conn.pos2 = event.scenePos()
         if isinstance(item, InPort):
-            self.conn.update_path_draw2Port()
+            self.conn.update_path_draw2InPort()
         else:
-            self.conn.update_path_draw2Pt()
+            self.conn.update_path_draw2Pt_fw()
                     
     def P11(self, obj, event):                                      # ITEMSELECTED + MOUSEMOVE
         self.setMouseInitDraw(event.scenePos())
@@ -595,7 +683,7 @@ class Editor(QObject):
         oldPos = self.currentPos
         newPos = self.gridPos(event.scenePos())
         try:
-            npos, pos = self.find_exact_pos(item, oldPos)
+            npos, pos = item.find_exact_pos(oldPos)
         except:
             return
             
@@ -610,7 +698,7 @@ class Editor(QObject):
         oldPos = self.currentPos
         newPos = self.gridPos(event.scenePos())
         try:
-            npos, pos = self.find_exact_pos(item, oldPos)
+            npos, pos = item.find_exact_pos(oldPos)
         except:
             return
             
@@ -622,35 +710,72 @@ class Editor(QObject):
         self.redrawNodes()
         self.scene.currentItem = None
         self.state = IDLE
+
+    def P14(self, obj, event):                          # DRAWFROMINPORT + LEFTMOUSEPRESSED  OR MOUSERELEASED
+        item1 = self.findOutPortAt(event.scenePos())
+        item2 = None
+        try:
+            item2 = self.findOtherConnectionAt(event.scenePos(), self.conn)
+        except:
+            pass
+        if isinstance(item1,OutPort):
+            self.connectOutPort(item1)  
+            self.redrawNodes()
+            self.state = IDLE
+            self.mainw.view.setDragMode(QGraphicsView.RubberBandDrag)
+        elif isinstance(item2, Connection):
+            self.link2Connection(item2)
+            self.redrawNodes()
+            self.state = IDLE
+            self.mainw.view.setDragMode(QGraphicsView.RubberBandDrag)
+        else:
+            pt = self.gridPos(event.scenePos())
+            if self.firstTime:
+                self.firstTime = False
+            else:
+                self.conn.insPoint(pt)
+            if len(self.conn.connPoints)!=0:
+                self.conn.pos1 = pt            
+            self.conn.update_path()
+
+    def P15(self, obj, event):                              # DRAWFROMINPORT + MOUSEMOVE    TODO!!!!!!
+        item = self.itemByDraw(event.scenePos())
+        self.setMouseByDraw(item)
+        self.conn.pos1 = event.scenePos()
+        if isinstance(item, OutPort):
+            self.conn.update_path_draw2OutPort()
+        elif isinstance(item, Connection):
+            self.conn.update_path_draw2Conn(item)
+        else:
+            self.conn.update_path_draw2Pt_bk()
+        pass
         
     def eventFilter(self, obj, event):
         ev = -1
         if event.type() ==  QEvent.GraphicsSceneMouseMove:
-            ev = 0
+            ev = MOUSEMOVE
              
         if event.type() ==  QEvent.GraphicsSceneMousePress:
             self.mainw.statusLabel.setText('')
             if event.button() == Qt.LeftButton:
-                ev = 1
+                ev = LEFTMOUSEPRESSED
             if event.button() == Qt.RightButton:
-                ev = 2
+                ev = RIGHTMOUSEPRESSED
         
         if event.type() == QEvent.GraphicsSceneMouseRelease:
-            ev = 3
+            ev = MOUSERELEASED
                 
         if event.type() == QEvent.GraphicsSceneMouseDoubleClick:
             self.mainw.statusLabel.setText('')
-            ev = 4
+            ev = MOUSEDOUBLECLICK
 
         if event.type() == QEvent.KeyPress:
             self.mainw.statusLabel.setText('')
             if event.key() == Qt.Key_Delete:
-                ev = 5
+                ev = KEY_DEL
             if event.key() == Qt.Key_Escape:
-                ev = 6
+                ev = KEY_ESC
         if ev != -1:
-            #if ev != 0:
-                #print('state->', self.state, 'event->',ev)
             fun = self.Fun[self.state][ ev]
             fun(obj, event)
                  
