@@ -17,7 +17,8 @@ from slycot import sb02od
 import control as ct
 
 def d2c(sys,method='zoh'):
-    """Continous to discrete conversion with ZOH method
+    """
+    Continous to discrete conversion with ZOH method
 
     Call:
     sysc=d2c(sys,method='log')
@@ -108,7 +109,8 @@ def d2c(sys,method='zoh'):
     return sysc
 
 def dlqr(*args, **keywords):
-    """Linear quadratic regulator design for discrete systems
+    """
+    Linear quadratic regulator design for discrete systems
 
     Usage
     =====
@@ -220,7 +222,8 @@ def dlqe(A, G, C, Q, R):
     return K, X
 
 def newdlqr(*args, **keywords):
-    """lqr(A, B, Q, R[, N])
+    """
+    lqr(A, B, Q, R[, N])
 
     Linear quadratic regulator design
 
@@ -300,7 +303,7 @@ def newdlqr(*args, **keywords):
         N = np.array(args[index+2], ndmin=2, dtype=float);
     else:
         N = np.zeros((Q.shape[0], R.shape[1]));
-
+        
     # Check dimensions for consistency
     nstates = B.shape[0];
     ninputs = B.shape[1];

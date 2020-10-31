@@ -267,7 +267,7 @@ class Editor(QObject):
             self.conn.connPoints.append(c.connPoints[n])
         self.conn.connPoints.append(pos)
         self.state = DRAWFROMOUTPORT
-        self.firstTime = True
+        self.firstTime = False
 
     def link2Connection(self, c):
         posMouse = self.gridPos(self.conn.pos1)

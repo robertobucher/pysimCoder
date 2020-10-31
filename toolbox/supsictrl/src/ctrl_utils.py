@@ -30,7 +30,8 @@ def set_mydefaults():
     ct.set_defaults('bode', dB=True, deg=True, Hz=False, grid=True)
     
 def full_obs(sys,poles):
-    """Full order observer of the system sys
+    """
+    Full order observer of the system sys
 
     Call:
     obs = full_obs(sys,poles)
@@ -65,7 +66,8 @@ def full_obs(sys,poles):
     return obs
 
 def red_obs(sys,T,poles):
-    """Reduced order observer of the system sys
+    """
+    Reduced order observer of the system sys
 
     Call:
     obs = red_obs(sys,T,poles)
@@ -130,7 +132,8 @@ def red_obs(sys,T,poles):
     return obs
 
 def comp_form(sys,obs,K):
-    """Compact form Conroller+Observer
+    """
+    Compact form Conroller+Observer
 
     Call:
     contr = comp_form(sys,obs,K)
@@ -167,7 +170,8 @@ def comp_form(sys,obs,K):
     return contr
 
 def comp_form_i(sys,obs,K,Cy = [[1]]):
-    """Compact form Conroller+Observer+Integral part
+    """
+    Compact form Conroller+Observer+Integral part
  
     Call:
     contr = comp_form_i(sys,obs,K [,Cy])
@@ -238,8 +242,9 @@ def comp_form_i(sys,obs,K,Cy = [[1]]):
     return contr
     
 def set_aw(sys,poles):
-    """Divide in controller in input and feedback part
-       for anti-windup
+    """
+    Divide in controller in input and feedback part
+    for anti-windup
 
     Usage
     =====
@@ -270,6 +275,21 @@ def set_aw(sys,poles):
     return sys_in, sys_fbk
 
 def matext(syst):
+    """
+    Create extended matrices for state feedback with integral part
+
+    Call:
+    Aext, Bext = matext(syst)
+
+    Parameters
+    ----------
+    syst : System in State Space form (continous or discrete)
+
+    Returns
+    -------
+    Aext, Bext : matrices of the new system with integral part
+
+    """
     n = syst.A.shape[0]
     if syst.isctime():
          Aext=np.vstack((syst.A, -syst.C))
@@ -283,7 +303,8 @@ def matext(syst):
     return Aext, Bext
         
 def grstep(sys, T = None):
-    """get step response graphically
+    """
+    Graphical step response
 
     Usage
     =====
