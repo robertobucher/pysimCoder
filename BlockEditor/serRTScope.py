@@ -2,11 +2,18 @@
 
 import sys
 
-from PyQt5 import QtGui, QtCore, uic
-from PyQt5.QtGui import *
-from PyQt5.QtCore import *
-from PyQt5.QtWidgets import QMainWindow, QApplication, QAction, QFileDialog, \
-    QMessageBox, QLabel, QLineEdit, QPushButton, QTableWidget, QTableWidgetItem
+from qwt import QwtPlot, QwtPlotCurve, QwtPlotGrid
+
+try:
+    from PyQt5 import QtGui, QtCore, uic
+    from PyQt5.QtGui import *
+    from PyQt5.QtCore import *
+    from PyQt5.QtWidgets import QMainWindow, QApplication, QAction, QFileDialog, \
+        QMessageBox, QLabel, QLineEdit, QPushButton, QTableWidget, QTableWidgetItem
+except:
+    from qwt.qt import QtGui, QtCore, uic
+    from qwt.qt.QtGui import *
+    from qwt.qt.QtCore import *
 
 import time
 import threading
