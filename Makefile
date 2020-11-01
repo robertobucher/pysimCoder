@@ -73,9 +73,9 @@ clean:
 	rm -rf /home/bucher/CACSD/pysimCoder/toolbox/supsictrl/build/
 	rm -rf /home/bucher/CACSD/pysimCoder/toolbox/supsisim/build/
 
-####### Optional targets ###########
-##### Specific compiler required!!! #####
-### Install al these targets as normal user ! 3####
+############ Optional targets ############
+######## Specific compiler required!!! ########
+##### Install al these targets as normal user ! #####
 
 RaspLib:
 	cd CodeGen/Raspberry_PI/devices; make; make install; make clean
