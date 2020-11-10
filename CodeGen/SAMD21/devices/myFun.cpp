@@ -9,7 +9,7 @@ extern "C"{
   void setTimer(unsigned long period, void (*call)());
   void serialInit();
   void serialWrite(char* buffer, int len);
-  void serialRead(char* buffer, int len);
+  int serialRead(char* buffer, int len);
   void setPinMode(int pin, int mode);
   void initADDA();
   void writeDA(int pin, double val);
@@ -54,6 +54,7 @@ void serialInit()
   if (serialFlag==0){    
     Serial.setTimeout(1);
     Serial.begin(115200);
+    //Serial.flush();
     serialFlag = 1;
   }
 }
@@ -63,11 +64,13 @@ void serialWrite(char* buffer, int len)
   Serial.write(buffer, len);
 }
 
-void serialRead(char* buffer, int len)
+int serialRead(char* buffer, int len)
 {
   if(Serial.available()){
     Serial.readBytes(buffer, len);
+    return 1;
   }
+  else return 0;
 }
 
 void setPinMode(int pin, int mode)

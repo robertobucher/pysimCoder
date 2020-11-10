@@ -16,8 +16,6 @@ def brikiSerialInBlk(pout):
        blk: RCPblk
 
     """
-
-    decim = int(decim)
     
     blk = RCPblk('serialIn', [], pout, [0,0], 0, [], [])
     return blk

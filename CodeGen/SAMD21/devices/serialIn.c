@@ -30,13 +30,16 @@ static void inout(python_block *block)
   int * intPar    = block->intPar;
   double *y;
   int i;
+  int ret;
   int N = block->nout;
   double values[N];
 
-  serialRead((char*) values, 8*N); 
-  for(i=0;i<N;i++){
-    y = block->y[i];
-    y[i] = values[i];
+  ret = serialRead((char*) values, 8*N);
+  if(ret){
+    for(i=0;i<N;i++){
+      y = block->y[i];
+      y[i] = values[i];
+    }
   }
 }
 

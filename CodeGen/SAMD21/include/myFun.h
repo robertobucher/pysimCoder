@@ -1,6 +1,7 @@
 void setTimer(unsigned long period, void (*call)());
 void serialInit();
 void serialWrite(char* buffer, int len);
+int serialRead(char* buffer, int len);
 void setPinMode(int pin, int mode);
 void initADDA();
 void writeDA(int pin, double val);
