@@ -87,5 +87,11 @@ SAMD21:
 
 STM32H7:
 	cd CodeGen/STM32H7; make
+	echo $(CWD)/CodeGen/STM32H7/objects/obj/stm32h7xx_hal_msp.o > CodeGen/STM32H7/objects/objects.list1
+	echo $(CWD)/CodeGen/STM32H7/objects/obj/stm32h7xx_it.o >> CodeGen/STM32H7/objects/objects.list1
+	echo $(CWD)/CodeGen/STM32H7/objects/obj/syscalls.o >> CodeGen/STM32H7/objects/objects.list1
+	echo $(CWD)/CodeGen/STM32H7/objects/obj/sysmem.o >> CodeGen/STM32H7/objects/objects.list1
+	echo $(CWD)/CodeGen/STM32H7/objects/obj/system_stm32h7xx_dualcore_boot_cm4_cm7.o >> CodeGen/STM32H7/objects/objects.list1
+
 
 
