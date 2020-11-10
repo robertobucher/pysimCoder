@@ -1,0 +1,1 @@
+{"lib": "SAMD21", "name": "serialIn", "ip": 0, "op": 1, "stin": 0, "stout": 1, "icon": "SERIAL", "params": "brikiSerialInBlk"}

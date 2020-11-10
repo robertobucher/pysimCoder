@@ -26,7 +26,7 @@ void call();
 void setup()
 {
   unsigned long period;
-
+  
   Tsamp = NAME(MODEL,_get_tsamp)();
   period = (unsigned long) (Tsamp*1000000);
   setTimer(period, call);
@@ -39,8 +39,6 @@ void loop()
 
 void call()
 {
-    /* writeDO(24,1); */
     NAME(MODEL,_isr)(T);
-    /* writeDO(24,0); */
     T += Tsamp;
 }

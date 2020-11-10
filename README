@@ -21,6 +21,12 @@ libxml2-dev (to use the FMU block)
 Install the packages:
 - Launch "make" as superuser
 - Launch "make user" as normal user
+- Install the different targets parts using "make <target>"
+
+Targets are:
+- RaspLib
+- SAMD21
+- STM32H7
 
 22.01.2019 roberto.bucher@supsi.ch
 

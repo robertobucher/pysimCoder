@@ -81,7 +81,7 @@ $(MODEL).hex: $(OBJSSTAN) $(MYLIBS)
 	$(SIZE) -A $(MODEL).elf
 
 upload: $(MODEL).hex
-	$(MBCTOOL) -d samd -p /dev/ttyACM0 -s 1500000 -u $(MODEL).bin
+	xterm -e $(MBCTOOL) -d samd -p /dev/ttyACM0 -s 1500000 -u $(MODEL).bin
 
 clean:
 	rm -f *.o *.d *.map *.elf *.bin *.hex

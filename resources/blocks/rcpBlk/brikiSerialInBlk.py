@@ -2,15 +2,14 @@
 from supsisim.RCPblk import RCPblk
 from scipy import size
 
-def brikiSerialOutBlk(pin, decim):
+def brikiSerialInBlk(pout):
     """
 
-    Call:   brikiSerialOut(pin, decim)
+    Call:   brikiSerialIn(pin)
 
     Parameters
     ----------
        pin: connected input port(s)
-       decim : decimation
 
     Returns
     -------
@@ -20,5 +19,5 @@ def brikiSerialOutBlk(pin, decim):
 
     decim = int(decim)
     
-    blk = RCPblk('serialOut', pin, [], [0,0], 1, [], [decim, 0])
+    blk = RCPblk('serialIn', [], pout, [0,0], 0, [], [])
     return blk

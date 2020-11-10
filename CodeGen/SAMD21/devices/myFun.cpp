@@ -9,6 +9,7 @@ extern "C"{
   void setTimer(unsigned long period, void (*call)());
   void serialInit();
   void serialWrite(char* buffer, int len);
+  void serialRead(char* buffer, int len);
   void setPinMode(int pin, int mode);
   void initADDA();
   void writeDA(int pin, double val);
@@ -48,12 +49,25 @@ void setTimer(unsigned long period, void (* call)())
 
 void serialInit()
 {
+  static int serialFlag = 0;
+  
+  if (serialFlag==0){    
+    Serial.setTimeout(1);
     Serial.begin(115200);
+    serialFlag = 1;
+  }
 }
 
 void serialWrite(char* buffer, int len)
 {
   Serial.write(buffer, len);
+}
+
+void serialRead(char* buffer, int len)
+{
+  if(Serial.available()){
+    Serial.readBytes(buffer, len);
+  }
 }
 
 void setPinMode(int pin, int mode)
@@ -169,7 +183,7 @@ void setRGB(int br, int r, int g, int b, int mode)
 {
   ledBuiltinSetBrightness(br);
   ledBuiltinSetColor(r, g, b);
-  if(mode==1) digitalWrite(66, HIGH);
-  else               digitalWrite(66, LOW);   
+  if(mode==1) digitalWrite(LED_BUILTIN, HIGH);
+  else               digitalWrite(LED_BUILTIN, LOW);   
 }
 

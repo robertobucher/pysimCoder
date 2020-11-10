@@ -196,7 +196,8 @@ class MainWindow(QMainWindow, form_class):
         portN =  self.devCbBox.currentIndex()
         try:
             portName = self.devCbBox.itemText(portN)
-            port = ser.Serial(portName, 12000000)
+            #port = ser.Serial(portName, 12000000)
+            port = ser.Serial(portName, 115200)
             port.write(msg)
             port.close()
         except:
