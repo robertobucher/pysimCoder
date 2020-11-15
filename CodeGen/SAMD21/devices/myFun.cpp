@@ -4,6 +4,7 @@
 #include <LSM6DSL.h>
 #include <ESC.h>
 #include "Adafruit_VL6180X.h"
+#include <SPI.h>
 
 extern "C"{
   void setTimer(unsigned long period, void (*call)());
@@ -27,6 +28,8 @@ extern "C"{
   double getLux();
   double getRange();
   void setRGB(int br, int r, int g, int b, int mode);
+  void initSPI();
+  int SPI_ADS1018(int conf, int cs);
 }
 
 #define ADDARES 4095
@@ -35,6 +38,7 @@ extern "C"{
 #define ESCRES 2000
 #define ESCDELTA 500
 #define VREF 3.0
+
 
 LSM6DSL imu(LSM6DSL_MODE_I2C, 0x6B);
 int IMUcnt = 0;
@@ -190,3 +194,34 @@ void setRGB(int br, int r, int g, int b, int mode)
   else               digitalWrite(LED_BUILTIN, LOW);   
 }
 
+void initSPI()
+{
+  SPI.begin();
+  SPI.beginTransaction( SPISettings(4000000, MSBFIRST, SPI_MODE1) );
+}
+
+int SPI_ADS1018(int conf, int cs)
+{
+  static word actConf = 0x408B;
+  word read, dummy;
+  
+  if(conf != actConf){    
+    digitalWrite(cs, LOW);
+    delayMicroseconds(1);
+    SPI.transfer16((word) conf); 
+    digitalWrite(cs, HIGH);
+    delayMicroseconds(400);
+    digitalWrite(cs, LOW);
+    delayMicroseconds(1);
+    dummy = SPI.transfer16((word) conf); 
+    digitalWrite(cs, HIGH);
+    actConf = (word) conf;
+  }
+  
+  digitalWrite(cs, LOW);  
+  delayMicroseconds(1);
+  read = SPI.transfer16((word) actConf);
+  digitalWrite(cs, HIGH);
+   
+  return (int) ((read >> 4) & 0xFFF);
+}

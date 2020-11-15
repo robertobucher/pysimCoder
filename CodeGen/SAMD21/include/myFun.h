@@ -19,3 +19,5 @@ int initVLsensor();
 double getLux();
 double getRange();
 void setRGB(int br, int r, int g, int b, int mode);
+void initSPI();
+int SPI_ADS1018(int conf, int cs);
