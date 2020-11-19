@@ -34,6 +34,8 @@
 
 //#define HW_VER_1_0	// HW ver. 1.0
 #define HW_VER_1_1		// HW ver. 1.1
+
+//#define VERY_LOW_POWER
 /*----------------------------------------------------------------------------
  *        Headers
  *----------------------------------------------------------------------------*/
@@ -67,13 +69,12 @@ extern "C"
 // Number of pins defined in PinDescription array
 #	define PINS_COUNT           (38u)
 #	define NUM_DIGITAL_PINS     (32u)
-#	define NUM_ANALOG_INPUTS    (6u)
+#	define NUM_ANALOG_INPUTS    (18u)
 #	define NUM_ANALOG_OUTPUTS   (1u)
-#	define ANALOG_PIN_OFFSET1   (17)
-#	define ANALOG_PIN_OFFSET2   (26u)
-#	define ANALOG_PIN_OFFSET3   (52u)
+#	define ANALOG_PIN_OFFSET1   (26u)
+#	define ANALOG_PIN_OFFSET2   (52u)
 
-#define analogInputToDigitalPin(p)  ((p < NUM_ANALOG_INPUTS) ? ((p > 5) ? (p + ANALOG_PIN_OFFSET1) : (p) + ANALOG_PIN_OFFSET2) : -1)
+#define analogInputToDigitalPin(p)  ((p < NUM_ANALOG_INPUTS) ? ((p < 6) ? (p) + ANALOG_PIN_OFFSET1 : (p + ANALOG_PIN_OFFSET2 - 6)) : -1)
 #define digitalPinToPort(P)        ( &(PORT->Group[g_APinDescription[P].ulPort]) )
 #define digitalPinToBitMask(P)     ( 1 << g_APinDescription[P].ulPin )
 //#define analogInPinToBit(P)        ( )
@@ -96,40 +97,45 @@ extern "C"
 # if defined HW_VER_1_0
 #	  define LED_BUILTIN          (50u)
 # elif defined HW_VER_1_1
-#	  define LED_BUILTIN          (66u)
+#	  define LED_BUILTIN          (74u)
 # endif
 #	define SDCARD_SS_PIN        (16u)
 #else
-#	define LED_BUILTIN          (65u)
+#	define LED_BUILTIN          (73u)
 #endif
 
 /*
  * Analog pins
  */
-# define PIN_A0               (ANALOG_PIN_OFFSET2)     // SAMD analog
-# define PIN_A1               (ANALOG_PIN_OFFSET2 + 1) // SAMD analog
-# define PIN_A2               (ANALOG_PIN_OFFSET2 + 2) // SAMD analog
-# define PIN_A3               (ANALOG_PIN_OFFSET2 + 3) // SAMD analog
-# define PIN_A4               (ANALOG_PIN_OFFSET2 + 4) // SAMD analog
-# define PIN_A5               (ANALOG_PIN_OFFSET2 + 5) // SAMD analog
-# define PIN_A6               (ANALOG_PIN_OFFSET1)     // SAMD analog
-# define PIN_A7               (ANALOG_PIN_OFFSET1 + 1) // SAMD analog
-# define PIN_A8               (ANALOG_PIN_OFFSET1 + 2) // SAMD analog
-# define PIN_A9               (ANALOG_PIN_OFFSET1 + 3) // SAMD analog
-# define PIN_A10              (ANALOG_PIN_OFFSET3)     // ESP analog
-# define PIN_A11              (ANALOG_PIN_OFFSET3 + 1) // ESP analog
-# define PIN_A12              (ANALOG_PIN_OFFSET3 + 2) // ESP analog
-# define PIN_A13              (ANALOG_PIN_OFFSET3 + 3) // ESP analog
-# define PIN_A14              (ANALOG_PIN_OFFSET3 + 4) // ESP analog
-# define PIN_A15              (ANALOG_PIN_OFFSET3 + 5) // ESP analog
-# define PIN_A16              (ANALOG_PIN_OFFSET3 + 6) // ESP analog
-# define PIN_A17              (ANALOG_PIN_OFFSET3 + 7) // ESP analog
-# define PIN_A18              (ANALOG_PIN_OFFSET3 + 8) // ESP analog
-# define PIN_A19              (ANALOG_PIN_OFFSET3 + 9) // ESP analog
-# define PIN_A20              (ANALOG_PIN_OFFSET3 + 10)// ESP analog
-# define PIN_A21              (ANALOG_PIN_OFFSET3 + 11)// ESP analog
-# define PIN_A22              (ANALOG_PIN_OFFSET3 + 12)// ESP analog
-# define PIN_DAC0             (ANALOG_PIN_OFFSET2 + 4) // SAMD DAC
+# define PIN_A0               (ANALOG_PIN_OFFSET1)      // SAMD analog
+# define PIN_A1               (ANALOG_PIN_OFFSET1 + 1)  // SAMD analog
+# define PIN_A2               (ANALOG_PIN_OFFSET1 + 2)  // SAMD analog
+# define PIN_A3               (ANALOG_PIN_OFFSET1 + 3)  // SAMD analog
+# define PIN_A4               (ANALOG_PIN_OFFSET1 + 4)  // SAMD analog
+# define PIN_A5               (ANALOG_PIN_OFFSET1 + 5)  // SAMD analog
+# define PIN_A6               (ANALOG_PIN_OFFSET2)      // SAMD analog
+# define PIN_A7               (ANALOG_PIN_OFFSET2 + 1)  // SAMD analog
+# define PIN_A8               (ANALOG_PIN_OFFSET2 + 2)  // SAMD analog
+# define PIN_A9               (ANALOG_PIN_OFFSET2 + 3)  // SAMD analog
+# define PIN_A10              (ANALOG_PIN_OFFSET2 + 4)  // SAMD analog
+# define PIN_A11              (ANALOG_PIN_OFFSET2 + 5)  // SAMD analog
+# define PIN_A12              (ANALOG_PIN_OFFSET2 + 6)  // SAMD analog
+# define PIN_A13              (ANALOG_PIN_OFFSET2 + 7)  // SAMD analog
+# define PIN_A14              (ANALOG_PIN_OFFSET2 + 8)  // ESP analog
+# define PIN_A15              (ANALOG_PIN_OFFSET2 + 9)  // ESP analog
+# define PIN_A16              (ANALOG_PIN_OFFSET2 + 10) // ESP analog
+# define PIN_A17              (ANALOG_PIN_OFFSET2 + 11) // ESP analog
+// A18 to A26 works only if WiFi is disabled
+# define PIN_A18              (ANALOG_PIN_OFFSET2 + 12) // ESP analog
+# define PIN_A19              (ANALOG_PIN_OFFSET2 + 13) // ESP analog
+# define PIN_A20              (ANALOG_PIN_OFFSET2 + 14) // ESP analog
+# define PIN_A21              (ANALOG_PIN_OFFSET2 + 15) // ESP analog
+# define PIN_A22              (ANALOG_PIN_OFFSET2 + 16) // ESP analog
+# define PIN_A23              (ANALOG_PIN_OFFSET2 + 17) // ESP analog
+# define PIN_A24              (ANALOG_PIN_OFFSET2 + 18) // ESP analog
+# define PIN_A25              (ANALOG_PIN_OFFSET2 + 19) // ESP analog
+# define PIN_A26              (ANALOG_PIN_OFFSET2 + 20) // ESP analog
+# define PIN_DAC0             (ANALOG_PIN_OFFSET2) // SAMD DAC
 
 static const uint8_t A0  = PIN_A0;
 static const uint8_t A1  = PIN_A1;
@@ -154,8 +160,89 @@ static const uint8_t A19  = PIN_A19;
 static const uint8_t A20  = PIN_A20;
 static const uint8_t A21  = PIN_A21;
 static const uint8_t A22  = PIN_A22;
+static const uint8_t A23  = PIN_A23;
+static const uint8_t A24  = PIN_A24;
+static const uint8_t A25  = PIN_A25;
+static const uint8_t A26  = PIN_A26;
 
 static const uint8_t DAC0 = PIN_DAC0;
+
+typedef enum {
+  // 0..25 - Digital pins
+  // 0..10 - ESP GPIO
+  espGpio1  = 5,
+  espGpio3,
+  // 11..15 - SAMD GPIO
+  samPA23   = 11,
+  samPA14,
+  // 16..25 - SAMD GPIO
+  samPA27   = 16,
+  samPB11   = 21,
+  samPB10,
+  samPA12,
+  samPA13,
+  // 26..31 - Analog pins
+  samPA2    = 26,
+  samPA3,
+  samPA4,
+  samPA5,
+  samPA6,
+  samPA7,
+  // 32..37 - ESP GPIO
+  espGpio16 = 36,
+  espGpio17,
+  // end Arduino pinout
+  // 38..39 - SWD
+  samPA31,
+  samPA30,
+  // 40..42 - ESP Control (Enable, Boot, Power ON/OFF)
+  #if defined HW_VER_1_0
+    samPA22,
+  #elif defined HW_VER_1_1
+    samPA28,
+  #endif
+  samPA20,
+  samPA15,
+  // 43..47 SPI - connected to ESP
+  samPA16,
+  samPA17,
+  samPA18,
+  samPA19,
+  samPA21,
+  // 48..49 - USB
+  samPA24,
+  samPA25,
+  // 50..51 - ESP programming UART
+  samPB22,
+  samPB23,
+  // 52..72 - Additional analog pins
+  samPB2,
+  samPB3,
+  samPB8,
+  samPB9,
+  samPA11,
+  samPA10,
+  samPA9,
+  samPA8,
+  espGpio32,
+  espGpio33,
+  espGpio35,
+  espGpio34,
+  espGpio25,
+  espGpio27,
+  espGpio26,
+  espGpio4,
+  espGpio2,
+  espGpio15,
+  espGpio13,
+  espGpio12,
+  espGpio14,
+  // 73 - fake pin
+  fakeGpio,
+  #if defined HW_VER_1_1
+    samPA22,
+  #endif
+} hwPinMap_e;
 
 // Other pins
 /*
@@ -169,7 +256,7 @@ static const uint8_t ATN = PIN_ATN;
 #	define PAD_SERIAL1_TX      (UART_TX_PAD_2)
 #	define PAD_SERIAL1_RX      (SERCOM_RX_PAD_3)
 
-// Serial2 (SERCOM5) - ESP's SAM serial interface
+// SerialCompanion (SERCOM5) - ESP's SAM serial interface
 #define PIN_SERIAL2_TX       (50ul)
 #define PIN_SERIAL2_RX       (51ul)
 #define PAD_SERIAL2_TX       (UART_TX_PAD_2)
@@ -203,18 +290,6 @@ static const uint8_t MOSI = PIN_SPI_MOSI;
 static const uint8_t MISO = PIN_SPI_MISO;
 static const uint8_t SCK  = PIN_SPI_SCK;
 
-/* MOD - Wire interface on PA12 and PA13 defined - 2018-10-11
-// Wire Interfaces - directly connected to the MBC. since it is virtualized for now we set it to 0 [14/09/18]
-#	define WIRE_INTERFACES_COUNT 0
-sercom2 PA13 (SCL pad1) e PA12 (SDA pad0)
-
-#	define PIN_WIRE_SCL         (14u)
-#	define PIN_WIRE_SDA         (15u)
-#	define PERIPH_WIRE          sercom0
-// MOD - definire una callback - 2018-07-11
-//#define WIRE_IT_HANDLER      SERCOM3_Handler
-*/
-
 #	define WIRE_INTERFACES_COUNT 1
 #	define PIN_WIRE_SCL         (14u)
 #	define PIN_WIRE_SDA         (15u)
@@ -225,7 +300,7 @@ static const uint8_t SDA = PIN_WIRE_SDA;
 static const uint8_t SCL = PIN_WIRE_SCL;
 
 // USB
-#	define PIN_USB_HOST_ENABLE (16ul)
+//#	define PIN_USB_HOST_ENABLE (16ul)
 #	define PIN_USB_DM          (48ul)
 #	define PIN_USB_DP          (49ul)
 
@@ -261,7 +336,7 @@ extern SERCOM sercom5;
 //extern SERCOM virtualSercom_I2C;
 
 extern Uart Serial1;
-extern Uart SerialEsp;
+extern Uart SerialCompanion;
 //extern Uart Serial1;
 
 #endif

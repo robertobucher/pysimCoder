@@ -1,1 +1,1 @@
-{"lib": "SAMD21", "name": "PWM", "ip": 1, "op": 0, "stin": 0, "stout": 0, "icon": "PWM", "params": "brikiPWMBlk|Pin:0|Umin [V]:0.0|Umax [V]:3.3"}
+{"lib": "SAMD21", "name": "PWM", "ip": 1, "op": 0, "stin": 0, "stout": 0, "icon": "PWM", "params": "brikiPWMBlk|Pin:0|Umin [V]:0.0|Umax [V]:3.3|Freq:1000"}

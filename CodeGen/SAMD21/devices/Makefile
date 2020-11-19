@@ -15,7 +15,7 @@ OBJ = $(OBJ1) $(OBJ2)
 # Directories
 # Tools
 BIN_DIR =/usr/bin
-MBCDIR = $(ARDUINO_TOOLDIR)/packages/briki/hardware/mbc-wb/2.1.1
+MBCDIR = $(ARDUINO_TOOLDIR)/packages/briki/hardware/mbc-wb/2.1.2
 INODIR = $(ARDUINO_TOOLDIR)/packages/arduino/tools
 
 GCC = $(BIN_DIR)/arm-none-eabi-gcc

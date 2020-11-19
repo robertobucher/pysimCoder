@@ -18,7 +18,8 @@ LEFTMOUSEPRESSED = 1
 ITEMSELECTED = 2
 DRAWFROMOUTPORT = 3
 DRAWFROMINPORT = 4
-MOVECONN = 5
+DRAWFROMCONNECTION = 5
+MOVECONN = 6
 
 MOUSEMOVE = 0
 LEFTMOUSEPRESSED = 1
@@ -68,27 +69,29 @@ class Editor(QObject):
 
         # Matrix has two index [state, event]
         # States:
-        # IDLE                                  0
-        # LEFTMOUSEPRESSED       1
-        # ITEMSELECTED                 2
-         #DRAWFROMOUTPORT      3
-        # DRAWFROMINPORT          4
-        # MOVECONN                      5
+        # IDLE                                    0
+        # LEFTMOUSEPRESSED         1
+        # ITEMSELECTED                   2
+         #DRAWFROMOUTPORT        3
+        # DRAWFROMINPORT            4
+        # DRAWFROMCONNECTION  5
+        # MOVECONN                        6
         
         # Events
-        # MOUSEMOVE                    0
-        # LEFTMOUSEPRESSED        1
-        # RIGHTMOUSEPRESSED     2
-        # MOUSERELEASED             3
-        # MOUSEDOUBLECLICK       4
-        # KEY_DEL                            5
-        # KEY_ESC                            6
+        # MOUSEMOVE                      0
+        # LEFTMOUSEPRESSED          1
+        # RIGHTMOUSEPRESSED       2
+        # MOUSERELEASED               3
+        # MOUSEDOUBLECLICK         4
+        # KEY_DEL                              5
+        # KEY_ESC                              6
 
         self.Fun = [[self.P00, self.P01, self.P02, self.PDM, self.P03, self.P04, self.P05],
                         [self.P06, self.PDM, self.PDM, self.P07, self.PDM, self.PDM, self.PDM],
                         [self.P11, self.P01, self.P02, self.PDM, self.P03, self.P04, self.P05],
                         [self.P10, self.P08, self.P09, self.P08, self.PDM, self.PDM, self.P09],
                         [self.P15, self.P14, self.P09, self.P14, self.PDM, self.PDM, self.P09],
+                        [self.P10, self.P16, self.P09, self.P08, self.PDM, self.PDM, self.P09],
                         [self.P12, self.PDM, self.PDM, self.P13, self.PDM, self.PDM, self.PDM]]
               
     def install(self, scene):
@@ -266,8 +269,8 @@ class Editor(QObject):
         for n in range(0, npt):
             self.conn.connPoints.append(c.connPoints[n])
         self.conn.connPoints.append(pos)
-        self.state = DRAWFROMOUTPORT
-        self.firstTime = False
+        self.state = DRAWFROMCONNECTION
+        self.firstTime = True
 
     def link2Connection(self, c):
         posMouse = self.gridPos(self.conn.pos1)
@@ -738,7 +741,7 @@ class Editor(QObject):
                 self.conn.pos1 = pt            
             self.conn.update_path()
 
-    def P15(self, obj, event):                              # DRAWFROMINPORT + MOUSEMOVE    TODO!!!!!!
+    def P15(self, obj, event):                              # DRAWFROMINPORT + MOUSEMOVE  
         item = self.itemByDraw(event.scenePos())
         self.setMouseByDraw(item)
         self.conn.pos1 = event.scenePos()
@@ -750,6 +753,32 @@ class Editor(QObject):
             self.conn.update_path_draw2Pt_bk()
         pass
         
+    def P16(self, obj, event):                                      # DRAWFROMCONNECTION + LEFTMOUSEPRESSED
+        item = self.findInPortAt(event.scenePos())
+        if isinstance(item,InPort):
+            self.connectInPort(item)
+            self.redrawNodes()
+            self.state = IDLE
+            self.mainw.view.setDragMode(QGraphicsView.RubberBandDrag)
+        else:
+            pt = self.gridPos(event.scenePos())
+            """
+            if self.firstTime:
+                self.firstTime = False
+            else:
+                self.conn.addPoint(pt)
+            """
+
+            self.conn.addPoint(pt)
+           
+            if len(self.conn.connPoints)!=0:
+                self.conn.pos2 = pt            
+            self.conn.update_path()
+            if self.firstTime:
+                self.firstTime = False
+                self.conn.connPoints.remove(self.conn.connPoints[-1])
+            
+                
     def eventFilter(self, obj, event):
         ev = -1
         if event.type() ==  QEvent.GraphicsSceneMouseMove:

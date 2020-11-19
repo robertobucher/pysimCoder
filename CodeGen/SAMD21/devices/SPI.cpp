@@ -52,10 +52,17 @@ void SPIClass::begin(int8_t sck, int8_t miso, int8_t mosi, int8_t ss)
     }
 
     if(sck == -1 && miso == -1 && mosi == -1 && ss == -1) {
-        _sck = (_spi_num == VSPI) ? 35 : 32;
-        _miso = (_spi_num == VSPI) ? 36 : 33;
-        _mosi = (_spi_num == VSPI) ? 37 : 34;
-        _ss = (_spi_num == VSPI) ? 10 : 9;
+		if (!SPI_PIN_DEFAULT){
+			_sck = (_spi_num == VSPI) ? 35 : 32;
+			_miso = (_spi_num == VSPI) ? 36 : 33;
+			_mosi = (_spi_num == VSPI) ? 37 : 34;
+			_ss = (_spi_num == VSPI) ? 10 : 9;
+		} else {
+            _sck = SPI_SCK;
+			_miso = SPI_MISO;
+			_mosi = SPI_MOSI;
+			_ss = SPI_SS;	
+		}			
     } else {
 		// check on SPI pins
 		#ifdef BRIKI_MBC_WB_ESP

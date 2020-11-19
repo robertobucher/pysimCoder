@@ -1,5 +1,4 @@
 #include <Arduino.h>
-#include <ZeroTimer.h>
 #include <Wire.h>
 #include <LSM6DSL.h>
 #include <ESC.h>
@@ -13,6 +12,7 @@ extern "C"{
   int serialRead(char* buffer, int len);
   void setPinMode(int pin, int mode);
   void initADDA();
+  void initPWM(int pin, int freq);
   void writeDA(int pin, double val);
   double readAD(int pin);
   void writeDO(int pin, int val);
@@ -27,6 +27,7 @@ extern "C"{
   int initVLsensor();
   double getLux();
   double getRange();
+  void initRGB();
   void setRGB(int br, int r, int g, int b, int mode);
   void initSPI();
   int SPI_ADS1018(int conf, int cs);
@@ -34,7 +35,7 @@ extern "C"{
 
 #define ADDARES 4095
 #define ADDABIT 12
-#define PWMRES 255
+#define PWMRES 4095
 #define ESCRES 2000
 #define ESCDELTA 500
 #define VREF 3.0
@@ -48,7 +49,8 @@ int VLcnt = 0;
 
 void setTimer(unsigned long period, void (* call)())
 {
-  TCC.startTimer(period, call);
+  int timID = createTimer(period, call);
+  startTimer(timID);
 }
 
 void serialInit()
@@ -86,6 +88,13 @@ void initADDA()
 {
   analogWriteResolution(ADDABIT);
   analogReadResolution(ADDABIT);
+}
+
+void initPWM(int pin, int freq)
+{
+  analogWriteResolution(ADDABIT);
+  pinMode(pin, OUTPUT);
+  analogWriteFreq(pin, 0, freq);
 }
 
 void writeDA(int pin, double val)
@@ -184,6 +193,13 @@ double getRange()
   uint8_t status = vl.readRangeStatus();
   if (status == VL6180X_ERROR_NONE) return 1.0*range;
   else                                                       return (-1.0);
+}
+
+void initRGB()
+{
+   pinMode(LED_BUILTIN, OUTPUT);
+   setRGB(0, 0, 0, 0, 0);
+
 }
 
 void setRGB(int br, int r, int g, int b, int mode)

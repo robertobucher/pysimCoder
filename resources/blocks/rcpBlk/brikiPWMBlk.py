@@ -2,7 +2,7 @@
 from supsisim.RCPblk import RCPblk
 from scipy import size
 
-def brikiPWMBlk(pin, ch, umin, umax):
+def brikiPWMBlk(pin, ch, umin, umax, freq):
     """
 
     Call:   brikiPWMBlk(pin, ch)
@@ -23,5 +23,5 @@ def brikiPWMBlk(pin, ch, umin, umax):
     if ch not in PWMlist:
         raise ValueError("You pass a channel which is not in the ABC Board PIN list: %i" % (ch))
     
-    blk = RCPblk('brikiPWM', pin, [], [0,0], 1, [umin, umax], [ch])
+    blk = RCPblk('brikiPWM', pin, [], [0,0], 1, [umin, umax], [ch, freq])
     return blk

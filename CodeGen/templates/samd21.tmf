@@ -28,7 +28,7 @@ OBJCP =  $(BIN_DIR)/arm-none-eabi-objcopy
 SIZE = $(BIN_DIR)/arm-none-eabi-size
 
 MBCTOOL = $(PACKAGES)/briki/tools/mbctool/2.0.0/bin/mbctool
-MBCDIR = $(ARDUINO_TOOLDIR)/packages/briki/hardware/mbc-wb/2.1.1
+MBCDIR = $(ARDUINO_TOOLDIR)/packages/briki/hardware/mbc-wb/2.1.2
 
 # Command flags
 GCC_FLAGS = \

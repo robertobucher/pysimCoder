@@ -28,9 +28,9 @@ void setup()
   unsigned long period;
   
   Tsamp = NAME(MODEL,_get_tsamp)();
+  NAME(MODEL,_init)();
   period = (unsigned long) (Tsamp*1000000);
   setTimer(period, call);
-  NAME(MODEL,_init)();
 }
 
 void loop()

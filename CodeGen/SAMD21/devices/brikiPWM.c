@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 static void init(python_block *block)
 {
    int * intPar    = block->intPar;
-   setPinMode(intPar[0], OUTPUT);
+   initPWM(intPar[0], intPar[1]);
 }
 
 static void inout(python_block *block)
