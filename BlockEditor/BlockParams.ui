@@ -284,6 +284,19 @@ after</string>
      <string>Output settable:     </string>
     </property>
    </widget>
+   <widget class="QLabel" name="label_5">
+    <property name="geometry">
+     <rect>
+      <x>70</x>
+      <y>230</y>
+      <width>271</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Please don't use ':' in the Label field!</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
@@ -291,7 +304,7 @@ after</string>
      <x>0</x>
      <y>0</y>
      <width>750</width>
-     <height>20</height>
+     <height>22</height>
     </rect>
    </property>
   </widget>

@@ -27,7 +27,9 @@ static void init(python_block *block)
 static void inout(python_block *block)
 {
   double *y = block->y[0];
-  y[0] = getRange();
+  double val = getRange();
+  if(val<0) y[0] = 180.0;
+  else y[0] = val;
 }
 
 static void end(python_block *block)
