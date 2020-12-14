@@ -216,9 +216,9 @@ class Library(QMainWindow):
             if f.endswith('.xblk'):
                 d = self.getBlock(respath +'blocks/blocks/' + f)
                 blkList.append(d)
-        
-        self.libConfig = sorted(blkList, key=lambda k: (k['lib'].lower()))
-
+                
+        self.libConfig = sorted(blkList, key=lambda k: (k['lib'].lower(), k['name']))
+ 
     def closeWindow(self, mainW):
         self.mainWins.remove(mainW)
    

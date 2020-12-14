@@ -18,6 +18,7 @@ PACKAGES = $(ARDUINO_TOOLDIR)/packages
 
 # Tools
 BIN_DIR = /usr/bin
+#BIN_DIR = /home/bucher/.arduino15/packages/arduino/tools/arm-none-eabi-gcc/7-2017q4/bin/
 
 GCC = $(BIN_DIR)/arm-none-eabi-gcc
 G++ =$(BIN_DIR)/arm-none-eabi-g++
@@ -27,7 +28,7 @@ LD = $(BIN_DIR)/arm-none-eabi-gcc
 OBJCP =  $(BIN_DIR)/arm-none-eabi-objcopy
 SIZE = $(BIN_DIR)/arm-none-eabi-size
 
-MBCTOOL = $(PACKAGES)/briki/tools/mbctool/2.0.0/bin/mbctool
+MBCTOOL = $(PACKAGES)/briki/tools/mbctool/2.0.1/bin/mbctool
 MBCDIR = $(ARDUINO_TOOLDIR)/packages/briki/hardware/mbc-wb/2.1.2
 
 # Command flags
@@ -38,11 +39,19 @@ GCC_FLAGS = \
 
 DEFINES = \
 -DMODEL=$(MODEL) \
--DBRIKI_MBC_WB_SAMD -DATCA_PRINTF -DATCA_USE_RTOS_TIMER \
--DATCA_HAL_I2C -DF_CPU=48000000L -DARDUINO=10810 -DBRIKI_ABC \
--DARDUINO_ARCH_MBC-WB -DARDUINO_ARCH_SAMD -DBRIKI_ABC -D__SAMD21G18A__ \
--DUSB_VID=0x3112 -DUSB_PID=0x0001 -DUSBCON \
-"-DUSB_MANUFACTURER=\"Meteca SA\"" "-DUSB_PRODUCT=\"Briki MBC-WB\"" 
+-DBRIKI_MBC_WB_SAMD \
+-DF_CPU=48000000L \
+-DARDUINO=10813 \
+-DBRIKI_ABC \
+-DARDUINO_ARCH_MBC-WB \
+-DARDUINO_ARCH_SAMD \
+-DBRIKI_ABC \
+-D__SAMD21G18A__ \
+-DUSB_VID=0x3112 \
+-DUSB_PID=0x0001 \
+-DUSBCON \
+-DUSB_MANUFACTURER="Meteca SA" \
+-DUSB_PRODUCT="Briki MBC-WB"
 
 INCLUDES = \
 -I$(MBCDIR)/cores/samd21 \

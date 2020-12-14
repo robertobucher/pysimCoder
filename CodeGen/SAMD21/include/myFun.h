@@ -21,5 +21,6 @@ double getLux();
 double getRange();
 void initRGB();
 void setRGB(int br, int r, int g, int b, int mode);
-void initSPI();
-int SPI_ADS1018(int conf, int cs);
+void initIPC();
+void sendIPC();
+void debugSerial(char * buff);

@@ -29,8 +29,9 @@ extern "C"{
   double getRange();
   void initRGB();
   void setRGB(int br, int r, int g, int b, int mode);
-  void initSPI();
-  int SPI_ADS1018(int conf, int cs);
+  void initIPC();
+  void sendIPC();
+  void debugSerial(char * buff);
 }
 
 #define ADDARES 4095
@@ -40,9 +41,7 @@ extern "C"{
 #define ESCDELTA 500
 #define VREF 3.0
 
-
 LSM6DSL imu(LSM6DSL_MODE_I2C, 0x6B);
-int IMUcnt = 0;
 
 Adafruit_VL6180X vl = Adafruit_VL6180X();
 int VLcnt = 0;
@@ -142,8 +141,10 @@ void writeESC(void * esc, double val)
 
 int initIMU()
 {
+  static int IMUcnt = 0;
+ 
   if(IMUcnt==0){
-    IMUcnt++;
+    IMUcnt=1;
     if(imu.begin()) return 1;
     else                 return 0;
   }
@@ -210,34 +211,32 @@ void setRGB(int br, int r, int g, int b, int mode)
   else               digitalWrite(LED_BUILTIN, LOW);   
 }
 
-void initSPI()
+char rxBuff[80];
+char txBuff[80];
+int txLen = 0;
+
+/* Callback function for IPC communicatio */
+void dataReceivedCallback(uint32_t len)
 {
-  SPI.begin();
-  SPI.beginTransaction( SPISettings(4000000, MSBFIRST, SPI_MODE1) );
+  /* Do nothing */
 }
 
-int SPI_ADS1018(int conf, int cs)
+void initIPC()
 {
-  static word actConf = 0x408B;
-  word read, dummy;
-  
-  if(conf != actConf){    
-    digitalWrite(cs, LOW);
-    delayMicroseconds(1);
-    SPI.transfer16((word) conf); 
-    digitalWrite(cs, HIGH);
-    delayMicroseconds(400);
-    digitalWrite(cs, LOW);
-    delayMicroseconds(1);
-    dummy = SPI.transfer16((word) conf); 
-    digitalWrite(cs, HIGH);
-    actConf = (word) conf;
-  }
-  
-  digitalWrite(cs, LOW);  
-  delayMicroseconds(1);
-  read = SPI.transfer16((word) actConf);
-  digitalWrite(cs, HIGH);
-   
-  return (int) ((read >> 4) & 0xFFF);
+  /* Communication to ESP32  */
+  /* Output to ESP32 :     ID = 0x01 */
+  /* Input from ESP32:    ID = 0x02 */
+  communication.registerCommand(0x01, NULL, NULL);
+  communication.registerCommand(0x02, dataReceivedCallback, rxBuff);  
+}
+
+void sendIPC()
+{
+    communication.sendCommand(0x01, txBuff, txLen);
+    txLen = 0;
+}
+
+void debugSerial(char * buff)
+{
+  Serial.println(buff);
 }

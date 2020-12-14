@@ -11,7 +11,7 @@ Design and plot commands
   comp_form   - state feedback controller+observer in compact form
   comp_form_i - state feedback controller+observer+integ in compact form
   set_aw      - introduce anti-windup into controller
-  grstep      - graphical step response
+  step_plot   - graphical step response
   init_par    - get xi and wn fron os and Ts
   xi2os       - get os from xi
   os2xi       - get xi from os
@@ -302,13 +302,13 @@ def matext(syst):
     Bext=np.vstack((syst.B, -syst.D))
     return Aext, Bext
         
-def grstep(sys, T = None):
+def step_plot(sys, T = None):
     """
     Graphical step response
 
     Usage
     =====
-    grstep(sys)
+    step_plot(sys)
 
     Inputs
     ------
