@@ -142,7 +142,7 @@ gss = ss(A,B,C2,D2)
 gz = c2d(gss,ts,'zoh')
 
 # Control design
-wn = 9
+wn = 10
 
 xi1 = np.sqrt(2)/2 
 xi2 = np.sqrt(3)/2

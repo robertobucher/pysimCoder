@@ -1,0 +1,99 @@
+MODEL = $$MODEL$$
+
+all: $(MODEL).hex upload
+
+MAIN = brikiSamd21RT
+PYCODEGEN = $(PYSUPSICTRL)/CodeGen
+MAINDIR = $(PYCODEGEN)/src
+
+OBJSSTAN = $(MODEL).o $(MAIN).o 
+
+$(MAIN).c: $(MAINDIR)/$(MAIN).c $(MODEL).c
+	cp $< .
+
+# Directories
+INODIR = $(ARDUINO_TOOLDIR)/packages/arduino/tools
+
+PACKAGES = $(ARDUINO_TOOLDIR)/packages
+
+# Tools
+BIN_DIR = /usr/bin
+#BIN_DIR = /home/bucher/.arduino15/packages/arduino/tools/arm-none-eabi-gcc/7-2017q4/bin/
+
+GCC = $(BIN_DIR)/arm-none-eabi-gcc
+G++ =$(BIN_DIR)/arm-none-eabi-g++
+CPU = -mcpu=cortex-m0plus
+
+LD = $(BIN_DIR)/arm-none-eabi-gcc
+OBJCP =  $(BIN_DIR)/arm-none-eabi-objcopy
+SIZE = $(BIN_DIR)/arm-none-eabi-size
+
+MBCTOOL = $(PACKAGES)/briki/tools/mbctool/2.0.1/bin/mbctool
+MBCDIR = $(ARDUINO_TOOLDIR)/packages/briki/hardware/mbc-wb/2.1.2
+
+# Command flags
+GCC_FLAGS = \
+-mthumb -c -g -Os -w -std=gnu++11 -ffunction-sections -fdata-sections \
+-fno-threadsafe-statics -nostdlib \
+--param max-inline-insns-single=500 -fno-rtti -fno-exceptions -MMD 
+
+DEFINES = \
+-DMODEL=$(MODEL) \
+-DDEBUG \
+-DBRIKI_MBC_WB_SAMD \
+-DF_CPU=48000000L \
+-DARDUINO=10813 \
+-DBRIKI_ABC \
+-DARDUINO_ARCH_MBC-WB \
+-DARDUINO_ARCH_SAMD \
+-DBRIKI_ABC \
+-D__SAMD21G18A__ \
+-DUSB_VID=0x3112 \
+-DUSB_PID=0x0001 \
+-DUSBCON \
+-DUSB_MANUFACTURER="Meteca SA" \
+-DUSB_PRODUCT="Briki MBC-WB"
+
+INCLUDES = \
+-I$(MBCDIR)/cores/samd21 \
+-I$(ARDUINO_DIR)/hardware/arduino/acr/cores/arduino \
+-I$(INODIR)/CMSIS/4.5.0/CMSIS/Include/ \
+-I$(INODIR)/CMSIS-Atmel/1.2.0/CMSIS/Device/ATMEL/ \
+-I$(SAMD21_HOME)/include
+
+LD_FLAG1 = -Os -Wl,--gc-sections -save-temps
+LD_FLAG2 = -mthumb -Wl,--cref -Wl,--check-sections -Wl,--gc-sections -Wl,--unresolved-symbols=report-all \
+-Wl,--warn-common -Wl,--warn-section-align
+LD_FLAG3 = -Wl,--start-group
+LD_FLAG4 = -Wl,--end-group
+SPEC = --specs=nano.specs --specs=nosys.specs
+MAPS = -Wl,-Map,$(MODEL).map
+
+BOOTLOADER = -T$(MBCDIR)/variants/briki_mbcwb_samd21/linker_scripts/gcc/flash_with_bootloader.ld
+
+# Libraries
+LIBDIR1 = $(SAMD21_HOME)/lib
+LIBDIR2 = $(ARDUINO_TOOLDIR)/packages/arduino/tools/CMSIS/4.5.0/CMSIS/Lib/GCC/
+LIBS = -larm_cortexM0l_math -lm $(LIBDIR1)/core.a
+MYLIBS =  $(LIBDIR1)/SAMD21lib.a
+
+%.o: %.c
+	$(GCC) $< $(CPU) $(GCC_FLAGS) $(DEFINES) $(INCLUDES) -o $@
+
+%.o: %.cpp
+	$(G++) $< $(CPU) $(GCC_FLAGS) $(DEFINES) $(INCLUDES) -o $(MODEL).o
+
+$(MODEL).hex: $(OBJSSTAN) $(MYLIBS)
+	$(LD) $(LD_FLAG1) $(BOOTLOADER) $(MAPS) $(SPEC) $(CPU) $(LD_FLAG2) \
+	-o $(MODEL).elf $(OBJSSTAN) $(LD_FLAG3) -L$(LIBDIR2) $(LIBS) $(MYLIBS) $(LIBDIR1)/core.a $(LD_FLAG4)
+	$(OBJCP) -O binary $(MODEL).elf $(MODEL).bin
+	$(OBJCP) -O ihex -R .eeprom $(MODEL).elf $(MODEL).hex
+	$(SIZE) -A $(MODEL).elf
+
+upload: $(MODEL).hex
+	xterm -e $(MBCTOOL) -d samd -p /dev/ttyACM0 -s 1500000 -u $(MODEL).bin
+
+clean:
+	rm -f *.o *.d *.map *.elf *.bin *.hex
+
+

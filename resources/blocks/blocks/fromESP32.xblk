@@ -1,0 +1,1 @@
+{"lib": "SAMD21", "name": "fromESP32", "ip": 0, "op": 1, "stin": 0, "stout": 1, "icon": "FROM_ESP32", "params": "fromESP32Blk"}
