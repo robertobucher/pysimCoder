@@ -1,0 +1,79 @@
+MODEL = $$MODEL$$
+all:  ../$(MODEL).elf ../$(MODEL)
+
+
+PYCODEGEN = $(PYSUPSICTRL)/CodeGen
+MAINDIR = $(PYCODEGEN)/src
+LIBDIR  = $(PYCODEGEN)/nuttx/lib
+INCDIR  = $(PYCODEGEN)/nuttx/include
+NUTTX_EXPORT = $(PYCODEGEN)/nuttx/nuttx-export
+
+RM = rm -f
+FILES_TO_CLEAN = *.o $(MODEL) $(MODEL).elf
+
+ifndef NUTTX_EXPORT
+$(warning Specify NUTTX_EXPORT)
+$(warning make_rtw NUTTX_EXPORT=/path/to/nuttx-export)
+$(error NUTTX_EXPORT not defined, cannot continue)
+endif
+
+include $(NUTTX_EXPORT)/scripts/Make.defs
+
+NUTTX_INCLUDES = -isystem $(NUTTX_EXPORT)/include
+
+SYSTEM_LIBS += --start-group $(LDLIBS) $(EXTRA_LIBS) --end-group
+ELF_MODULE_LIBS = --start-group $(EXTRA_LIBS) --end-group
+
+LDFLAGS += -L $(NUTTX_EXPORT)/libs
+
+TARGET_ARCH_FLAGS ?= $(ARCHCFLAGS) $(ARCHCPUFLAGS) \
+	-mlong-calls -fno-common -DWITHOUT_MLOCK
+
+DEFAULT_OPT_OPTS ?= $(ARCHOPTIMIZATION)
+
+ifndef OPT_OPTS
+OPT_OPTS = $(DEFAULT_OPT_OPTS)
+endif
+
+LD_SCRIPT = $(NUTTX_EXPORT)/scripts/$(LDNAME)
+
+LDFLAGS += -T $(LD_SCRIPT)
+
+LDFLAGS  += --entry=__start -nostartfiles -nodefaultlibs
+
+ELF_FILE_LDSCRIPT ?= $(wildcard $(NUTTX_EXPORT)/scripts/gnu-elf.ld)
+
+MAIN = nuttx_main
+ADD_FILES = $$ADD_FILES$$
+
+OBJSSTAN = $(MAIN).o $(MODEL).o $(ADD_FILES)
+
+INCLUDES += -I$(INCDIR) $(NUTTX_INCLUDES)
+
+CFLAGS = $(TARGET_ARCH_FLAGS) $(ARCHWARNINGS) $(OPT_OPTS) $(INCLUDES) -DMODEL=$(MODEL)
+
+CXXFLAGS = $(TARGET_ARCH_FLAGS) $(ARCHCXXFLAGS) $(ARCHWARNINGSXX) $(OPT_OPTS) $(INCLUDES) -DMODEL=$(MODEL)
+
+LIB = $(LIBDIR)/libpyblk.a
+
+$(MAIN).c: $(MAINDIR)/$(MAIN).c $(MODEL).c
+	cp $< .
+
+%.o: ../%.c
+	$(CC) -c -o $@ $(CFLAGS) $<
+
+../$(MODEL).elf: $(OBJSSTAN) $(LIB)
+	[ ! -e  $(ELF_FILE_LDSCRIPT) ] || \
+	$(LD) $(LDFLAGS) $(ADDITIONAL_LDFLAGS) -o $@ \
+	  -r -e main -T $(ELF_FILE_LDSCRIPT) \
+	  -Map $(1).elf.map \
+	  $(OBJSSTAN) $(LIB) $(LIBS) $(ELF_MODULE_LIBS)
+	@echo "### Created ELF loadable file: $(MODEL).elf"
+
+../$(MODEL): $(OBJSSTAN) $(LIB)
+	$(LD) $(LDFLAGS) $(ADDITIONAL_LDFLAGS) \
+	  -o $@  $(OBJSSTAN) $(LIB) $(SYSTEM_LIBS)
+	@echo "### Created executable: $(MODEL)"
+
+clean:
+	@$(RM) $(FILES_TO_CLEAN)

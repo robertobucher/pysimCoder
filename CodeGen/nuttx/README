@@ -1,0 +1,11 @@
+Folder for the NuttX libraries
+
+Run
+
+  make export
+
+in nuttx system source directory and extract resulting
+ZIP file there and rename it to plain nuttx-export
+directory.
+
+
