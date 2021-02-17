@@ -14,12 +14,12 @@ double NAME(MODEL,_get_tsamp)(void);
 static double T = 0.0;
 static double Tsamp;
 
-double get_run_time()
+double get_run_time(void)
 {
   return(T);
 }
 
-double get_Tsamp()
+double get_Tsamp(void)
 {
   return(Tsamp);
 }

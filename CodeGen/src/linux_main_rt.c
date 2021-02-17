@@ -36,12 +36,12 @@ static int verbose = 0;
 static int wait = 0;
 double FinalTime = 0.0;
 
-double get_run_time()
+double get_run_time(void)
 {
   return(T);
 }
 
-double get_Tsamp()
+double get_Tsamp(void)
 {
   return(Tsamp);
 }

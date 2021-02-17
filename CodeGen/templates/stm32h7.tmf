@@ -22,8 +22,8 @@ OBJCOPY = $(BIN_DIR)/arm-none-eabi-objcopy
 
 CPU = -mcpu=cortex-m7
 
-OPENOCD_DIR = /usr/local/openocd
-FLASH = $(OPENOCD_DIR)/tools/bin/openocd
+OPENOCD_DIR = /usr/local/share/openocd/scripts
+FLASH = /usr/local/bin/openocd
 
 GCC_FLAGS1 = \
 -std=gnu11 -g3
@@ -60,9 +60,8 @@ MYLIBS =  $(STM32H7_HOME)/lib/libpyBlk.a $(STM32H7_HOME)/lib/libOTG.a
 MYHALLIB = $(STM32H7_HOME)/lib/libHAL.a
 
 FLASH_FLAGS = \
--s $(OPENOCD_DIR) \
--f $(OPENOCD_DIR)/stlink.cfg \
--f $(OPENOCD_DIR)/stm32h7x.cfg
+-f $(OPENOCD_DIR)/interface/stlink.cfg \
+-f $(OPENOCD_DIR)/target/stm32h7x.cfg
 
 objects.list1:$(STM32H7_HOME)/objects/objects.list1
 	cp $< .
