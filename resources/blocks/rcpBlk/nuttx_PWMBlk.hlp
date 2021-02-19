@@ -1,0 +1,5 @@
+Parameters
+Port        :  device name
+
+Umin [V]: minimal value (umin -> 0%)
+Umax [V] : maximal value (umax -> 100%)

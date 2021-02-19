@@ -1,0 +1,4 @@
+Parameters
+Port : device name (ex. '/dev/adc0')
+Umin [V]: minimal value (0 volt read -> umin)
+Umax [V] : maximal value (3.3V read -> umax)
