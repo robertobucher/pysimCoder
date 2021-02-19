@@ -6,13 +6,17 @@ CURDIR = $(shell pwd)
 CWD = $(shell pwd)
 PYCTL = export PYSUPSICTRL=$(CWD)
 
-addfiles:
-	git clone https://github.com/python-control/python-control.git
-	git clone https://github.com/python-control/Slycot
+addfiles: control, slycot
 
+control:
+	git clone https://github.com/python-control/python-control.git
 	cd python-control; python setup.py install
+	rm -rf python-control 
+
+slycot:
+	git clone https://github.com/python-control/Slycot
 	cd Slycot; python setup.py install
-	rm -rf python-control Slycot
+	rm -rf Slycot
 
 modules:
 	cd toolbox/supsictrl; python setup.py install; python setup.py clean --all

@@ -77,7 +77,7 @@ def genCode(model, Tsamp, blocks, rkstep = 10):
 
     f.write("\n")
 
-    strLn = "double " + model + "_get_tsamp()\n"
+    strLn = "double " + model + "_get_tsamp(void)\n"
     strLn += "{\n"
     strLn += "  return (" + str(Tsamp) + ");\n"
     strLn += "}\n\n"
@@ -129,7 +129,7 @@ def genCode(model, Tsamp, blocks, rkstep = 10):
     f.write("\n\n")
 
     f.write("/* Initialization function */\n\n")
-    strLn = "void " + model + "_init()\n"
+    strLn = "void " + model + "_init(void)\n"
     strLn += "{\n"
     f.write(strLn)
     for n in range(0,N):
@@ -244,7 +244,7 @@ def genCode(model, Tsamp, blocks, rkstep = 10):
     f.write("}\n")
 
     f.write("/* Termination function */\n\n")
-    strLn = "void " + model + "_end()\n"
+    strLn = "void " + model + "_end(void)\n"
     strLn += "{\n"
     f.write(strLn)
     for n in range(0,N):
