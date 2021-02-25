@@ -29,38 +29,35 @@
 #include <nuttx/analog/adc.h>
 #include <nuttx/analog/ioctl.h>
 
+#define NCHANNELS 3          /* the same as in board/xxxx_adc.c  */
 #define ADC_RES 4095
+
+static int fd;
 
 static void init(python_block *block)
 {
   int * intPar    = block->intPar;
-  int fd;
 
-  fd = open(block->str, O_RDONLY);
-  if(fd<0) exit(1);
-  intPar[0] = fd;
+  if(fd==0){
+    fd = open(block->str, O_RDONLY);
+    if(fd<0) exit(1);
+  }
 }
 
 static void inout(python_block *block)
 {
   double * realPar = block->realPar;
   int * intPar = block->intPar;
-  double *y;
+  double *y = block->y[0];
   int ret;
-  int i;
+  int ch = intPar[0];
+  int readsize = NCHANNELS*sizeof(struct adc_msg_s);
   int nbytes;
-  int nout = block->nout;
-  int fd = intPar[0];
-  int readsize = nout*sizeof(struct adc_msg_s);
   
-  struct adc_msg_s sample[nout];
+  struct adc_msg_s sample[NCHANNELS];
 
-  ret = ioctl(fd, ANIOC_TRIGGER, 0);
   nbytes = read(fd, sample, readsize);
-  for(i=0;i< nout;i++){
-    y = block->y[i];
-    y[0] = maprD2D((double) sample[i].am_data/ADC_RES, realPar[0], realPar[1]);
-  }
+  y[0] = maprD2D((double) sample[ch].am_data/ADC_RES, realPar[0], realPar[1]);
 }
 
 static void end(python_block *block)

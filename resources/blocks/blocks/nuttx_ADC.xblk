@@ -1,1 +1,1 @@
-{"lib": "NUTTX", "name": "ADC", "ip": 0, "op": 1, "stin": 0, "stout": 1, "icon": "AD", "params": "nuttx_AdcBlk|Port:'/dev/adc0'|Umin [V]:0.0|Umax [V]:3.3"}
+{"lib": "NUTTX", "name": "ADC", "ip": 0, "op": 1, "stin": 0, "stout": 1, "icon": "AD", "params": "nuttx_AdcBlk|Port:'/dev/adc0'|Channel: 1|Umin [V]:0.0|Umax [V]:3.3"}

@@ -28,57 +28,68 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 
 #include <nuttx/timers/pwm.h>
 
-#define FREQ      10000
 #define RANGE   65536
+
+static int fd;
+static struct pwm_info_s info;
+static double freq;
 
 static void init(python_block *block)
 {
-  int * intPar    = block->intPar;
-  int fd;
+  double * realPar = block->realPar;
+  int i;
   int ret;
   
-  struct pwm_info_s info;
+  if(fd==0){
+    fd = open(block->str, O_RDONLY);
+    if(fd<0) exit(1);
+    freq = realPar[2];
+    
+#ifdef CONFIG_PWM_MULTICHAN
+    for(i=0; i<CONFIG_PWM_NCHANNELS;i++){
+      info.channels[i].channel = i;
+      info.channels[i].duty  = 0;
+    }
+#else
+  info.duty = 0;
+#endif
+  }
 
-  fd = open(block->str, O_RDONLY);
-  if(fd<0) exit(1);
-  intPar[0] = fd;
-
-  info.frequency = FREQ;
-  info.duty = (uint32_t) RANGE/2;
-  
+  info.frequency = freq;
+    
   ret = ioctl(fd, PWMIOC_SETCHARACTERISTICS,
               (unsigned long)((uintptr_t) &info));
+    
   ret = ioctl(fd, PWMIOC_START, 0);  
-
 }
 
 static void inout(python_block *block)
 {
   double * realPar = block->realPar;
   int * intPar    = block->intPar;
+  int ch = intPar[0];
   double *u = block->u[0];
   int ret;
-  int fd = intPar[0];
-
   
-  
-  struct pwm_info_s info;
-
   double val = u[0];
   if (val>realPar[1]) val = realPar[1];
   if (val<realPar[0]) val = realPar[0];
    
   double value = mapD2wD(val, realPar[0], realPar[1]);
-  info.frequency = FREQ;
+  info.frequency = freq;
+#ifdef CONFIG_PWM_MULTICHAN
+  info.channels[ch].duty = (uint32_t) (value*RANGE);
+#else
   info.duty = (uint32_t) (value*RANGE);
+#endif
+  
   ret = ioctl(fd, PWMIOC_SETCHARACTERISTICS,
               (unsigned long)((uintptr_t) &info));
 }
 
 static void end(python_block *block)
 {
-  int * intPar    = block->intPar;
-  close(intPar[0]);
+  close(fd);
 }
 
 void nuttx_PWM(int flag, python_block *block)

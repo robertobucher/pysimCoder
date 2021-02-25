@@ -1,4 +1,5 @@
 Parameters
+Channel: 1..3       PA3  C0    C3
 Port : device name (ex. '/dev/adc0')
 Umin [V]: minimal value (0 volt read -> umin)
 Umax [V] : maximal value (3.3V read -> umax)

@@ -1,5 +1,6 @@
 Parameters
 Port        :  device name
-
+channel: 1..4   PA6 PA7 PB1 PB2
+Frequency: PWM freq in Hz
 Umin [V]: minimal value (umin -> 0%)
 Umax [V] : maximal value (umax -> 100%)
