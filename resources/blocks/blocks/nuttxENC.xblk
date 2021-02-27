@@ -1,0 +1,1 @@
+{"lib": "NUTTX", "name": "ENC", "ip": 0, "op": 1, "stin": 0, "stout": 0, "icon": "ENC", "params": "nuttxENCBlk|Port:'/dev/qe0'|Resolution:500| reset counter [1 yes]:1"}

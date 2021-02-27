@@ -1,0 +1,6 @@
+Parameters
+Port: device name
+Resolution: Encoder resolution
+Reset: 1=yes, 0 = no
+
+
