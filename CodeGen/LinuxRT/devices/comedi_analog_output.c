@@ -67,7 +67,7 @@ void comedi_analog_output(int flag, python_block *block)
             exit(1);
           }
         else
-            /* printf("Comedi Analog Output found!\n");  */
+            /* fprintf(stderr," Comedi Analog Output found!\n");  */
        
         AOdata->subdev = 1 ; // analog channel output
         AOdata->chan   = block->intPar[0] ; // output channel selection
@@ -78,7 +78,7 @@ void comedi_analog_output(int flag, python_block *block)
         
         volts = 0.000 ; // zero on the output 
         data = comedi_from_phys(volts, AOdata->range_ds, AOdata->maxdata) ; // convert to integer data
-	/* printf("Data-> 0x%0x\n",data); */
+	/* fprintf(stderr," Data-> 0x%0x\n",data); */
         //** force the output to zero pysical volts 
         comedi_data_write(AOdata->it, AOdata->subdev, AOdata->chan, AOdata->range, AOdata->aref, data)  ;
       break; 

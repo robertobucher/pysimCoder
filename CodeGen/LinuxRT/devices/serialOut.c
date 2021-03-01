@@ -31,7 +31,7 @@ static void init(python_block *block)
 
   fd =  open(block->str, O_RDWR);
   if(fd == -1){
-    printf("Error opening USB\n");
+    fprintf(stderr," Error opening USB\n");
     exit(1);
   }
 

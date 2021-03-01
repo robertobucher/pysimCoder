@@ -24,6 +24,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 #include <fcntl.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 #include <nuttx/ioexpander/gpio.h>
 
@@ -31,9 +32,21 @@ static void init(python_block *block)
 {
   int * intPar    = block->intPar;
   int fd;
+  int ret;
+  enum gpio_pintype_e pintype;
   
   fd = open(block->str, O_RDWR);
-  if(fd<0) exit(1);
+
+  if (fd < 0){
+    fprintf(stderr, "ERROR: Failed to open %s\n", block->str);
+    exit(1);
+  }
+  ret = ioctl(fd, GPIOC_PINTYPE, (unsigned long)((uintptr_t)&pintype));
+  if (ret < 0){
+    fprintf(stderr, "ERROR: Failed to read pintype from %s\n", block->str);
+    close(fd);
+    exit(1);
+  }
   intPar[0] = fd;
 }
 
@@ -49,13 +62,18 @@ static void inout(python_block *block)
   if(u[0]>realPar[0]) outvalue= true;
   else outvalue = false;
   ret = ioctl(fd, GPIOC_WRITE, (unsigned long)outvalue);
+  if (ret < 0){
+    fprintf(stderr,"ERROR: Failed to write value to %s\n", block->str);
+    close(fd);
+    exit(1);
+  }
 }
 
 static void end(python_block *block)
 {
   int * intPar    = block->intPar;
   close(intPar[0]);
-    }
+}
 
 void nuttxDO(int flag, python_block *block)
 {

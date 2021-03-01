@@ -25,6 +25,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 #include <nuttx/analog/adc.h>
 #include <nuttx/analog/ioctl.h>
@@ -36,11 +37,12 @@ static int fd;
 
 static void init(python_block *block)
 {
-  int * intPar    = block->intPar;
-
   if(fd==0){
     fd = open(block->str, O_RDONLY);
-    if(fd<0) exit(1);
+    if(fd<0) {
+      fprintf(stderr,"Error opening device: %s\n", block->str);
+      exit(1);
+    }
   }
 }
 
@@ -56,7 +58,30 @@ static void inout(python_block *block)
   
   struct adc_msg_s sample[NCHANNELS];
 
+#ifdef CONFIG_EXAMPLES_ADC_SWTRIG
+  ret = ioctl(fd, ANIOC_TRIGGER, 0);
+  if (ret < 0)
+    {
+      int errcode = errno;
+      fprintf(stderr,"adc_main: ANIOC_TRIGGER ioctl failed: %d\n", errcode);
+      close(fd);
+      exit(1);
+    }
+#endif
+      
   nbytes = read(fd, sample, readsize);
+
+  if (nbytes <= 0){
+    int errval = errno;
+    if (errval != EINTR)
+      {
+	fprintf(stderr,"adc_main: read %s failed: %d\n",
+	       block->str, errval);
+	close(fd);
+	exit(1);
+      }
+  }
+  
   y[0] = maprD2D((double) sample[ch].am_data/ADC_RES, realPar[0], realPar[1]);
 }
 
@@ -64,7 +89,7 @@ static void end(python_block *block)
 {
   int * intPar    = block->intPar;
 
-  close(intPar[0]);
+  close(intPar[1]);
 }
 
 void nuttx_Adc(int flag, python_block *block)

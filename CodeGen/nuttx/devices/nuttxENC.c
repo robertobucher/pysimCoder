@@ -24,6 +24,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 #include <fcntl.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 #include <nuttx/sensors/qencoder.h>
 
@@ -31,11 +32,21 @@ static void init(python_block *block)
 {
   int * intPar    = block->intPar;
   int fd;
-  
+
   fd = open(block->str, O_RDONLY);
-  if(fd<0) exit(1);
+  if(fd<0) {
+    fprintf(stderr,"Error opening device: %s\n", block->str);
+    exit(1);
+  }
   intPar[1] = fd;
-  if(intPar[0]) ioctl(fd, QEIOC_RESET, 0);
+  if(intPar[0]){
+    int ret = ioctl(fd, QEIOC_RESET, 0);
+    if (ret < 0){
+      fprintf(stderr,"qe_main: ioctl(QEIOC_RESET) failed: %d\n", errno);
+      close(fd);
+      exit(1);
+    }
+  }
 }
 
 static void inout(python_block *block)
@@ -48,6 +59,12 @@ static void inout(python_block *block)
   int32_t position;
 
   ret = ioctl(fd, QEIOC_POSITION, (unsigned long)((uintptr_t) &position));
+  if (ret < 0){
+    fprintf(stderr, "qe_main: ioctl(QEIOC_POSITION) failed");
+    close(fd);
+    exit(1);
+  }
+  
   y[0] = 1.0*position/realPar[0]; 
 }
 

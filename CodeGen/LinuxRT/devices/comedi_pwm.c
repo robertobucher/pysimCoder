@@ -158,7 +158,7 @@ static int comedi_pwm_open(comedi_pwm *pwm)
 	/* config dio as output with pfiout */
 	if (comedi_dio_config(pwm->dev, pwm->dio,
 	                      pwm->pfiout, COMEDI_OUTPUT) < 0) {
-		printf("Comedi PWM DIO config failed for "
+		fprintf(stderr," Comedi PWM DIO config failed for "
                        "subdevice %d\n, ch%u", pwm->dio, pwm->pfiout);
 		comedi_close(pwm->dev);
 		return -1;
@@ -170,7 +170,7 @@ static int comedi_pwm_open(comedi_pwm *pwm)
 	/* config dio as output channel CONST_CH */
 	if (comedi_dio_config(pwm->dev, pwm->dio,
 	                      CONST_CH, COMEDI_OUTPUT) < 0) {
-		printf("Comedi PWM DIO config "
+		fprintf(stderr," Comedi PWM DIO config "
 		       "failed for subdevice %d\n, ch%u", pwm->dio, CONST_CH);
 		comedi_close(pwm->dev);
 		return -1;
@@ -182,7 +182,7 @@ static int comedi_pwm_open(comedi_pwm *pwm)
 	/* config dio as output channel BRAKE_CH */
 	if (comedi_dio_config(pwm->dev, pwm->dio,
 	                      BRAKE_CH, COMEDI_OUTPUT) < 0) {
-		printf("Comedi PWM DIO config "
+		fprintf(stderr," Comedi PWM DIO config "
 		       "failed for subdevice %d\n, ch%u", pwm->dio, BRAKE_CH);
 		comedi_close(pwm->dev);
 		return -1;
@@ -194,7 +194,7 @@ static int comedi_pwm_open(comedi_pwm *pwm)
 	/* config dio as input channel HEAT_CH */
 	if (comedi_dio_config(pwm->dev, pwm->dio,
 	                      HEAT_CH, COMEDI_INPUT) < 0) {
-		printf("Comedi PWM DIO config "
+		fprintf(stderr," Comedi PWM DIO config "
 		       "failed for subdevice %d\n, ch%u", pwm->dio, BRAKE_CH);
 		comedi_close(pwm->dev);
 		return -1;

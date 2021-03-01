@@ -1,19 +1,19 @@
 /*
-COPYRIGHT (C) 2009  Roberto Bucher (roberto.bucher@supsi.ch)
+  COPYRIGHT (C) 2009  Roberto Bucher (roberto.bucher@supsi.ch)
 
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2 of the License, or (at your option) any later version.
+  This library is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Lesser General Public
+  License as published by the Free Software Foundation; either
+  version 2 of the License, or (at your option) any later version.
 
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
+  This library is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  Lesser General Public License for more details.
 
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+  You should have received a copy of the GNU Lesser General Public
+  License along with this library; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
 #include <pyblock.h>
@@ -25,6 +25,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 #include <fcntl.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 #include <nuttx/timers/pwm.h>
 
@@ -42,7 +43,10 @@ static void init(python_block *block)
   
   if(fd==0){
     fd = open(block->str, O_RDONLY);
-    if(fd<0) exit(1);
+    if(fd<0) {
+      fprintf(stderr, "Error opening device: %s\n", block->str);
+      exit(1);
+    }
     freq = realPar[2];
     
 #ifdef CONFIG_PWM_MULTICHAN
@@ -51,7 +55,7 @@ static void init(python_block *block)
       info.channels[i].duty  = 0;
     }
 #else
-  info.duty = 0;
+    info.duty = 0;
 #endif
   }
 
@@ -59,8 +63,18 @@ static void init(python_block *block)
     
   ret = ioctl(fd, PWMIOC_SETCHARACTERISTICS,
               (unsigned long)((uintptr_t) &info));
-    
+  
+  if (ret < 0) {
+    fprintf(stderr, "pwm_main: ioctl(PWMIOC_SETCHARACTERISTICS) failed\n");
+    close(fd);
+    exit(1);
+  }  
   ret = ioctl(fd, PWMIOC_START, 0);  
+  if (ret < 0){
+    fprintf(stderr,"pwm_main: ioctl(PWMIOC_START) failed\n");
+    close(fd);
+    exit(1);
+  }
 }
 
 static void inout(python_block *block)
@@ -85,6 +99,12 @@ static void inout(python_block *block)
   
   ret = ioctl(fd, PWMIOC_SETCHARACTERISTICS,
               (unsigned long)((uintptr_t) &info));
+  if (ret < 0) {
+    fprintf(stderr,"pwm_main: ioctl(PWMIOC_SETCHARACTERISTICS) failed: %d\n",
+	   errno);
+    close(fd);
+    exit(1);
+  }  
 }
 
 static void end(python_block *block)

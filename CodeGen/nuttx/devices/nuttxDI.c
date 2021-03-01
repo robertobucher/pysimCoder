@@ -24,6 +24,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 #include <fcntl.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 #include <nuttx/ioexpander/gpio.h>
 
@@ -31,9 +32,21 @@ static void init(python_block *block)
 {
   int * intPar    = block->intPar;
   int fd;
+  int ret;  
+  enum gpio_pintype_e pintype;
   
   fd = open(block->str, O_RDWR);
-  if(fd<0) exit(1);
+  if(fd<0) {
+    fprintf(stderr,"ERROR: Failed to open %s\n", block->str);
+    exit(1);
+  }
+
+  ret = ioctl(fd, GPIOC_PINTYPE, (unsigned long)((uintptr_t)&pintype));
+  if (ret < 0)  {
+    fprintf(stderr,"ERROR: Failed to read pintype from %s\n", block->str);
+    close(fd);
+    exit(1);
+  }
   intPar[0] = fd;
 }
 
@@ -46,6 +59,11 @@ static void inout(python_block *block)
   bool invalue;
   
   ret = ioctl(fd, GPIOC_READ, (unsigned long)((uintptr_t)&invalue));
+  if (ret < 0){
+    fprintf(stderr,"ERROR: Failed to read value from %s\n", block->str);
+    close(fd);
+    exit(1);
+  }
   if(invalue) y[0] = 1;
   else y[0] = 0;
 }

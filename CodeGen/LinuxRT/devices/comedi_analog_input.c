@@ -76,7 +76,7 @@ void comedi_analog_input(int flag, python_block *block)
             return; //** --> Exit point  
           }
         else
-            /* printf("Comedi AnalogInput found! \n");  */
+            /* fprintf(stderr," Comedi AnalogInput found! \n");  */
        
         AIdata->subdev = 0 ; // analog channels input
         AIdata->chan   = block->intPar[0] ; // channel selection  
@@ -94,7 +94,7 @@ void comedi_analog_input(int flag, python_block *block)
 
         volts = comedi_to_phys(data, AIdata->range_ds, AIdata->maxdata);
 
-        //** printf(" datain = %f \n", volts) ; //** DEBUG only 
+        //** fprintf(stderr,"  datain = %f \n", volts) ; //** DEBUG only 
 
         y = block->y[0] ; 
 

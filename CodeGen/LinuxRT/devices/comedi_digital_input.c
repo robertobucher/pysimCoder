@@ -62,7 +62,7 @@ void comedi_digital_input(int flag, python_block *block)
             fprintf(stderr, "Comedi Digital Input not found. \n");
             exit(1);
           } else
-         /* printf("Comedi Digital Input found!\n");  */
+         /* fprintf(stderr," Comedi Digital Input found!\n");  */
        
         DIdata->subdev = 2 ; // digital channel I/O
         DIdata->chan   = block->intPar[0] ; 

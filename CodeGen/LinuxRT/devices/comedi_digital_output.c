@@ -62,7 +62,7 @@ void comedi_digital_output(int flag, python_block *block)
             fprintf(stderr, "Comedi Digital Output not found. \n");
             exit(1);
           } else
-            /* printf("Comedi Digital Output found!\n");  */
+            /* fprintf(stderr," Comedi Digital Output found!\n");  */
        
          DOdata->subdev = 2 ; // digital 
          DOdata->chan    = block->intPar[0] ; 
