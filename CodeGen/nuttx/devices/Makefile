@@ -3,9 +3,6 @@ reduced: files lib install
 
 LIB = libpyblk.a
 RTPYINC = ../include
-SRCALL = $(wildcard *.c)
-OBJ = $(SRCALL:.c=.o)
-CWD = $(shell pwd)
 
 NUTTX_EXPORT = $(PWD)/../nuttx-export
 
@@ -16,6 +13,38 @@ $(error NUTTX_EXPORT not defined, cannot continue)
 endif
 
 include $(NUTTX_EXPORT)/scripts/Make.defs
+include $(NUTTX_EXPORT)/.config
+
+SRCALL = \
+input.c \
+linear.c \
+matop.c \
+nonlinear.c \
+output.c \
+serialOut.c \
+toFile.c \
+toNull.c
+
+ifeq ($(CONFIG_ADC),y)
+SRCALL += nuttx_Adc.c
+endif
+
+ifeq ($(CONFIG_PWM),y)
+SRCALL += nuttx_PWM.c
+endif
+
+ifeq ($(CONFIG_DEV_GPIO),y)
+SRCALL += nuttxDI.c
+SRCALL += nuttxDO.c
+endif
+
+ifeq ($(CONFIG_SENSORS_QENCODER),y)
+SRCALL += nuttxENC.c
+endif
+
+OBJ = $(SRCALL:.c=.o)
+CWD = $(shell pwd)
+
 
 NUTTX_INCLUDES = -isystem $(NUTTX_EXPORT)/include
 
