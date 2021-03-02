@@ -327,13 +327,13 @@ def step_plot(sys, T = None):
     else:
         t, y = ct.step_response(sys, T)        
 
-    if len(y.shape)==2:
+    if len(y.shape)==3:
         N = y.shape[0]
         for n in range(0,N):
             if sys.isctime():
-                plt.plot(t,y[n])
+                plt.plot(t,y[n,0])
             else:
-                plt.step(t,y[n], where='post')
+                plt.step(t,y[n,0], where='post')
     else:
         if sys.isctime():
             plt.plot(t,y)
