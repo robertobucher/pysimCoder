@@ -133,7 +133,7 @@
     <inset>0</inset>
     <outset>0</outset>
     <icon>AD</icon>
-    <params>FH_5XXX_ADBlk|Device ID: 0x01|Channel: 0</params>
+    <params>FH_5XXX_ADBlk|Can dev:'/dev/pcan32'|Device ID: 0x01|Channel: 0</params>
     <width>80</width>
     <flip>0</flip>
     <posX>-440.0</posX>
@@ -146,7 +146,7 @@
     <inset>0</inset>
     <outset>0</outset>
     <icon>ENC</icon>
-    <params>FH_5XXX_ENCBlk|Device ID: 0x01|Resolution: enc_w</params>
+    <params>FH_5XXX_ENCBlk|Can dev:'/dev/pcan32'|Device ID: 0x01|Resolution: enc_w</params>
     <width>80</width>
     <flip>0</flip>
     <posX>-80.0</posX>
@@ -159,7 +159,7 @@
     <inset>0</inset>
     <outset>0</outset>
     <icon>MOT_TQ</icon>
-    <params>FH_5XXX_setTQBlk|Device ID: 0x01</params>
+    <params>FH_5XXX_setTQBlk|Can dev:'/dev/pcan32'|Device ID: 0x01</params>
     <width>80</width>
     <flip>0</flip>
     <posX>870.0</posX>
@@ -185,7 +185,7 @@
     <inset>0</inset>
     <outset>0</outset>
     <icon>FH_5XXX_INIT</icon>
-    <params>FH_5XXX_INIT_Blk|Device ID: 0x01|Pos Prop. gain: 0|Pos Deriv. gain: 0|V Prop. gain:0|V Intg gain:0|TQ Prop. gain:0|TQ Intg gain:0| Encoder reset (1-&gt;Yes, 0-&gt;No):1</params>
+    <params>FH_5XXX_INIT_Blk|Can dev:'/dev/pcan32'|Device ID: 0x01|Pos Prop. gain: 0|Pos Deriv. gain: 0|V Prop. gain:0|V Intg gain:0|TQ Prop. gain:0|TQ Intg gain:0| Encoder reset (1-&gt;Yes, 0-&gt;No):1</params>
     <width>80</width>
     <flip>0</flip>
     <posX>-410.0</posX>

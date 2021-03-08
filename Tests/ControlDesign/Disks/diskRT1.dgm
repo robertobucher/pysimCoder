@@ -16,7 +16,7 @@
     <inset>0</inset>
     <outset>0</outset>
     <icon>MOT_I</icon>
-    <params>maxon_MotBlk|Device ID: 0x01|Prop. gain: 8000|Integ. gain: 4000</params>
+    <params>maxon_MotBlk|Can dev:'/dev/pcan32'|Device ID: 0x01|Prop. gain: 8000|Integ. gain: 4000</params>
     <width>80</width>
     <flip>0</flip>
     <posX>490.0</posX>
@@ -29,7 +29,7 @@
     <inset>0</inset>
     <outset>0</outset>
     <icon>ENC</icon>
-    <params>maxon_EncBlk|Device ID: 0x01|Resolution: 500</params>
+    <params>maxon_EncBlk|Can dev:'/dev/pcan32'|Device ID: 0x01|Resolution: 500</params>
     <width>80</width>
     <flip>1</flip>
     <posX>240.0</posX>

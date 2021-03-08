@@ -16,7 +16,7 @@
     <inset>0</inset>
     <outset>0</outset>
     <icon>ENC</icon>
-    <params>baumer_EncBlk|Device ID: 0x3FF|Resolution: 500|Encoder reset (1-&gt;Yes, 0-&gt;No): 1</params>
+    <params>baumer_EncBlk|Can dev:'/dev/pcan32'|Device ID: 0x3FF|Resolution: 500|Encoder reset (1-&gt;Yes, 0-&gt;No): 1</params>
     <width>80</width>
     <flip>0</flip>
     <posX>-530.0</posX>
@@ -42,7 +42,7 @@
     <inset>0</inset>
     <outset>0</outset>
     <icon>MOT_I</icon>
-    <params>epos_MotIBlk|Device ID: 0x08</params>
+    <params>epos_MotIBlk|Can dev:'/dev/pcan32'|Device ID: 0x08</params>
     <width>80</width>
     <flip>0</flip>
     <posX>850.0</posX>
@@ -133,7 +133,7 @@
     <inset>0</inset>
     <outset>0</outset>
     <icon>ENC</icon>
-    <params>epos_EncBlk|Device ID: 0x08|Resolution: 1024</params>
+    <params>epos_EncBlk|Can dev:'/dev/pcan32'|Device ID: 0x08|Resolution: 1024</params>
     <width>80</width>
     <flip>0</flip>
     <posX>-540.0</posX>
@@ -185,7 +185,7 @@
     <inset>0</inset>
     <outset>0</outset>
     <icon>IN_EPOS</icon>
-    <params>init_epos_MotIBlk|Device ID: 0x08|Prop. gain: 2200|Integ. gain: 500|Mode (1-&gt;Pos, 2-&gt; Vel, 3-&gt; Current): 3</params>
+    <params>init_epos_MotIBlk|Can dev:'/dev/pcan32'|Device ID: 0x08|Prop. gain: 2200|Integ. gain: 500|Mode (1-&gt;Pos, 2-&gt; Vel, 3-&gt; Current): 3</params>
     <width>80</width>
     <flip>0</flip>
     <posX>-470.0</posX>
