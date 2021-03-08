@@ -1,6 +1,7 @@
 Implementation of a standard CAN bus generic message to be received
 
 Parameters
+Can dev: device (ex. '/dev/can0')
 Device ID: can ID (ex. 0x01)
 Message Index and subindex
 Multiplication factor of the return value

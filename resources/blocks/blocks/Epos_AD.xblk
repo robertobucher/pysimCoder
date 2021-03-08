@@ -1,1 +1,1 @@
-{"lib": "can Maxon", "name": "Epos_AD", "ip": 0, "op": 1, "stin": 0, "stout": 0, "icon": "AD", "params": "epos_areadBlk|Device ID: 0x01|Channel [0/1]: 0"}
+{"lib": "can Maxon", "name": "Epos_AD", "ip": 0, "op": 1, "stin": 0, "stout": 0, "icon": "AD", "params": "epos_areadBlk|Can dev:'/dev/pcan32'|Device ID: 0x01|Channel [0/1]: 0"}

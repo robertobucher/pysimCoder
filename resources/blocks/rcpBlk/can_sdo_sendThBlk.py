@@ -1,7 +1,7 @@
 from supsisim.RCPblk import RCPblk
 from scipy import size
 
-def can_sdo_sendThBlk(pin, ID, index, subindex, data, useInp):
+def can_sdo_sendThBlk(pin, candev, ID, index, subindex, data, useInp):
     """
 
     Call:   can_sdo_sendThBlk(pin, pout, ID, index, subindex, data, useInp)
@@ -22,6 +22,6 @@ def can_sdo_sendThBlk(pin, ID, index, subindex, data, useInp):
 
     """
     
-    blk = RCPblk('can_sdo_send', pin, [], [0,0], 1, [], [ID, index, subindex, data, useInp])
+    blk = RCPblk('can_sdo_send', pin, [], [0,0], 1, [], [ID, index, subindex, data, useInp], candev)
     return blk
 

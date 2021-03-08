@@ -1,1 +1,1 @@
-{"lib": "can Faulhaber 3XXX", "name": "FH_3XXX_ENC", "ip": 0, "op": 1, "stin": 0, "stout": 0, "icon": "ENC", "params": "FH_3XXX_ENCBlk|Device ID: 0x01|Resolution: 1"}
+{"lib": "can Faulhaber 3XXX", "name": "FH_3XXX_ENC", "ip": 0, "op": 1, "stin": 0, "stout": 0, "icon": "ENC", "params": "FH_3XXX_ENCBlk|Can dev:'/dev/pcan32'|Device ID: 0x01|Resolution: 1"}

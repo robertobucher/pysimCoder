@@ -18,34 +18,30 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 
 #include <pyblock.h>
 
-#define BYTE unsigned char
-#define WORD unsigned short
-#define DWORD unsigned int
-
 #define TIMEOUT -1
 
 #include <canopen.h>
 #include <stdlib.h>
 #include <unistd.h>
 
-static BYTE write_req[8]={0x22,0x30,0x20,0x00,0x00,0x00,0x00,0x00};
+static uint8_t write_req[8]={0x22,0x30,0x20,0x00,0x00,0x00,0x00,0x00};
 
 static void init(python_block *block)
 {
-  if(canOpenTH()) exit(1); 
+  if(canOpenTH(block->str)) exit(1); 
 }
 
 static void inout(python_block *block)
 {
   short int U_can;
-  BYTE *Uaddr;
+  uint8_t *Uaddr;
 
-  BYTE DATA[8];
+  uint8_t DATA[8];
   double *u = block->u[0];
   unsigned short *index;
 
   U_can = (short int) u[0];
-  Uaddr = (BYTE *) &U_can;
+  Uaddr = (uint8_t *) &U_can;
   write_req[4]=Uaddr[0];
   write_req[5]=Uaddr[1];
 
@@ -54,7 +50,7 @@ static void inout(python_block *block)
 
 static void end(python_block *block)
 {
-  BYTE DATA[8];
+  uint8_t DATA[8];
   unsigned short *index;
 
   write_req[4]=0x00;

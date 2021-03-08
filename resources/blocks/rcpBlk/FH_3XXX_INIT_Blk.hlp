@@ -1,6 +1,7 @@
 This file implements the initialisation of a MCDC 3002 or MCBL 3002 Faulhaber motion controllers.
 
 Parameters:
+Can dev: device (ex. '/dev/can0')
 Device ID
 Controllers Values (if "0" -> no change of the internal saved parameters)
 Flag for encoder reset

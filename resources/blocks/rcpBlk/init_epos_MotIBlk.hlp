@@ -1,6 +1,7 @@
 This block initialize a Maxon EPOS motion controller for different operations
 
 Parameters:
+Can dev: device (ex. '/dev/can0')
 Device ID
 Controllers values
 Operation mode

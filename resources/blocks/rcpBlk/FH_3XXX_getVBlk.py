@@ -1,7 +1,7 @@
 from supsisim.RCPblk import RCPblk
 from scipy import size
 
-def FH_3XXX_getVBlk(pout, ID):
+def FH_3XXX_getVBlk(pout, candev, ID):
     """
 
     Call:   FH_3XXX_getVBlk(pout, ID)
@@ -17,6 +17,6 @@ def FH_3XXX_getVBlk(pout, ID):
 
     """
 
-    blk = RCPblk('FH_3XXX_getV', [], pout, [0,0], 0, [], [ID])
+    blk = RCPblk('FH_3XXX_getV', [], pout, [0,0], 0, [], [ID], candev)
     return blk
 

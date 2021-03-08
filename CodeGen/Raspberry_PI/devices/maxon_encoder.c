@@ -21,21 +21,17 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 #include <stdlib.h>
 #include <string.h>
 
-#define BYTE unsigned char
-#define WORD unsigned short
-#define DWORD unsigned int
-
 #define TIMEOUT -1
 
 #include <canopen.h>
 #include <unistd.h>
 
-static BYTE data[8]={0x00, 0x05, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00};
-static BYTE read_req[8]={0x00,0x14,0x88,0x00,0x01,0x00,0x00,0x00};
+static uint8_t data[8]={0x00, 0x05, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00};
+static uint8_t read_req[8]={0x00,0x14,0x88,0x00,0x01,0x00,0x00,0x00};
 
 static void init(python_block *block)
 {
-  if(canOpenTH()) exit(1);
+  if(canOpenTH(block->str)) exit(1);
   
   registerMsg(0x580+block->intPar[0], 0x00, 0x00);
   sendMsg(0x600+block->intPar[0],data,8); /* Configure CAN device */
@@ -43,7 +39,7 @@ static void init(python_block *block)
 
 static void inout(python_block *block)
 {
-  BYTE DATA[8];
+  uint8_t DATA[8];
   double pi2 =  6.28318530718;
   int counter, len;
   double *y = block->y[0];

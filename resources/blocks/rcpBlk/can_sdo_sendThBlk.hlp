@@ -1,6 +1,7 @@
 Implementation of a generic CAN bus message send
 
 Parameters:
+Can dev: device (ex. '/dev/can0')
 Device ID (ex. 0x01)
 Index and subindex
 Data type (byte, word, dword)

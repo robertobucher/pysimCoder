@@ -1,7 +1,7 @@
 from supsisim.RCPblk import RCPblk
 from scipy import size
 
-def can_sdo_recvBlk(pout, ID, index, subindex, K):
+def can_sdo_recvBlk(pout, candev, ID, index, subindex, K):
     """
 
     Call:   can_sdo_recvBlk(pout, ID, index, subindex, K)
@@ -21,6 +21,6 @@ def can_sdo_recvBlk(pout, ID, index, subindex, K):
     """
     
     retID = 0x580+ID
-    blk = RCPblk('can_sdo_recv',[],pout,[0,0],0,[K],[ID, index, subindex, retID])
+    blk = RCPblk('can_sdo_recv',[],pout,[0,0],0,[K],[ID, index, subindex, retID], candev)
     return blk
 

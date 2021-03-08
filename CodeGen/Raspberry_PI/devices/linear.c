@@ -181,7 +181,6 @@ void dss(int Flag, python_block *block)
     matmult(c,no,nx,X,nx,1,tmpCX);
     matmult(d,no,ni,tmpU,ni,1,tmpDU);
     matsum(tmpCX,no,1,tmpDU,no,1,tmpY);
-    
     for(i=0;i<no;i++){
       y = (double *) block->y[i];
       y[0] = tmpY[i];

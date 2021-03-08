@@ -18,35 +18,31 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 
 #include <pyblock.h>
 
-#define BYTE unsigned char
-#define WORD unsigned short
-#define DWORD unsigned int
-
 #include <canopen.h>
 #include <stdlib.h>
 
 static void init(python_block *block)
 {
-  if(canOpenTH()) exit(1);
+  if(canOpenTH(block->str)) exit(1);
 }
 
 static void inout(python_block *block)
 {
   short int U_can;
-  BYTE *Uaddr;
+  uint8_t *Uaddr;
 
-  BYTE DATA[8];
+  uint8_t DATA[8];
   double *u = block->u[0];
   double *y;
   
-  WORD *index;
-  BYTE *subindex;
-  DWORD *data_index;
+  uint16_t *index;
+  uint8_t *subindex;
+  uint32_t *data_index;
 
   DATA[0] = 0x22;
-  index = (WORD *) &DATA[1];
-  subindex = (BYTE *) &DATA[3];
-  data_index = (DWORD *) &DATA[4];
+  index = (uint16_t *) &DATA[1];
+  subindex = (uint8_t *) &DATA[3];
+  data_index = (uint32_t *) &DATA[4];
   *index = block->intPar[1];
   *subindex = block->intPar[2];
 
@@ -62,17 +58,17 @@ static void inout(python_block *block)
 
 static void end(python_block *block)
 {
-  BYTE DATA[8];
+  uint8_t DATA[8];
   double *y;
   
-  WORD *index;
-  BYTE *subindex;
-  DWORD *data_index;
+  uint16_t *index;
+  uint8_t *subindex;
+  uint32_t *data_index;
 
   DATA[0] = 0x22;
-  index = (WORD *) &DATA[1];
-  subindex = (BYTE *) &DATA[3];
-  data_index = (DWORD *) &DATA[4];
+  index = (uint16_t *) &DATA[1];
+  subindex = (uint8_t *) &DATA[3];
+  data_index = (uint32_t *) &DATA[4];
   *index = block->intPar[1];
   *subindex = block->intPar[2];
 

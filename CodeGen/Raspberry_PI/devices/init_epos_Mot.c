@@ -18,10 +18,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 
 #include <pyblock.h>
 
-#define BYTE unsigned char
-#define WORD unsigned short
-#define DWORD unsigned int
-
 #define TIMEOUT -1
 
 #include <canopen.h>
@@ -29,10 +25,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 #include <unistd.h>
 #include <stdlib.h>
 
-static BYTE NMT_pre[2]  = {0x80, 0x00};
-static BYTE NMT_act[2]  = {0x01, 0x00};
+static uint8_t NMT_pre[2]  = {0x80, 0x00};
+static uint8_t NMT_act[2]  = {0x01, 0x00};
 
-static BYTE unsetPDO[8][8] = {
+static uint8_t unsetPDO[8][8] = {
   {0x22, 0x00, 0x16, 0x00, 0x00, 0x00, 0x00, 0x00},
   {0x22, 0x01, 0x16, 0x00, 0x00, 0x00, 0x00, 0x00},
   {0x22, 0x02, 0x16, 0x00, 0x00, 0x00, 0x00, 0x00},
@@ -45,7 +41,7 @@ static BYTE unsetPDO[8][8] = {
 
 #define DATA_SIZE 7
 
-static BYTE data[DATA_SIZE][8]= {
+static uint8_t data[DATA_SIZE][8]= {
   {0x22, 0x40, 0x60, 0x00, 0x80, 0x00, 0x00, 0x00},
   {0x22, 0x40, 0x60, 0x00, 0x06, 0x00, 0x00, 0x00},
   {0x22, 0x40, 0x60, 0x00, 0x07, 0x00, 0x00, 0x00},
@@ -55,17 +51,17 @@ static BYTE data[DATA_SIZE][8]= {
   {0x22, 0x60, 0x60, 0x00, 0x00, 0x00, 0x00, 0x00},
 };
 
-static BYTE reset[8]={0x22, 0x03, 0x10, 0x00, 0x00, 0x00, 0x00, 0x00};
+static uint8_t reset[8]={0x22, 0x03, 0x10, 0x00, 0x00, 0x00, 0x00, 0x00};
 
 static void init(python_block *block)
 {
   int i;
-  BYTE DATA[8];
+  uint8_t DATA[8];
 
-  if(canOpenTH()) exit(1);
+  if(canOpenTH(block->str)) exit(1);
 
-  NMT_pre[1] = (BYTE) block->intPar[0];
-  NMT_act[1] = (BYTE) block->intPar[0];
+  NMT_pre[1] = (uint8_t) block->intPar[0];
+  NMT_act[1] = (uint8_t) block->intPar[0];
 
   data[4][4] = (0x000000FF & (int) block->realPar[0]);
   data[4][5] = ((0x0000FF00 & (int) block->realPar[0]) >> 8);

@@ -34,12 +34,23 @@ SRCALL += nuttx_PWM.c
 endif
 
 ifeq ($(CONFIG_DEV_GPIO),y)
-SRCALL += nuttxDI.c
-SRCALL += nuttxDO.c
+SRCALL += nuttxDI.c \
+nuttxDO.c
 endif
 
 ifeq ($(CONFIG_SENSORS_QENCODER),y)
 SRCALL += nuttxENC.c
+endif
+
+ifeq ($(CONFIG_CAN),y)
+SRCALL += canopen.c \
+maxon_encoder.c  \
+maxon_motor.c \
+epos_canopen_aread.c \
+epos_canopen_enc.c \
+epos_canopen_motI.c \
+epos_canopen_motX.c \
+init_epos_Mot.c
 endif
 
 OBJ = $(SRCALL:.c=.o)

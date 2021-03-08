@@ -1,10 +1,12 @@
-void sendMsg(WORD ID, BYTE DATA[], int len);
-int rcvMsg(BYTE DATA[], int timeout);
-int rcvMsgCob(int cob, BYTE DATA[], int timeout);
-int canOpen();
-int canOpenTH();
-void canClose();
-void canopen_synch();
-int registerMsg(int ID, WORD index, BYTE subindex);
-int getValue(int ID, WORD index, BYTE subindex);
-short get2ByteValue(int ID, WORD index, BYTE subindex);
+#include <stdint.h>
+
+void sendMsg(uint16_t ID, uint8_t DATA[], int len);
+int rcvMsg(uint8_t DATA[], int timeout);
+int rcvMsgCob(int cob, uint8_t DATA[], int timeout);
+int canOpen(char * dev);
+int canOpenTH(char * dev);
+void canClose(void);
+void canopen_synch(void);
+int registerMsg(uint16_t ID, uint16_t index, uint8_t subindex);
+int getValue(uint16_t  ID, uint16_t index, uint8_t subindex);
+short get2ByteValue(uint16_t ID, uint16_t index, uint8_t subindex);

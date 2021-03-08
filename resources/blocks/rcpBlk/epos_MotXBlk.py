@@ -1,7 +1,7 @@
 from supsisim.RCPblk import RCPblk
 from scipy import size
 
-def epos_MotXBlk(pin, ID):
+def epos_MotXBlk(pin, candev, ID):
     """
 
     Call:   epos_MotXBlk(pin, ID)
@@ -25,6 +25,6 @@ def epos_MotXBlk(pin, ID):
     if(size(pin) != 1):
         raise ValueError("Block should have 1 input port; received %i." % size(pout))
 
-    blk = RCPblk('epos_canopen_motX',pin,[],[0,0],1,[],[ID])
+    blk = RCPblk('epos_canopen_motX',pin,[],[0,0],1,[],[ID], candev)
     return blk
 

@@ -1,7 +1,7 @@
 from supsisim.RCPblk import RCPblk
 from scipy import size
 
-def maxon_MotBlk(pin, ID, propGain, intGain):
+def maxon_MotBlk(pin, candev, ID, propGain, intGain):
     """
 
     Maxon driver for torque control
@@ -24,6 +24,6 @@ def maxon_MotBlk(pin, ID, propGain, intGain):
     if(size(pin) != 1):
         raise ValueError("Block should have 1 input port; received %i." % size(pout))
 
-    blk = RCPblk('maxon_mot',pin,[],[0,0],1,[propGain, intGain],[ID])
+    blk = RCPblk('maxon_mot',pin,[],[0,0],1,[propGain, intGain],[ID], candev)
     return blk
 

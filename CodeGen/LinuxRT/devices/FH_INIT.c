@@ -18,55 +18,51 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 
 #include <pyblock.h>
 
-#define BYTE unsigned char
-#define WORD unsigned short
-#define DWORD unsigned int
-
 #define TIMEOUT -1
 
 #include <canopen.h>
 #include <stdlib.h>
 #include <unistd.h>
 
-static BYTE NMT_act[2]  = {0x01, 0x00};
+static uint8_t NMT_act[2]  = {0x01, 0x00};
 
 #define DATA_SIZE1 3
-static BYTE data1[DATA_SIZE1][8]= {
+static uint8_t data1[DATA_SIZE1][8]= {
   {0x2b, 0x40, 0x60, 0x00, 0x06, 0x00, 0x00, 0x00},  //ready to switch on
   {0x2b, 0x40, 0x60, 0x00, 0x07, 0x00, 0x00, 0x00},  //Switch on
   {0x2b, 0x40, 0x60, 0x00, 0x0F, 0x00, 0x00, 0x00},  //operation enabled
 };
 
 #define DATA_SIZE2 2
-static BYTE data2[DATA_SIZE2][8]= {
+static uint8_t data2[DATA_SIZE2][8]= {
   {0x2b, 0x40, 0x60, 0x00, 0x0f, 0x00, 0x00, 0x00},  
   {0x2b, 0x40, 0x60, 0x00, 0x1f, 0x00, 0x00, 0x00},
 };
 
 #define DATA_SIZE_HOMING 2
-static BYTE data_H_3XXX[DATA_SIZE_HOMING][8]= {
+static uint8_t data_H_3XXX[DATA_SIZE_HOMING][8]= {
   {0x2f, 0x60, 0x60, 0x00, 0x06, 0x00, 0x00, 0x00},
   {0x2f, 0x98, 0x60, 0x00, 0x23, 0x00, 0x00, 0x00},
 };
-static BYTE data_H_5XXX[DATA_SIZE_HOMING][8]= {
+static uint8_t data_H_5XXX[DATA_SIZE_HOMING][8]= {
   {0x2f, 0x60, 0x60, 0x00, 0x06, 0x00, 0x00, 0x00},
   {0x2f, 0x98, 0x60, 0x00, 0x25, 0x00, 0x00, 0x00},
 };
 
 #define DATA_CTR_X 2
-static BYTE data_ctr_X[DATA_CTR_X][8]= {
+static uint8_t data_ctr_X[DATA_CTR_X][8]= {
   {0x2b, 0x32, 0x23, 0x01, 0x00, 0x00, 0x00, 0x00},
   {0x2b, 0x32, 0x23, 0x02, 0x00, 0x00, 0x00, 0x00},
 };
 
 #define DATA_CTR_V 2
-static BYTE data_ctr_V[DATA_CTR_X][8]= {
+static uint8_t data_ctr_V[DATA_CTR_X][8]= {
   {0x2b, 0x31, 0x23, 0x01, 0x00, 0x00, 0x00, 0x00},
   {0x2b, 0x31, 0x23, 0x02, 0x00, 0x00, 0x00, 0x00},
 };
 
 #define DATA_CTR_TQ 2
-static BYTE data_ctr_TQ[DATA_CTR_X][8]= {
+static uint8_t data_ctr_TQ[DATA_CTR_X][8]= {
   {0x2b, 0x42, 0x23, 0x01, 0x00, 0x00, 0x00, 0x00},
   {0x2b, 0x42, 0x23, 0x02, 0x00, 0x00, 0x00, 0x00},
 };
@@ -79,9 +75,9 @@ static void init5(python_block *block)
   int i;
   unsigned char cval;
   
-  if(canOpenTH()) exit(1);
+  if(canOpenTH(block->str)) exit(1);
 
-  NMT_act[1] = (BYTE) block->intPar[0];
+  NMT_act[1] = (uint8_t) block->intPar[0];
 
   sendMsg(0x000,NMT_act,2);   /* Operational status */
   usleep(50000);
@@ -145,9 +141,9 @@ static void init3(python_block *block)
   int i;
   unsigned char cval;
   
-  if(canOpenTH()) exit(1);
+  if(canOpenTH(block->str)) exit(1);
 
-  NMT_act[1] = (BYTE) block->intPar[0];
+  NMT_act[1] = (uint8_t) block->intPar[0];
 
   sendMsg(0x000,NMT_act,2);   /* Operational status */
   usleep(50000);

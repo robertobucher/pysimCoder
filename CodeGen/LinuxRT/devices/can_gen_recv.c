@@ -18,32 +18,28 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 
 #include <pyblock.h>
 
-#define BYTE unsigned char
-#define WORD unsigned short
-#define DWORD unsigned int
-
 #include <canopen.h>
 #include <stdlib.h>
 #include <unistd.h>
 
 static void init(python_block *block)
 {
-  if(canOpenTH()) exit(1);  
-  registerMsg(block->intPar[3], (WORD) block->intPar[1], (BYTE) block->intPar[2]);
+  if(canOpenTH(block->str)) exit(1);  
+  registerMsg(block->intPar[3], (uint16_t) block->intPar[1], (uint8_t) block->intPar[2]);
 }
 
 static void inout(python_block *block)
 {
-  BYTE DATA[8];
+  uint8_t DATA[8];
   double *y;
   
-  WORD *index;
-  BYTE *subindex;
-  DWORD *data_index;
+  uint16_t *index;
+  uint8_t *subindex;
+  uint32_t *data_index;
 
   DATA[0] = 0x40;
-  index = (WORD *) &DATA[1];
-  subindex = (BYTE *) &DATA[3];
+  index = (uint16_t *) &DATA[1];
+  subindex = (uint8_t *) &DATA[3];
   *index = block->intPar[1];
   *subindex = block->intPar[2];
 

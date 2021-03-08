@@ -1,7 +1,7 @@
 from supsisim.RCPblk import RCPblk
 from scipy import size
 
-def FH_5XXX_getTQBlk(pout, ID):
+def FH_5XXX_getTQBlk(pout, candev, ID):
     """
 
     Call:   FH_5XXX_getTQBlk(pout, ID)
@@ -17,6 +17,6 @@ def FH_5XXX_getTQBlk(pout, ID):
 
     """
 
-    blk = RCPblk('FH_5XXX_getTQ', [], pout, [0,0], 0, [], [ID])
+    blk = RCPblk('FH_5XXX_getTQ', [], pout, [0,0], 0, [], [ID], candev)
     return blk
 
