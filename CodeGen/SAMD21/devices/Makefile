@@ -53,7 +53,7 @@ DEFINES = \
 
 INCLUDES = \
 -I$(MBCDIR)/cores/samd21 \
--I$(ARDUINO_DIR)/hardware/arduino/acr/cores/arduino \
+-I$(ARDUINO_DIR)/hardware/arduino/avr/cores/arduino \
 -I$(INODIR)/CMSIS/4.5.0/CMSIS/Include/ \
 -I$(INODIR)/CMSIS-Atmel/1.2.0/CMSIS/Device/ATMEL/ \
 -I$(SAMD21_HOME)/include

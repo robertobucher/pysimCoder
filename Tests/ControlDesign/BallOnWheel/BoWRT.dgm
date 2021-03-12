@@ -1,6 +1,9 @@
 <root>
+  <pysimCoder>
+    <pysimCoderVersion>0.9</pysimCoderVersion>
+  </pysimCoder>
   <Date>
-    <SavingDate>15.10.2019 - 13:26:16</SavingDate>
+    <SavingDate>10.03.2021 - 11:25:06</SavingDate>
   </Date>
   <Simulation>
     <Template>rt.tmf</Template>
@@ -16,11 +19,11 @@
     <inset>0</inset>
     <outset>0</outset>
     <icon>STEP</icon>
-    <params>stepBlk|Step Time: 5|Step Value: 1</params>
+    <params>stepBlk|Step Time: 5|Initial Value: 0|Final Value: 1</params>
     <width>80</width>
     <flip>0</flip>
-    <posX>560.0</posX>
-    <posY>-10.0</posY>
+    <posX>500.0</posX>
+    <posY>10.0</posY>
   </block>
   <block>
     <name>Prod</name>
@@ -46,7 +49,7 @@
     <width>80</width>
     <flip>0</flip>
     <posX>250.0</posX>
-    <posY>-170.0</posY>
+    <posY>-180.0</posY>
   </block>
   <block>
     <name>LTI_discrete1</name>
@@ -192,6 +195,14 @@
     <posY>-260.0</posY>
   </block>
   <connection>
+    <pos1X>540.0</pos1X>
+    <pos1Y>10.0</pos1Y>
+    <pos2X>650.0</pos2X>
+    <pos2Y>-90.0</pos2Y>
+    <pt>600.0,10.0</pt>
+    <pt>600.0,-90.0</pt>
+  </connection>
+  <connection>
     <pos1X>730.0</pos1X>
     <pos1Y>-110.0</pos1Y>
     <pos2X>830.0</pos2X>
@@ -206,14 +217,6 @@
     <pos2Y>-130.0</pos2Y>
     <pt>590.0,-130.0</pt>
     <pt>590.0,-130.0</pt>
-  </connection>
-  <connection>
-    <pos1X>600.0</pos1X>
-    <pos1Y>-10.0</pos1Y>
-    <pos2X>650.0</pos2X>
-    <pos2Y>-90.0</pos2Y>
-    <pt>630.0,-10.0</pt>
-    <pt>630.0,-90.0</pt>
   </connection>
   <connection>
     <pos1X>70.0</pos1X>
@@ -237,10 +240,10 @@
   </connection>
   <connection>
     <pos1X>290.0</pos1X>
-    <pos1Y>-170.0</pos1Y>
+    <pos1Y>-180.0</pos1Y>
     <pos2X>440.0</pos2X>
     <pos2Y>-170.0</pos2Y>
-    <pt>370.0,-170.0</pt>
+    <pt>370.0,-180.0</pt>
     <pt>370.0,-170.0</pt>
   </connection>
   <connection>
@@ -255,9 +258,9 @@
     <pos1X>70.0</pos1X>
     <pos1Y>70.0</pos1Y>
     <pos2X>210.0</pos2X>
-    <pos2Y>-170.0</pos2Y>
+    <pos2Y>-180.0</pos2Y>
     <pt>140.0,70.0</pt>
-    <pt>140.0,-170.0</pt>
+    <pt>140.0,-180.0</pt>
   </connection>
   <connection>
     <pos1X>-70.0</pos1X>
@@ -287,16 +290,16 @@
     <pos1X>-40.0</pos1X>
     <pos1Y>-130.0</pos1Y>
     <pos2X>210.0</pos2X>
-    <pos2Y>-130.0</pos2Y>
+    <pos2Y>-140.0</pos2Y>
     <pt>90.0,-130.0</pt>
-    <pt>90.0,-130.0</pt>
+    <pt>90.0,-140.0</pt>
   </connection>
   <connection>
     <pos1X>-40.0</pos1X>
     <pos1Y>-260.0</pos1Y>
     <pos2X>210.0</pos2X>
-    <pos2Y>-210.0</pos2Y>
+    <pos2Y>-220.0</pos2Y>
     <pt>90.0,-260.0</pt>
-    <pt>90.0,-210.0</pt>
+    <pt>90.0,-220.0</pt>
   </connection>
 </root>

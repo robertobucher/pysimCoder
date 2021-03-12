@@ -1,7 +1,7 @@
 from supsisim.RCPblk import RCPblk
 from scipy import size
 
-def FH_5XXX_ENCBlk(pout, Icandev, D, res):
+def FH_5XXX_ENCBlk(pout, candev, ID, res):
     """
 
     Call:   FH_5XXX_ENCBlk(pout, ID)

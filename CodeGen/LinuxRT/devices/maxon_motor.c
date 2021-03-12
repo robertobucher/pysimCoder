@@ -55,25 +55,21 @@ static void init(python_block *block)
 
 static void inout(python_block *block)
 {
-  uint8_t DATA[8];
-  int U_can;
+   int U_can;
   double *u = block->u[0];
 
   U_can = (int) u[0];
+  cdata * data = (cdata *) write_req;
 
-  write_req[2]=(uint8_t)U_can;
-  write_req[3]=(uint8_t)(U_can>>8);
-
+  data->u16[1] = (uint16_t) U_can;
   sendMsg(0x600+block->intPar[0],write_req,8);
 }
 
 static void end(python_block *block)
 {
-  uint8_t DATA[8];
-  int ret;
+  cdata * data = (cdata *) write_req;
 
-  write_req[2]=0x00;
-  write_req[3]=0x00;
+  data->u16[1] = 0;
   sendMsg(0x600+block->intPar[0],write_req,8);
 
   canClose();

@@ -1,5 +1,13 @@
 #include <stdint.h>
 
+union canDATA{
+  uint8_t u8[8];
+  uint16_t u16[4];
+  uint32_t u32[2];
+};
+
+typedef union canDATA cdata;
+
 void sendMsg(uint16_t ID, uint8_t DATA[], int len);
 int rcvMsg(uint8_t DATA[], int timeout);
 int rcvMsgCob(int cob, uint8_t DATA[], int timeout);

@@ -23,7 +23,9 @@ nonlinear.c \
 output.c \
 serialOut.c \
 toFile.c \
-toNull.c
+toNull.c \
+init_enc.c \
+switch.c
 
 ifeq ($(CONFIG_ADC),y)
 SRCALL += nuttx_Adc.c
@@ -44,6 +46,7 @@ endif
 
 ifeq ($(CONFIG_CAN),y)
 SRCALL += canopen.c \
+baumer_encoder.c \
 maxon_encoder.c  \
 maxon_motor.c \
 epos_canopen_aread.c \
