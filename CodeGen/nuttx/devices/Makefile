@@ -16,6 +16,7 @@ include $(NUTTX_EXPORT)/scripts/Make.defs
 include $(NUTTX_EXPORT)/.config
 
 SRCALL = \
+commonFun.c \
 input.c \
 linear.c \
 matop.c \
