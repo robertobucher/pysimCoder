@@ -30,5 +30,5 @@ def stm32DOBlk(pin, port, ch, Th):
     if ch<0 or ch > 15:
         raise ValueError("Channel should be between 0 and 15 not %i", (ch))
     
-    blk = RCPblk('stm32DO', pin, [], [0,0], 0, [Th], [pn, ch])
+    blk = RCPblk('stm32DO', pin, [], [0,0], 1, [Th], [pn, ch])
     return blk
