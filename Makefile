@@ -14,7 +14,7 @@ control:
 	rm -rf python-control 
 
 slycot:
-	git clone https://github.com/python-control/Slycot
+	git clone --recurse-submodules https://github.com/python-control/Slycot
 	cd Slycot; python setup.py install
 	rm -rf Slycot
 
