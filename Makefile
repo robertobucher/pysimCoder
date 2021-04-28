@@ -6,7 +6,7 @@ CURDIR = $(shell pwd)
 CWD = $(shell pwd)
 PYCTL = export PYSUPSICTRL=$(CWD)
 
-addfiles: control, slycot
+addfiles: control slycot
 
 control:
 	git clone https://github.com/python-control/python-control.git
