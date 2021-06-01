@@ -1,10 +1,5 @@
-Launch pyCodeGenCenter
+System with 2 rotating motors and a last, with a spring between the two lasts.
 
-From the menu SCH->PY choose "Code generation"
-Choose the schematic file (simulation: disks_sim.sch, RT:disksRT.sch)
-Choose the template Makefile "sim.tmf" or "rt.tmf" (schematics 
-with extension "RT")
-
-Add the python initialization script "disks.py"
-OK to generate the code
+The original system is based on Maxon motors.
+The communication between controller and motor driver is based on CAN bus.
 

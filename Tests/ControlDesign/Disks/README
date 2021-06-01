@@ -1,10 +1,5 @@
-Launch pyCodeGenCenter
+System with a rotating motor and a last, controlled in torque mode.
 
-From the menu SCH->PY choose "Code generation"
-Choose the schematic file 
-Choose the template Makefile "sim.tmf" or "rt.tmf" (schematics 
-with extension "RT")
-
-Add the python initialization script "disk1.py" or "disk2.py
-OK to generate the code
+The original system is based on Maxon motors (disk1 and disk2 are 2 differents motors).
+The communication between controller and motor driver is based on CAN bus.
 
