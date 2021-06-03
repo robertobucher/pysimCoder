@@ -27,7 +27,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 #include <errno.h>
 #include <debug.h>
 
+#ifdef CONFIG_CAN
 #include <nuttx/can/can.h>
+#endif
+
+#ifdef CONFIG_NET_CAN
+#include <nuttx/can.h>
+#include <netpacket/can.h>
+#include <sys/socket.h>
+#include <net/if.h>
+#endif
 
 /* #define VERB */
 
@@ -84,7 +93,29 @@ short get2ByteValue(int ID, uint16_t index, uint8_t subindex)
   return(0);
 }
 
-void saveMsg(struct   can_msg_s m)
+#ifdef CONFIG_NET_CAN
+void socketCAN_saveMsg(struct can_frame m)
+{
+  int ID = m.can_id;
+  uint16_t *index = (uint16_t *) &(m.data[1]);
+  uint8_t *subindex = (uint8_t *) &(m.data[3]);
+  uint32_t *value = (uint32_t *) &(m.data[4]);
+
+  struct CanMsg * el = msgIn;
+
+  while(el!=NULL){
+    if((el->ID==ID) &&
+       (el->index==*index) &&
+       (el->subindex==*subindex)){
+       el->value = *value;
+    }
+    el = el->next;
+  }
+}
+#endif
+
+#ifdef CONFIG_CAN
+void CAN_saveMsg(struct   can_msg_s m)
 {
   int ID = m.cm_hdr.ch_id;
   uint16_t *index = (uint16_t *) &(m.cm_data[1]);
@@ -123,19 +154,36 @@ void saveMsg2(struct   can_msg_s m)
     el = el->next;    
   }
 }
-  
+#endif
+
+/****************************************************************************
+ * Name: sendMsg
+ *
+ * Description:
+ *   Send CAN message
+ *
+ ****************************************************************************/
+
 void sendMsg(uint16_t ID, uint8_t DATA[], int len)
 {
   /* Procedure to send a CAN message */
 
+#ifdef CONFIG_NET_CAN
+  struct can_frame txmsg;
+#else
   struct can_msg_s txmsg;
+#endif
   ssize_t nbytes;
-  size_t msgsize;
-
 #ifdef VERB
   int i;
 #endif
 
+#ifdef CONFIG_NET_CAN
+  txmsg.can_id = ID;
+  txmsg.can_dlc = len;
+
+  memcpy(txmsg.data, DATA, len);
+#else
   txmsg.cm_hdr.ch_id     = ID;
   txmsg.cm_hdr.ch_rtr    = false;
   txmsg.cm_hdr.ch_dlc    = len;
@@ -146,13 +194,10 @@ void sendMsg(uint16_t ID, uint8_t DATA[], int len)
   txmsg.cm_hdr.ch_extid  = extended;
 #endif
   txmsg.cm_hdr.ch_unused = 0;
-
-  /* for (i = 0; i < msgdlc; i++){ */
-  /*   txmsg.cm_data[i] = DATA[i]; */
-  /* } */
   
   memcpy(txmsg.cm_data, DATA, len);
-  
+#endif
+
 #ifdef VERB
     printf("--> 0x%03x  %d   ",txmsg.cm_hdr.ch_id,  txmsg.cm_hdr.ch_dlc);
     for(i=0;i<len;i++) printf("0x%02x  ", txmsg.cm_data[i]);
@@ -161,14 +206,14 @@ void sendMsg(uint16_t ID, uint8_t DATA[], int len)
 
     /* Send the TX message */
 
-    msgsize = CAN_MSGLEN(len);
-    nbytes = write(canFD, &txmsg, msgsize);
-    if (nbytes != msgsize) {
+    nbytes = write(canFD, &txmsg, sizeof(txmsg));
+    if (nbytes != sizeof(txmsg)) {
       printf("ERROR: write(%ld) returned %ld\n",
-	     (long)msgsize, (long)nbytes);
+	     (long)sizeof(txmsg), (long)nbytes);
     }
 }
 
+#ifdef CONFIG_CAN
 int rcvMsgCob(int cob, uint8_t DATA[], int timeout)
 {
   struct can_msg_s rxmsg;
@@ -229,11 +274,24 @@ int rcvMsg(uint8_t DATA[], int timeout)
   if(rxmsg.cm_hdr.ch_dlc != 0) memcpy(DATA, rxmsg.cm_data, rxmsg.cm_hdr.ch_dlc);
   return rxmsg.cm_hdr.ch_dlc;
 }
+#endif
+
+/****************************************************************************
+ * Name: rcv
+ *
+ * Description:
+ *   Schedule message receiving thread as real time task
+ *
+ ****************************************************************************/
 
 void *rcv(void *args)
 {
   /* Receiving thread scheduled as RT task */
+#if defined(CONFIG_NET_CAN)
+  struct can_frame rxmsg;
+#else
   struct can_msg_s rxmsg;
+#endif
   ssize_t nbytes;
   size_t msgsize;
 
@@ -253,9 +311,10 @@ void *rcv(void *args)
   mlockall(MCL_CURRENT | MCL_FUTURE);
 #endif
   
-  msgsize = sizeof(struct can_msg_s);
+  msgsize = sizeof(rxmsg);
 
-  while (!endrcv) {       /* receiving loop */
+  while (!endrcv) /* receiving loop */
+  {
     nbytes = read(canFD, &rxmsg, msgsize);
 
 #ifdef VERB
@@ -265,9 +324,12 @@ void *rcv(void *args)
 #endif
 
     /* Store messages  */
-    if(rxmsg.cm_data[0] != 0x01) saveMsg(rxmsg);
+#if defined(CONFIG_NET_CAN)
+    socketCAN_saveMsg(rxmsg);
+#else
+    if(rxmsg.cm_data[0] != 0x01) CAN_saveMsg(rxmsg);
     else                              saveMsg2(rxmsg);
-    
+#endif
   }
   return 0;
 }
@@ -286,7 +348,15 @@ int canOpen(char * dev)
   return 0;
 }
 
-int canOpenTH(char * dev)
+/****************************************************************************
+ * Name: CAN_open
+ *
+ * Description:
+ *   Open CAN characteristic device
+ *
+ ****************************************************************************/
+
+int CAN_open(char * dev)
 {
   int priority = 90;
 
@@ -297,10 +367,92 @@ int canOpenTH(char * dev)
       printf("ERROR: open %s failed\n", dev);
      return -1;
     }
-    pthread_create(&rt_rcv, NULL, rcv, (void *) priority);  /* Start receiving task */    
+    pthread_create(&rt_rcv, NULL, rcv, (void *) priority);  /* Start receiving task */
   }
   dev_cnt++;
   return 0;
+}
+
+/****************************************************************************
+ * Name: socketCAN_open
+ *
+ * Description:
+ *   Open Socket CAN device
+ *
+ ****************************************************************************/
+
+#if defined(CONFIG_NET_CAN)
+int socketCAN_open(char * dev)
+{
+
+  int priority = 90;
+
+  if(!dev_cnt)					/* This task is performed only one time */
+  {
+    struct sockaddr_can addr;
+    struct ifreq ifr;
+    int addrlen = sizeof(addr);
+
+	  /* Create CAN Socket */
+
+    canFD = socket(AF_CAN, SOCK_RAW, CAN_RAW);
+	  if (canFD < 0)
+	  {
+	    printf("ERROR: failed to create CAN socket");
+	    return -1;
+	  }
+
+	  strncpy(ifr.ifr_name, dev, IFNAMSIZ - 1);
+	  ifr.ifr_name[IFNAMSIZ - 1] = '\0';
+	  ifr.ifr_ifindex = if_nametoindex(ifr.ifr_name);
+	  if (!ifr.ifr_ifindex)
+      {
+	      printf("ERROR: if_nametoindex");
+	      return -1;
+	    }
+
+	  memset(&addr, 0, sizeof(addr));
+	  addr.can_family = AF_CAN;
+	  addr.can_ifindex = ifr.ifr_ifindex;
+
+	  /* Bind CAN Socket */
+
+	  if (bind(canFD, (const struct sockaddr *)&addr, addrlen) < 0)
+      {
+	      printf("ERROR: binding socket failed");
+	      close(canFD);
+	      return -1;
+	    }
+	  pthread_create(&rt_rcv, NULL, rcv, (void *) priority);
+    dev_cnt += 1;
+	  return 0;
+  }
+  else
+  {
+    printf("Already initalized\n");
+    return -1;
+  }
+}
+#endif
+
+/****************************************************************************
+ * Name: canOpenTH
+ *
+ * Description:
+ *   Calls functions to open CAN device
+ *
+ ****************************************************************************/
+
+int canOpenTH(char * dev)
+{
+#if defined(CONFIG_NET_CAN)
+  return socketCAN_open(dev);   /* SocketCAN interface is defined in NuttX */
+#elif defined(CONFIG_CAN)
+  return CAN_open(dev);         /* Low lever CAN driver is defined in NuttX */
+#else
+  printf("ERROR: CAN driver is not defined\n");
+  return -1;
+#endif
 }
 
 void canClose(void)
@@ -314,6 +466,3 @@ void canopen_synch(void)
 {
   sendMsg(0x80,NULL,0);
 }
-
-
-
