@@ -7,6 +7,7 @@ LIBDIR  = $(PYCODEGEN)/LinuxRT/lib
 INCDIR  = $(PYCODEGEN)LinuxRT//include
 FMUINC = $(PYCODEGEN)/LinuxRT/fmu/fmuinc
 FMILIB = $(PYCODEGEN)/LinuxRT/fmu/lib/fmulib.a  -ldl -lxml2
+COMMON_INCDIR = $(PYCODEGEN)/Common/include
 
 RM = rm -f
 FILES_TO_CLEAN = *.o $(MODEL)
@@ -21,7 +22,7 @@ OBJSSTAN = $(MAIN).o $(MODEL).o
 
 LIB = $(LIBDIR)/libpyblk.a $(FMILIB)
 
-CFLAGS = $(CC_OPTIONS) -O2 -I$(INCDIR) -I$(FMUINC) $(C_FLAGS) -DMODEL=$(MODEL) 
+CFLAGS = $(CC_OPTIONS) -O2 -I$(INCDIR) -I$(COMMON_INCDIR) -I$(FMUINC) $(C_FLAGS) -DMODEL=$(MODEL) 
 
 $(MAIN).c: $(MAINDIR)/$(MAIN).c $(MODEL).c
 	cp $< .

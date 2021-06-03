@@ -2,8 +2,12 @@ LIB = libpyBlk.a
 
 all: $(LIB)
 
+COMMON_DIR = $(PYSUPSICTRL)/CodeGen/Common
+
 SRCALL = $(wildcard *.c)
-OBJ = $(SRCALL:.c=.o)
+SRCALL += $(wildcard $(COMMON_DIR)/common_dev/*.c)
+
+OBJ = $(notdir $(SRCALL:.c=.o))
 
 BIN_DIR = /usr/bin
 
@@ -28,12 +32,16 @@ DEFINES = \
 INCLUDES = \
 -I$(STM32H7_HOME)/objects/inc \
 -I$(STM32H7_HOME)/include \
+-I$(PYSUPSICTRL)/CodeGen/Common/include \
 -I$(STM32H7_HOME)/OTG/STM32_USB_Device_Library/Core/Inc \
 -I$(STM32H7_HOME)/OTG/STM32_USB_Device_Library/Class/CDC/Inc \
 -I$(STM32H7_HOME)/OTG/USB_DEVICE/Target \
 -I$(STM32H7_HOME)/OTG/USB_DEVICE/App 
 
 %.o: %.c
+	$(GCC) $< $(CPU) $(GCC_FLAGS1) $(DEFINES) -c $(INCLUDES) $(GCC_FLAGS2) -o $@
+
+%.o: $(COMMON_DIR)/common_dev/%.c
 	$(GCC) $< $(CPU) $(GCC_FLAGS1) $(DEFINES) -c $(INCLUDES) $(GCC_FLAGS2) -o $@
 
 $(LIB): $(OBJ)

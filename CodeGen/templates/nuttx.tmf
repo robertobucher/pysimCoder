@@ -7,6 +7,7 @@ MAINDIR = $(PYCODEGEN)/src
 LIBDIR  = $(PYCODEGEN)/nuttx/lib
 INCDIR  = $(PYCODEGEN)/nuttx/include
 NUTTX_EXPORT = $(PYCODEGEN)/nuttx/nuttx-export
+COMMON_INCDIR = $(PYCODEGEN)/Common/include
 
 RM = rm -f
 FILES_TO_CLEAN = *.o $(MODEL) $(MODEL).elf
@@ -80,7 +81,7 @@ $(MAIN)-builtintab.c : $(wildcard $(NUTTX_EXPORT)/registry/*.bdat) $(wildcard $(
 	@echo >>$@ "const int g_builtin_count = sizeof(g_builtins) / sizeof(g_builtins[0]);"
 endif
 
-INCLUDES += -I$(INCDIR) $(NUTTX_INCLUDES)
+INCLUDES += -I$(INCDIR) -I$(COMMON_INCDIR) $(NUTTX_INCLUDES)
 
 CFLAGS = $(TARGET_ARCH_FLAGS) $(ARCHWARNINGS) $(OPT_OPTS) $(INCLUDES) -DMODEL=$(MODEL)
 

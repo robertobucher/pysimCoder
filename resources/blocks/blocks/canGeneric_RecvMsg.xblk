@@ -1,1 +1,0 @@
-{"lib": "can generic", "name": "canGeneric_RecvMsg", "ip": 0, "op": 1, "stin": 0, "stout": 0, "icon": "CAN_GEN_RECV", "params": "can_gen_recvBlk|Can dev:'/dev/pcan32'|Device ID: 0x3FF|ReturnID: 0x7FF|Index: 0x6004|SubIndex: 0x00|Conversion factor: 1.0"}

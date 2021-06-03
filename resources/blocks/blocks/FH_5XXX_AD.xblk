@@ -1,1 +1,0 @@
-{"lib": "can Faulhaber 5XXX", "name": "FH_5XXX_AD", "ip": 0, "op": 1, "stin": 0, "stout": 0, "icon": "AD", "params": "FH_5XXX_ADBlk|Can dev:'/dev/pcan32'|Device ID: 0x01|Channel: 0"}

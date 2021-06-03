@@ -2,9 +2,19 @@ all: lib
 reduced: files lib install
 
 LIB = libPipyblk.a
-RTPYINC = ../include
+GENERIC_INC = $(PYSUPSICTRL)/CodeGen/Common/include
+TARGET_INC = ../include
+
+COMMON_DIR = $(PYSUPSICTRL)/CodeGen/Common
+
 SRCALL = $(wildcard *.c)
-OBJ = $(SRCALL:.c=.o)
+SRCALL += $(wildcard $(COMMON_DIR)/CAN_dev/*.c)
+SRCALL += $(wildcard $(COMMON_DIR)/common_dev/*.c)
+SRCALL += $(wildcard $(COMMON_DIR)/Faulhaber_dev/*.c)
+SRCALL += $(wildcard $(COMMON_DIR)/Maxon_dev/*.c)
+
+OBJ = $(notdir $(SRCALL:.c=.o))
+
 CWD = $(shell pwd)
 
 ######DBG = -g -fPIC
@@ -13,9 +23,22 @@ DBG = -g
 CC = arm-linux-gnueabihf-gcc
 AR = arm-linux-gnueabihf-ar
 OBJEX = $(SRC:.c=.o)
-CC_FLAGS = -c $(DBG) -I$(RTPYINC) 
+INCLUDE =  -I$(GENERIC_INC) -I$(TARGET_INC) 
+CC_FLAGS = -c $(DBG) $(INCLUDE)
 
 %.o: %.c
+	$(CC) $(CC_FLAGS) $<
+
+%.o: $(COMMON_DIR)/CAN_dev/%.c
+	$(CC) $(CC_FLAGS) $<
+
+%.o: $(COMMON_DIR)/common_dev/%.c
+	$(CC) $(CC_FLAGS) $<
+
+%.o: $(COMMON_DIR)/Faulhaber_dev/%.c
+	$(CC) $(CC_FLAGS) $<
+
+%.o: $(COMMON_DIR)/Maxon_dev/%.c
 	$(CC) $(CC_FLAGS) $<
 
 lib: $(OBJ)

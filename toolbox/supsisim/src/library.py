@@ -210,12 +210,16 @@ class Library(QMainWindow):
             fn.close()
         except:
             pass
-        
-        files = os.listdir(commonDir)
-        for f in sorted(files):
-            if f.endswith('.xblk'):
-                d = self.getBlock(respath +'blocks/blocks/' + f)
-                blkList.append(d)
+
+        dirs = os.listdir(commonDir)
+        dirs.remove('common.blks')
+        for el in dirs:
+            files = os.listdir(commonDir + '/' + el)
+            for f in sorted(files):
+                if f.endswith('.xblk'):
+                    d = self.getBlock(respath +'blocks/blocks/' + el + '/' + f)
+                
+                    blkList.append(d)
                 
         self.libConfig = sorted(blkList, key=lambda k: (k['lib'].lower(), k['name']))
  

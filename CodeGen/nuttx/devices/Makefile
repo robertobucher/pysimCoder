@@ -2,7 +2,11 @@ all: allfiles lib install
 reduced: files lib install
 
 LIB = libpyblk.a
-RTPYINC = ../include
+GENERIC_INC = $(PYSUPSICTRL)/CodeGen/Common/include
+TARGET_INC = ../include
+INCLUDE =  -I$(GENERIC_INC) -I$(TARGET_INC) 
+
+COMMON_DIR = $(PYSUPSICTRL)/CodeGen/Common
 
 NUTTX_EXPORT = $(PWD)/../nuttx-export
 
@@ -15,18 +19,8 @@ endif
 include $(NUTTX_EXPORT)/scripts/Make.defs
 include $(NUTTX_EXPORT)/.config
 
-SRCALL = \
-commonFun.c \
-input.c \
-linear.c \
-matop.c \
-nonlinear.c \
-output.c \
-serialOut.c \
-toFile.c \
-toNull.c \
-init_enc.c \
-switch.c
+SRCALL = $(wildcard $(COMMON_DIR)/common_dev/*.c)
+SRCALL += toFile.c
 
 ifeq ($(CONFIG_ADC),y)
 SRCALL += nuttx_Adc.c
@@ -46,20 +40,15 @@ SRCALL += nuttxENC.c
 endif
 
 ifeq ($(CONFIG_CAN),y)
-SRCALL += canopen.c \
-baumer_encoder.c \
-maxon_encoder.c  \
-maxon_motor.c \
-epos_canopen_aread.c \
-epos_canopen_enc.c \
-epos_canopen_motI.c \
-epos_canopen_motX.c \
-init_epos_Mot.c
+SRCALL += canopen.c
+SRCALL += $(wildcard $(COMMON_DIR)/CAN_dev/*.c)
+SRCALL += $(wildcard $(COMMON_DIR)/Faulhaber_dev/*.c)
+SRCALL += $(wildcard $(COMMON_DIR)/Maxon_dev/*.c)
 endif
 
-OBJ = $(SRCALL:.c=.o)
-CWD = $(shell pwd)
+OBJ = $(notdir $(SRCALL:.c=.o))
 
+CWD = $(shell pwd)
 
 NUTTX_INCLUDES = -isystem $(NUTTX_EXPORT)/include
 
@@ -93,9 +82,9 @@ CXXFLAGS = $(TARGET_ARCH_FLAGS) $(ARCHCXXFLAGS) $(ARCHWARNINGSXX) $(OPT_OPTS) $(
 
 OBJEX = $(SRC:.c=.o)
 DEFINES = -D PLOTTER_SCRIPT=\"$(CWD)/scope.py\"
-CC_FLAGS = -c $(DBG) -I$(RTPYINC) $(CFLAGS) 
-CC_FLAGS_SCP = -c $(DBG) -I$(RTPYINC) $(CFLAGS) $(DEFINES)
-CC_FLAGS_FMU = -c $(DBG) -I$(RTPYINC) $(CFLAGS) -Wall -DFMI_COSIMULATION \
+CC_FLAGS = -c $(DBG) $(INCLUDE) $(CFLAGS) 
+CC_FLAGS_SCP = -c $(DBG) $(INCLUDE) $(CFLAGS) $(DEFINES)
+CC_FLAGS_FMU = -c $(DBG) $(INCLUDE) $(CFLAGS) -Wall -DFMI_COSIMULATION \
                              -DSTANDALONE_XML_PARSER -DLIBXML_STATIC \
                               -I$(FMUDIR)/fmuinc/include -I$(FMUDIR)/fmuinc/parser -I$(FMUDIR)/fmuinc
 
@@ -112,6 +101,18 @@ FMUinterface.o: FMUinterface.c
 	$(CC) $(CC_FLAGS_FMU) $<
 
 %.o: %.c
+	$(CC) $(CC_FLAGS) $<
+
+%.o: $(COMMON_DIR)/CAN_dev/%.c
+	$(CC) $(CC_FLAGS) $<
+
+%.o: $(COMMON_DIR)/common_dev/%.c
+	$(CC) $(CC_FLAGS) $<
+
+%.o: $(COMMON_DIR)/Faulhaber_dev/%.c
+	$(CC) $(CC_FLAGS) $<
+
+%.o: $(COMMON_DIR)/Maxon_dev/%.c
 	$(CC) $(CC_FLAGS) $<
 
 lib: $(OBJ)

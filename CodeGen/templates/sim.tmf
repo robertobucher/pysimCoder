@@ -5,6 +5,7 @@ PYCODEGEN = $(PYSUPSICTRL)/CodeGen
 MAINDIR = $(PYCODEGEN)/src
 LIBDIR  = $(PYCODEGEN)/LinuxRT/lib
 INCDIR  = $(PYCODEGEN)/LinuxRT/include 
+COMMON_INCDIR = $(PYCODEGEN)/Common/include
 
 RM = rm -f
 FILES_TO_CLEAN = *.o $(MODEL)
@@ -19,7 +20,7 @@ OBJSSTAN = $(MAIN).o $(MODEL).o $(ADD_FILES)
 
 LIB = $(LIBDIR)/libpyblk.a $(FMILIB)
 
-CFLAGS = $(CC_OPTIONS) -O2 -I$(INCDIR) $(C_FLAGS) -DMODEL=$(MODEL) 
+CFLAGS = $(CC_OPTIONS) -O2 -I$(INCDIR) -I$(COMMON_INCDIR) $(C_FLAGS) -DMODEL=$(MODEL) 
 
 $(MAIN).c: $(MAINDIR)/$(MAIN).c $(MODEL).c
 	cp $< .

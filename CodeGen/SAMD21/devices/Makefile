@@ -4,13 +4,16 @@ all: $(LIB)
 
 PYCODEGEN = $(PYSUPSICTRL)/CodeGen
 INODIR = $(ARDUINO_TOOLDIR)/packages/arduino/tools
+COMMON_DIR = $(PYCODEGEN)/Common
 
 SRCALL1 = $(wildcard *.cpp)
 OBJ1 = $(SRCALL1:.cpp=.o)
 SRCALL2 = $(wildcard *.c)
 OBJ2 = $(SRCALL2:.c=.o)
+SRCALL3 = $(wildcard $(COMMON_DIR)/common_dev/*.c)
+OBJ3 = $(notdir $(SRCALL3:.c=.o))
 
-OBJ = $(OBJ1) $(OBJ2)
+OBJ = $(OBJ1) $(OBJ2) $(OBJ3)
 
 # Directories
 # Tools
@@ -56,9 +59,13 @@ INCLUDES = \
 -I$(ARDUINO_DIR)/hardware/arduino/avr/cores/arduino \
 -I$(INODIR)/CMSIS/4.5.0/CMSIS/Include/ \
 -I$(INODIR)/CMSIS-Atmel/1.2.0/CMSIS/Device/ATMEL/ \
--I$(SAMD21_HOME)/include
+-I$(SAMD21_HOME)/include \
+-I$(PYSUPSICTRL)/CodeGen/Common/include
 
 %.o: %.c
+	$(GCC) $< $(CPU) $(GCC_FLAGS) $(DEFINES) $(INCLUDES) -o $@
+
+%.o: $(COMMON_DIR)/common_dev/%.c
 	$(GCC) $< $(CPU) $(GCC_FLAGS) $(DEFINES) $(INCLUDES) -o $@
 
 %.o: %.cpp

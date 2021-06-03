@@ -1,0 +1,1 @@
+{"lib": "NuttX", "name": "serialOut", "ip": 1, "op": 0, "stin": 1, "stout": 0, "icon": "SERIAL", "params": "nuttxSerialOutBlk|Decimation:1"}

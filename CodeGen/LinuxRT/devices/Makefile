@@ -2,9 +2,19 @@ all: allfiles lib install
 reduced: files lib install
 
 LIB = libpyblk.a
-RTPYINC = ../include
+GENERIC_INC = $(PYSUPSICTRL)/CodeGen/Common/include
+TARGET_INC = ../include
+INCLUDE = -I$(GENERIC_INC) -I$(TARGET_INC)
+COMMON_DIR = $(PYSUPSICTRL)/CodeGen/Common
+
 SRCALL = $(wildcard *.c)
-OBJ = $(SRCALL:.c=.o)
+SRCALL += $(wildcard $(COMMON_DIR)/CAN_dev/*.c)
+SRCALL += $(wildcard $(COMMON_DIR)/common_dev/*.c)
+SRCALL += $(wildcard $(COMMON_DIR)/Faulhaber_dev/*.c)
+SRCALL += $(wildcard $(COMMON_DIR)/Maxon_dev/*.c)
+
+OBJ = $(notdir $(SRCALL:.c=.o))
+
 CWD = $(shell pwd)
 FMUDIR = ../fmu
 
@@ -13,9 +23,9 @@ DBG = -g
 
 OBJEX = $(SRC:.c=.o)
 DEFINES = -D PLOTTER_SCRIPT=\"$(CWD)/scope.py\"
-CC_FLAGS = -c $(DBG) -I$(RTPYINC) 
-CC_FLAGS_SCP = -c $(DBG) -I$(RTPYINC)  $(DEFINES)
-CC_FLAGS_FMU = -c $(DBG) -I$(RTPYINC) -Wall -DFMI_COSIMULATION \
+CC_FLAGS = -c $(DBG) $(INCLUDE) 
+CC_FLAGS_SCP = -c $(DBG) $(INCLUDE)  $(DEFINES)
+CC_FLAGS_FMU = -c $(DBG) $(INCLUDE) -Wall -DFMI_COSIMULATION \
                              -DSTANDALONE_XML_PARSER -DLIBXML_STATIC \
                               -I$(FMUDIR)/fmuinc/include -I$(FMUDIR)/fmuinc/parser -I$(FMUDIR)/fmuinc
 
@@ -32,6 +42,18 @@ FMUinterface.o: FMUinterface.c
 	cc $(CC_FLAGS_FMU) $<
 
 %.o: %.c
+	cc $(CC_FLAGS) $<
+
+%.o: $(COMMON_DIR)/CAN_dev/%.c
+	cc $(CC_FLAGS) $<
+
+%.o: $(COMMON_DIR)/common_dev/%.c
+	cc $(CC_FLAGS) $<
+
+%.o: $(COMMON_DIR)/Faulhaber_dev/%.c
+	cc $(CC_FLAGS) $<
+
+%.o: $(COMMON_DIR)/Maxon_dev/%.c
 	cc $(CC_FLAGS) $<
 
 lib: $(OBJ)

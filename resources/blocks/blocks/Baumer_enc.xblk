@@ -1,1 +1,0 @@
-{"lib": "can generic", "name": "Baumer_enc", "ip": 0, "op": 1, "stin": 0, "stout": 0, "icon": "ENC", "params": "baumer_EncBlk|Can dev:'/dev/pcan32'|Device ID: 0x01|Resolution: 500|Encoder reset (1->Yes, 0->No):1"}

@@ -59,7 +59,9 @@ INCLUDES = \
 -I$(ARDUINO_DIR)/hardware/arduino/acr/cores/arduino \
 -I$(INODIR)/CMSIS/4.5.0/CMSIS/Include/ \
 -I$(INODIR)/CMSIS-Atmel/1.2.0/CMSIS/Device/ATMEL/ \
--I$(SAMD21_HOME)/include
+-I$(SAMD21_HOME)/include \
+-I$(PYCODEGEN)/Common/include
+
 
 LD_FLAG1 = -Os -Wl,--gc-sections -save-temps
 LD_FLAG2 = -mthumb -Wl,--cref -Wl,--check-sections -Wl,--gc-sections -Wl,--unresolved-symbols=report-all \
