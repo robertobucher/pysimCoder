@@ -45,7 +45,15 @@ ifeq ($(CONFIG_SENSORS_QENCODER),y)
 SRCALL += nuttxENC.c
 endif
 
+have_can =
 ifeq ($(CONFIG_CAN),y)
+	have_can = yes
+endif
+ifeq ($(CONFIG_NET_CAN),y)
+	have_can = yes
+endif
+
+ifdef have_can
 SRCALL += canopen.c \
 baumer_encoder.c \
 maxon_encoder.c  \
