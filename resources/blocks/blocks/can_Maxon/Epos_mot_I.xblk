@@ -1,0 +1,1 @@
+{"lib": "can Maxon", "name": "Epos_mot_I", "ip": 1, "op": 0, "stin": 0, "stout": 0, "icon": "MOT_I", "params": "epos_MotIBlk|Can dev:'/dev/pcan32'|Device ID: 0x01"}

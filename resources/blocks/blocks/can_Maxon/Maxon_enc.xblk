@@ -1,0 +1,1 @@
+{"lib": "can Maxon", "name": "Maxon_enc", "ip": 0, "op": 1, "stin": 0, "stout": 0, "icon": "ENC", "params": "maxon_EncBlk|Can dev:'/dev/pcan32'|Device ID: 0x01|Resolution: 1000"}

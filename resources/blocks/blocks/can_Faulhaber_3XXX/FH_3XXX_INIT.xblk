@@ -1,0 +1,1 @@
+{"lib": "can Faulhaber 3XXX", "name": "FH_3XXX_INIT", "ip": 0, "op": 0, "stin": 0, "stout": 0, "icon": "FH_3XXX_INIT", "params": "FH_3XXX_INIT_Blk|Can dev:'/dev/pcan32'|Device ID: 0x01|Pos. Prop. gain:0|Pos. Deriv. gain:0|Prop. gain:0|Integ. gain:0| Encoder reset (1->Yes, 0->No):1"}
