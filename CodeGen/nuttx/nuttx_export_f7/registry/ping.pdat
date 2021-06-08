@@ -1,0 +1,1 @@
+int ping_main(int argc, char *argv[]);

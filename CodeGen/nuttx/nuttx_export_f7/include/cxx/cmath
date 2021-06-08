@@ -1,0 +1,127 @@
+//***************************************************************************
+// include/cxx/cmath
+//
+// Licensed to the Apache Software Foundation (ASF) under one or more
+// contributor license agreements.  See the NOTICE file distributed with
+// this work for additional information regarding copyright ownership.  The
+// ASF licenses this file to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance with the
+// License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+// WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+// License for the specific language governing permissions and limitations
+// under the License.
+//
+//***************************************************************************
+
+#ifndef __INCLUDE_CXX_CMATH
+#define __INCLUDE_CXX_CMATH
+
+//***************************************************************************
+// Included Files
+//***************************************************************************
+
+#include <nuttx/config.h>
+#include <nuttx/compiler.h>
+
+#include <math.h>
+
+//***************************************************************************
+// Namespace
+//***************************************************************************
+
+namespace std
+{
+  using ::float_t;
+  using ::double_t;
+
+#ifdef CONFIG_HAVE_FLOAT
+  using ::acosf;
+  using ::asinf;
+  using ::atanf;
+  using ::atan2f;
+  using ::ceilf;
+  using ::cosf;
+  using ::coshf;
+  using ::expf;
+  using ::fabsf;
+  using ::floorf;
+  using ::fmodf;
+  using ::frexpf;
+  using ::ldexpf;
+  using ::logf;
+  using ::log10f;
+  using ::log2f;
+  using ::modff;
+  using ::roundf;
+  using ::powf;
+  using ::sinf;
+  using ::sinhf;
+  using ::sqrtf;
+  using ::tanf;
+  using ::tanhf;
+  using ::gamma;
+  using ::lgamma;
+#endif
+
+#ifdef CONFIG_HAVE_DOUBLE
+  using ::acos;
+  using ::asin;
+  using ::atan;
+  using ::atan2;
+  using ::ceil;
+  using ::cos;
+  using ::cosh;
+  using ::exp;
+  using ::fabs;
+  using ::floor;
+  using ::fmod;
+  using ::frexp;
+  using ::ldexp;
+  using ::log;
+  using ::log10;
+  using ::log2;
+  using ::modf;
+  using ::round;
+  using ::pow;
+  using ::sin;
+  using ::sinh;
+  using ::sqrt;
+  using ::tan;
+  using ::tanh;
+#endif
+
+#ifdef CONFIG_HAVE_LONG_DOUBLE
+  using ::acosl;
+  using ::asinl;
+  using ::atanl;
+  using ::atan2l;
+  using ::ceill;
+  using ::cosl;
+  using ::coshl;
+  using ::expl;
+  using ::fabsl;
+  using ::floorl;
+  using ::fmodl;
+  using ::frexpl;
+  using ::ldexpl;
+  using ::logl;
+  using ::log10l;
+  using ::log2l;
+  using ::modfl;
+  using ::roundl;
+  using ::powl;
+  using ::sinl;
+  using ::sinhl;
+  using ::sqrtl;
+  using ::tanl;
+  using ::tanhl;
+#endif
+
+}
+
+#endif // __INCLUDE_CXX_CMATH

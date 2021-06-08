@@ -1,0 +1,35 @@
+ARCHCFLAGS       = -fno-builtin
+ARCHCPUFLAGS     = -mcpu=cortex-m7 -mthumb -mfpu=fpv5-d16 -mfloat-abi=hard
+ARCHCXXFLAGS     = -fno-builtin -fno-exceptions -fcheck-new -fno-rtti
+ARCHPICFLAGS     = -fpic -msingle-pic-base -mpic-register=r10
+ARCHWARNINGS     = -Wall -Wstrict-prototypes -Wshadow -Wundef
+ARCHWARNINGSXX   = -Wall -Wshadow -Wundef
+ARCHOPTIMIZATION = -g
+CROSSDEV         = arm-none-eabi-
+CC               = arm-none-eabi-gcc
+CXX              = arm-none-eabi-g++
+CPP              = arm-none-eabi-gcc -E -P -x c
+LD               = arm-none-eabi-ld
+AR               = arm-none-eabi-ar rcs
+NM               = arm-none-eabi-nm
+STRIP            = arm-none-eabi-strip --strip-unneeded
+OBJCOPY          = arm-none-eabi-objcopy
+OBJDUMP          = arm-none-eabi-objdump
+NXFLATLDFLAGS1   = -r -d -warn-common
+NXFLATLDFLAGS2   = -r -d -warn-common -T/home/bucher/sviluppo/NUTTX/nuttx/binfmt/libnxflat/gnu-nxflat-pcrel.ld -no-check-sections
+OBJEXT           = .o
+LIBEXT           = .a
+EXEEXT           = 
+HOSTCC           = cc
+HOSTINCLUDES     = 
+HOSTCFLAGS       = -O2 -Wall -Wstrict-prototypes -Wshadow -DHAVE_STRTOK_C=1
+HOSTLDFLAGS      = 
+HOSTEXEEXT       = 
+LDNAME           = flash.ld
+EXTRA_LIBS       = -lgcc
+EXTRA_OBJS       = 
+HEAD_OBJ         = 
+LDENDGROUP       = 
+LDFLAGS          = -nostartfiles -nodefaultlibs -g
+LDSTARTGROUP     = 
+LDLIBS           = -lsched -ldrivers -lboards -lc -lmm -larch -lxx -lapps -lnet -lfs -lbinfmt -lboard 

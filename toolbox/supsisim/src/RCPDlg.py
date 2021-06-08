@@ -35,11 +35,11 @@ class BlkDlg(QDialog):
         self.setLayout(grid)
 
     def blkHelp(self):
-        fn = respath + 'blocks/rcpBlk/' + self.fname + '.hlp'
+        fn = respath + 'blocks/rcpBlk/help/' + self.fname + '.hlp'
         try:
             f = open(fn,'r')
         except:
-            f = open(respath + 'blocks/rcpBlk/noHelp.hlp', 'r')
+            f = open(respath + 'blocks/rcpBlk/help/noHelp.hlp', 'r')
         text = f.read()
         msg = QMessageBox(self)
         msg.setIcon(QMessageBox.Information)

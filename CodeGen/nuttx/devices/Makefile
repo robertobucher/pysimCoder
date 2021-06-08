@@ -20,7 +20,9 @@ include $(NUTTX_EXPORT)/scripts/Make.defs
 include $(NUTTX_EXPORT)/.config
 
 SRCALL = $(wildcard $(COMMON_DIR)/common_dev/*.c)
-SRCALL += toFile.c
+SRCALL += toFile.c \
+		   serialOut.c \
+		   UDPsocketTx.c
 
 ifeq ($(CONFIG_ADC),y)
 SRCALL += nuttx_Adc.c
