@@ -18,6 +18,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 
 #include <pyblock.h>
 #include <math.h>
+#include <string.h>
 
 void absV(int Flag, python_block *block)
 {
@@ -155,4 +156,56 @@ void trigo(int Flag, python_block *block)
     break;
   }
 }
+
+void rel(int Flag, python_block *block)
+{
+  double *y;
+  double *in1 = block->u[0];
+  double *in2 = block->u[1];
+  int u1 = (int) in1[0];
+  int u2 = (int) in2[0];
   
+  y = (double *) block->y[0];
+
+  switch(Flag){
+  case CG_OUT:
+  case CG_INIT:
+  case CG_END:
+    if (strcmp(block->str, "==") == 0)
+    {
+      if (u1 == u2) y[0] = 1;
+      else y[0] = 0;
+    }
+    else if((strcmp(block->str, "!=") == 0))
+    {
+      if (u1 != u2) y[0] = 1;
+      else y[0] = 0;
+    }
+    else if((strcmp(block->str, ">=") == 0))
+    {
+      if (u1 >= u2) y[0] = 1;
+      else y[0] = 0;
+    }
+    else if((strcmp(block->str, "<=") == 0))
+    {
+      if (u1 <= u2) y[0] = 1;
+      else y[0] = 0;
+    }
+    else if((strcmp(block->str, ">") == 0))
+    {
+      if (u1 > u2) y[0] = 1;
+      else y[0] = 0;
+    }
+    else if((strcmp(block->str, "<") == 0))
+    {
+      if (u1 < u2) y[0] = 1;
+      else y[0] = 0;
+    }
+    else
+    {
+      y[0] = 0;
+    }
+  default:
+    break;
+  }
+}

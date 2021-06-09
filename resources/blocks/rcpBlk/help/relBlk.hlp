@@ -1,0 +1,9 @@
+This block performs relational operation on two inputs
+
+Supported operations:
+    '=='    inputs are equal
+    '!='    inputs are not equal
+    '>='    input 1 is greater than or equal to input 2
+    '<='    input 1 is less than or equal to input 2
+    '>'     input 1 is greater than input 2
+    '<'     input 1 is less than input 2
