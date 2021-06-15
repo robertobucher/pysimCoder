@@ -31,8 +31,17 @@ include $(NUTTX_EXPORT)/scripts/Make.defs
 
 NUTTX_INCLUDES = -isystem $(NUTTX_EXPORT)/include
 
-SYSTEM_LIBS += --start-group $(LDLIBS) $(EXTRA_LIBS) --end-group
-ELF_MODULE_LIBS = --start-group $(EXTRA_LIBS) --end-group
+ifneq ($(filter -Wl%, $(NXFLATLDFLAGS1)$(NXFLATLDFLAGS2)),)
+GCC_LD_OPTION = -Wl,
+endif
+
+ifeq ($(LDSTARTGROUP),)
+LDSTARTGROUP = $(GCC_LD_OPTION)--start-group
+LDENDGROUP = $(GCC_LD_OPTION)--end-group
+endif
+
+SYSTEM_LIBS += $(LDSTARTGROUP) $(LDLIBS) $(EXTRA_LIBS) $(LDENDGROUP)
+ELF_MODULE_LIBS = $(LDSTARTGROUP) $(EXTRA_LIBS) $(LDENDGROUP)
 
 LDFLAGS += -L $(NUTTX_EXPORT)/libs
 
@@ -99,7 +108,7 @@ $(MAIN).c: $(MAINDIR)/$(MAIN).c $(MODEL).c
 	[ ! -e  $(ELF_FILE_LDSCRIPT) ] || \
 	$(LD) $(LDFLAGS) $(ADDITIONAL_LDFLAGS) -o $@ \
 	  -r -e main -T $(ELF_FILE_LDSCRIPT) \
-	  -Map $(1).elf.map \
+	  $(GCC_LD_OPTION)-Map $(GCC_LD_OPTION)$(1).elf.map \
 	  $(OBJSSTAN) $(LIB) $(LIBS) $(ELF_MODULE_LIBS)
 	@echo "### Created ELF loadable file: $(MODEL).elf"
 
