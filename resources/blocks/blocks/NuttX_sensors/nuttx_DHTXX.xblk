@@ -1,0 +1,1 @@
+{"lib": "NuttX Sensors", "name": "DHTXX", "ip": 0, "op": 2, "stin": 0, "stout": 0, "icon": "DHTXX", "params": "nuttx_DHTXXBlk|Port:'/dev/hum0'"}
