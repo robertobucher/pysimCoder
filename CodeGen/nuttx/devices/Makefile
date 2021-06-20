@@ -28,6 +28,10 @@ ifeq ($(CONFIG_ADC),y)
 SRCALL += nuttx_Adc.c
 endif
 
+ifeq ($(CONFIG_DAC),y)
+SRCALL += nuttx_DAC.c
+endif
+
 ifeq ($(CONFIG_PWM),y)
 SRCALL += nuttx_PWM.c
 endif
