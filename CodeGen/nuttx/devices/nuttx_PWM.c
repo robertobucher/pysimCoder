@@ -35,24 +35,40 @@ static int fd;
 static struct pwm_info_s info;
 static double freq;
 
+/****************************************************************************
+ * Name: init
+ *
+ * Description:
+ *   Open the device and set characteristics of PWM.
+ *
+ ****************************************************************************/
+
 static void init(python_block *block)
 {
   double * realPar = block->realPar;
-  int i;
   int ret;
-  
-  if(fd==0){
-    fd = open(block->str, O_RDONLY);
-    if(fd<0) {
-      fprintf(stderr, "Error opening device: %s\n", block->str);
-      exit(1);
-    }
-    freq = realPar[2];
-    
+
+  if (fd == 0)
+    {
+      fd = open(block->str, O_RDONLY);
+      if( fd < 0)
+        {
+          fprintf(stderr, "Error opening device: %s\n", block->str);
+          exit(1);
+        }
+  freq = realPar[2];
+
 #ifdef CONFIG_PWM_MULTICHAN
-    for(i=0; i<CONFIG_PWM_NCHANNELS;i++){
-      info.channels[i].channel = i;
-      info.channels[i].duty  = 0;
+  for (int i = 0; i < CONFIG_PWM_NCHANNELS; i++)
+    {
+      info.channels[i].channel = i + 1;
+      info.channels[i].duty = 0;
+    }
+  if (block->nin != CONFIG_PWM_NCHANNELS)
+    {
+      fprintf(stderr, "Number of inputs is not equal to number of channels\n");
+      close(fd);
+      exit(1);
     }
 #else
     info.duty = 0;
@@ -60,43 +76,59 @@ static void init(python_block *block)
   }
 
   info.frequency = freq;
-    
+
   ret = ioctl(fd, PWMIOC_SETCHARACTERISTICS,
               (unsigned long)((uintptr_t) &info));
-  
-  if (ret < 0) {
-    fprintf(stderr, "pwm_main: ioctl(PWMIOC_SETCHARACTERISTICS) failed\n");
-    close(fd);
-    exit(1);
-  }  
-  ret = ioctl(fd, PWMIOC_START, 0);  
-  if (ret < 0){
-    fprintf(stderr,"pwm_main: ioctl(PWMIOC_START) failed\n");
-    close(fd);
-    exit(1);
-  }
+  if (ret < 0)
+    {
+      fprintf(stderr, "pwm_main: ioctl(PWMIOC_SETCHARACTERISTICS) failed\n");
+      close(fd);
+      exit(1);
+    }
+
+  ret = ioctl(fd, PWMIOC_START, 0);
+  if (ret < 0)
+    {
+      fprintf(stderr,"pwm_main: ioctl(PWMIOC_START) failed\n");
+      close(fd);
+      exit(1);
+    }
 }
+
+/****************************************************************************
+ * Name: inout
+ *
+ * Description:
+ *   Compute and set PWM duty cycle based on input value.
+ *
+ ****************************************************************************/
 
 static void inout(python_block *block)
 {
   double * realPar = block->realPar;
-  int * intPar    = block->intPar;
-  int ch = intPar[0];
-  double *u = block->u[0];
+  double *val;
   int ret;
-  
-  double val = u[0];
-  if (val>realPar[1]) val = realPar[1];
-  if (val<realPar[0]) val = realPar[0];
-   
-  double value = mapD2wD(val, realPar[0], realPar[1]);
+
   info.frequency = freq;
 #ifdef CONFIG_PWM_MULTICHAN
-  info.channels[ch].duty = (uint32_t) (value*RANGE);
+  for (int i = 0; i < CONFIG_PWM_NCHANNELS; i++)
+    {
+      val = (double *) block->u[i];
+      if (val[0]>realPar[1]) val[0] = realPar[1];
+      if (val[0]<realPar[0]) val[0] = realPar[0];
+
+      double value = mapD2wD(val[0], realPar[0], realPar[1]);
+      info.channels[block->intPar[i] - 1].duty = (uint32_t) (value*RANGE);
+    }
 #else
+  val = (double *) block->u[0];
+  if (val[0]>realPar[1]) val[0] = realPar[1];
+  if (val[0]<realPar[0]) val[0] = realPar[0];
+
+  double value = mapD2wD(val[0], realPar[0], realPar[1]);
   info.duty = (uint32_t) (value*RANGE);
 #endif
-  
+
   ret = ioctl(fd, PWMIOC_SETCHARACTERISTICS,
               (unsigned long)((uintptr_t) &info));
   if (ret < 0) {
@@ -104,25 +136,47 @@ static void inout(python_block *block)
 	   errno);
     close(fd);
     exit(1);
-  }  
+  }
 }
+
+/****************************************************************************
+ * Name: end
+ *
+ * Description:
+ *   Stop PWM pulse and close the device.
+ *
+ ****************************************************************************/
 
 static void end(python_block *block)
 {
+  int ret = ioctl(fd, PWMIOC_STOP, 0);
+  if (ret < 0)
+    {
+      fprintf(stderr, "pwm_main: ioctl(PWMIOC_STOP) failed: %d\n", errno);
+      close(fd);
+      exit(1);
+    }
+
   close(fd);
 }
+
+/****************************************************************************
+ * Name: nuttx_PWM
+ *
+ * Description:
+ *   Call needed function based on input flag.
+ *
+ ****************************************************************************/
 
 void nuttx_PWM(int flag, python_block *block)
 {
   if (flag==CG_OUT){          /* get input */
     inout(block);
   }
-  else if (flag==CG_END){     /* termination */ 
+  else if (flag==CG_END){     /* termination */
     end(block);
   }
-  else if (flag ==CG_INIT){    /* initialisation */
+  else if (flag ==CG_INIT){   /* initialisation */
     init(block);
   }
 }
-
-

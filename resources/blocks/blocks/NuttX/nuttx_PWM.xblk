@@ -1,1 +1,1 @@
-{"lib": "NuttX", "name": "PWM", "ip": 1, "op": 0, "stin": 0, "stout": 0, "icon": "PWM", "params": "nuttx_PWMBlk|Port:'/dev/pwm2'|channel: 1| PWM freq [Hz]:10000|Umin [V]:0.0|Umax [V]:100.0"}
+{"lib": "NuttX", "name": "PWM", "ip": 1, "op": 0, "stin": 1, "stout": 0, "icon": "PWM", "params": "nuttx_PWMBlk|Port:'/dev/pwm2'|channels: [1]|PWM freq [Hz]:10000|Umin [V]:0.0|Umax [V]:100.0"}
