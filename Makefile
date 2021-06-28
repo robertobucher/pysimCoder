@@ -5,6 +5,7 @@ BINDIR = /usr/local/bin
 CURDIR = $(shell pwd)
 CWD = $(shell pwd)
 PYCTL = export PYSUPSICTRL=$(CWD)
+PYSUPSICTRL=$(shell pwd)
 
 addfiles: control slycot
 
