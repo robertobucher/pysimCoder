@@ -1,0 +1,1 @@
+{"lib": "nonlin", "name": "Output Switch", "ip": 2, "op": 2, "stin": 0, "stout": 0, "icon": "SWITCH_OUT", "params": "switchOutBlk|Compare Value: 0.5"}
