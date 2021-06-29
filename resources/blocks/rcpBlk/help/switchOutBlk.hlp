@@ -1,0 +1,3 @@
+This block decides which output is used based on the value in input 2. If this value is greater than "Compare" value set in block´s parameters, then input 1 is routed to output 2 and vice versa.
+
+Zero value is written to the output that is not currently used.
