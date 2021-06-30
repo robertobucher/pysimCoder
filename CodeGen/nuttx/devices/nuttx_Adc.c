@@ -33,10 +33,11 @@
 #define NCHANNELS 3          /* the same as in board/xxxx_adc.c  */
 #define ADC_RES 4095
 
-static int fd;
-
 static void init(python_block *block)
 {
+  int * intPar = block->intPar;
+  int fd = intPar[1];
+
   if(fd==0){
     fd = open(block->str, O_RDONLY);
     if(fd<0) {
@@ -44,6 +45,8 @@ static void init(python_block *block)
       exit(1);
     }
   }
+
+  intPar[1] = fd;
 }
 
 static void inout(python_block *block)
@@ -53,6 +56,7 @@ static void inout(python_block *block)
   double *y = block->y[0];
   int ret;
   int ch = intPar[0];
+  int fd = intPar[1];
   int readsize = NCHANNELS*sizeof(struct adc_msg_s);
   int nbytes;
   
