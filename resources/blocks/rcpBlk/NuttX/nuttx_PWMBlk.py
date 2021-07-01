@@ -23,5 +23,7 @@ def nuttx_PWMBlk(pin, port, ch, freq, umin, umax):
     if(size(pin) != size(ch)):
         raise ValueError("Number of inputs (%i) should match number of channels (%i)" % (size(pin),size(ch)))
 
+    ch.append(0)
+
     blk = RCPblk('nuttx_PWM', pin, [], [0,0], 1, [umin, umax, freq], ch, port)
     return blk

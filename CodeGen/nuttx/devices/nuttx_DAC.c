@@ -31,9 +31,6 @@
 
 #include <nuttx/analog/dac.h>
 
-static int fd;
-static bool initialized = false;
-
 /****************************************************************************
  * Name: init
  *
@@ -44,7 +41,10 @@ static bool initialized = false;
 
 static void init(python_block *block)
 {
-  if (!initialized)
+  int * intPar = block->intPar;
+  int fd = intPar[1];
+
+  if (fd == 0)
     {
       fd = open(block->str, O_WRONLY | O_NONBLOCK);
       if (fd < 0)
@@ -52,9 +52,9 @@ static void init(python_block *block)
           fprintf(stderr, "Error opening device: %s\n", block->str);
           exit(1);
         }
-
-      initialized = true;
     }
+
+  intPar[1] = fd;
 }
 
 /****************************************************************************
@@ -74,6 +74,7 @@ static void inout(python_block *block)
 
   int data  = (int)u[0];
   int channel = intPar[0];
+  int fd = intPar[1];
 
   msgs[0].am_channel = channel;
   msgs[0].am_data = data;

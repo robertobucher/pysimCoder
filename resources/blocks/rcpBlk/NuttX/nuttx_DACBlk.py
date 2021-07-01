@@ -18,5 +18,5 @@ def nuttx_DACBlk(pin, port, channel):
 
     """
 
-    blk = RCPblk('nuttx_DAC', pin, [], [0,0], 1, [], [channel], port)
+    blk = RCPblk('nuttx_DAC', pin, [], [0,0], 1, [], [channel, 0], port)
     return blk

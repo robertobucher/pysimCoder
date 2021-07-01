@@ -18,5 +18,5 @@ def nuttx_AdcBlk(pout, devname, ch, umin, umax):
 
     """
 
-    blk = RCPblk('nuttx_Adc', [], pout, [0,0], 0, [umin, umax], [ch-1], devname)
+    blk = RCPblk('nuttx_Adc', [], pout, [0,0], 0, [umin, umax], [ch-1, 0], devname)
     return blk

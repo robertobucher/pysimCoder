@@ -31,10 +31,6 @@
 
 #define RANGE   65536
 
-static int fd;
-static struct pwm_info_s info;
-static double freq;
-
 /****************************************************************************
  * Name: init
  *
@@ -46,7 +42,13 @@ static double freq;
 static void init(python_block *block)
 {
   double * realPar = block->realPar;
+  struct pwm_info_s info;
   int ret;
+#ifdef CONFIG_PWM_MULTICHAN
+  int fd = block->intPar[CONFIG_PWM_NCHANNELS];
+#else
+  int fd = block->intPar[1];
+#endif
 
   if (fd == 0)
     {
@@ -56,7 +58,6 @@ static void init(python_block *block)
           fprintf(stderr, "Error opening device: %s\n", block->str);
           exit(1);
         }
-  freq = realPar[2];
 
 #ifdef CONFIG_PWM_MULTICHAN
   for (int i = 0; i < CONFIG_PWM_NCHANNELS; i++)
@@ -75,7 +76,7 @@ static void init(python_block *block)
 #endif
   }
 
-  info.frequency = freq;
+  info.frequency = realPar[2];
 
   ret = ioctl(fd, PWMIOC_SETCHARACTERISTICS,
               (unsigned long)((uintptr_t) &info));
@@ -93,6 +94,14 @@ static void init(python_block *block)
       close(fd);
       exit(1);
     }
+
+#ifdef CONFIG_PWM_MULTICHAN
+  block->intPar[CONFIG_PWM_NCHANNELS] = fd;
+#else
+  block->intPar[1] = fd;
+#endif
+
+  block->ptrPar = (void *) &info;
 }
 
 /****************************************************************************
@@ -105,12 +114,14 @@ static void init(python_block *block)
 
 static void inout(python_block *block)
 {
+  struct pwm_info_s *info = (struct pwm_info_s *)block->ptrPar;
   double * realPar = block->realPar;
   double *val;
   int ret;
 
-  info.frequency = freq;
+  info->frequency = realPar[2];
 #ifdef CONFIG_PWM_MULTICHAN
+  int fd = block->intPar[CONFIG_PWM_NCHANNELS];
   for (int i = 0; i < CONFIG_PWM_NCHANNELS; i++)
     {
       val = (double *) block->u[i];
@@ -118,19 +129,19 @@ static void inout(python_block *block)
       if (val[0]<realPar[0]) val[0] = realPar[0];
 
       double value = mapD2wD(val[0], realPar[0], realPar[1]);
-      info.channels[block->intPar[i] - 1].duty = (uint32_t) (value*RANGE);
+      info->channels[block->intPar[i] - 1].duty = (uint32_t) (value*RANGE);
     }
 #else
+  int fd = block->intPar[1];
   val = (double *) block->u[0];
   if (val[0]>realPar[1]) val[0] = realPar[1];
   if (val[0]<realPar[0]) val[0] = realPar[0];
 
   double value = mapD2wD(val[0], realPar[0], realPar[1]);
-  info.duty = (uint32_t) (value*RANGE);
+  info->duty = (uint32_t) (value*RANGE);
 #endif
 
-  ret = ioctl(fd, PWMIOC_SETCHARACTERISTICS,
-              (unsigned long)((uintptr_t) &info));
+  ret = ioctl(fd, PWMIOC_SETCHARACTERISTICS, (unsigned long)((uintptr_t)info));
   if (ret < 0) {
     fprintf(stderr,"pwm_main: ioctl(PWMIOC_SETCHARACTERISTICS) failed: %d\n",
 	   errno);
@@ -149,6 +160,12 @@ static void inout(python_block *block)
 
 static void end(python_block *block)
 {
+#ifdef CONFIG_PWM_MULTICHAN
+  int fd = block->intPar[CONFIG_PWM_NCHANNELS];
+#else
+  int fd = block->intPar[1];
+#endif
+
   int ret = ioctl(fd, PWMIOC_STOP, 0);
   if (ret < 0)
     {
