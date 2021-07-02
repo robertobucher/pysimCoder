@@ -1,0 +1,1 @@
+{"lib": "linear", "name": "Discrete PID", "ip": 1, "op": 1, "stin": 0, "stout": 0, "icon": "PID", "params": "discretePIDBlk|Proportional gain: 1|Integral gain: 1|Derivative gain: 1|Min value: -3.3|Max value: 3.3"}

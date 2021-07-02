@@ -21,8 +21,7 @@ include $(NUTTX_EXPORT)/.config
 
 SRCALL = $(wildcard $(COMMON_DIR)/common_dev/*.c)
 SRCALL += toFile.c \
-		   serialOut.c \
-		   UDPsocketTx.c
+		   serialOut.c
 
 ifeq ($(CONFIG_ADC),y)
 SRCALL += nuttx_Adc.c
@@ -47,6 +46,14 @@ endif
 
 ifeq ($(CONFIG_SENSORS_DHTXX),y)
 SRCALL += sensors/nuttxDHTXX.c
+endif
+
+ifeq ($(CONFIG_NET_TCP),y)
+SRCALL += TCPsocketTx.c
+endif
+
+ifeq ($(CONFIG_NET_UDP),y)
+SRCALL += UDPsocketTx.c
 endif
 
 have_can =
