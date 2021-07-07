@@ -162,8 +162,8 @@ void rel(int Flag, python_block *block)
   double *y;
   double *in1 = block->u[0];
   double *in2 = block->u[1];
-  int u1 = (int) in1[0];
-  int u2 = (int) in2[0];
+  double u1 = in1[0];
+  double u2 = in2[0];
   
   y = (double *) block->y[0];
 
