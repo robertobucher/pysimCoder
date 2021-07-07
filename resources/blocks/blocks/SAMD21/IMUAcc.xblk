@@ -1,1 +1,1 @@
-{"lib": "SAMD21", "name": "IMUAcc", "ip": 0, "op": 3, "stin": 0, "stout": 0, "icon": "IMU", "params": "ImuAccBlk"}
+{"lib": "SAMD21", "name": "IMUAcc", "ip": 0, "op": 3, "stin": 0, "stout": 0, "icon": "IMU", "params": "ImuAccBlk", "help": " No help available for this block"}

@@ -121,6 +121,7 @@ class MainWindow(QMainWindow, form_class):
             self.spSettable.setCheckState(Qt.Unchecked)
             self.edIcon.setText('')
             self.edFun.setText('')
+            self.helpText = ''
             self.filename = ''
             self.cleanGrid()
             
@@ -148,6 +149,7 @@ class MainWindow(QMainWindow, form_class):
                     
             self.edIcon.setText(d['icon'])
             self.params2grid(d['params'])
+            self.helpText.setText(d['help'])
 
     def saveFile(self):
         params = self.grid2params()
@@ -162,6 +164,7 @@ class MainWindow(QMainWindow, form_class):
         if self.filename != '':
             d = self.getFields()
             d['params'] = params
+            d['help'] = self.helpText.document(). toPlainText()
             js = json.dumps(d)
             f = open(self.filename,'w')
             f.write(js)
@@ -179,6 +182,7 @@ class MainWindow(QMainWindow, form_class):
         if self.filename != '':
             d = self.getFields()
             d['params'] = params
+            d['help'] = self.helpText.document(). toPlainText()
             js = json.dumps(d)
             f = open(self.filename,'w')
             f.write(js)
@@ -217,7 +221,6 @@ class MainWindow(QMainWindow, form_class):
             
         d['icon'] = self.edIcon.text().__str__()
         return d
-        
  
 app = QApplication(sys.argv)
 frame = MainWindow()

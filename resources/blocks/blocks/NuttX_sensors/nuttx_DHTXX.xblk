@@ -1,1 +1,1 @@
-{"lib": "NuttX Sensors", "name": "DHTXX", "ip": 0, "op": 2, "stin": 0, "stout": 0, "icon": "DHTXX", "params": "nuttx_DHTXXBlk|Port:'/dev/hum0'"}
+{"lib": "NuttX Sensors", "name": "DHTXX", "ip": 0, "op": 2, "stin": 0, "stout": 0, "icon": "DHTXX", "params": "nuttx_DHTXXBlk|Port:'/dev/hum0'", "help": "Block for DHT22 and DHT11 sensors.\n\nOutput 1: humidity\nOutput 2: temperture\n\nParameters\nPort : device name (ex. '/dev/hum0')\n"}

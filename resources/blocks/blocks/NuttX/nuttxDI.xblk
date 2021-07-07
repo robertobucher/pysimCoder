@@ -1,1 +1,1 @@
-{"lib": "NuttX", "name": "DI", "ip": 0, "op": 1, "stin": 0, "stout": 0, "icon": "DI", "params": "nuttxDIBlk|Port:'/dev/gpin0'"}
+{"lib": "NuttX", "name": "DI", "ip": 0, "op": 1, "stin": 0, "stout": 0, "icon": "DI", "params": "nuttxDIBlk|Port:'/dev/gpin0'", "help": "Parameters\nPort: device associated to the digital input\n\n"}

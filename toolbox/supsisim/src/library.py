@@ -108,7 +108,7 @@ class Library(QMainWindow):
                 
             stbin = (el['stin'] == 1)
             stbout = (el['stout'] == 1)
-            b = Block(None, diagram, el['name'], el['ip'], el['op'], stbin, stbout, el['icon'], el['params'], w, False)
+            b = Block(None, diagram, el['name'], el['ip'], el['op'], stbin, stbout, el['icon'], el['params'], el['help'], w, False)
             px = (i-1) % 2
             py = (i-1)/2
             b.setPos(px*150,py*200)

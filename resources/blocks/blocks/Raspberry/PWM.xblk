@@ -1,1 +1,1 @@
-{"lib": "Raspberry", "name": "PWM", "ip": 1, "op": 0, "stin": 0, "stout": 0, "icon": "PWM", "params": "pwmBlk|Channel:0|Umin [V]:0.0|Umax [V]:5.0"}
+{"lib": "Raspberry", "name": "PWM", "ip": 1, "op": 0, "stin": 0, "stout": 0, "icon": "PWM", "params": "pwmBlk|Channel:0|Umin [V]:0.0|Umax [V]:5.0", "help": "This block implement the PWM output for a Raspberry PI uC\n\nThe input must be between -5 and 5.\n\n\n\n"}

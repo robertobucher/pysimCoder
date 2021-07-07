@@ -1,1 +1,1 @@
-{"lib": "SAMD21", "name": "brikiEcho", "ip": 0, "op": 1, "stin": 0, "stout": 0, "icon": "ECHO", "params": "brikiEchoBlk|Trigger Pin:11|Echo Pin:13"}
+{"lib": "SAMD21", "name": "brikiEcho", "ip": 0, "op": 1, "stin": 0, "stout": 0, "icon": "ECHO", "params": "brikiEchoBlk|Trigger Pin:11|Echo Pin:13", "help": "This block implements the \"echo\" function on an Arduino system.\n\nParameters:\nTrigger Pin\nEcho Pin\n\nBoth are digital I/O."}

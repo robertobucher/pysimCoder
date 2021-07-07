@@ -1,1 +1,1 @@
-{"lib": "comedi", "name": "DO", "ip": 1, "op": 0, "stin": 0, "stout": 0, "icon": "DO", "params": "comediDOBlk|Device: '/dev/comedi0'|Channel: 0|Threshold: 1.0"}
+{"lib": "comedi", "name": "DO", "ip": 1, "op": 0, "stin": 0, "stout": 0, "icon": "DO", "params": "comediDOBlk|Device: '/dev/comedi0'|Channel: 0|Threshold: 1.0", "help": "Implementation of a COMEDI digital output interface\n\nParameters:\nDevice, channel and threshold for output \"1\"\n\nFor more details get the COMEDI documentation (www.comedi.org)\n\n"}

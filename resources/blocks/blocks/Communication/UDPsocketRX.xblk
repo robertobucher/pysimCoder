@@ -1,1 +1,1 @@
-{"lib": "Communication", "name": "UDPsocketRx", "ip": 0, "op": 1, "stin": 0, "stout": 1, "icon": "UDPSOCK", "params": "UDPsocketRxBlk|IP Addr: '0.0.0.0'| Port:5000"}
+{"lib": "Communication", "name": "UDPsocketRx", "ip": 0, "op": 1, "stin": 0, "stout": 1, "icon": "UDPSOCK", "params": "UDPsocketRxBlk|IP Addr: '0.0.0.0'| Port:5000", "help": "This block implements a UDP socket, which can receive signals from a client and put them into the block diagram.\n\nParameters:\nIP address of sender (or \"0.0.0.0\" for all)\nPort\n"}

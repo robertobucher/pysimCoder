@@ -1,1 +1,1 @@
-{"lib": "STM32H7", "name": "USB_OTG_In", "ip": 0, "op": 1, "stin": 0, "stout": 1, "icon": "SERIAL", "params": "USB_OTG_InBlk|Default outputs:[0.]"}
+{"lib": "STM32H7", "name": "USB_OTG_In", "ip": 0, "op": 1, "stin": 0, "stout": 1, "icon": "SERIAL", "params": "USB_OTG_InBlk|Default outputs:[0.]", "help": "Parameters\n\nDefault output: the output before arriving of data\n"}

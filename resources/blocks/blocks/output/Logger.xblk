@@ -1,1 +1,1 @@
-{"lib": "output", "name": "Logger", "ip": 1, "op": 0, "stin": 1, "stout": 0, "icon": "TOFILE", "params": "loggerBlk|Log file:'log_file'"}
+{"lib": "output", "name": "Logger", "ip": 1, "op": 0, "stin": 1, "stout": 0, "icon": "TOFILE", "params": "loggerBlk|Log file:'log_file'", "help": "This block implements a logger method fro data from the block diagram into the \"log file\"\n"}

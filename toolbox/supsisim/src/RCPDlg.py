@@ -7,10 +7,11 @@ from PyQt5.QtCore import Qt
 from supsisim.const import pyrun, respath
 
 class BlkDlg(QDialog):
-    def __init__(self, line):
+    def __init__(self, line, helpTxt):
         super(BlkDlg, self).__init__(None)
         grid = QGridLayout()
         self.line = line
+        self.helpTxt = helpTxt
         self.blkID = ''
         self.labels, self.params = self.parseParams(line)
         self.setWindowTitle(self.blkID)
@@ -35,12 +36,17 @@ class BlkDlg(QDialog):
         self.setLayout(grid)
 
     def blkHelp(self):
-        fn = respath + 'blocks/rcpBlk/help/' + self.fname + '.hlp'
-        try:
-            f = open(fn,'r')
-        except:
-            f = open(respath + 'blocks/rcpBlk/help/noHelp.hlp', 'r')
-        text = f.read()
+        if self.helpTxt is None:
+            fn = respath + 'blocks/rcpBlk/help/' + self.fname + '.hlp'
+            try:
+                f = open(fn,'r')
+            except:
+                f = open(respath + 'blocks/rcpBlk/help/noHelp.hlp', 'r')
+            text = f.read()
+            f.close()
+        else:
+            text = self.helpTxt.replace('\\n','\n')
+            
         msg = QMessageBox(self)
         msg.setIcon(QMessageBox.Information)
         msg.setWindowTitle('Help for ' + self.fname)
@@ -69,9 +75,9 @@ class BlkDlg(QDialog):
             self.line += '|' + self.labels[n] +': ' + str(self.Values[n].text())
         super(BlkDlg, self).accept()
 
-def parsDialog(pars):
+def parsDialog(pars, helpT):
     #app = app = QApplication(sys.argv)
-    dialog = BlkDlg(pars)
+    dialog = BlkDlg(pars, helpT)
     res = dialog.exec_()
     return dialog.line
 

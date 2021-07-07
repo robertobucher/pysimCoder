@@ -1,1 +1,1 @@
-{"lib": "NuttX", "name": "DAC", "ip": 1, "op": 0, "stin": 0, "stout": 0, "icon": "DAC", "params": "nuttx_DACBlk|Port:'/dev/dac0'|Channel:0"}
+{"lib": "NuttX", "name": "DAC", "ip": 1, "op": 0, "stin": 0, "stout": 0, "icon": "DAC", "params": "nuttx_DACBlk|Port:'/dev/dac0'|Channel:0", "help": " No help available for this block"}

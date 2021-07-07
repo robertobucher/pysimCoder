@@ -388,13 +388,15 @@ class NewEditorMainWindow(QMainWindow):
         params = item.params
         insetble = item.insetble
         outsetble = item.outsetble
+        helpTxt = item.helpTxt
         width = item.width
         res = dialog.exec_()
         if res == 1 and (insetble or outsetble):
             item.remove()
             inp = dialog.spbInput.value()
             outp = dialog.spbOutput.value()
-            b = Block(None, self.scene, name, inp, outp, insetble, outsetble, icon, params, width, flip)
+            b = Block(None, self.scene, name, inp, outp, insetble, outsetble,
+                      icon, params, helpTxt, width, flip)
             b.setPos(self.scene.evpos)
             ok = True
         else:

@@ -1,1 +1,1 @@
-{"lib": "input", "name": "PulseGenerator", "ip": 0, "op": 1, "stin": 0, "stout": 0, "icon": "SQUARE", "params": "squareBlk|Amplitude: 1|Period: 4|Width: 2|Bias: 0|Delay: 0"}
+{"lib": "input", "name": "PulseGenerator", "ip": 0, "op": 1, "stin": 0, "stout": 0, "icon": "SQUARE", "params": "squareBlk|Amplitude: 1|Period: 4|Width: 2|Bias: 0|Delay: 0", "help": "This block implements a Pulse input signal\n\nParameters:\nAmplitude\nPeriod (in sec)\nWidth of the High signal\nBias\nDelay\n"}

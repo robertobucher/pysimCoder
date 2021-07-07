@@ -1,1 +1,1 @@
-{"lib": "STM32H7", "name": "USB_OTG_Out", "ip": 1, "op": 0, "stin": 1, "stout": 0, "icon": "SERIAL", "params": "USB_OTG_OutBlk|Decimation:1"}
+{"lib": "STM32H7", "name": "USB_OTG_Out", "ip": 1, "op": 0, "stin": 1, "stout": 0, "icon": "SERIAL", "params": "USB_OTG_OutBlk|Decimation:1", "help": "This block sends values from the STM32H7 card to the serial port, allowing to get them from an external system.\n\nParameters:\nDecimation: \n\n"}

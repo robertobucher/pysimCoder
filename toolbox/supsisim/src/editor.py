@@ -139,7 +139,7 @@ class Editor(QObject):
             pars = eval(cmd)
 
         except:
-            pars = pDlg.parsDialog(item.params)
+            pars = pDlg.parsDialog(item.params, item.helpTxt)
             
         if pars != item.params:
             item.params = pars

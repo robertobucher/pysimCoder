@@ -15,8 +15,8 @@ class Block(QGraphicsPathItem):
         super(Block, self).__init__(parent)
         self.scene.addItem(self)
  
-        if len(args) == 11:
-            parent, self.scene, self.name, self.inp, self.outp, self.insetble, self.outsetble, self.icon, self.params, self.width, self.flip = args
+        if len(args) == 12:
+            parent, self.scene, self.name, self.inp, self.outp, self.insetble, self.outsetble, self.icon, self.params, self.helpTxt, self.width, self.flip = args
         elif len(args) == 3:
             parent, self.scene, strBlk = args
             ln = strBlk.split('@')
@@ -25,14 +25,15 @@ class Block(QGraphicsPathItem):
             self.outp = int(ln[2])
             self.icon = ln[5]
             self.params = ln[6]
-            self.width = int(ln[7])
+            self.helpTxt = ln[7]
+            self.width = int(ln[8])
             self.flip = False
             stbin = int(ln[3])
             stbout = int(ln[4])
             self.insetble = (stbin==1)
             self.outsetble = (stbout==1)
         else:
-            raise ValueError('Needs 11 or 3 arguments; received %i.' % len(args))
+            raise ValueError('Needs 12 or 3 arguments; received %i.' % len(args))
 
         self.line_color = Qt.black
         self.fill_color = Qt.black
@@ -48,6 +49,7 @@ class Block(QGraphicsPathItem):
         txt += 'Output ports :' + self.outp.__str__() + '\n'
         txt += 'Icon         :' + self.icon.__str__() + '\n'
         txt += 'Params       :' + self.params.__str__() + '\n'
+        txt += 'Help            :' + self.helpTxt.__str__() + '\n'        
         return txt
         
     def setup(self):
@@ -201,6 +203,7 @@ class Block(QGraphicsPathItem):
             
         etree.SubElement(blk,'icon').text = self.icon
         etree.SubElement(blk,'params').text = self.params
+        etree.SubElement(blk,'help').text = self.helpTxt
         etree.SubElement(blk,'width').text = self.width.__str__()
         if self.flip:
             etree.SubElement(blk,'flip').text = '1'

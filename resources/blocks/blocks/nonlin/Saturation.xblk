@@ -1,1 +1,1 @@
-{"lib": "nonlin", "name": "Saturation", "ip": 1, "op": 1, "stin": 0, "stout": 0, "icon": "SATUR", "params": "saturBlk|Upper saturation:10|Lower saturation: -10"}
+{"lib": "nonlin", "name": "Saturation", "ip": 1, "op": 1, "stin": 0, "stout": 0, "icon": "SATUR", "params": "saturBlk|Upper saturation:10|Lower saturation: -10", "help": "This block saturates the input signals to the two limits passed as parameters.\n"}

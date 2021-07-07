@@ -1,1 +1,1 @@
-{"lib": "input", "name": "Sine_wave", "ip": 0, "op": 1, "stin": 0, "stout": 0, "icon": "SINUS", "params": "sineBlk|Amplitude: 1|Freq [Hz]: 1|Phase: 0|Bias: 0|Delay: 0"}
+{"lib": "input", "name": "Sine_wave", "ip": 0, "op": 1, "stin": 0, "stout": 0, "icon": "SINUS", "params": "sineBlk|Amplitude: 1|Freq [Hz]: 1|Phase: 0|Bias: 0|Delay: 0", "help": "This block implements a Sinus input signal\n\nParameters:\nAmplitude\nFrequency (Hz)\nPhase\nBias\nDelay\n"}

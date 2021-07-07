@@ -1,1 +1,1 @@
-{"lib": "linear", "name": "Delay", "ip": 1, "op": 1, "stin": 0, "stout": 0, "icon": "DELAY", "params": "zdelayBlk|Initial conditions: 0"}
+{"lib": "linear", "name": "Delay", "ip": 1, "op": 1, "stin": 0, "stout": 0, "icon": "DELAY", "params": "zdelayBlk|Initial conditions: 0", "help": "This block implements a unit delay in discrete time domain.\n\nNo parameters are required.\n"}

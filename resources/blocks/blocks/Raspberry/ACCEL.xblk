@@ -1,1 +1,1 @@
-{"lib": "Raspberry", "name": "ACCEL", "ip": 0, "op": 3, "stin": 0, "stout": 0, "icon": "IMU", "params": "AccelBlk|CorrX: 0.0621 | CorrY: 0.0621 | CorrZ: 0.0621"}
+{"lib": "Raspberry", "name": "ACCEL", "ip": 0, "op": 3, "stin": 0, "stout": 0, "icon": "IMU", "params": "AccelBlk|CorrX: 0.0621 | CorrY: 0.0621 | CorrZ: 0.0621", "help": "This block read the Accelerometers signals of a LSM9DS1 IMU platform on a Raspberry PI uC.\n\nThe 3 outputs are Ax, Ay and Az.\n\nParameters:\nCorrX:\nCorrY:\nCorrZ:\n\nrepresent the correction factors\n"}

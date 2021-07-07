@@ -1,1 +1,1 @@
-{"lib": "input", "name": "Timer", "ip": 0, "op": 1, "stin": 0, "stout": 0, "icon": "TIMER", "params": "getTimerBlk"}
+{"lib": "input", "name": "Timer", "ip": 0, "op": 1, "stin": 0, "stout": 0, "icon": "TIMER", "params": "getTimerBlk", "help": "This block put the execution time as output value.\n"}

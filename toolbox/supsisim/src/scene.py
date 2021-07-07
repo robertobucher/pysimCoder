@@ -60,8 +60,10 @@ class Scene(QGraphicsScene):
             item = root.findall('block')[0]
             b = Block(None, self, item.findtext('name'),
                       int(item.findtext('inp')), int(item.findtext('outp')),
-                      item.findtext('inset')=='1', item.findtext('outset')=='1', item.findtext('icon'),
-                      item.findtext('params'), int(item.findtext('width')), item.findtext('flip')=='1' )
+                      item.findtext('inset')=='1', item.findtext('outset')=='1',
+                      item.findtext('icon'),
+                      item.findtext('params'), item.findtext('help'),
+                      int(item.findtext('width')), item.findtext('flip')=='1' )
             b.setPos(event.scenePos())
        
     def DgmToMsg(self):
@@ -190,7 +192,8 @@ class Scene(QGraphicsScene):
             b = Block(None, self, item.findtext('name'),
                       int(item.findtext('inp')), int(item.findtext('outp')),
                       item.findtext('inset')=='1', item.findtext('outset')=='1', item.findtext('icon'),
-                      item.findtext('params'), width, item.findtext('flip')=='1' )
+                      item.findtext('params'), item.findtext('help'),
+                      width, item.findtext('flip')=='1' )
         except:
             # Compatibility of files from previous versions
             b = Block(None, self, item.findtext('name'),

@@ -1,1 +1,1 @@
-{"lib": "Communication", "name": "serialIn", "ip": 0, "op": 1, "stin": 0, "stout": 1, "icon": "SERIAL", "params": "serialInBlk|Port:'/dev/ttyACM0'"}
+{"lib": "Communication", "name": "serialIn", "ip": 0, "op": 1, "stin": 0, "stout": 1, "icon": "SERIAL", "params": "serialInBlk|Port:'/dev/ttyACM0'", "help": " No help available for this block"}
