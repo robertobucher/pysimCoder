@@ -11,6 +11,8 @@ try:
     from PyQt5.QtWidgets import QMainWindow, QApplication, QAction, QFileDialog, \
         QMessageBox, QLabel, QLineEdit, QPushButton, QTableWidget, QTableWidgetItem
 except:
+    print("ERROR: PyQT5 not found")
+    exit(1)
     from qwt.qt import QtGui, QtCore, uic
     from qwt.qt.QtGui import *
     from qwt.qt.QtCore import *
@@ -19,18 +21,23 @@ import time
 import threading
 import os
 import numpy as np
-import serial as ser
 import struct
+import serial as ser
+import socket
 
 COL = 220
 WIDTH = 2
+
+SER = 1
+TCP = 2
+UDP = 3
 
 from qwt import QwtPlot, QwtPlotCurve, QwtPlotGrid
 
 path = os.environ.get('PYSUPSICTRL') + '/BlockEditor'
 form_class = uic.loadUiType(path + '/pyplt.ui')[0]    
 
-class rcvServer(threading.Thread):
+class ser_rcvServer(threading.Thread):
     def __init__(self, mainw):
         threading.Thread.__init__(self)
         self.mainw = mainw
@@ -38,8 +45,8 @@ class rcvServer(threading.Thread):
         self.st = struct.Struct(self.N*'d')
        
     def run(self):
-        portN =  self.mainw.devCbBox.currentIndex()
-        portName = self.mainw.devCbBox.itemText(portN)
+        portN =  self.mainw.serCbBox.currentIndex()
+        portName = self.mainw.serCbBox.itemText(portN)
 
         self.port = ser.Serial(portName, 1200000)
         T = 0.0
@@ -63,6 +70,88 @@ class rcvServer(threading.Thread):
                 self.mainw.x[n].append(val)
                 if len(self.mainw.x[n]) > self.mainw.Hist:
                     self.mainw.x[n] = self.mainw.x[n][-self.mainw.Hist:]
+
+class tcp_rcvServer(threading.Thread):
+    def __init__(self, mainw):
+        threading.Thread.__init__(self)
+        self.mainw = mainw
+        self.N = self.mainw.N
+        self.st = struct.Struct(self.N*'d')
+
+    def run(self):
+        portN =  self.mainw.tcpCbBox.currentIndex()
+        portNum = int(self.mainw.tcpCbBox.itemText(portN))
+
+        self.port = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.port.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        T = 0.0
+        L = 8*self.N
+        self.port.bind(('', portNum))
+        self.port.listen(5)
+        
+        while self.mainw.ServerActive==1:
+            conn, addr = self.port.accept()
+            while True:
+                self.mainw.timebase.append(T)
+                T+=1
+
+                if len(self.mainw.timebase) > self.mainw.Hist:
+                    self.mainw.timebase = self.mainw.timebase[-self.mainw.Hist:]
+
+                buf = bytearray(conn.recv(L))
+                if (len(buf) == 0):
+                    conn.close()
+                    break
+
+                data = self.st.unpack(buf)
+                for n in range(0,self.N):
+                    try:
+                        val = float(data[n])
+                    except:
+                        val = 0.0
+                    self.mainw.x[n].append(val)
+                    if len(self.mainw.x[n]) > self.mainw.Hist:
+                        self.mainw.x[n] = self.mainw.x[n][-self.mainw.Hist:]
+
+class udp_rcvServer(threading.Thread):
+    def __init__(self, mainw):
+        threading.Thread.__init__(self)
+        self.mainw = mainw
+        self.N = self.mainw.N
+        self.st = struct.Struct(self.N*'d')
+
+    def run(self):
+        portN =  self.mainw.devCbBox.currentIndex()
+        portNum = int(self.mainw.devCbBox.itemText(portN))
+
+        self.port = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.port.bind(('0.0.0.0', portNum))
+        T = 0.0
+        L = 8*self.N
+        
+        while self.mainw.ServerActive==1:
+            while True:
+                self.mainw.timebase.append(T)
+                T+=1
+
+                if len(self.mainw.timebase) > self.mainw.Hist:
+                    self.mainw.timebase = self.mainw.timebase[-self.mainw.Hist:]
+
+                buf, addr = self.port.recvfrom(L)
+                if (len(buf) == 0):
+                    conn.close()
+                    break
+
+                data = self.st.unpack(buf)
+                for n in range(0,self.N):
+                    try:
+                        val = float(data[n])
+                    except:
+                        val = 0.0
+                    self.mainw.x[n].append(val)
+                    if len(self.mainw.x[n]) > self.mainw.Hist:
+                        self.mainw.x[n] = self.mainw.x[n][-self.mainw.Hist:]
+
 
 class dataPlot(QwtPlot):
     def __init__(self, N):
@@ -88,7 +177,10 @@ class MainWindow(QMainWindow, form_class):
         self.autoAxis = True
 
     def connect_widget(self):
-        self.pbStartServer.clicked.connect(self.pbServerClicked)
+        self.pbStart_ser.clicked.connect(lambda: self.pbServerClicked(SER))
+        self.pbStart_tcp.clicked.connect(lambda: self.pbServerClicked(TCP))
+        self.pbStart_udp.clicked.connect(lambda: self.pbServerClicked(UDP))
+
         self.edHist.textEdited.connect(self.edHistEdited)
         self.ckAutoscale.stateChanged.connect(self.setAutoscale)
         self.edYmax.editingFinished.connect(self.YAxes)
@@ -115,11 +207,17 @@ class MainWindow(QMainWindow, form_class):
         self.ymax = float(self.edYmax.text())
         self.ymin = float(self.edYmin.text())
         
-    def pbServerClicked(self):
+    def pbServerClicked(self, porttype):
         if self.ServerActive == 0:
             self.N = self.sbNsig.value()
             self.Hist = int(self.edHist.text().__str__())
-            self.pbStartServer.setText('Stop Server')
+            
+            if porttype == SER:
+                self.pbStart_ser.setText('Stop Server')
+            elif porttype == TCP:
+                self.pbStart_tcp.setText('Stop Server')
+            else:
+                self.pbStart_udp.setText('Stop Server')
             self.ServerActive = 1
             
             self.plot = dataPlot(self.N)
@@ -143,10 +241,22 @@ class MainWindow(QMainWindow, form_class):
             self.timer.timeout.connect(self.pltRefresh)
             refTimer = self.sbRefT.value()
             self.timer.start(refTimer)
-            self.th = rcvServer(self)
+            
+            if porttype == SER:
+                self.th = ser_rcvServer(self)
+            elif porttype == TCP:
+                self.th = tcp_rcvServer(self)
+            else:
+                 self.th = udp_rcvServer(self)
+               
             self.th.start()
         else:
-            self.pbStartServer.setText('Start Server')
+            if porttype == SER:
+                self.pbStart_ser.setText('Start Server')
+            elif porttype == TCP:
+                self.pbStart_tcp.setText('Start Server')
+            else:
+                self.pbStart_udp.setText('Start Server')
             self.ServerActive = 0
             self.stopServer()
 
@@ -178,4 +288,5 @@ app = QApplication(sys.argv)
 frame = MainWindow()
 frame.show()
 sys.exit(app.exec_())
+
 

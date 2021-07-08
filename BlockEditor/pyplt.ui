@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>671</width>
-    <height>270</height>
+    <width>675</width>
+    <height>369</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -19,27 +19,11 @@
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <widget class="QLabel" name="label">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>50</y>
-     <width>111</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Port name</string>
-   </property>
-   <property name="alignment">
-    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-   </property>
-  </widget>
   <widget class="QLabel" name="label_2">
    <property name="geometry">
     <rect>
-     <x>20</x>
-     <y>90</y>
+     <x>0</x>
+     <y>170</y>
      <width>111</width>
      <height>16</height>
     </rect>
@@ -54,8 +38,8 @@
   <widget class="QLabel" name="label_3">
    <property name="geometry">
     <rect>
-     <x>20</x>
-     <y>130</y>
+     <x>0</x>
+     <y>210</y>
      <width>111</width>
      <height>16</height>
     </rect>
@@ -70,8 +54,8 @@
   <widget class="QLabel" name="label_4">
    <property name="geometry">
     <rect>
-     <x>370</x>
-     <y>100</y>
+     <x>350</x>
+     <y>180</y>
      <width>111</width>
      <height>16</height>
     </rect>
@@ -83,24 +67,11 @@
     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
    </property>
   </widget>
-  <widget class="QPushButton" name="pbStartServer">
-   <property name="geometry">
-    <rect>
-     <x>400</x>
-     <y>40</y>
-     <width>211</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Start Server</string>
-   </property>
-  </widget>
   <widget class="QSpinBox" name="sbNsig">
    <property name="geometry">
     <rect>
-     <x>150</x>
-     <y>80</y>
+     <x>130</x>
+     <y>160</y>
      <width>101</width>
      <height>31</height>
     </rect>
@@ -115,8 +86,8 @@
   <widget class="QLineEdit" name="edHist">
    <property name="geometry">
     <rect>
-     <x>150</x>
-     <y>120</y>
+     <x>130</x>
+     <y>200</y>
      <width>101</width>
      <height>31</height>
     </rect>
@@ -131,8 +102,8 @@
   <widget class="QSpinBox" name="sbRefT">
    <property name="geometry">
     <rect>
-     <x>510</x>
-     <y>90</y>
+     <x>490</x>
+     <y>170</y>
      <width>91</width>
      <height>31</height>
     </rect>
@@ -153,42 +124,11 @@
     <number>100</number>
    </property>
   </widget>
-  <widget class="QComboBox" name="devCbBox">
-   <property name="geometry">
-    <rect>
-     <x>150</x>
-     <y>40</y>
-     <width>161</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="editable">
-    <bool>true</bool>
-   </property>
-   <property name="currentIndex">
-    <number>0</number>
-   </property>
-   <item>
-    <property name="text">
-     <string>/dev/ttyACM0</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>/dev/ttyACM1</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>/dev/ttyACM2</string>
-    </property>
-   </item>
-  </widget>
   <widget class="QCheckBox" name="ckAutoscale">
    <property name="geometry">
     <rect>
-     <x>100</x>
-     <y>200</y>
+     <x>80</x>
+     <y>280</y>
      <width>85</width>
      <height>21</height>
     </rect>
@@ -206,8 +146,8 @@
    </property>
    <property name="geometry">
     <rect>
-     <x>220</x>
-     <y>230</y>
+     <x>200</x>
+     <y>310</y>
      <width>57</width>
      <height>15</height>
     </rect>
@@ -222,8 +162,8 @@
    </property>
    <property name="geometry">
     <rect>
-     <x>220</x>
-     <y>190</y>
+     <x>200</x>
+     <y>270</y>
      <width>57</width>
      <height>15</height>
     </rect>
@@ -238,8 +178,8 @@
    </property>
    <property name="geometry">
     <rect>
-     <x>310</x>
-     <y>220</y>
+     <x>290</x>
+     <y>300</y>
      <width>81</width>
      <height>31</height>
     </rect>
@@ -257,8 +197,8 @@
    </property>
    <property name="geometry">
     <rect>
-     <x>310</x>
-     <y>180</y>
+     <x>290</x>
+     <y>260</y>
      <width>81</width>
      <height>31</height>
     </rect>
@@ -269,6 +209,204 @@
    <property name="alignment">
     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
    </property>
+  </widget>
+  <widget class="QTabWidget" name="tabWidget">
+   <property name="geometry">
+    <rect>
+     <x>-10</x>
+     <y>0</y>
+     <width>701</width>
+     <height>141</height>
+    </rect>
+   </property>
+   <property name="currentIndex">
+    <number>0</number>
+   </property>
+   <widget class="QWidget" name="tab">
+    <attribute name="title">
+     <string>Serial</string>
+    </attribute>
+    <widget class="QLabel" name="label">
+     <property name="geometry">
+      <rect>
+       <x>40</x>
+       <y>40</y>
+       <width>111</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Port</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QComboBox" name="serCbBox">
+     <property name="geometry">
+      <rect>
+       <x>170</x>
+       <y>30</y>
+       <width>161</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="editable">
+      <bool>true</bool>
+     </property>
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <item>
+      <property name="text">
+       <string>/dev/ttyACM0</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>/dev/ttyACM1</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>/dev/ttyACM2</string>
+      </property>
+     </item>
+    </widget>
+    <widget class="QPushButton" name="pbStart_ser">
+     <property name="geometry">
+      <rect>
+       <x>390</x>
+       <y>30</y>
+       <width>211</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Start Server</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="tab_2">
+    <attribute name="title">
+     <string>TCP</string>
+    </attribute>
+    <widget class="QLabel" name="label_10">
+     <property name="geometry">
+      <rect>
+       <x>40</x>
+       <y>40</y>
+       <width>111</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Port</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QComboBox" name="tcpCbBox">
+     <property name="geometry">
+      <rect>
+       <x>170</x>
+       <y>30</y>
+       <width>161</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="editable">
+      <bool>true</bool>
+     </property>
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <item>
+      <property name="text">
+       <string>1024</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>5000</string>
+      </property>
+     </item>
+    </widget>
+    <widget class="QPushButton" name="pbStart_tcp">
+     <property name="geometry">
+      <rect>
+       <x>390</x>
+       <y>30</y>
+       <width>211</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Start Server</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="tab_3">
+    <attribute name="title">
+     <string>UDP</string>
+    </attribute>
+    <widget class="QComboBox" name="devCbBox_6">
+     <property name="geometry">
+      <rect>
+       <x>170</x>
+       <y>30</y>
+       <width>161</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="editable">
+      <bool>true</bool>
+     </property>
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <item>
+      <property name="text">
+       <string>1024</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>5000</string>
+      </property>
+     </item>
+    </widget>
+    <widget class="QLabel" name="label_12">
+     <property name="geometry">
+      <rect>
+       <x>40</x>
+       <y>40</y>
+       <width>111</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Port</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pbStart_udp">
+     <property name="geometry">
+      <rect>
+       <x>390</x>
+       <y>30</y>
+       <width>211</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Start Server</string>
+     </property>
+    </widget>
+   </widget>
   </widget>
  </widget>
  <resources/>
