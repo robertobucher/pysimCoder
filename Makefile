@@ -11,17 +11,17 @@ addfiles: control slycot
 
 control:
 	git clone https://github.com/python-control/python-control.git
-	cd python-control; python setup.py install
+	cd python-control; python3 setup.py install
 	rm -rf python-control 
 
 slycot:
 	git clone --recurse-submodules https://github.com/python-control/Slycot
-	cd Slycot; python setup.py install
+	cd Slycot; python3 setup.py install
 	rm -rf Slycot
 
 modules:
-	cd toolbox/supsictrl; python setup.py install; python setup.py clean --all
-	cd toolbox/supsisim; python setup.py install; python setup.py clean --all
+	cd toolbox/supsictrl; python3 setup.py install; python3 setup.py clean --all
+	cd toolbox/supsisim; python3 setup.py install; python3 setup.py clean --all
 
 fmu:
 	cd CodeGen/LinuxRT/fmu; make all; make install
