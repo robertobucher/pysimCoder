@@ -19,6 +19,7 @@ sudo apt install python3-venv python3-pip libxml2-dev libxmlsec1-dev libcomedi-d
 
 sudo python3 ubuntu_dependency_installer.py
 pip install -U numpy
+pip install tornado
 ```
 
 Install python libs
