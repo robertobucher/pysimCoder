@@ -12,16 +12,13 @@ http://robertobucher.dti.supsi.ch/pysimcoder/
 
 # Installation
 
-Get python3 and pip
-```
-sudo apt-get install python3.6
-sudo apt install python3-venv python3-pip
-```
-
 Install dependencies
 ```
+
+sudo apt install python3-venv python3-pip libxml2-dev libxmlsec1-dev libcomedi-dev python-pyqt5 python-scipy
+
 sudo python3 ubuntu_dependency_installer.py
-sudo apt-get install libxml2-dev libxmlsec1-dev libcomedi-dev
+pip install -U numpy
 ```
 
 Install python libs
@@ -44,3 +41,19 @@ Make
 ```
 make
 ```
+
+Exit superuser
+```
+exit
+```
+
+Make as user
+```
+make user
+```
+
+Launch application
+```
+pysimCoder
+```
+

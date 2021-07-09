@@ -15,6 +15,6 @@ DB = 4
 path = os.environ.get('PYSUPSICTRL') + '/'
 respath = path+'resources/'
 pycmd = 'jupyter qtconsole &'
-pyrun = 'python'
+pyrun = 'python3'
 TEMP = '.'
 
