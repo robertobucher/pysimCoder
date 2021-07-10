@@ -5,7 +5,8 @@ BINDIR = /usr/local/bin
 CURDIR = $(shell pwd)
 CWD = $(shell pwd)
 PYCTL = export PYSUPSICTRL=$(CWD)
-PYSUPSICTRL=$(shell pwd)
+
+export PYSUPSICTRL=$(shell pwd)
 
 addfiles: control slycot
 
@@ -26,10 +27,10 @@ modules:
 fmu:
 	cd CodeGen/LinuxRT/fmu; make all; make install
 
-lib:
+lib: 
 	cd CodeGen/LinuxRT/devices; make reduced
 
-full_lib:
+full_lib: 
 	cd CodeGen/LinuxRT/devices; make all
 
 link:
