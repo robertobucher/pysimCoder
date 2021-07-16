@@ -40,10 +40,15 @@ class BlkDlg(QDialog):
             fn = respath + 'blocks/rcpBlk/help/' + self.fname + '.hlp'
             try:
                 f = open(fn,'r')
+                text = f.read()
+                f.close()
             except:
-                f = open(respath + 'blocks/rcpBlk/help/noHelp.hlp', 'r')
-            text = f.read()
-            f.close()
+                try:
+                    f = open(respath + 'blocks/rcpBlk/help/noHelp.hlp', 'r')
+                    text = f.read()
+                    f.close()
+                except:
+                    text = "No help for this block"
         else:
             text = self.helpTxt.replace('\\n','\n')
             
