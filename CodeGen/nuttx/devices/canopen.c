@@ -38,8 +38,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 #include <net/if.h>
 #endif
 
-/* #define VERB */
-
 int canFD;
 static int dev_cnt = 0;                    /* CAN devices counter */
 static volatile int endrcv = 0;
@@ -174,10 +172,8 @@ void sendMsg(uint16_t ID, uint8_t DATA[], int len)
   struct can_msg_s txmsg;
 #endif
   ssize_t nbytes;
-#ifdef VERB
-  int i;
-#endif
-
+  ssize_t msgsize;
+  
 #ifdef CONFIG_NET_CAN
   txmsg.can_id = ID;
   txmsg.can_dlc = len;
@@ -198,19 +194,21 @@ void sendMsg(uint16_t ID, uint8_t DATA[], int len)
   memcpy(txmsg.cm_data, DATA, len);
 #endif
 
-#ifdef VERB
-    printf("--> 0x%03x  %d   ",txmsg.cm_hdr.ch_id,  txmsg.cm_hdr.ch_dlc);
-    for(i=0;i<len;i++) printf("0x%02x  ", txmsg.cm_data[i]);
-    printf("\n");    
-#endif
-
     /* Send the TX message */
-
+#ifdef CONFIG_NET_CAN
     nbytes = write(canFD, &txmsg, sizeof(txmsg));
     if (nbytes != sizeof(txmsg)) {
       printf("ERROR: write(%ld) returned %ld\n",
 	     (long)sizeof(txmsg), (long)nbytes);
     }
+#else
+    msgsize = CAN_MSGLEN(len);
+    nbytes = write(canFD, &txmsg, msgsize);
+    if (nbytes != msgsize) {
+      printf("ERROR: write(%ld) returned %ld\n",
+	     (long)msgsize, (long)nbytes);
+    }
+#endif
 }
 
 #ifdef CONFIG_CAN
@@ -219,10 +217,6 @@ int rcvMsgCob(int cob, uint8_t DATA[], int timeout)
   struct can_msg_s rxmsg;
   ssize_t nbytes;
   size_t msgsize;
-
-#ifdef VERB
-  int i;
-#endif
 
   msgsize = sizeof(struct can_msg_s);
   do{
@@ -234,14 +228,7 @@ int rcvMsgCob(int cob, uint8_t DATA[], int timeout)
     printf("ERROR: read(%ld) returned %ld\n",
 	   (long)msgsize, (long)nbytes);
   }
-#ifdef VERB
-  else{
-    printf("<-- 0x%03x  %d   ",rxmsg.cm_hdr.ch_id, rxmsg.cm_hdr.ch_dlc);
-    for(i=0;i<rxmsg.cm_hdr.ch_dlc;i++) printf("0x%02x  ", rxmsg.cm_data[i]);
-    printf("\n");
-  }
-#endif
-
+  
   if(rxmsg.cm_hdr.ch_dlc != 0) memcpy(DATA, rxmsg.cm_data, rxmsg.cm_hdr.ch_dlc);
   return rxmsg.cm_hdr.ch_dlc;
 }
@@ -252,10 +239,6 @@ int rcvMsg(uint8_t DATA[], int timeout)
   ssize_t nbytes;
   size_t msgsize;
 
-#ifdef VERB
-  int i;
-#endif
-
   msgsize = sizeof(struct can_msg_s);
   nbytes = read(canFD, &rxmsg, msgsize);
 
@@ -263,13 +246,6 @@ int rcvMsg(uint8_t DATA[], int timeout)
     printf("ERROR: read(%ld) returned %ld\n",
 	   (long)msgsize, (long)nbytes);
   }
-#ifdef VERB
-  else{
-    printf("<-- 0x%03x  %d   ",rxmsg.cm_hdr.ch_id, rxmsg.cm_hdr.ch_dlc);
-    for(i=0;i<rxmsg.cm_hdr.ch_dlc;i++) printf("0x%02x  ", rxmsg.cm_data[i]);
-    printf("\n");
-  }
-#endif
 
   if(rxmsg.cm_hdr.ch_dlc != 0) memcpy(DATA, rxmsg.cm_data, rxmsg.cm_hdr.ch_dlc);
   return rxmsg.cm_hdr.ch_dlc;
@@ -295,10 +271,6 @@ void *rcv(void *args)
   ssize_t nbytes;
   size_t msgsize;
 
-#ifdef VERB
-  int i;
-#endif
-  
   struct sched_param param;
 
   param.sched_priority = (int) args;
@@ -311,17 +283,15 @@ void *rcv(void *args)
   mlockall(MCL_CURRENT | MCL_FUTURE);
 #endif
   
+#if defined(CONFIG_NET_CAN)
   msgsize = sizeof(rxmsg);
-
-  while (!endrcv) /* receiving loop */
+#else  
+  msgsize = sizeof(struct can_msg_s);
+#endif
+  
+  while (!endrcv)         /* receiving loop */
   {
     nbytes = read(canFD, &rxmsg, msgsize);
-
-#ifdef VERB
-    printf("<-- 0x%03x  %d   ",rxmsg.cm_hdr.ch_id, rxmsg.cm_hdr.ch_dlc);
-    for(i=0;i<rxmsg.cm_hdr.ch_dlc;i++) printf("0x%02x  ", rxmsg.cm_data[i]);
-    printf("\n");
-#endif
 
     /* Store messages  */
 #if defined(CONFIG_NET_CAN)

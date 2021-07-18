@@ -121,8 +121,8 @@ class udp_rcvServer(threading.Thread):
         self.st = struct.Struct(self.N*'d')
 
     def run(self):
-        portN =  self.mainw.devCbBox.currentIndex()
-        portNum = int(self.mainw.devCbBox.itemText(portN))
+        portN =  self.mainw.udpCbBox.currentIndex()
+        portNum = int(self.mainw.udpCbBox.itemText(portN))
 
         self.port = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.port.bind(('0.0.0.0', portNum))
@@ -138,6 +138,7 @@ class udp_rcvServer(threading.Thread):
                     self.mainw.timebase = self.mainw.timebase[-self.mainw.Hist:]
 
                 buf, addr = self.port.recvfrom(L)
+                
                 if (len(buf) == 0):
                     conn.close()
                     break
@@ -151,7 +152,6 @@ class udp_rcvServer(threading.Thread):
                     self.mainw.x[n].append(val)
                     if len(self.mainw.x[n]) > self.mainw.Hist:
                         self.mainw.x[n] = self.mainw.x[n][-self.mainw.Hist:]
-
 
 class dataPlot(QwtPlot):
     def __init__(self, N):
