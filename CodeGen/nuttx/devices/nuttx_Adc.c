@@ -31,12 +31,11 @@
 #include <nuttx/analog/ioctl.h>
 
 #define NCHANNELS 3          /* the same as in board/xxxx_adc.c  */
-#define ADC_RES 4095
 
 static void init(python_block *block)
 {
   int * intPar = block->intPar;
-  int fd = intPar[1];
+  int fd = intPar[2];
 
   if(fd==0){
     fd = open(block->str, O_RDONLY);
@@ -46,7 +45,7 @@ static void init(python_block *block)
     }
   }
 
-  intPar[1] = fd;
+  intPar[2] = fd;
 }
 
 static void inout(python_block *block)
@@ -56,7 +55,8 @@ static void inout(python_block *block)
   double *y = block->y[0];
   int ret;
   int ch = intPar[0];
-  int fd = intPar[1];
+  int res = intPar[1];
+  int fd = intPar[2];
   int readsize = NCHANNELS*sizeof(struct adc_msg_s);
   int nbytes;
   
@@ -86,14 +86,14 @@ static void inout(python_block *block)
       }
   }
   
-  y[0] = maprD2D((double) sample[ch].am_data/ADC_RES, realPar[0], realPar[1]);
+  y[0] = maprD2D((double) sample[ch].am_data/res, realPar[0], realPar[1]);
 }
 
 static void end(python_block *block)
 {
   int * intPar    = block->intPar;
 
-  close(intPar[1]);
+  close(intPar[2]);
 }
 
 void nuttx_Adc(int flag, python_block *block)

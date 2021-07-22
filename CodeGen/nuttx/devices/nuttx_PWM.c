@@ -70,7 +70,7 @@ static void init(python_block *block)
     }
   for (int i = 0; i < block->nin; i++)
     {
-      info.channels[intPar[i]-1].channel = intPar[i];
+      info.channels[i].channel = intPar[i];
     }
 #else
     info.duty = 0;
@@ -128,7 +128,7 @@ static void inout(python_block *block)
       if (val[0]<realPar[0]) val[0] = realPar[0];
 
       double value = mapD2wD(val[0], realPar[0], realPar[1]);
-      info.channels[intPar[i] - 1].duty = (uint32_t) (value*RANGE);
+      info.channels[i].duty = (uint32_t) (value*RANGE);
     }
 #else
   int fd = intPar[1];
