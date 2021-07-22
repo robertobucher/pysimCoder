@@ -65,9 +65,12 @@ static void init(python_block *block)
 #ifdef CONFIG_PWM_MULTICHAN
   for (int i = 0; i < CONFIG_PWM_NCHANNELS; i++)
     {
-      /* info.channels[i].channel = i + 1; */
-      info.channels[i].channel = intPar[i];
+      info.channels[i].channel = 0;
       info.channels[i].duty = 0;
+    }
+  for (int i = 0; i < block->nin; i++)
+    {
+      info.channels[intPar[i]-1].channel = intPar[i];
     }
 #else
     info.duty = 0;

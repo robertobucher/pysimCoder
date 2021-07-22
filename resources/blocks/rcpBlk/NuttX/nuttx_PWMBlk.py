@@ -1,4 +1,4 @@
-
+import numpy as np
 from supsisim.RCPblk import RCPblk
 from scipy import size
 
