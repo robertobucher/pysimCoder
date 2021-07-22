@@ -31,8 +31,6 @@
 
 #define RANGE   65536
 
-static struct pwm_info_s info;
-
 /****************************************************************************
  * Name: init
  *
@@ -45,6 +43,7 @@ static void init(python_block *block)
 {
   double * realPar = block->realPar;
   int * intPar =  block->intPar;
+  struct pwm_info_s info;
   int ret;
   
 #ifdef CONFIG_PWM_MULTICHAN
@@ -56,18 +55,23 @@ static void init(python_block *block)
   if (fd == 0)
     {
       fd = open(block->str, O_RDONLY);
-      if( fd < 0)
+      if (fd < 0)
         {
           fprintf(stderr, "Error opening device: %s\n", block->str);
           exit(1);
         }
 
 #ifdef CONFIG_PWM_MULTICHAN
+  /* Set all channels initially to zero  */
+
   for (int i = 0; i < CONFIG_PWM_NCHANNELS; i++)
     {
       info.channels[i].channel = 0;
       info.channels[i].duty = 0;
     }
+
+  /* Add channel numbr to first block->nin used channels */
+
   for (int i = 0; i < block->nin; i++)
     {
       info.channels[i].channel = intPar[i];
@@ -79,11 +83,13 @@ static void init(python_block *block)
 
   info.frequency = realPar[2];
 
+  /* Set PWM characteristic and start the output */
+
   ret = ioctl(fd, PWMIOC_SETCHARACTERISTICS,
               (unsigned long)((uintptr_t) &info));
   if (ret < 0)
     {
-      fprintf(stderr, "pwm_main: ioctl(PWMIOC_SETCHARACTERISTICS) failed\n");
+      fprintf(stderr, "ioctl(PWMIOC_SETCHARACTERISTICS) failed\n");
       close(fd);
       exit(1);
     }
@@ -91,7 +97,7 @@ static void init(python_block *block)
   ret = ioctl(fd, PWMIOC_START, 0);
   if (ret < 0)
     {
-      fprintf(stderr,"pwm_main: ioctl(PWMIOC_START) failed\n");
+      fprintf(stderr,"ioctl(PWMIOC_START) failed\n");
       close(fd);
       exit(1);
     }
@@ -116,37 +122,69 @@ static void inout(python_block *block)
 {
   double * realPar = block->realPar;
   int * intPar =  block->intPar;
+  struct pwm_info_s info;
   double *val;
   int ret;
 
+  info.frequency = realPar[2];
+
+#ifdef CONFIG_PWM_MULTICHAN
+  /* Set all channels initially to zero  */
+
+  for (int i = 0; i < CONFIG_PWM_NCHANNELS; i++)
+    {
+      info.channels[i].channel = 0;
+      info.channels[i].duty = 0;
+    }
+#endif
+
 #ifdef CONFIG_PWM_MULTICHAN
   int fd = intPar[block->nin];
+
+  /* Set output for used channels */
+
   for (int i = 0; i < block->nin; i++)
     {
+      info.channels[i].channel = intPar[i];
+
+      /* Get value from the input and saturate it */
+
       val = (double *) block->u[i];
       if (val[0]>realPar[1]) val[0] = realPar[1];
       if (val[0]<realPar[0]) val[0] = realPar[0];
 
       double value = mapD2wD(val[0], realPar[0], realPar[1]);
+
+      /* Save duty cycle value */
+
       info.channels[i].duty = (uint32_t) (value*RANGE);
     }
 #else
   int fd = intPar[1];
+
+  /* Get value from the input and saturate it */
+
   val = (double *) block->u[0];
   if (val[0]>realPar[1]) val[0] = realPar[1];
   if (val[0]<realPar[0]) val[0] = realPar[0];
 
   double value = mapD2wD(val[0], realPar[0], realPar[1]);
+
+  /* Save duty cycle value */
+
   info.duty = (uint32_t) (value*RANGE);
 #endif
 
+  /* Update PWM characteristics */
+
   ret = ioctl(fd, PWMIOC_SETCHARACTERISTICS, (unsigned long)((uintptr_t)&info));
-  if (ret < 0) {
-    fprintf(stderr,"pwm_main: ioctl(PWMIOC_SETCHARACTERISTICS) failed: %d\n",
-	   errno);
-    close(fd);
-    exit(1);
-  }
+  if (ret < 0)
+    {
+      fprintf(stderr,"ioctl(PWMIOC_SETCHARACTERISTICS) failed: %d\n",
+	            errno);
+      close(fd);
+      exit(1);
+    }
 }
 
 /****************************************************************************
@@ -167,10 +205,12 @@ static void end(python_block *block)
   int fd = intPar[1];
 #endif
 
+  /* Stop PWM output */
+
   int ret = ioctl(fd, PWMIOC_STOP, 0);
   if (ret < 0)
     {
-      fprintf(stderr, "pwm_main: ioctl(PWMIOC_STOP) failed: %d\n", errno);
+      fprintf(stderr, "ioctl(PWMIOC_STOP) failed: %d\n", errno);
       close(fd);
       exit(1);
     }
