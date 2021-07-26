@@ -24,7 +24,7 @@ SRCALL += toFile.c \
 		   serialOut.c
 
 ifeq ($(CONFIG_ADC),y)
-SRCALL += nuttx_Adc.c
+SRCALL += nuttx_ADC.c
 endif
 
 ifeq ($(CONFIG_DAC),y)
