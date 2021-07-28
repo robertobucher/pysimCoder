@@ -76,6 +76,13 @@ static void init(python_block *block)
     {
       info.channels[i].channel = intPar[i];
     }
+
+  /* End the channel list with -1 if there is a free channel */
+
+  if (block->nin < CONFIG_PWM_NCHANNELS)
+    {
+      info.channels[block->nin].channel = -1;
+    }
 #else
     info.duty = 0;
 #endif
@@ -136,9 +143,12 @@ static void inout(python_block *block)
       info.channels[i].channel = 0;
       info.channels[i].duty = 0;
     }
-#endif
 
-#ifdef CONFIG_PWM_MULTICHAN
+  if (block->nin < CONFIG_PWM_NCHANNELS)
+    {
+      info.channels[block->nin].channel = -1;
+    }
+
   int fd = intPar[block->nin];
 
   /* Set output for used channels */
