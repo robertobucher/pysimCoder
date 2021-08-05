@@ -1,0 +1,1 @@
+{"lib": "math", "name": "Inverse Park", "ip": 3, "op": 2, "stin": 0, "stout": 0, "icon": "INVERSE_PARK", "params": "park_inverseBlk", "help": "This block performs inverse Park transformation.\nFirst two inputs are for rotating reference frame quantities, the third one is for the rotation angle.\n"}
