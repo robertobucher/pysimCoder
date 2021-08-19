@@ -1,10 +1,9 @@
-all: script addfiles modules fmu full_lib driver link
-reduced: script addfiles modules fmu lib driver link
+all: addfiles modules fmu full_lib driver link
+reduced: addfiles modules fmu lib driver link
 
 BINDIR = /usr/local/bin
 CURDIR = $(shell pwd)
-CWD = $(shell pwd)
-PYCTL = export PYSUPSICTRL=$(CWD)
+PYCTL = export PYSUPSICTRL=$(CURDIR)
 
 export PYSUPSICTRL=$(shell pwd)
 
@@ -34,12 +33,10 @@ full_lib:
 	cd CodeGen/LinuxRT/devices; make all
 
 link:
-	cd $(BINDIR); rm -f pysimCoder pysimCoder.py pyParams gen_pydev loadnrt defBlocks dataplot xblk2Blk
+	cd $(BINDIR); rm -f pyParams gen_pydev loadnrt defBlocks dataplot xblk2Blk
 	cp BlockEditor/gen_pydev $(BINDIR)/
 	cd $(CURDIR)/BlockEditor; chmod a+x *.py
 	cd $(CURDIR)/DriverNRT/; chmod a+x loadnrt
-	ln -s $(CURDIR)/pysimCoder $(BINDIR)/pysimCoder
-	ln -s $(CURDIR)/BlockEditor/pysimCoder.py $(BINDIR)/pysimCoder.py
 	ln -s $(CURDIR)/BlockEditor/pyParams.py $(BINDIR)/pyParams
 	ln -s $(CURDIR)/BlockEditor/defBlocks.py $(BINDIR)/defBlocks
 	ln -s $(CURDIR)/BlockEditor/dataplot.py $(BINDIR)/dataplot
@@ -58,12 +55,8 @@ user:
 	echo 'export SAMD21_HOME=$(CURDIR)/CodeGen/SAMD21' >> ~/.bashrc
 	echo 'export STM32H7_HOME=$(CURDIR)/CodeGen/STM32H7' >> ~/.bashrc
 
-script:
-	echo $(PYCTL) > pysimCoder
-	echo 'export PYEDITOR=emacs' >> pysimCoder
-	echo 'export PYTHONPATH=$(CURDIR)/resources/blocks/rcpBlk' >> pysimCoder
-	cat launch.txt >> pysimCoder
-	chmod a+x pysimCoder
+alias:
+	echo 'alias pysimCoder='"'$(CURDIR)/pysim-run.sh'"''  >> ~/.bash_aliases
 
 clean:
 	rm -f CodeGen/LinuxRT/lib/*.a
@@ -93,11 +86,11 @@ SAMD21:
 
 STM32H7:
 	cd CodeGen/STM32H7; make
-	echo $(CWD)/CodeGen/STM32H7/objects/obj/stm32h7xx_hal_msp.o > CodeGen/STM32H7/objects/objects.list1
-	echo $(CWD)/CodeGen/STM32H7/objects/obj/stm32h7xx_it.o >> CodeGen/STM32H7/objects/objects.list1
-	echo $(CWD)/CodeGen/STM32H7/objects/obj/syscalls.o >> CodeGen/STM32H7/objects/objects.list1
-	echo $(CWD)/CodeGen/STM32H7/objects/obj/sysmem.o >> CodeGen/STM32H7/objects/objects.list1
-	echo $(CWD)/CodeGen/STM32H7/objects/obj/system_stm32h7xx_dualcore_boot_cm4_cm7.o >> CodeGen/STM32H7/objects/objects.list1
+	echo $(CURDIR)/CodeGen/STM32H7/objects/obj/stm32h7xx_hal_msp.o > CodeGen/STM32H7/objects/objects.list1
+	echo $(CURDIR)/CodeGen/STM32H7/objects/obj/stm32h7xx_it.o >> CodeGen/STM32H7/objects/objects.list1
+	echo $(CURDIR)/CodeGen/STM32H7/objects/obj/syscalls.o >> CodeGen/STM32H7/objects/objects.list1
+	echo $(CURDIR)/CodeGen/STM32H7/objects/obj/sysmem.o >> CodeGen/STM32H7/objects/objects.list1
+	echo $(CURDIR)/CodeGen/STM32H7/objects/obj/system_stm32h7xx_dualcore_boot_cm4_cm7.o >> CodeGen/STM32H7/objects/objects.list1
 
 
 
