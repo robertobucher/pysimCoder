@@ -224,7 +224,7 @@
    </property>
    <widget class="QWidget" name="tab">
     <attribute name="title">
-     <string>Serial</string>
+     <string>Serial 8bytes</string>
     </attribute>
     <widget class="QLabel" name="label">
      <property name="geometry">
@@ -274,6 +274,71 @@
      </item>
     </widget>
     <widget class="QPushButton" name="pbStart_ser">
+     <property name="geometry">
+      <rect>
+       <x>390</x>
+       <y>30</y>
+       <width>211</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Start Server</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="tab_4">
+    <attribute name="title">
+     <string>Serial 4bytes</string>
+    </attribute>
+    <widget class="QComboBox" name="ser4CbBox">
+     <property name="geometry">
+      <rect>
+       <x>170</x>
+       <y>30</y>
+       <width>161</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="editable">
+      <bool>true</bool>
+     </property>
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <item>
+      <property name="text">
+       <string>/dev/ttyACM0</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>/dev/ttyACM1</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>/dev/ttyACM2</string>
+      </property>
+     </item>
+    </widget>
+    <widget class="QLabel" name="label_7">
+     <property name="geometry">
+      <rect>
+       <x>40</x>
+       <y>40</y>
+       <width>111</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Port</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pbStart_ser4">
      <property name="geometry">
       <rect>
        <x>390</x>

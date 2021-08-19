@@ -29,8 +29,9 @@ COL = 220
 WIDTH = 2
 
 SER = 1
-TCP = 2
-UDP = 3
+SER4 = 2
+TCP = 3
+UDP = 4
 
 from qwt import QwtPlot, QwtPlotCurve, QwtPlotGrid
 
@@ -51,6 +52,40 @@ class ser_rcvServer(threading.Thread):
         self.port = ser.Serial(portName, 1200000)
         T = 0.0
         L = 8*self.N
+        
+        while self.mainw.ServerActive==1:
+            self.mainw.timebase.append(T);
+            T+=1
+            
+            if len(self.mainw.timebase) > self.mainw.Hist:
+                self.mainw.timebase = self.mainw.timebase[-self.mainw.Hist:]
+                
+            val = self.port.read(L)
+            data = self.st.unpack(val)
+            
+            for n in range(0,self.N):
+                try:
+                    val = float(data[n])
+                except:
+                    val = 0.0
+                self.mainw.x[n].append(val)
+                if len(self.mainw.x[n]) > self.mainw.Hist:
+                    self.mainw.x[n] = self.mainw.x[n][-self.mainw.Hist:]
+
+class ser_rcvServer4bytes(threading.Thread):
+    def __init__(self, mainw):
+        threading.Thread.__init__(self)
+        self.mainw = mainw
+        self.N = self.mainw.N
+        self.st = struct.Struct(self.N*'d')
+       
+    def run(self):
+        portN =  self.mainw.serCbBox.currentIndex()
+        portName = self.mainw.serCbBox.itemText(portN)
+
+        self.port = ser.Serial(portName, 1200000)
+        T = 0.0
+        L = 4*self.N
         
         while self.mainw.ServerActive==1:
             self.mainw.timebase.append(T);
@@ -178,6 +213,7 @@ class MainWindow(QMainWindow, form_class):
 
     def connect_widget(self):
         self.pbStart_ser.clicked.connect(lambda: self.pbServerClicked(SER))
+        self.pbStart_ser4.clicked.connect(lambda: self.pbServerClicked(SER4))
         self.pbStart_tcp.clicked.connect(lambda: self.pbServerClicked(TCP))
         self.pbStart_udp.clicked.connect(lambda: self.pbServerClicked(UDP))
 
@@ -214,6 +250,8 @@ class MainWindow(QMainWindow, form_class):
             
             if porttype == SER:
                 self.pbStart_ser.setText('Stop Server')
+            elif porttype == SER4:
+                self.pbStart_ser4.setText('Stop Server')
             elif porttype == TCP:
                 self.pbStart_tcp.setText('Stop Server')
             else:
@@ -244,6 +282,8 @@ class MainWindow(QMainWindow, form_class):
             
             if porttype == SER:
                 self.th = ser_rcvServer(self)
+            elif porttype == SER4:
+                self.th = ser_rcvServer4bytes(self)
             elif porttype == TCP:
                 self.th = tcp_rcvServer(self)
             else:
