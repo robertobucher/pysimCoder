@@ -35,9 +35,10 @@ for i in range(CONNECTION_TRIES):
 
 # some plot related stuff
 app = QtGui.QApplication([])
-win = pg.GraphicsWindow(title="Scope")
+#win = pg.GraphicsWindow(title="Scope")
+win = pg.GraphicsLayoutWidget(title="Scope")
 win.resize(PLOT_WINDOM_SIZE[0], PLOT_WINDOM_SIZE[1])
-pg.setConfigOptions(antialias=True, useWeave=True)
+pg.setConfigOptions(antialias=True)
 plots = []
 curves = []
 p = win.addPlot(title="u"+str(i))
@@ -49,6 +50,7 @@ for i in range(NIN):
     curves.append(p.plot(pen={'color':c, 'width' : PENWIDTH}))
     #curves.append(p.plot(pen=c))
     win.nextRow()
+win.show()
 
 tdata = np.zeros(shape=(NIN, PLOT_LEN))
 # time bounds, s.t. we start at 0 Delta
