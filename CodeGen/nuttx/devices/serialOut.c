@@ -26,7 +26,7 @@ static void init(python_block *block)
   int * intPar  = block->intPar;
   int fd;
 
-  fd =  open("/dev/ttyS0", O_WRONLY);
+  fd =  open(block->str, O_WRONLY);
   intPar[0] = fd;
 }
 

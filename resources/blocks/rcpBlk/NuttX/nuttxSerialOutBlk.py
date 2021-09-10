@@ -2,7 +2,7 @@
 from supsisim.RCPblk import RCPblk
 from scipy import size
 
-def nuttxSerialOutBlk(pin, decim):
+def nuttxSerialOutBlk(pin, port, decim):
     """
 
     Call:   brikiSerialOut(pin, decim)
@@ -20,5 +20,5 @@ def nuttxSerialOutBlk(pin, decim):
 
     decim = int(decim)
     
-    blk = RCPblk('serialOut', pin, [], [0,0], 1, [], [decim, 0])
+    blk = RCPblk('serialOut', pin, [], [0,0], 1, [], [decim, 0], port)
     return blk
