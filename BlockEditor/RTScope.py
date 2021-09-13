@@ -48,8 +48,10 @@ class ser_rcvServer(threading.Thread):
     def run(self):
         portN =  self.mainw.serCbBox.currentIndex()
         portName = self.mainw.serCbBox.itemText(portN)
+        baudN = self.mainw.serBaudRate.currentIndex()
+        baudRate = self.mainw.serBaudRate.itemText(baudN)
 
-        self.port = ser.Serial(portName, 1200000)
+        self.port = ser.Serial(portName, baudRate)
         T = 0.0
         L = 8*self.N
         
@@ -80,10 +82,12 @@ class ser_rcvServer4bytes(threading.Thread):
         self.st = struct.Struct(self.N*'d')
        
     def run(self):
-        portN =  self.mainw.serCbBox.currentIndex()
-        portName = self.mainw.serCbBox.itemText(portN)
+        portN =  self.mainw.ser4CbBox.currentIndex()
+        portName = self.mainw.ser4CbBox.itemText(portN)
+        baudN = self.mainw.ser4BaudRate.currentIndex()
+        baudRate = self.mainw.ser4BaudRate.itemText(baudN)
 
-        self.port = ser.Serial(portName, 1200000)
+        self.port = ser.Serial(portName, baudRate)
         T = 0.0
         L = 4*self.N
         

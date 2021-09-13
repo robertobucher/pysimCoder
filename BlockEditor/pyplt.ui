@@ -272,6 +272,68 @@
        <string>/dev/ttyACM2</string>
       </property>
      </item>
+     <item>
+      <property name="text">
+       <string>/dev/ttyUSB0</string>
+      </property>
+     </item>
+    </widget>
+    <widget class="QLabel" name="label">
+     <property name="geometry">
+      <rect>
+       <x>40</x>
+       <y>70</y>
+       <width>111</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Baud Rate</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QComboBox" name="serBaudRate">
+     <property name="geometry">
+      <rect>
+       <x>170</x>
+       <y>65</y>
+       <width>161</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="editable">
+      <bool>true</bool>
+     </property>
+     <property name="currentIndex">
+      <number>2</number>
+     </property>
+     <item>
+      <property name="text">
+       <string>9600</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>57600</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>115200</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>576000</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>1200000</string>
+      </property>
+     </item>
     </widget>
     <widget class="QPushButton" name="pbStart_ser">
      <property name="geometry">
@@ -321,6 +383,11 @@
        <string>/dev/ttyACM2</string>
       </property>
      </item>
+     <item>
+      <property name="text">
+       <string>/dev/ttyUSB0</string>
+      </property>
+     </item>
     </widget>
     <widget class="QLabel" name="label_7">
      <property name="geometry">
@@ -337,6 +404,63 @@
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
+    </widget>
+    <widget class="QLabel" name="label">
+     <property name="geometry">
+      <rect>
+       <x>40</x>
+       <y>70</y>
+       <width>111</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Baud Rate</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QComboBox" name="ser4BaudRate">
+     <property name="geometry">
+      <rect>
+       <x>170</x>
+       <y>65</y>
+       <width>161</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="editable">
+      <bool>true</bool>
+     </property>
+     <property name="currentIndex">
+      <number>2</number>
+     </property>
+     <item>
+      <property name="text">
+       <string>9600</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>57600</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>115200</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>576000</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>1200000</string>
+      </property>
+     </item>
     </widget>
     <widget class="QPushButton" name="pbStart_ser4">
      <property name="geometry">
