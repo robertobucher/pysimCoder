@@ -52,6 +52,7 @@ class ser_rcvServer(threading.Thread):
         baudRate = self.mainw.serBaudRate.itemText(baudN)
 
         self.port = ser.Serial(portName, baudRate)
+        self.mainw.port = self.port
         T = 0.0
         L = 8*self.N
         
@@ -64,7 +65,7 @@ class ser_rcvServer(threading.Thread):
                 
             val = self.port.read(L)
             data = self.st.unpack(val)
-            
+           
             for n in range(0,self.N):
                 try:
                     val = float(data[n])
@@ -88,6 +89,7 @@ class ser_rcvServer4bytes(threading.Thread):
         baudRate = self.mainw.ser4BaudRate.itemText(baudN)
 
         self.port = ser.Serial(portName, baudRate)
+        self.mainw.port = self.port
         T = 0.0
         L = 4*self.N
         
@@ -122,11 +124,19 @@ class tcp_rcvServer(threading.Thread):
         portNum = int(self.mainw.tcpCbBox.itemText(portN))
 
         self.port = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.mainw.port = self.port
+        
         self.port.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+       
         T = 0.0
         L = 8*self.N
-        self.port.bind(('', portNum))
-        self.port.listen(5)
+        try:
+            self.port.bind(('', portNum))
+            self.port.listen(5)
+        except:
+            ret = QMessageBox.warning(self.mainw, '', 'Port already in use, please close it',
+                                      QMessageBox.Ok, QMessageBox.Ok)
+            return
         
         while self.mainw.ServerActive==1:
             conn, addr = self.port.accept()
@@ -164,7 +174,14 @@ class udp_rcvServer(threading.Thread):
         portNum = int(self.mainw.udpCbBox.itemText(portN))
 
         self.port = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.port.bind(('0.0.0.0', portNum))
+        self.mainw.port = self.port
+        
+        try:
+           self.port.bind(('0.0.0.0', portNum))
+        except:
+            ret = QMessageBox.warning(self.mainw, '', 'Port already in use, please close it',
+                                      QMessageBox.Ok, QMessageBox.Ok)
+            return
         T = 0.0
         L = 8*self.N
         
@@ -208,7 +225,8 @@ class MainWindow(QMainWindow, form_class):
         self.setupUi(self)
           
         self.connect_widget()
-
+        self.port = None
+  
         self.ServerActive = 0
         self.colors = ["red", "green", "blue","yellow", "cyan", "magenta", "white", "gray"]
         self.ymin = -1
@@ -328,6 +346,15 @@ class MainWindow(QMainWindow, form_class):
             self.plot.setAxisScale(QwtPlot.yLeft, self.ymin, self.ymax)
             self.plot.replot()
 
+    def closeEvent(self,event):          
+        try:
+            self.port.shutdown()
+            self.port.close()
+        except:
+            pass
+
+        event.accept()
+                    
 app = QApplication(sys.argv)
 frame = MainWindow()
 frame.show()
