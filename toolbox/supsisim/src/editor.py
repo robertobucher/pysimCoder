@@ -131,7 +131,7 @@ class Editor(QObject):
         blk = params[0]
         blk = blk.replace('Blk','Dlg')
         
-        streV = 'import output.' + blk +  ' as dlg'
+        streV = 'import dialogs.' + blk +  ' as dlg'
         try:
             exec(streV)
             name =  item.name.replace(' ','_')
