@@ -32,7 +32,7 @@ if __name__ == "__main__":
         
     library = Library()
     library.setGeometry(0, 0, 400, h)
-    library.show()
+    
     if fname == 'untitled':
         library.newFile()
     else:

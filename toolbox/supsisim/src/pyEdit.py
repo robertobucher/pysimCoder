@@ -159,12 +159,19 @@ class NewEditorMainWindow(QMainWindow):
                                                 statusTip = 'Block settings',
                                                 triggered = self.setcodegenAct)
 
+        self.showLibAction = QAction(QIcon(mypath+'library.png'),
+                                     'Show/Hide Block Library',self,
+                                     statusTip = 'Show/Hide Block Library',
+                                     triggered = self.showLibAct)
+        
         self.debugAction = QAction(QIcon(mypath+'debug.png'),
                                              'Debugging',self,
                                              statusTip = 'Debug infos',
                                              triggered = self.debugAct)
         
     def addToolbars(self):
+        toolbarL = self.addToolBar('Library')
+        toolbarL.addAction(self.showLibAction)
         toolbarF = self.addToolBar('File')
         toolbarF.addAction(self.newFileAction)
         toolbarF.addAction(self.openFileAction)
@@ -203,6 +210,8 @@ class NewEditorMainWindow(QMainWindow):
 
     def addMenubar(self):
         menubar = self.menuBar()
+        libMenu = menubar.addMenu('&Library')
+        libMenu.addAction(self.showLibAction)
         fileMenu = menubar.addMenu('&File')
         fileMenu.addAction(self.newFileAction)
         fileMenu.addAction(self.openFileAction)
@@ -405,6 +414,12 @@ class NewEditorMainWindow(QMainWindow):
 
     def startpythonAct(self):
         os.system(pycmd)
+
+    def showLibAct(self):
+        if self.library.isHidden():
+            self.library.show()
+        else:
+            self.library.hide()
 
     def debugAct(self):
         self.scene.debugInfo()
