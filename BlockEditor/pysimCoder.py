@@ -26,13 +26,15 @@ if __name__ == "__main__":
         mypath =  os.getcwd()
 
     app = QApplication(sys.argv)
-    V = app.desktop().screenGeometry()
-    h = V.height()
-    w = V.width()
-        
+    screen = app.primaryScreen()
+    rect = screen.availableGeometry()
+    h = int(rect.height()*0.9)
+    
     library = Library()
     library.setGeometry(0, 0, 400, h)
-    
+    library.setMaximumSize(400,h)
+    library.setMinimumSize(400,h)
+       
     if fname == 'untitled':
         library.newFile()
     else:

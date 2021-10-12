@@ -225,6 +225,9 @@ class Library(QMainWindow):
  
     def closeWindow(self, mainW):
         self.mainWins.remove(mainW)
+        if len(self.mainWins)!=0:
+            self.show()
+    
    
     def closeEvent(self,event):
         for el in self.mainWins:
