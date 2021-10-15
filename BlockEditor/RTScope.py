@@ -2,7 +2,12 @@
 
 import sys
 
-from qwt import QwtPlot, QwtPlotCurve, QwtPlotGrid
+try:
+    from PyQt5.Qwt import QwtPlot, QwtPlotCurve, QwtPlotGrid
+except:
+    print("Warning: PyQt5.Qwt not found, trying qwt")
+    from qwt import QwtPlot, QwtPlotCurve, QwtPlotGrid
+    pass
 
 try:
     from PyQt5 import QtGui, QtCore, uic
@@ -32,8 +37,6 @@ SER = 1
 SER4 = 2
 TCP = 3
 UDP = 4
-
-from qwt import QwtPlot, QwtPlotCurve, QwtPlotGrid
 
 path = os.environ.get('PYSUPSICTRL') + '/BlockEditor'
 form_class = uic.loadUiType(path + '/pyplt.ui')[0]    
@@ -293,7 +296,7 @@ class MainWindow(QMainWindow, form_class):
                 pen = QPen(QColor(self.colors[n % 8]))
                 pen.setWidth(WIDTH)
                 cv.setPen(pen)
-                cv.setData([],[])
+                cv.setSamples([],[])
                 self.c.append(cv)
                 self.c[n].attach(self.plot)
                 
@@ -336,7 +339,7 @@ class MainWindow(QMainWindow, form_class):
         for n in range(0,self.N):
             try:
                 t = self.timebase[0:len(self.x[n])]
-                self.c[n].setData(t,self.x[n])
+                self.c[n].setSamples(t,self.x[n])
             except:
                 pass
         if self.autoAxis:
