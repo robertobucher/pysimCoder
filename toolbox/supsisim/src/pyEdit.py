@@ -6,7 +6,7 @@ from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout,  QAction, \
     QMessageBox, QFileDialog, QDialog, QApplication, QComboBox, QLabel
 from PyQt5.QtGui import QPainter, QIcon
 from PyQt5.QtPrintSupport import QPrinter, QPrintDialog
-from PyQt5.QtCore import QPointF, QFileInfo, QMimeData, QSettings, QVariant
+from PyQt5.QtCore import Qt, QPointF, QFileInfo, QMimeData, QSettings, QVariant
 
 from supsisim.block import Block
 from supsisim.connection import Connection
@@ -434,7 +434,13 @@ class NewEditorMainWindow(QMainWindow):
         self.scene.runDlg()
 
     def setcodegenAct(self):
+        if self.library.isHidden():
+            self.library.show()
+            self.library.setWindowState(Qt.WindowMinimized)
         self.scene.codegenDlg()
+        if self.library.isMinimized():
+            self.library.setWindowState(Qt.WindowMaximized)
+            self.library.hide()
 
     def closeEvent(self,event):          
         try:
