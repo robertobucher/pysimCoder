@@ -66,7 +66,6 @@ Enter the pysimCoder folder and launch
 ```
 docker build  -t pysimc ."
 
-set DISPLAY=<your net addres>   (example set DISPLAY=192.168.178.109)
 docker run -it --env="DISPLAY" --net=host pysimc
 ```
 
@@ -76,6 +75,23 @@ make -f make4docker.mak
 source ~/.bashrc
 psc
 ```
+
+After this operations it is possible to generate a new image with pysimCoder installed.
+Get the container ID with
+```
+docker container ls -a
+```
+
+Generate the ner image
+```
+docker commit <CONTAINER ID> pysimcoder
+```
+
+Now it is possible to launch the docker simply with the command
+```
+docker run -it --rm --env="DISPLAY" --net=host -v $XAUTHORITY:/tmp/.XAuthority -e XAUTHORITY=/tmp/.XAuthority' pysimcoder
+```
+
 I've tested this chain under Debian bookworm by installing the bullseye version of docker
 
 
