@@ -58,3 +58,25 @@ Launch application
 pysimCoder
 ```
 
+It is now possible to generate a docker container and image to run pysimCoder:
+
+Install docker (see https://docs.docker.com/engine/install/ubuntu/).
+
+Enter the pysimCoder folder and launch
+```
+docker build  -t pysimc ."
+
+set DISPLAY=<your net addres>   (example set DISPLAY=192.168.178.109)
+docker run -it --env="DISPLAY" --net=host pysimc
+```
+
+In the bash launch:
+```
+make -f make4docker.mak
+source ~/.bashrc
+psc
+```
+I've tested this chain under Debian bookworm by installing the bullseye version of docker
+
+
+
