@@ -87,12 +87,13 @@ Generate the ner image
 docker commit <CONTAINER ID> pysimcoder
 ```
 
-Now it is possible to launch the docker simply with the command
+Now it is possible to launch the docker simply with the command:
 ```
 docker run -it --rm --env="DISPLAY" --net=host -v $XAUTHORITY:/tmp/.XAuthority -e XAUTHORITY=/tmp/.XAuthority' pysimcoder
 ```
 
-I've tested this chain under Debian bookworm by installing the bullseye version of docker
+I've tested this chain under Debian bookworm by installing the bullseye version of docker.
+
 
 
 
