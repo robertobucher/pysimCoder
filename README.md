@@ -66,7 +66,7 @@ Enter the pysimCoder folder and launch
 ```
 docker build  -t pysimc ."
 
-set DISPLAY=<your net addres>   (example set DISPLAY=192.168.178.109)
+set DISPLAY=<your net address>   (example set DISPLAY=192.168.178.109)
 docker run -it --env="DISPLAY" --net=host pysimc
 ```
 
