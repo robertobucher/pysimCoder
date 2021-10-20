@@ -12,6 +12,7 @@ SRCALL += $(wildcard $(COMMON_DIR)/CAN_dev/*.c)
 SRCALL += $(wildcard $(COMMON_DIR)/common_dev/*.c)
 SRCALL += $(wildcard $(COMMON_DIR)/Faulhaber_dev/*.c)
 SRCALL += $(wildcard $(COMMON_DIR)/Maxon_dev/*.c)
+SRCALL += $(wildcard $(COMMON_DIR)/posix/*.c)
 
 OBJ = $(notdir $(SRCALL:.c=.o))
 
@@ -40,6 +41,9 @@ CC_FLAGS = -c $(DBG) $(INCLUDE)
 
 %.o: $(COMMON_DIR)/Maxon_dev/%.c
 	$(CC) $(CC_FLAGS) $<
+
+%.o: $(COMMON_DIR)/posix/%.c
+	cc $(CC_FLAGS) $<
 
 lib: $(OBJ)
 	$(AR) -r $(LIB) $(OBJ)
