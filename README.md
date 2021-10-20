@@ -58,6 +58,8 @@ Launch application
 pysimCoder
 ```
 
+# pysimCoder as docker image
+
 It is now possible to generate a docker container and image to run pysimCoder:
 
 Install docker (see https://docs.docker.com/engine/install/ubuntu/).
