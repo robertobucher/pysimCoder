@@ -82,7 +82,7 @@ Get the container ID with
 docker container ls -a
 ```
 
-Generate the ner image
+Generate the new image
 ```
 docker commit <CONTAINER ID> pysimcoder
 ```
