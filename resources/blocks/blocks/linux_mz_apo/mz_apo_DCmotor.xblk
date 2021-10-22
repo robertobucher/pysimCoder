@@ -1,0 +1,1 @@
+{"lib": "linux_mz_apo", "name": "mzapoDCmot", "ip": 1, "op": 1, "stin": 0, "stout": 0, "icon": "MOT", "params": "mz_apo_DCmotBlk|mot_ID:0", "help": "Parameters\nMotor ID: 0 or 1\n\n\n"}
