@@ -139,7 +139,7 @@ class Block(QGraphicsPathItem):
 
     def clone(self, pt):
         b = Block(None, self.scene, self.name, self.inp, self.outp,
-                      self.insetble, self.outsetble, self.icon, self.params, self.width, self.flip)
+                      self.insetble, self.outsetble, self.icon, self.params, self.helpTxt, self.width, self.flip)
         b.setPos(self.scenePos().__add__(pt))
 
     def setFlip(self, flip=None):
