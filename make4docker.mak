@@ -44,10 +44,13 @@ user:
 	echo $(PYCTL) >> ~/.bashrc
 	echo 'export PYEDITOR=emacs' >> ~/.bashrc
 	echo 'export PYTHONPATH=$(HOME)/Documents/PYTHON:$(CURDIR)/resources/blocks/rcpBlk' >> ~/.bashrc
+	echo 'export LIBGL_ALWAYS_INDIRECT=1' >> ~/.bashrc
+	echo 'export DISPLAY=localhost:0.0' >> ~/.bashrc
 
 alias:
 	echo 'alias pysimCoder='"'$(CURDIR)/pysim-run.sh'"''  >> ~/.bashrc
 	echo 'alias psc='"'pysimCoder'"''  >> ~/.bashrc
+
 
 clean:
 	rm -f CodeGen/LinuxRT/lib/*.a

@@ -1,6 +1,8 @@
 FROM debian:11-slim
 
 RUN apt-get -y update
+RUN apt-get -y dist-upgrade
+
 RUN apt-get -y install \
     gcc \
     gfortran \
@@ -21,8 +23,11 @@ RUN apt-get -y install \
     liblapack-dev \
     libxml2-dev \
     libcomedi-dev \
-    python3-pyqt5 
+    python3-pyqt5
     
+RUN apt-get -y clean
+RUN apt-get -y autoremove
+
 ADD . /pysimCoder
 WORKDIR /pysimCoder
 
