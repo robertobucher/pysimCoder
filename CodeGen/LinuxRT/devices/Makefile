@@ -22,6 +22,8 @@ FMUDIR = ../fmu
 ######DBG = -g -fPIC
 DBG = -g
 
+CC ?= cc
+AR ?= ar
 OBJEX = $(SRC:.c=.o)
 DEFINES = -D PLOTTER_SCRIPT=\"$(CWD)/scope.py\"
 CC_FLAGS = -c $(DBG) $(INCLUDE) 
@@ -37,31 +39,31 @@ EXCLUDE = comedi_analog_input.c comedi_analog_output.c comedi_digital_input.c co
 SRC=$(filter-out $(EXCLUDE),$(SRCALL))
 
 scope.o: scope.c
-	cc $(CC_FLAGS_SCP) $<
+	$(CC) $(CC_FLAGS_SCP) $<
 
 FMUinterface.o: FMUinterface.c
-	cc $(CC_FLAGS_FMU) $<
+	$(CC) $(CC_FLAGS_FMU) $<
 
 %.o: %.c
-	cc $(CC_FLAGS) $<
+	$(CC) $(CC_FLAGS) $<
 
 %.o: $(COMMON_DIR)/CAN_dev/%.c
-	cc $(CC_FLAGS) $<
+	$(CC) $(CC_FLAGS) $<
 
 %.o: $(COMMON_DIR)/common_dev/%.c
-	cc $(CC_FLAGS) $<
+	$(CC) $(CC_FLAGS) $<
 
 %.o: $(COMMON_DIR)/Faulhaber_dev/%.c
-	cc $(CC_FLAGS) $<
+	$(CC) $(CC_FLAGS) $<
 
 %.o: $(COMMON_DIR)/Maxon_dev/%.c
-	cc $(CC_FLAGS) $<
+	$(CC) $(CC_FLAGS) $<
 
 %.o: $(COMMON_DIR)/posix/%.c
-	cc $(CC_FLAGS) $<
+	$(CC) $(CC_FLAGS) $<
 
 lib: $(OBJ)
-	ar -r $(LIB) $(OBJ)
+	$(AR) -r $(LIB) $(OBJ)
 
 install:
 	mv $(LIB) ../lib
