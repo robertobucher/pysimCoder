@@ -35,12 +35,12 @@ static void init(python_block *block)
 
   if ((he = gethostbyname(block->str)) == NULL) exit(1);
   IPbuf =  inet_ntoa(*((struct in_addr*) he->h_addr_list[0]));
-  
+
   if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0) exit(1);
   block->intPar[1] = s;
-    
-  server.sin_family      = AF_INET;                            
-  server.sin_port         = htons(block->intPar[0]);    
+
+  server.sin_family      = AF_INET;
+  server.sin_port         = htons(block->intPar[0]);
   server.sin_addr.s_addr = inet_addr(IPbuf);
   block->ptrPar = (void *) &server;
 }
@@ -51,9 +51,9 @@ static void inout(python_block *block)
   int * intPar    = block->intPar;
   double *u;
   double data[block->nin];
-  
+
   int s = intPar[1];
-  
+
   for(i=0;i<block->nin;i++){
     u = block->u[i];
     data[i] = u[0];
@@ -80,5 +80,3 @@ void UDPsocketTx(int flag, python_block *block)
     init(block);
   }
 }
-
-
