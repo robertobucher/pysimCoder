@@ -8,7 +8,10 @@
 #include <string.h>
 #include <fcntl.h>
 #include <pthread.h>
+
+#ifdef CG_WITH_IOPL
 #include <sys/io.h>
+#endif
 
 #ifdef CANOPEN
 void canopen_synch(void);
@@ -189,6 +192,7 @@ int main(int argc,char** argv)
   signal(SIGINT,endme);
   signal(SIGKILL,endme);
 
+#ifdef CG_WITH_NRT
   uid = geteuid();
   if (uid!=0){
     fd=open("/dev/nrt",O_RDWR);
@@ -198,8 +202,11 @@ int main(int argc,char** argv)
     }
     close(fd);
   }
+#endif /*CG_WITH_NRT*/
 
+#ifdef CG_WITH_IOPL
   iopl(3);
+#endif /*CG_WITH_IOPL*/
 
   pthread_create(&thrd,NULL,rt_task,NULL);
 
