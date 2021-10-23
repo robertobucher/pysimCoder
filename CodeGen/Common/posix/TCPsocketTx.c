@@ -42,8 +42,29 @@ static void init(python_block *block)
 
   char * IPbuf;
   struct hostent *he;
+  const char *hostname = block->str;
 
-  if ((he = gethostbyname(block->str)) == NULL) exit(1);
+#ifdef CG_WITH_ENV_HOST_ADDR
+  if (hostname != NULL)
+    {
+      if (*hostname == '$')
+        {
+          const char *envname = hostname + 1;
+          hostname = getenv(envname);
+          if (hostname == NULL)
+            {
+              printf("environment variable \"%s\" not set\n", envname);
+              exit(1);
+            }
+        }
+    }
+#endif /*CG_WITH_ENV_HOST_ADDR*/
+
+  if ((he = gethostbyname(hostname)) == NULL)
+     {
+       printf("gethostbyname failure \"%s\" unresolved\n", hostname);
+       exit(1);
+     }
   IPbuf =  inet_ntoa(*((struct in_addr*) he->h_addr_list[0]));
 
   int sockfd = socket(AF_INET, SOCK_STREAM, 0);
@@ -60,7 +81,7 @@ static void init(python_block *block)
 
   if (connect(sockfd, (struct sockaddr *) &server, addrlen) < 0)
     {
-      printf("client: connect failure: %d\n", errno);
+      printf("client: connect to \"%s\" failure: %d\n", hostname, errno);
       close(sockfd);
       exit(1);
     }
