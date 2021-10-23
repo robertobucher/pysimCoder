@@ -1,5 +1,5 @@
-all: lib
-reduced: files lib install
+all: lib install
+reduced: lib install
 
 LIB = libPipyblk.a
 GENERIC_INC = $(PYSUPSICTRL)/CodeGen/Common/include
