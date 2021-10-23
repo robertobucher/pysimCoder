@@ -70,10 +70,12 @@ static void *rt_task(void *p)
   struct timespec t_next, t_current, t_isr, T0;
   struct sched_param param;
 
-  param.sched_priority = prio;
-  if(sched_setscheduler(0, SCHED_FIFO, &param)==-1){
-    perror("sched_setscheduler failed");
-    exit(-1);
+  if (prio >= 0) {
+    param.sched_priority = prio;
+    if(sched_setscheduler(0, SCHED_FIFO, &param)==-1) {
+      perror("sched_setscheduler failed");
+      exit(-1);
+    }
   }
 
   mlockall(MCL_CURRENT | MCL_FUTURE);
