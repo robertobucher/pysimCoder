@@ -1,0 +1,36 @@
+MODEL = $$MODEL$$
+all: ../$(MODEL)
+
+PYCODEGEN = $(PYSUPSICTRL)/CodeGen
+MAINDIR = $(PYCODEGEN)/src
+LIBDIR  = $(PYCODEGEN)/linux_mz_apo/lib
+INCDIR  = $(PYCODEGEN)/linux_mz_apo/include
+COMMON_INCDIR = $(PYCODEGEN)/Common/include
+
+RM = rm -f
+FILES_TO_CLEAN = *.o $(MODEL)
+
+CC = arm-linux-gnueabihf-gcc
+CC_OPTIONS = -g
+
+MAIN = linux_main_pi
+ADD_FILES = $$ADD_FILES$$
+
+OBJSSTAN = $(MAIN).o $(MODEL).o $(ADD_FILES)
+
+CFLAGS = $(CC_OPTIONS) -O2 -I$(INCDIR) -I$(COMMON_INCDIR) $(C_FLAGS) -DMODEL=$(MODEL)
+
+LIB = $(LIBDIR)/libPipyblk.a
+
+$(MAIN).c: $(MAINDIR)/$(MAIN).c $(MODEL).c
+	cp $< .
+
+%.o: ../%.c
+	$(CC) -c -o $@ $(CFLAGS) $<
+
+../$(MODEL): $(OBJSSTAN) $(LIB)
+	$(CC) -o $@  $(OBJSSTAN) $(LIB) -lrt -lpthread -lm
+	@echo "### Created executable: $(MODEL)"
+
+clean:
+	@$(RM) $(FILES_TO_CLEAN)
