@@ -210,16 +210,19 @@ class Library(QMainWindow):
             fn.close()
         except:
             pass
-
-        dirs = os.listdir(commonDir)
-        dirs.remove('common.blks')
+        
+        dirs = open(commonDir + '/folders','r')
         for el in dirs:
-            files = os.listdir(commonDir + '/' + el)
-            for f in sorted(files):
-                if f.endswith('.xblk'):
-                    d = self.getBlock(respath +'blocks/blocks/' + el + '/' + f)
+            el = el.rstrip('\n')
+            try:
+                files = os.listdir(commonDir + '/' + el)
+                for f in sorted(files):
+                    if f.endswith('.xblk'):
+                        d = self.getBlock(respath +'blocks/blocks/' + el + '/' + f)
                 
-                    blkList.append(d)
+                        blkList.append(d)
+            except:
+                pass
                 
         self.libConfig = sorted(blkList, key=lambda k: (k['lib'].lower(), k['name']))
  
@@ -227,7 +230,6 @@ class Library(QMainWindow):
         self.mainWins.remove(mainW)
         if len(self.mainWins)!=0:
             self.show()
-    
    
     def closeEvent(self,event):
         for el in self.mainWins:
