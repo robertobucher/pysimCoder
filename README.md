@@ -68,14 +68,13 @@ Enter the pysimCoder folder and launch
 ```
 docker build  -t pysimc ."
 
-docker run -it --env="DISPLAY" --net=host pysimc
+docker run -it pysimc
 ```
 
 In the bash launch:
 ```
 make -f make4docker.mak
-source ~/.bashrc
-psc
+exit
 ```
 
 After this operations it is possible to generate a new image with pysimCoder installed.
