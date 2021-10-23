@@ -1,5 +1,5 @@
-all: lib
-reduced: files lib install
+all: lib install
+reduced: lib install
 
 LIB = libPipyblk.a
 GENERIC_INC = $(PYSUPSICTRL)/CodeGen/Common/include
@@ -26,6 +26,7 @@ AR = arm-linux-gnueabihf-ar
 OBJEX = $(SRC:.c=.o)
 INCLUDE =  -I$(GENERIC_INC) -I$(TARGET_INC)
 CC_FLAGS = -c $(DBG) $(INCLUDE)
+CC_FLAGS += -D CG_WITH_ENV_HOST_ADDR
 
 %.o: %.c
 	$(CC) $(CC_FLAGS) $<
