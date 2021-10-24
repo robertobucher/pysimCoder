@@ -416,11 +416,11 @@ class NewEditorMainWindow(QMainWindow):
         os.system(pycmd)
 
     def showLibAct(self):
-        if self.library.isHidden():
-            self.library.show()
+        if self.library.isMinimized():
+            self.library.setWindowState(Qt.WindowMaximized)
         else:
-            self.library.hide()
-
+            self.library.setWindowState(Qt.WindowMinimized)
+            
     def debugAct(self):
         self.scene.debugInfo()
 
