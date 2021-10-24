@@ -434,13 +434,7 @@ class NewEditorMainWindow(QMainWindow):
         self.scene.runDlg()
 
     def setcodegenAct(self):
-        if self.library.isHidden():
-            self.library.show()
-            self.library.setWindowState(Qt.WindowMinimized)
         self.scene.codegenDlg()
-        if self.library.isMinimized():
-            self.library.setWindowState(Qt.WindowMaximized)
-            self.library.hide()
 
     def closeEvent(self,event):          
         try:

@@ -4,7 +4,7 @@ import sys
 import os
 
 from PyQt5.QtWidgets import QApplication
-from PyQt5.QtCore import QFileInfo
+from PyQt5.QtCore import Qt, QFileInfo
 from supsisim.library import Library
 
 if __name__ == "__main__":
@@ -34,6 +34,8 @@ if __name__ == "__main__":
     library.setGeometry(0, 0, 400, h)
     library.setMaximumSize(400,h)
     library.setMinimumSize(400,h)
+    library.show()
+    library.setWindowState(Qt.WindowMinimized)
        
     if fname == 'untitled':
         library.newFile()

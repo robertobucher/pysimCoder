@@ -125,19 +125,12 @@ class Editor(QObject):
             self.scene.clearLastUndo()
         
     def paramsBlock(self):
-        self.scene.DgmToUndo()
         item = self.scene.item
         params = item.params.split('|')
         blk = params[0]
 
-        ####  temporary solution   #####
-        if self.mainw.library.isHidden():
-            self.mainw.library.show()
-            self.mainw.library.setWindowState(Qt.WindowMinimized)
-        ####  temporary solution   #####
-        
         blk = blk.replace('Blk','Dlg')
-        
+
         streV = 'import dialogs.' + blk +  ' as dlg'
         try:
             exec(streV)
@@ -146,19 +139,14 @@ class Editor(QObject):
             pars = exec(cmd)
 
         except:
+            self.scene.DgmToUndo()
             pars = pDlg.parsDialog(item.params, item.helpTxt)
+
+            if pars != item.params:
+                item.params = pars
+            else:
+                self.scene.clearLastUndo()
             
-        if pars != item.params:
-            item.params = pars
-        else:
-            self.scene.clearLastUndo()
-
-        ####  temporary solution   #####
-        if self.mainw.library.isMinimized():
-            self.mainw.library.setWindowState(Qt.WindowMaximized)
-            self.mainw.library.hide()
-       ####  temporary solution   #####
-
     def cloneBlock(self):
         self.scene.DgmToUndo()
         item = self.scene.item
