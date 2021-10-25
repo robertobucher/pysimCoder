@@ -1,3 +1,0 @@
-nuttx-export*
-lib/*.a
-devices/*.o
