@@ -27,7 +27,7 @@ import control as ct
 import matplotlib.pyplot as plt
 
 def set_mydefaults():
-    ct.set_defaults('bode', dB=True, deg=True, Hz=False, grid=True)
+    ct.set_defaults('freqplot', dB=True, deg=True, Hz=False, grid=True)
     
 def full_obs(sys,poles):
     """
