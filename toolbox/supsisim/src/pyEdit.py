@@ -155,8 +155,8 @@ class NewEditorMainWindow(QMainWindow):
                                                triggered = self.codegenAct)
 
         self.setCodegenAction = QAction(QIcon(mypath+'settings.png'),
-                                                'Block settings',self,
-                                                statusTip = 'Block settings',
+                                                'Settings',self,
+                                                statusTip = 'Settings',
                                                 triggered = self.setcodegenAct)
 
         self.showLibAction = QAction(QIcon(mypath+'library.png'),
