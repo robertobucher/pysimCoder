@@ -1,5 +1,12 @@
 # pysimCoder
-Simulink like editor for Python
+
+pysimCoder is a Rapid Prototyping application, that can be used to generate realtime code for different targets.
+
+At present it is possible to generate code for Linux (with or without preempt-rt) on PC and Raspberry PI, for the BRIKI card (partially on the SAMD21 uC, see www.meteca.org) and for the NuttX RTOS.
+
+The behaviour is similar to other RPC applications like Simulink and XCos.
+
+Despite the fact that the main purpose of pysimcoder is to generate RT control code, it is also possible to perfom simple simulations mixing continous time and discrete time blocks.
 
 A Virtual Machine (Virtual Box) is available. Please write to me to get
 the address and password to download it.
