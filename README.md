@@ -11,7 +11,12 @@ Despite the fact that the main purpose of pysimCoder is to generate RT control c
 A Virtual Machine (Virtual Box) is available. Please write to me to get
 the address and password to download it.
 
-See "README" for more info
+It is also possible to get a docker image with pysimCoder using
+
+```
+docker pull robertobucher/pysimcoder
+```
+More info at the end of this file.
 
 http://robertobucher.dti.supsi.ch/pysimcoder/
 
