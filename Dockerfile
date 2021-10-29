@@ -30,6 +30,7 @@ RUN apt-get -y autoremove
 
 ADD . /pysimCoder
 WORKDIR /pysimCoder
+RUN make -f make4docker.mak
 
 CMD /bin/bash
 

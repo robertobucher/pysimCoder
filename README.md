@@ -72,43 +72,43 @@ pysimCoder
 
 # pysimCoder as docker image
 
-It is now possible to generate a docker container and image to run pysimCoder:
+It is now possible to use a docker container and image to run pysimCoder:
 
 Install docker (see https://docs.docker.com/engine/install/ubuntu/).
 
-Enter the pysimCoder folder and launch
-```
-docker build  -t pysimc ."
+Download a pysimCoder image directly from the Docker Container page:
 
-docker run -it pysimc
 ```
-
-In the bash launch:
+docker pull robertobucher/pysimcoder:latest
 ```
-make -f make4docker.mak
-exit
+or
+```
+docker pull robertobucher/pysimcoder:novnc
 ```
 
-After this operations it is possible to generate a new image with pysimCoder installed.
-Get the container ID with
+The first image can be launched with
 ```
-docker container ls -a
+$ docker run --rm --env="DISPLAY" --net=host -v $XAUTHORITY:/tmp/.XAuthority -e XAUTHORITY=/tmp/.XAuthority robertobucher/pysimcoder:latest
 ```
-
-Generate the new image
-```
-docker commit <CONTAINER ID> pysimcoder
-```
-
-Now it is possible to launch the docker simply with the command:
-```
-docker run -it --rm --env="DISPLAY" --net=host -v $XAUTHORITY:/tmp/.XAuthority -e XAUTHORITY=/tmp/.XAuthority pysimcoder
-```
-At the prompt simply launch
+At the prompt launch
 ```
 psc
 ```
-I've tested this chain under Debian bookworm by installing the bullseye version of docker.
+
+The second image (pysimcoder:novnc) runs from a web browser:
+```
+$ docker run --rm -it -p 8080:8080 robertobucher/pysimcoder:novnc
+```
+Open a browser and go to  `http://<server>:8080/vnc.html`
+
+In the terminal launch
+```
+psc
+```
+
+More info and the 2 Dockerfiles can be found at https://github.com/robertobucher/pysimCoder-Docker
+
+
 
 
 
