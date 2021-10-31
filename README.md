@@ -1,6 +1,6 @@
 # pysimCoder
 
-![Screenshot_2021-10-31_07-16-53](https://user-images.githubusercontent.com/8348158/139570719-132cbe3c-190f-401b-b754-003959d08f5a.png)
+![Screenshot_2021-10-31_08-15-46](https://user-images.githubusercontent.com/8348158/139572654-7fc549da-5530-410e-b092-64104a037606.png)
 
 pysimCoder is a Rapid Prototyping application, that can be used to generate realtime code for different targets.
 
@@ -10,8 +10,11 @@ The behaviour is similar to other RPC applications like Simulink and XCos.
 
 Despite the fact that the main purpose of pysimCoder is to generate RT control code, it is also possible to perfom simple simulations mixing continous time and discrete time blocks.
 
+![Screenshot_2021-10-31_07-16-53](https://user-images.githubusercontent.com/8348158/139570719-132cbe3c-190f-401b-b754-003959d08f5a.png)
+
 A Virtual Machine (Virtual Box) is available. Please write to me to get
 the address and password to download it.
+Otherwise it is possible to download a docker image with a Debian distro + pysimcoder (see the bottom of this README how to get it)
 
 It is also possible to get a docker image with pysimCoder using
 
