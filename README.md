@@ -1,5 +1,7 @@
 # pysimCoder
 
+![Screenshot_2021-10-31_07-16-53](https://user-images.githubusercontent.com/8348158/139570719-132cbe3c-190f-401b-b754-003959d08f5a.png)
+
 pysimCoder is a Rapid Prototyping application, that can be used to generate realtime code for different targets.
 
 At present it is possible to generate code for Linux (with or without preempt-rt) on PC and Raspberry PI, for the BRIKI card (partially on the SAMD21 uC, see www.meteca.org) and for the NuttX RTOS.
