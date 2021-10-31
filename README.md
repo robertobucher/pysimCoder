@@ -12,9 +12,7 @@ Despite the fact that the main purpose of pysimCoder is to generate RT control c
 
 ![Screenshot_2021-10-31_07-16-53](https://user-images.githubusercontent.com/8348158/139570719-132cbe3c-190f-401b-b754-003959d08f5a.png)
 
-A Virtual Machine (Virtual Box) is available. Please write to me to get
-the address and password to download it.
-Otherwise it is possible to download a docker image with a Debian distro + pysimcoder (see the bottom of this README how to get it)
+A Virtual Machine (Virtual Box) is available. Please write to me to get the address and password to download it.
 
 It is also possible to get a docker image with pysimCoder using
 
