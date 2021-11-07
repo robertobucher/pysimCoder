@@ -45,6 +45,7 @@ void print_usage(void)
          "\n"
          "OPTIONS:\n"
          "  -h  print usage\n"
+	 "  -f <final time> set the final time of the execution\n"
 	 "  -v  verbose output\n"
 	 "  -p <priority>  set rt task priority (default 99)\n"
 	 "  -e  external clock\n"

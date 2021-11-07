@@ -141,6 +141,7 @@ void print_usage(void)
          "\n"
          "OPTIONS:\n"
          "  -h  print usage\n"
+	 "  -f <final time> set the final time of the execution\n"
 	 "  -v  verbose output\n"
 	 "  -p <priority>  set rt task priority (default 99)\n"
 	 "  -e  external clock\n"
@@ -163,6 +164,9 @@ static void proc_opt(int argc, char *argv[])
       break;
     case 'v':
       verbose = 1;
+      break;
+    case 'e':
+      extclock = 1;
       break;
     case 'w':
       wait = 1;
