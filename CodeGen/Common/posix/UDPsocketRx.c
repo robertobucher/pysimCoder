@@ -19,11 +19,11 @@
 #include <pyblock.h>
 #include <pthread.h>
 
-#include<stdio.h> 
-#include<unistd.h>
-#include<stdlib.h> 
-#include<arpa/inet.h>
-#include<sys/socket.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <arpa/inet.h>
+#include <sys/socket.h>
 
 static void * getData(void * p)
 {
@@ -51,19 +51,18 @@ static void init(python_block *block)
   int ret;
   int s;
   static struct sockaddr_in client;
-  double *y;
 
   if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0) exit(1);
 
   block->intPar[1] = s;
-  
-  client.sin_family      = AF_INET;        
-  client.sin_port         = htons(block->intPar[0]);       
-  client.sin_addr.s_addr = inet_addr(block->str); 
+
+  client.sin_family      = AF_INET;
+  client.sin_port         = htons(block->intPar[0]);
+  client.sin_addr.s_addr = inet_addr(block->str);
   ret = bind (s, (struct sockaddr *) &client, sizeof(client));
-  
+
   if(ret!=0) exit(1);
-  
+
   pthread_create(&thrd, NULL, getData, (void *) block);
 }
 
@@ -83,12 +82,10 @@ void UDPsocketRx(int flag, python_block *block)
   if (flag==CG_OUT){          /* get input */
     inout(block);
   }
-  else if (flag==CG_END){     /* termination */ 
+  else if (flag==CG_END){     /* termination */
     end(block);
   }
   else if (flag ==CG_INIT){    /* initialisation */
     init(block);
   }
 }
-
-
