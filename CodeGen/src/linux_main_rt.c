@@ -37,7 +37,9 @@ static char rtversion[] = "0.9";
 static int prio = 99;
 static int verbose = 0;
 static int wait = 0;
+static int extclock = 0;
 double FinalTime = 0.0;
+
 
 double get_run_time(void)
 {
