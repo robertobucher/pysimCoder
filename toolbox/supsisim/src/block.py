@@ -53,7 +53,6 @@ class Block(QGraphicsPathItem):
         return txt
         
     def setup(self):
-        self.ports_in = []
         Nports = max(self.inp, self.outp)
         self.w = self.width
         self.h = BHmin+PD*(max(Nports-1,0))

@@ -58,7 +58,7 @@ LD_SCRIPT = $(NUTTX_EXPORT)/scripts/$(LDNAME)
 
 LDFLAGS += -T $(LD_SCRIPT)
 
-LDFLAGS  += --entry=__start -nostartfiles -nodefaultlibs
+LDFLAGS  += --entry=__start
 
 ELF_FILE_LDSCRIPT ?= $(wildcard $(NUTTX_EXPORT)/scripts/gnu-elf.ld)
 

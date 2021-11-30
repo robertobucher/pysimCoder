@@ -35,12 +35,14 @@ if __name__ == "__main__":
     library.setMaximumSize(400,h)
     library.setMinimumSize(400,h)
     library.show()
-    library.setWindowState(Qt.WindowMinimized)
+    library.setWindowState(Qt.WindowMaximized)
        
     if fname == 'untitled':
         library.newFile()
+        library.setWindowState(Qt.WindowMaximized)
     else:
         library.fopen(fname)
+        library.setWindowState(Qt.WindowMinimized)
     ret = app.exec_()
     app.deleteLater()
 

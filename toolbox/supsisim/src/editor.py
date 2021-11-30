@@ -186,7 +186,7 @@ class Editor(QObject):
             for item in connections:
                 self.scene.loadConn(item, deltaPosX, deltaPosY)
             try:
-                self.editor.redrawNodes()
+                self.redrawNodes()
             except:
                 pass
         except:
@@ -778,7 +778,6 @@ class Editor(QObject):
             if self.firstTime:
                 self.firstTime = False
                 self.conn.connPoints.remove(self.conn.connPoints[-1])
-            
                 
     def eventFilter(self, obj, event):
         ev = -1
@@ -805,6 +804,7 @@ class Editor(QObject):
                 ev = KEY_DEL
             if event.key() == Qt.Key_Escape:
                 ev = KEY_ESC
+
         if ev != -1:
             fun = self.Fun[self.state][ ev]
             fun(obj, event)

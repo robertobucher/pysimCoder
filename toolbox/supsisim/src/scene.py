@@ -187,24 +187,11 @@ class Scene(QGraphicsScene):
         self.undoList = [msg]
               
     def loadBlock(self, item, dx = 0, dy = 0):
-        # --- For old files without block width ---
-        try:
-            width = int(item.findtext('width'))
-        except:
-            width = BWmin
-        # --------------------------------------------------
-        try:
-            b = Block(None, self, item.findtext('name'),
-                      int(item.findtext('inp')), int(item.findtext('outp')),
-                      item.findtext('inset')=='1', item.findtext('outset')=='1', item.findtext('icon'),
-                      item.findtext('params'), item.findtext('help'),
-                      width, item.findtext('flip')=='1' )
-        except:
-            # Compatibility of files from previous versions
-            b = Block(None, self, item.findtext('name'),
-                      int(item.findtext('inp')), int(item.findtext('outp')),
-                      item.findtext('ioset')=='1', item.findtext('ioset')=='1', item.findtext('icon'),
-                      item.findtext('params'), width, item.findtext('flip')=='1' )
+        b = Block(None, self, item.findtext('name'),
+                  int(item.findtext('inp')), int(item.findtext('outp')),
+                  item.findtext('inset')=='1', item.findtext('outset')=='1', item.findtext('icon'),
+                  item.findtext('params'), item.findtext('help'),
+                  int(item.findtext('width')), item.findtext('flip')=='1' )
         b.setPos(float(item.findtext('posX'))+dx, float(item.findtext('posY'))+dy)
 
     def find_itemAt(self, pos):
