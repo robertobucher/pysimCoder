@@ -82,7 +82,7 @@ $(MODEL).elf: $(OBJSSTAN) $(MYLIBS) objects.list1 $(MYHALLIB)
 	$(OBJCOPY) -O binary $(MODEL).elf $(MODEL).bin
 
 flash: $(MODEL).elf
-	$(FLASH) $(FLASH_FLAGS) -c "program $^ verify reset exit"
+	flash_h7 $^
 
 clean:
 	rm -f *.o *.d *.map *.elf *.bin *.hex *.su *.launch
