@@ -3,78 +3,84 @@
     <pysimCoderVersion>0.9</pysimCoderVersion>
   </pysimCoder>
   <Date>
-    <SavingDate>01.12.2020 - 16:11:25</SavingDate>
+    <SavingDate>21.01.2022 - 08:46:59</SavingDate>
   </Date>
   <Simulation>
-    <Template>rt.tmf</Template>
+    <Template>rt_nrt_iopl.tmf</Template>
     <Ts>0.01</Ts>
     <AddObj></AddObj>
     <ParScript>DisksAndSpringKane.py</ParScript>
     <Tf>20</Tf>
+    <Priority></Priority>
   </Simulation>
   <block>
-    <name>UnixSkServer</name>
-    <inp>0</inp>
-    <outp>1</outp>
-    <inset>0</inset>
-    <outset>0</outset>
-    <icon>UNIXSOCK</icon>
-    <params>unixsocketSBlk|Socket: 'ssock'|Default outputs: [1]</params>
-    <width>80</width>
-    <flip>0</flip>
-    <posX>-470.0</posX>
-    <posY>-170.0</posY>
-  </block>
-  <block>
-    <name>MAXON_MOT_I</name>
-    <inp>1</inp>
+    <name>RT Plot</name>
+    <inp>3</inp>
     <outp>0</outp>
     <inset>0</inset>
     <outset>0</outset>
-    <icon>MOT_I</icon>
-    <params>maxon_MotBlk|Can dev:'/dev/pcan32'|Device ID: 0x01|Prop. gain: 8000|Integ. gain: 4000</params>
+    <icon>PLOT</icon>
+    <params>scopeStream</params>
+    <help/>
     <width>80</width>
     <flip>0</flip>
-    <posX>500.0</posX>
-    <posY>-160.0</posY>
+    <posX>50.0</posX>
+    <posY>150.0</posY>
   </block>
   <block>
-    <name>ENC1</name>
+    <name>REF</name>
     <inp>0</inp>
     <outp>1</outp>
     <inset>0</inset>
     <outset>0</outset>
-    <icon>ENC</icon>
-    <params>maxon_EncBlk|Can dev:'/dev/pcan32'|Device ID: 0x02|Resolution: 500</params>
+    <icon>SQUARE</icon>
+    <params>squareBlk|Amplitude: 1|Period: 10|Width: 5|Bias: 0|Delay: 0</params>
+    <help/>
     <width>80</width>
     <flip>0</flip>
-    <posX>-370.0</posX>
-    <posY>80.0</posY>
+    <posX>-480.0</posX>
+    <posY>-290.0</posY>
   </block>
   <block>
-    <name>ENC</name>
-    <inp>0</inp>
+    <name>PROD</name>
+    <inp>2</inp>
     <outp>1</outp>
     <inset>0</inset>
     <outset>0</outset>
-    <icon>ENC</icon>
-    <params>maxon_EncBlk|Can dev:'/dev/pcan32'|Device ID: 0x01|Resolution: 500</params>
+    <icon>PROD</icon>
+    <params>prodBlk</params>
+    <help/>
     <width>80</width>
     <flip>0</flip>
-    <posX>-340.0</posX>
-    <posY>-40.0</posY>
+    <posX>-280.0</posX>
+    <posY>-220.0</posY>
   </block>
   <block>
-    <name>SATUR</name>
-    <inp>1</inp>
+    <name>CTRIN</name>
+    <inp>3</inp>
     <outp>1</outp>
     <inset>0</inset>
     <outset>0</outset>
-    <icon>SATUR</icon>
-    <params>saturBlk|Upper saturation: 3000|Lower saturation: -3000</params>
+    <icon>DSS</icon>
+    <params>dssBlk|System: gss_in|Initial conditions: 0</params>
+    <help/>
     <width>80</width>
     <flip>0</flip>
-    <posX>310.0</posX>
+    <posX>-10.0</posX>
+    <posY>-180.0</posY>
+  </block>
+  <block>
+    <name>SUM</name>
+    <inp>2</inp>
+    <outp>1</outp>
+    <inset>0</inset>
+    <outset>0</outset>
+    <icon>SUM</icon>
+    <params>sumBlk|Gains: [1,1]</params>
+    <help/>
+    <width>80</width>
+    <flip>0</flip>
+    <posX>160.0</posX>
     <posY>-160.0</posY>
   </block>
   <block>
@@ -85,118 +91,150 @@
     <outset>0</outset>
     <icon>DSS</icon>
     <params>dssBlk|System: gss_out|Initial conditions: 0</params>
+    <help/>
     <width>80</width>
     <flip>1</flip>
     <posX>240.0</posX>
     <posY>-10.0</posY>
   </block>
   <block>
-    <name>SUM</name>
-    <inp>2</inp>
+    <name>SATUR</name>
+    <inp>1</inp>
     <outp>1</outp>
     <inset>0</inset>
     <outset>0</outset>
-    <icon>SUM</icon>
-    <params>sumBlk|Gains: [1,1]</params>
+    <icon>SATUR</icon>
+    <params>saturBlk|Upper saturation: 3000|Lower saturation: -3000</params>
+    <help/>
     <width>80</width>
     <flip>0</flip>
-    <posX>160.0</posX>
+    <posX>310.0</posX>
     <posY>-160.0</posY>
   </block>
   <block>
-    <name>CTRIN</name>
-    <inp>3</inp>
-    <outp>1</outp>
-    <inset>0</inset>
-    <outset>0</outset>
-    <icon>DSS</icon>
-    <params>dssBlk|System: gss_in|Initial conditions: 0</params>
-    <width>80</width>
-    <flip>0</flip>
-    <posX>-10.0</posX>
-    <posY>-180.0</posY>
-  </block>
-  <block>
-    <name>PROD</name>
-    <inp>2</inp>
-    <outp>1</outp>
-    <inset>0</inset>
-    <outset>0</outset>
-    <icon>PROD</icon>
-    <params>prodBlk</params>
-    <width>80</width>
-    <flip>0</flip>
-    <posX>-280.0</posX>
-    <posY>-220.0</posY>
-  </block>
-  <block>
-    <name>REF</name>
+    <name>ENC</name>
     <inp>0</inp>
     <outp>1</outp>
     <inset>0</inset>
     <outset>0</outset>
-    <icon>SQUARE</icon>
-    <params>squareBlk|Amplitude: 1|Period: 10|Width: 5|Bias: 0|Delay: 0</params>
+    <icon>ENC</icon>
+    <params>maxon_EncBlk|Can dev:'/dev/pcan32'|Device ID: 0x01|Resolution: 500</params>
+    <help/>
     <width>80</width>
     <flip>0</flip>
-    <posX>-480.0</posX>
-    <posY>-290.0</posY>
+    <posX>-340.0</posX>
+    <posY>-40.0</posY>
   </block>
   <block>
-    <name>RT Plot</name>
-    <inp>3</inp>
+    <name>ENC1</name>
+    <inp>0</inp>
+    <outp>1</outp>
+    <inset>0</inset>
+    <outset>0</outset>
+    <icon>ENC</icon>
+    <params>maxon_EncBlk|Can dev:'/dev/pcan32'|Device ID: 0x02|Resolution: 500</params>
+    <help/>
+    <width>80</width>
+    <flip>0</flip>
+    <posX>-370.0</posX>
+    <posY>80.0</posY>
+  </block>
+  <block>
+    <name>MAXON_MOT_I</name>
+    <inp>1</inp>
     <outp>0</outp>
     <inset>0</inset>
     <outset>0</outset>
-    <icon>PLOT</icon>
-    <params>scopeStream</params>
+    <icon>MOT_I</icon>
+    <params>maxon_MotBlk|Can dev:'/dev/pcan32'|Device ID: 0x01|Prop. gain: 8000|Integ. gain: 4000</params>
+    <help/>
     <width>80</width>
     <flip>0</flip>
-    <posX>50.0</posX>
-    <posY>150.0</posY>
+    <posX>500.0</posX>
+    <posY>-160.0</posY>
   </block>
+  <block>
+    <name>UnixSkServer</name>
+    <inp>0</inp>
+    <outp>1</outp>
+    <inset>0</inset>
+    <outset>0</outset>
+    <icon>UNIXSOCK</icon>
+    <params>unixsocketSBlk|Socket: 'ssock'|Default outputs: [1]</params>
+    <help/>
+    <width>80</width>
+    <flip>0</flip>
+    <posX>-470.0</posX>
+    <posY>-170.0</posY>
+  </block>
+  <connection>
+    <pos1X>-440.0</pos1X>
+    <pos1Y>-290.0</pos1Y>
+    <pos2X>-320.0</pos2X>
+    <pos2Y>-240.0</pos2Y>
+    <pt>-380.0,-290.0</pt>
+    <pt>-380.0,-240.0</pt>
+  </connection>
+  <connection>
+    <pos1X>-430.0</pos1X>
+    <pos1Y>-170.0</pos1Y>
+    <pos2X>-320.0</pos2X>
+    <pos2Y>-200.0</pos2Y>
+    <pt>-380.0,-170.0</pt>
+    <pt>-380.0,-200.0</pt>
+  </connection>
   <connection>
     <pos1X>-240.0</pos1X>
     <pos1Y>-220.0</pos1Y>
-    <pos2X>10.0</pos2X>
-    <pos2Y>110.0</pos2Y>
+    <pos2X>-50.0</pos2X>
+    <pos2Y>-220.0</pos2Y>
     <pt>-140.0,-220.0</pt>
-    <pt>-140.0,110.0</pt>
-    <pt>-70.0,110.0</pt>
-    <pt>-70.0,110.0</pt>
+    <pt>-140.0,-220.0</pt>
   </connection>
   <connection>
     <pos1X>-300.0</pos1X>
     <pos1Y>-40.0</pos1Y>
-    <pos2X>10.0</pos2X>
-    <pos2Y>150.0</pos2Y>
-    <pt>-200.0,-40.0</pt>
-    <pt>-200.0,10.0</pt>
-    <pt>-100.0,10.0</pt>
-    <pt>-100.0,150.0</pt>
-    <pt>-50.0,150.0</pt>
-    <pt>-50.0,150.0</pt>
+    <pos2X>-50.0</pos2X>
+    <pos2Y>-180.0</pos2Y>
+    <pt>-180.0,-40.0</pt>
+    <pt>-180.0,-180.0</pt>
+    <pt>-110.0,-180.0</pt>
+    <pt>-110.0,-180.0</pt>
   </connection>
   <connection>
     <pos1X>-330.0</pos1X>
     <pos1Y>80.0</pos1Y>
-    <pos2X>10.0</pos2X>
-    <pos2Y>190.0</pos2Y>
-    <pt>-170.0,80.0</pt>
-    <pt>-170.0,170.0</pt>
-    <pt>-170.0,190.0</pt>
-    <pt>-80.0,190.0</pt>
-    <pt>-80.0,190.0</pt>
+    <pos2X>-50.0</pos2X>
+    <pos2Y>-140.0</pos2Y>
+    <pt>-120.0,80.0</pt>
+    <pt>-120.0,-140.0</pt>
+    <pt>-80.0,-140.0</pt>
+    <pt>-80.0,-140.0</pt>
+  </connection>
+  <connection>
+    <pos1X>30.0</pos1X>
+    <pos1Y>-180.0</pos1Y>
+    <pos2X>120.0</pos2X>
+    <pos2Y>-180.0</pos2Y>
+    <pt>110.0,-180.0</pt>
+    <pt>120.0,-180.0</pt>
+    <pt>120.0,-180.0</pt>
   </connection>
   <connection>
     <pos1X>200.0</pos1X>
-    <pos1Y>-10.0</pos1Y>
-    <pos2X>120.0</pos2X>
-    <pos2Y>-140.0</pos2Y>
-    <pt>100.0,-10.0</pt>
-    <pt>100.0,-140.0</pt>
-    <pt>110.0,-140.0</pt>
-    <pt>110.0,-140.0</pt>
+    <pos1Y>-160.0</pos1Y>
+    <pos2X>270.0</pos2X>
+    <pos2Y>-160.0</pos2Y>
+    <pt>240.0,-160.0</pt>
+    <pt>240.0,-160.0</pt>
+  </connection>
+  <connection>
+    <pos1X>350.0</pos1X>
+    <pos1Y>-160.0</pos1Y>
+    <pos2X>460.0</pos2X>
+    <pos2Y>-160.0</pos2Y>
+    <pt>410.0,-160.0</pt>
+    <pt>410.0,-160.0</pt>
   </connection>
   <connection>
     <pos1X>350.0</pos1X>
@@ -211,72 +249,46 @@
     <pt>350.0,-10.0</pt>
   </connection>
   <connection>
-    <pos1X>350.0</pos1X>
-    <pos1Y>-160.0</pos1Y>
-    <pos2X>460.0</pos2X>
-    <pos2Y>-160.0</pos2Y>
-    <pt>410.0,-160.0</pt>
-    <pt>410.0,-160.0</pt>
-  </connection>
-  <connection>
     <pos1X>200.0</pos1X>
-    <pos1Y>-160.0</pos1Y>
-    <pos2X>270.0</pos2X>
-    <pos2Y>-160.0</pos2Y>
-    <pt>240.0,-160.0</pt>
-    <pt>240.0,-160.0</pt>
-  </connection>
-  <connection>
-    <pos1X>30.0</pos1X>
-    <pos1Y>-180.0</pos1Y>
+    <pos1Y>-10.0</pos1Y>
     <pos2X>120.0</pos2X>
-    <pos2Y>-180.0</pos2Y>
-    <pt>110.0,-180.0</pt>
-    <pt>120.0,-180.0</pt>
-    <pt>120.0,-180.0</pt>
+    <pos2Y>-140.0</pos2Y>
+    <pt>100.0,-10.0</pt>
+    <pt>100.0,-140.0</pt>
+    <pt>110.0,-140.0</pt>
+    <pt>110.0,-140.0</pt>
   </connection>
   <connection>
     <pos1X>-330.0</pos1X>
     <pos1Y>80.0</pos1Y>
-    <pos2X>-50.0</pos2X>
-    <pos2Y>-140.0</pos2Y>
-    <pt>-120.0,80.0</pt>
-    <pt>-120.0,-140.0</pt>
-    <pt>-80.0,-140.0</pt>
-    <pt>-80.0,-140.0</pt>
+    <pos2X>10.0</pos2X>
+    <pos2Y>190.0</pos2Y>
+    <pt>-170.0,80.0</pt>
+    <pt>-170.0,170.0</pt>
+    <pt>-170.0,190.0</pt>
+    <pt>-80.0,190.0</pt>
+    <pt>-80.0,190.0</pt>
   </connection>
   <connection>
     <pos1X>-300.0</pos1X>
     <pos1Y>-40.0</pos1Y>
-    <pos2X>-50.0</pos2X>
-    <pos2Y>-180.0</pos2Y>
-    <pt>-180.0,-40.0</pt>
-    <pt>-180.0,-180.0</pt>
-    <pt>-110.0,-180.0</pt>
-    <pt>-110.0,-180.0</pt>
+    <pos2X>10.0</pos2X>
+    <pos2Y>150.0</pos2Y>
+    <pt>-200.0,-40.0</pt>
+    <pt>-200.0,10.0</pt>
+    <pt>-100.0,10.0</pt>
+    <pt>-100.0,150.0</pt>
+    <pt>-50.0,150.0</pt>
+    <pt>-50.0,150.0</pt>
   </connection>
   <connection>
     <pos1X>-240.0</pos1X>
     <pos1Y>-220.0</pos1Y>
-    <pos2X>-50.0</pos2X>
-    <pos2Y>-220.0</pos2Y>
+    <pos2X>10.0</pos2X>
+    <pos2Y>110.0</pos2Y>
     <pt>-140.0,-220.0</pt>
-    <pt>-140.0,-220.0</pt>
-  </connection>
-  <connection>
-    <pos1X>-430.0</pos1X>
-    <pos1Y>-170.0</pos1Y>
-    <pos2X>-320.0</pos2X>
-    <pos2Y>-200.0</pos2Y>
-    <pt>-380.0,-170.0</pt>
-    <pt>-380.0,-200.0</pt>
-  </connection>
-  <connection>
-    <pos1X>-440.0</pos1X>
-    <pos1Y>-290.0</pos1Y>
-    <pos2X>-320.0</pos2X>
-    <pos2Y>-240.0</pos2Y>
-    <pt>-380.0,-290.0</pt>
-    <pt>-380.0,-240.0</pt>
+    <pt>-140.0,110.0</pt>
+    <pt>-70.0,110.0</pt>
+    <pt>-70.0,110.0</pt>
   </connection>
 </root>
