@@ -1,0 +1,1 @@
+{"lib": "STM32H7", "name": "STM32SPI", "ip": 1, "op": 1, "stin": 0, "stout": 1, "icon": "SPI", "params": "stm32SPIBlk|CS Port:'NSS'|CS PIN:0", "help": "This Block reads the Voltage on the ads1018 pins\n\nParameters\nCS Port:   use 'NSS' to use internal CS system in the SPI communication\nCS PIN:\n\n\t   \n"}
