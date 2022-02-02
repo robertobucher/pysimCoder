@@ -4,7 +4,7 @@ all: $(MODEL).elf flash
 
 MAIN = stm32h7_main
 
-PYCODEGEN = $(PYSUPSICTRL)/CodeGen
+PYCODEGEN = $(PYSUPSICTRL)/CodeGen/
 MAINDIR = $(PYCODEGEN)/src
 
 OBJSSTAN = $(MODEL).o $(MAIN).o 

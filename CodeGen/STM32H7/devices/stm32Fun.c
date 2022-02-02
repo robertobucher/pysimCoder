@@ -68,7 +68,7 @@ int set_GPIO_outPort(int p, unsigned short ch)
     GPIO_InitStruct.Pin = PE_Pins;
     GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
-    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
     HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);   
     break;
   case 5:
