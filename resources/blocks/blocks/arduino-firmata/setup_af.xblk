@@ -1,0 +1,1 @@
+{"stin": 0, "name": "Setup", "lib": "arduinoFirmata", "ip": 0, "help": "", "params": "setup_af|Port:'/dev/ttyACM0'", "stout": 0, "icon": "INIT", "op": 1}
