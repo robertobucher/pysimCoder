@@ -3,9 +3,10 @@
 ## Prerequisites
 Install the [Arduino IDE](https://www.arduino.cc/en/software) and the upload StandardFirmata on your Arduino (Arduino IDE > File > Examples > Firmata > StandardFirmata).
 
+---
 ## Tools
 
-### SimpleBlockBuilder
+#### SimpleBlockBuilder
 Node.js cli tool to create pysimCoder blocks quicker.
 
 Prerequisites:
