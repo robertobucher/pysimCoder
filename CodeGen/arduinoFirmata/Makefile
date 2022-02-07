@@ -34,7 +34,6 @@ dependencies:
 
 install: $(OBJ)
 	mkdir "lib"
-	echo "$(notdir $(OBJ))"
 	ar -r $(LIB) $(notdir $(OBJ))
 	rm -f *.o
 	mv $(LIB) lib
