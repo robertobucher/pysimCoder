@@ -2,7 +2,7 @@
 from supsisim.RCPblk import RCPblk
 from scipy import size
 
-def setup_af(pout, port):
+def setup_af(port):
     """
 
     Call:   setup_af(pout, port)
@@ -18,5 +18,5 @@ def setup_af(pout, port):
 
     """
 
-    blk = RCPblk('setup_af', [], pout, [0,0], 0, [], [], port)
+    blk = RCPblk('setup_af', [], [], [0,0], 0, [], [], port)
     return blk

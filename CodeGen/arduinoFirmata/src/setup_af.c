@@ -1,20 +1,19 @@
+#include <stdio.h>
 #include <pyblock.h>
 #include "firmata.h"
 
+t_firmata * af_firmataInstance;
+
+// TODO - this block should be initialized befdore any other arduinoFirmata blocks
+//  currently it seems it is not possible to oreder it in python api
 static void init(python_block *block)
 {
-  /* double * realPar = block->realPar; */
-  /* int * intPar    = block->intPar; */
-  /* double *y = block->y[0]; */
-  /* double *u = block->u[0]; */
+    char * port = (char *) block->str;
 
-    t_firmata * firmata;
-    int i = 0;
-
-    firmata = firmata_new("/dev/ttyACM0"); //init Firmata
-    while (!firmata -> isReady) {
+    af_firmataInstance = firmata_new(port); //init Firmata
+    while (!af_firmataInstance -> isReady) {
       //Wait until device is up
-      firmata_pull(firmata);
+      firmata_pull(af_firmataInstance);
     }
 
 
@@ -42,6 +41,7 @@ static void init(python_block *block)
 
 static void inout(python_block *block)
 {
+//  printf("af - setup - inout\n");
   /* double * realPar = block->realPar; */
   /* int * intPar    = block->intPar; */
   /* double *y = block->y[0]; */
@@ -51,6 +51,7 @@ static void inout(python_block *block)
 
 static void update(python_block *block)
 {
+  printf("af - setup - update\n");
   /* double * realPar = block->realPar; */
   /* int * intPar    = block->intPar; */
   /* double *y = block->y[0]; */
@@ -60,6 +61,8 @@ static void update(python_block *block)
 
 static void end(python_block *block)
 {
+  printf("af - setup - end\n");
+
   /* double * realPar = block->realPar; */
   /* int * intPar    = block->intPar; */
   /* double *y = block->y[0]; */
