@@ -5,24 +5,24 @@
 
 extern t_firmata * af_firmataInstance;
 
-int firmataReady = 0;
-int pin = -1;
-int pinValue = 0;
+int dw_firmataReady = 0;
+int dw_pin = -1;
+int dw_pinValue = 0;
 
 static void write(int newValue) {
-    if (pin == -1) {
+    if (dw_pin == -1) {
         printf("af - digitalWrite - pin not set\n");
         return;
     }
 
-    if (newValue == pinValue) {
+    if (newValue == dw_pinValue) {
         return;
     }
 
-    pinValue = newValue;
+    dw_pinValue = newValue;
 
     firmata_pull(af_firmataInstance);
-    firmata_digitalWrite(af_firmataInstance, pin, newValue);
+    firmata_digitalWrite(af_firmataInstance, dw_pin, newValue);
 }
 
 static void inout(python_block * block) {
@@ -31,26 +31,26 @@ static void inout(python_block * block) {
         return;
     }
 
-    while (!af_firmataInstance -> isReady) {
+    while (!af_firmataInstance->isReady) {
         //Wait until device is up
         firmata_pull(af_firmataInstance);
     }
 
-    if (firmataReady == 0 && af_firmataInstance -> isReady) {
-        firmataReady = 1;
+    if (dw_firmataReady == 0 && af_firmataInstance->isReady) {
+        dw_firmataReady = 1;
 
         // init digitalWrite
-        pin = block -> intPar[0];
-        firmata_pinMode(af_firmataInstance, pin, MODE_OUTPUT);
+        dw_pin = block->intPar[0];
+        firmata_pinMode(af_firmataInstance, dw_pin, MODE_OUTPUT);
 
-        firmata_digitalWrite(af_firmataInstance, pin, LOW);
+        firmata_digitalWrite(af_firmataInstance, dw_pin, LOW);
     }
 
-    if (firmataReady == 0) {
+    if (dw_firmataReady == 0) {
         return;
     }
 
-    double * U = block -> u[0];
+    double * U = block->u[0];
     printf("af - digitalWrite - inout - U[0] = %f\n", U[0]);
 
     int pinVal = (int) U[0];
