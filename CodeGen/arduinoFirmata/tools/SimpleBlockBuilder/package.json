@@ -1,0 +1,21 @@
+{
+  "scripts": {
+    "start": "npm install && node index.js"
+  },
+  "name": "pysimcoder-blockbuilder",
+  "version": "0.0.1-alpha",
+  "description": "Node.js cli tool to create pysimCoder blocks quicker.",
+  "main": "index.js",
+  "author": "Martin Filo <martinxfilo@gmail.com> (https://github.com/Chiff/)",
+  "license": "MIT",
+  "volta": {
+    "node": "16.10.0",
+    "yarn": "1.22.17"
+  },
+  "dependencies": {
+    "chalk": "^5.0.0",
+    "configstore": "^6.0.0",
+    "prettier": "^2.5.1",
+    "prompts": "^2.4.2"
+  }
+}
