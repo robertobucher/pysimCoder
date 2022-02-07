@@ -9,24 +9,6 @@ int firmataReady = 0;
 int pin = -1;
 int pinValue = 0;
 
-static void init(python_block * block) {
-    printf("af - digitalWrite - init\n");
-    /* double * realPar = block->realPar; */
-    /* int * intPar    = block->intPar; */
-    /* double *y = block->y[0]; */
-    /* double *u = block->u[0]; */
-    //    firmata_pinMode(af_firmataInstance, 8, MODE_OUTPUT); //set pin 13 (led on most arduino) to out
-    //
-    //    sleep(2);
-    //    firmata_pull(af_firmataInstance);
-    //    firmata_digitalWrite(af_firmataInstance, 8, LOW); //unlight led
-    //
-    //    sleep(2);
-    //    firmata_pull(af_firmataInstance);
-    //    firmata_digitalWrite(af_firmataInstance, 8, HIGH); //unlight led
-
-}
-
 static void write(int newValue) {
     if (pin == -1) {
         printf("af - digitalWrite - pin not set\n");
@@ -74,21 +56,6 @@ static void inout(python_block * block) {
     int pinVal = (int) U[0];
     write(pinVal);
 
-    //  printf("af - digitalWrite - inout\n");
-    /* double * realPar = block->realPar; */
-    /* int * intPar    = block->intPar; */
-    /* double *y = block->y[0]; */
-    /* double *u = block->u[0]; */
-
-}
-
-static void update(python_block * block) {
-    printf("af - digitalWrite - update\n");
-    /* double * realPar = block->realPar; */
-    /* int * intPar    = block->intPar; */
-    /* double *y = block->y[0]; */
-    /* double *u = block->u[0]; */
-
 }
 
 static void end(python_block * block) {
@@ -100,12 +67,9 @@ void digitalWrite_af(int flag, python_block * block) {
         /* get input */
         inout(block);
     } else if (flag == CG_STUPD) {
-        update(block);
     } else if (flag == CG_END) {
         /* termination */
         end(block);
     } else if (flag == CG_INIT) {
-        /* initialisation */
-        init(block);
     }
 }
