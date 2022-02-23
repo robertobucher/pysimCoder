@@ -239,10 +239,10 @@ elif Controller == 2:
     Q = np.diag([5, 5, 10, 1]);
     Q = np.diag([20, 10, 100 , 10]);
     R = [4];                    
-    k, S, E = rp.dlqr(Ad, Bd, Q, R)
+    k, S, E = dlqr(Ad, Bd, Q, R)
 
     # Observer design parameters
-    preg = np.log(E[0])/Ts
+    preg = np.log(E)/Ts
     w0 = max(abs(preg));       # process spectral radius
 
     # Modify poles for observer

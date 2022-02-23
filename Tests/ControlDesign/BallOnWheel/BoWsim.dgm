@@ -1,25 +1,44 @@
 <root>
+  <pysimCoder>
+    <pysimCoderVersion>0.9</pysimCoderVersion>
+  </pysimCoder>
   <Date>
-    <SavingDate>15.10.2019 - 13:24:45</SavingDate>
+    <SavingDate>23.02.2022 - 08:29:41</SavingDate>
   </Date>
   <Simulation>
     <Template>sim.tmf</Template>
     <Ts>0.01</Ts>
     <AddObj></AddObj>
-    <ParScript>/home/bucher/CACSD/pysimCoder/Tests/ControlDesign/BallOnWheel/BoWKane.py</ParScript>
+    <ParScript>BoWKane.py</ParScript>
     <Tf>10</Tf>
+    <Priority></Priority>
   </Simulation>
   <block>
-    <name>Discrete_Controller</name>
-    <inp>3</inp>
-    <outp>1</outp>
-    <inset>1</inset>
-    <outset>1</outset>
-    <icon>DSS</icon>
-    <params>dssBlk|System: ctr|Initial conditions: 0</params>
+    <name>RT Plot</name>
+    <inp>2</inp>
+    <outp>0</outp>
+    <inset>0</inset>
+    <outset>0</outset>
+    <icon>PLOT</icon>
+    <params>scopeStream</params>
+    <help/>
     <width>80</width>
     <flip>0</flip>
-    <posX>-160.0</posX>
+    <posX>350.0</posX>
+    <posY>-110.0</posY>
+  </block>
+  <block>
+    <name>BoW_Plant</name>
+    <inp>1</inp>
+    <outp>2</outp>
+    <inset>1</inset>
+    <outset>1</outset>
+    <icon>CSS</icon>
+    <params>cssBlk|System: bow|Initial conditions: [0.1,0,0,0]</params>
+    <help/>
+    <width>80</width>
+    <flip>0</flip>
+    <posX>40.0</posX>
     <posY>-110.0</posY>
   </block>
   <block>
@@ -30,48 +49,57 @@
     <outset>0</outset>
     <icon>CONST</icon>
     <params>constBlk|Value: 0</params>
+    <help/>
     <width>80</width>
     <flip>0</flip>
     <posX>-380.0</posX>
     <posY>-150.0</posY>
   </block>
   <block>
-    <name>BoW_Plant</name>
-    <inp>1</inp>
-    <outp>2</outp>
+    <name>Discrete_Controller</name>
+    <inp>3</inp>
+    <outp>1</outp>
     <inset>1</inset>
     <outset>1</outset>
-    <icon>CSS</icon>
-    <params>cssBlk|System: bow|Initial conditions: [0.1,0,0,0]</params>
+    <icon>DSS</icon>
+    <params>dssBlk|System: ctr|Initial conditions: 0</params>
+    <help/>
     <width>80</width>
     <flip>0</flip>
-    <posX>40.0</posX>
-    <posY>-110.0</posY>
-  </block>
-  <block>
-    <name>RT Plot</name>
-    <inp>2</inp>
-    <outp>0</outp>
-    <inset>0</inset>
-    <outset>0</outset>
-    <icon>PLOT</icon>
-    <params>scopeStream</params>
-    <width>80</width>
-    <flip>0</flip>
-    <posX>350.0</posX>
+    <posX>-160.0</posX>
     <posY>-110.0</posY>
   </block>
   <connection>
+    <pos1X>-120.0</pos1X>
+    <pos1Y>-110.0</pos1Y>
+    <pos2X>0.0</pos2X>
+    <pos2Y>-110.0</pos2Y>
+    <pt>-60.0,-110.0</pt>
+    <pt>-60.0,-110.0</pt>
+  </connection>
+  <connection>
+    <pos1X>-340.0</pos1X>
+    <pos1Y>-150.0</pos1Y>
+    <pos2X>-200.0</pos2X>
+    <pos2Y>-150.0</pos2Y>
+    <pt>-270.0,-150.0</pt>
+    <pt>-270.0,-150.0</pt>
+  </connection>
+  <connection>
+    <pos1X>80.0</pos1X>
+    <pos1Y>-130.0</pos1Y>
+    <pos2X>310.0</pos2X>
+    <pos2Y>-130.0</pos2Y>
+    <pt>200.0,-130.0</pt>
+    <pt>200.0,-130.0</pt>
+  </connection>
+  <connection>
     <pos1X>80.0</pos1X>
     <pos1Y>-90.0</pos1Y>
-    <pos2X>-200.0</pos2X>
-    <pos2Y>-70.0</pos2Y>
-    <pt>190.0,-90.0</pt>
-    <pt>190.0,30.0</pt>
-    <pt>-230.0,30.0</pt>
-    <pt>-230.0,-70.0</pt>
-    <pt>-210.0,-70.0</pt>
-    <pt>-210.0,-70.0</pt>
+    <pos2X>310.0</pos2X>
+    <pos2Y>-90.0</pos2Y>
+    <pt>200.0,-90.0</pt>
+    <pt>200.0,-90.0</pt>
   </connection>
   <connection>
     <pos1X>80.0</pos1X>
@@ -90,33 +118,13 @@
   <connection>
     <pos1X>80.0</pos1X>
     <pos1Y>-90.0</pos1Y>
-    <pos2X>310.0</pos2X>
-    <pos2Y>-90.0</pos2Y>
-    <pt>200.0,-90.0</pt>
-    <pt>200.0,-90.0</pt>
-  </connection>
-  <connection>
-    <pos1X>80.0</pos1X>
-    <pos1Y>-130.0</pos1Y>
-    <pos2X>310.0</pos2X>
-    <pos2Y>-130.0</pos2Y>
-    <pt>200.0,-130.0</pt>
-    <pt>200.0,-130.0</pt>
-  </connection>
-  <connection>
-    <pos1X>-340.0</pos1X>
-    <pos1Y>-150.0</pos1Y>
     <pos2X>-200.0</pos2X>
-    <pos2Y>-150.0</pos2Y>
-    <pt>-270.0,-150.0</pt>
-    <pt>-270.0,-150.0</pt>
-  </connection>
-  <connection>
-    <pos1X>-120.0</pos1X>
-    <pos1Y>-110.0</pos1Y>
-    <pos2X>0.0</pos2X>
-    <pos2Y>-110.0</pos2Y>
-    <pt>-60.0,-110.0</pt>
-    <pt>-60.0,-110.0</pt>
+    <pos2Y>-70.0</pos2Y>
+    <pt>190.0,-90.0</pt>
+    <pt>190.0,30.0</pt>
+    <pt>-230.0,30.0</pt>
+    <pt>-230.0,-70.0</pt>
+    <pt>-210.0,-70.0</pt>
+    <pt>-210.0,-70.0</pt>
   </connection>
 </root>
