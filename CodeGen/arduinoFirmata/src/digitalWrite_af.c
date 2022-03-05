@@ -16,7 +16,7 @@ static void write(int newValue) {
     }
 
     if (newValue == dw_pinValue) {
-        return;
+//        return;
     }
 
     dw_pinValue = newValue;

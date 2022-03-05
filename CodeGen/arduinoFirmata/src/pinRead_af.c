@@ -28,7 +28,7 @@ static void inout(python_block * block) {
         pr_mode = block->intPar[1];
 
         firmata_pinMode(af_firmataInstance, pr_pin, pr_mode);
-        firmata_digitalWrite(af_firmataInstance, pr_pin, LOW); // reset pin to LOW
+//        firmata_digitalWrite(af_firmataInstance, pr_pin, LOW); // reset pin to LOW
     }
 
     if (pr_firmataReady == 0) {
