@@ -8,6 +8,7 @@ https://pyfirmata.readthedocs.io/en/latest/pyfirmata.html
 ```bash
 cc test.c -I ../../vendor/FirmataC/includes/ ../../vendor/FirmataC/src/*.c -o out
 cc test_light_sensor.c -I ../../vendor/FirmataC/includes/ ../../vendor/FirmataC/src/*.c -o out
+cc test_heat_shield.c -I ../../vendor/FirmataC/includes/ ../../vendor/FirmataC/src/*.c -o out -lm
 ./out
 ```
 

@@ -1,1 +1,0 @@
-{"lib": "arduinoFirmata", "name": "Digital Read", "ip": 0, "op": 1, "stin": 0, "stout": 0, "icon": "DO", "params": "digitalRead_af|Device pin:7", "help": ""}
