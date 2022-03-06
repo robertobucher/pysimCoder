@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>TCP pysimcoder</title>
+    <script
+            src="https://code.jquery.com/jquery-3.6.0.min.js"
+            integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.plot.ly/plotly-2.9.0.min.js"></script>
+    <script src="client.js" type="module"></script>
+
+    <style>
+      summary {
+        font-size: 1.5em;
+        font-weight: bold;
+      }
+    </style>
+</head>
+<body>
+<h1>TCP pysimcoder</h1>
+
+<h2>Status</h2>
+<ul>
+    <li>Active client: <b id="__holder__activeClient"></b></li>
+    <li>Client list: <b id="__holder__clientList"></b></li>
+</ul>
+
+<h2>Client detail: <b id="__holder__useClient"></b></h2>
+<div>
+    Data to send to client: <input id="__holder__dataToSend" type="text" value="" placeholder="[0.123, 255, ...]"/>
+    <button onclick="sendArray()">Send data</button>
+    <div><small>use array format, eg: [0.123, 255]</small></div>
+</div>
+<div id="__holder__plotData"></div>
+
+<details>
+    <summary>Server data</summary>
+    <pre id="__holder__serverData"></pre>
+</details>
+
+</body>
+</html>
+
+

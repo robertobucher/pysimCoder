@@ -1,42 +1,110 @@
-// Include Nodejs' net module.
-const Net = require("net");
-const buffer = require("buffer");
-// The port on which the server is listening.
-const port = 5000;
+const express = require('express');
+const ejs = require('ejs');
 
-// Use net.createServer() in your code. This is just for illustration purpose.
-// Create a new TCP server.
-const server = new Net.Server();
-// The server listens to a socket for a client to make a connection request.
-// Think of a socket as an end point.
-server.listen(port, function () {
-  console.log(
-    `Server listening for connection requests on socket localhost:${port}`
-  );
+const SHARED = require('./src/shared.js');
+const CONFIG = require('./src/config.js');
+const tcp = require('./src/tcp.js');
+const {EventData} = require('./src/model.js');
+
+
+const app = express();
+app.use(express.json());
+app.get('/', function (req, res) {
+  ejs.renderFile('src/template/index.ejs', SHARED.templateData.recalc(),
+    {}, function (err, template) {
+      if (err) {
+        throw err;
+      } else {
+        res.end(template);
+      }
+    });
 });
 
-// When a client requests a connection with the server, the server creates a new
-// socket dedicated to that client.
-server.on("connection", function (socket) {
-  console.log("A new connection has been established.");
-
-  // Now that a TCP connection has been established, the server can send data to
-  // the client by writing to its socket.
-  socket.write("Hello, client.");
-
-  // The server can also receive data from the client by reading from its socket.
-  socket.on("data", function (chunk) {
-    console.log("Data from pysimCoder: ", chunk.readDoubleLE());
-  });
-
-  // When the client requests to end the TCP connection with the server, the server
-  // ends the connection.
-  socket.on("end", function () {
-    console.log("Closing connection with the client");
-  });
-
-  // Don't forget to catch error, for your own sake.
-  socket.on("error", function (err) {
-    console.log(`Error: ${err}`);
-  });
+app.get('/client.js', function (req, res) {
+  res.sendFile('src/template/client.js', {root: __dirname});
 });
+
+app.get('/api/data', function (req, res) {
+  res.json(SHARED.templateData.recalc());
+});
+
+// [post] api/send with json as data
+app.post('/api/send', function (req, res) {
+  const data = req.body;
+
+  if (!data.clientId) {
+    res.status(400).send('clientId is required');
+    return;
+  }
+
+  if (SHARED.templateData.activeClientId !== data.clientId) {
+    res.status(400).send('clientId is not active');
+    return;
+  }
+
+  console.log('[post] api/send', data);
+  SHARED.bus.emit('onDataOut', new EventData('onDataOut', data.clientId, CONFIG.port.tcp, data.dataOut));
+
+  res.json({status: 'ok'});
+});
+
+app.listen(CONFIG.port.http, function (error) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.info('Express\tserver started on port ' + CONFIG.port.http);
+  }
+
+  // eventually we can create TCP sockets on demand :)
+  const s1 = tcp(CONFIG.port.tcp, function (data, currentClient, currentPort) {
+    console.log('TCP\tdata received from ' + currentClient + ':' + currentPort);
+    if (data.clientId !== currentClient || data.port !== currentPort) {
+      return;
+    }
+
+    const dataLength = 8;
+    const totalLength = data.data.length;
+    const buffer = Buffer.alloc(dataLength * totalLength);
+
+    for (let i = 0; i < totalLength; i++) {
+      buffer.writeDoubleLE(data.data[i], i * dataLength);
+    }
+
+    return buffer;
+  });
+
+  SHARED.bus.subscribe('onClientConnect', function (data) {
+    SHARED.templateData.activeClientId = data.clientId;
+    SHARED.templateData.data[data.clientId] = {
+      dataIn: [],
+      dataOut: [],
+      eventLog: [{
+        text: 'onClientConnect',
+        data: [data.clientId, data.port],
+      }],
+    };
+
+  });
+
+  SHARED.bus.subscribe('onClientLeave', function (input) {
+    SHARED.templateData.data[input.clientId].eventLog.push({text: 'disconnected'});
+
+    if (SHARED.templateData.activeClientId === input.clientId) {
+      console.warn('onClientLeave', input);
+      SHARED.templateData.activeClientId = null;
+    }
+  });
+
+  SHARED.bus.subscribe('onDataIn', function (input) {
+    SHARED.templateData.data[input.clientId].dataIn.push(input.data);
+    SHARED.templateData.data[input.clientId].eventLog.push({
+      text: 'onDataIn',
+      data: input.data,
+    });
+  });
+
+  // SHARED.bus.subscribe('onDataOut', function (input) {
+  //   console.log('onDataOut', input);
+  // });
+});
+
