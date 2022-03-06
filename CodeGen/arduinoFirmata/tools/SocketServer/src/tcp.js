@@ -5,10 +5,9 @@ const {EventData} = require('./model.js');
 
 /**
  * @param {string|number} port
- * @param {function(EventData, string, number): Buffer|null} dataOutCallback
  * @returns {module:net.Server}
  */
-module.exports = function (port, dataOutCallback = null) {
+module.exports = function (port) {
 
   const tcpServer = new Net.Server();
   tcpServer.listen(port, function () {
@@ -23,17 +22,6 @@ module.exports = function (port, dataOutCallback = null) {
     console.log(
       `TCP\tclient ${clientId} connected to server ${port}`,
     );
-
-
-    SHARED.bus.subscribe('onDataOut', (d) => {
-      let buffer = dataOutCallback(d, clientId, port);
-      if (!buffer) {
-        return;
-      }
-
-      console.warn(buffer.toString('hex'));
-      socket.write(buffer);
-    });
 
 
     SHARED.bus.emit('onClientConnect', new EventData('onClientConnect', clientId, port));

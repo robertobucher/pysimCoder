@@ -56,6 +56,7 @@ class EventBus {
 
 /**
  * @typedef {Object} ClientData
+ * @property {module:net.Socket} client
  * @property {number[][]} dataIn
  * @property {number[][]} dataOut
  * @property {EventData[]} eventLog

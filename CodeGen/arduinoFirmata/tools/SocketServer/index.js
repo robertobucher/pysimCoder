@@ -4,6 +4,7 @@ const ejs = require('ejs');
 const SHARED = require('./src/shared.js');
 const CONFIG = require('./src/config.js');
 const tcp = require('./src/tcp.js');
+const unixClient = require('./src/unix-clinet.js');
 const {EventData} = require('./src/model.js');
 
 
@@ -56,26 +57,25 @@ app.listen(CONFIG.port.http, function (error) {
   }
 
   // eventually we can create TCP sockets on demand :)
-  const s1 = tcp(CONFIG.port.tcp, function (data, currentClient, currentPort) {
-    console.log('TCP\tdata received from ' + currentClient + ':' + currentPort);
-    if (data.clientId !== currentClient || data.port !== currentPort) {
-      return;
-    }
-
-    const dataLength = 8;
-    const totalLength = data.data.length;
-    const buffer = Buffer.alloc(dataLength * totalLength);
-
-    for (let i = 0; i < totalLength; i++) {
-      buffer.writeDoubleLE(data.data[i], i * dataLength);
-    }
-
-    return buffer;
-  });
+  const s1 = tcp(CONFIG.port.tcp);
 
   SHARED.bus.subscribe('onClientConnect', function (data) {
+    const c1 = unixClient(CONFIG.port.sock, function (data) {
+      const dataLength = 8;
+      const totalLength = data.data.length;
+      const buffer = Buffer.alloc(dataLength * totalLength);
+
+      for (let i = 0; i < totalLength; i++) {
+        buffer.writeDoubleLE(data.data[i], i * dataLength);
+      }
+
+      return buffer;
+    });
+
+
     SHARED.templateData.activeClientId = data.clientId;
     SHARED.templateData.data[data.clientId] = {
+      client: c1,
       dataIn: [],
       dataOut: [],
       eventLog: [{
@@ -87,7 +87,11 @@ app.listen(CONFIG.port.http, function (error) {
   });
 
   SHARED.bus.subscribe('onClientLeave', function (input) {
-    SHARED.templateData.data[input.clientId].eventLog.push({text: 'disconnected'});
+    const data = SHARED.templateData.data[input.clientId];
+
+    data.client.end();
+    data.client = null;
+    data.eventLog.push({text: 'disconnected'});
 
     if (SHARED.templateData.activeClientId === input.clientId) {
       console.warn('onClientLeave', input);
