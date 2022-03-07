@@ -5,25 +5,22 @@
 
 extern t_firmata * af_firmataInstance;
 
-int aw_firmataReady = 0;
-int aw_pin = -1;
-int aw_pinValue = 0;
-int aw_mode = MODE_ANALOG;
-
-static void write(int newValue) {
-    if (aw_pin == -1) {
+static void write(int newValue, int pin) {
+    if (pin == -1) {
         printf("af - analogWrite - pin not set\n");
         return;
     }
 
-    if (newValue == aw_pinValue) {
-//        return;
-    }
-
-    aw_pinValue = newValue;
-
     firmata_pull(af_firmataInstance);
-    firmata_analogWrite(af_firmataInstance, aw_pin, newValue);
+    firmata_analogWrite(af_firmataInstance, pin, newValue);
+}
+
+static void setPinMode(python_block *block) {
+  int pin = block->intPar[0];
+  int mode = block->intPar[1];
+
+  firmata_pinMode(af_firmataInstance, pin, mode);
+  firmata_analogWrite(af_firmataInstance, pin, LOW);
 }
 
 static void inout(python_block * block) {
@@ -37,39 +34,33 @@ static void inout(python_block * block) {
         firmata_pull(af_firmataInstance);
     }
 
-    if (aw_firmataReady == 0 && af_firmataInstance->isReady) {
-        aw_firmataReady = 1;
+    int pin = block->intPar[0];
+    int mode = block->intPar[1];
 
-        // init analogWrite_af.c
-        aw_pin = block->intPar[0];
-        aw_mode = block->intPar[1];
-
-        firmata_pinMode(af_firmataInstance, aw_pin, aw_mode);
-        firmata_analogWrite(af_firmataInstance, aw_pin, LOW);
-    }
-
-    if (aw_firmataReady == 0) {
-        return;
+    if (af_firmataInstance->isReady) {
+        setPinMode(block);
+    } else  {
+      return;
     }
 
     firmata_pull(af_firmataInstance);
-    if (af_firmataInstance->pins[aw_pin].mode != aw_mode) {
-        aw_firmataReady = 0;
-        printf("af - analogWrite - inout - pin %d is not in correct mode; expected=%d real=%d\n", aw_pin, aw_mode, af_firmataInstance->pins[aw_pin].mode);
+    if (af_firmataInstance->pins[pin].mode != mode) {
+        printf("af - analogWrite - inout - pin %d is not in correct mode; expected=%d real=%d\n", pin, mode, af_firmataInstance->pins[pin].mode);
+        setPinMode(block);
         return;
     }
 
-
     double * U = block->u[0];
-    printf("af - analogWrite - inout - pin[%d] = %f; mode=%d\n",aw_pin, U[0], af_firmataInstance->pins[aw_pin].mode);
+    printf("af - analogWrite - inout - pin[%d] = %f; mode=%d\n", pin, U[0], af_firmataInstance->pins[pin].mode);
 
     int pinVal = (int) U[0];
-    write(pinVal);
+    write(pinVal, pin);
 
 }
 
 static void end(python_block * block) {
-    write(0);
+  int pin = block->intPar[0];
+  write(0, pin);
 }
 
 void analogWrite_af(int flag, python_block * block) {

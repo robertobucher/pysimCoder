@@ -5,24 +5,22 @@
 
 extern t_firmata * af_firmataInstance;
 
-int dw_firmataReady = 0;
-int dw_pin = -1;
-int dw_pinValue = 0;
-
-static void write(int newValue) {
-    if (dw_pin == -1) {
+static void write(int newValue, int pin) {
+    if (pin == -1) {
         printf("af - digitalWrite - pin not set\n");
         return;
     }
 
-    if (newValue == dw_pinValue) {
-//        return;
-    }
-
-    dw_pinValue = newValue;
-
     firmata_pull(af_firmataInstance);
-    firmata_digitalWrite(af_firmataInstance, dw_pin, newValue);
+    firmata_digitalWrite(af_firmataInstance, pin, newValue);
+}
+
+static void setPinMode(python_block *block) {
+  int pin = block->intPar[0];
+  int mode = MODE_OUTPUT;
+
+  firmata_pinMode(af_firmataInstance, pin, mode);
+  firmata_digitalWrite(af_firmataInstance, pin, LOW);
 }
 
 static void inout(python_block * block) {
@@ -36,17 +34,19 @@ static void inout(python_block * block) {
         firmata_pull(af_firmataInstance);
     }
 
-    if (dw_firmataReady == 0 && af_firmataInstance->isReady) {
-        dw_firmataReady = 1;
+    int pin = block->intPar[0];
+    int mode = MODE_OUTPUT;
 
-        // init digitalWrite
-        dw_pin = block->intPar[0];
-        firmata_pinMode(af_firmataInstance, dw_pin, MODE_OUTPUT);
-
-        firmata_digitalWrite(af_firmataInstance, dw_pin, LOW);
+    if (af_firmataInstance->isReady) {
+        setPinMode(block);
+    } else  {
+        return;
     }
 
-    if (dw_firmataReady == 0) {
+    firmata_pull(af_firmataInstance);
+    if (af_firmataInstance->pins[pin].mode != mode) {
+        printf("af - digitalWrite - inout - pin %d is not in correct mode; expected=%d real=%d\n", pin, mode, af_firmataInstance->pins[pin].mode);
+        setPinMode(block);
         return;
     }
 
@@ -54,12 +54,13 @@ static void inout(python_block * block) {
     printf("af - digitalWrite - inout - U[0] = %f\n", U[0]);
 
     int pinVal = (int) U[0];
-    write(pinVal);
+    write(pinVal, pin);
 
 }
 
 static void end(python_block * block) {
-    write(0);
+  int pin = block->intPar[0];
+  write(0, pin);
 }
 
 void digitalWrite_af(int flag, python_block * block) {

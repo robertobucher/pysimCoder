@@ -42,5 +42,10 @@ https://github.com/Chiff/FirmataC/include/Firmata.h
 #### Misc
 
 - Heatshield - https://github.com/gergelytakacs/AutomationShield/wiki/HeatShield
-- TCLab - http://apmonitor.com/pdc/index.php/Main/ArduinoTemperatureControl
 - https://github.com/firmata/arduino/search?q=PIN_MODE_PWM&type=code
+
+## TC Lab
+
+- Main page: http://apmonitor.com/pdc/index.php/Main/ArduinoTemperatureControl
+- Test: https://tclab.readthedocs.io/en/latest/notebooks/01_TCLab_Overview.html#TCLab-Architecture
+- Arduino IDE firmware - https://github.com/jckantor/TCLab-sketch/blob/master/TCLab-sketch/TCLab-sketch.ino
