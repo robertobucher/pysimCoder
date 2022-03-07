@@ -55,56 +55,19 @@ const dataResolver = {
       if (!shared.useClient) return '';
       if (!dataResponse.data || !dataResponse.data[shared.useClient]?.dataIn) return '';
 
-      const dataToPlot = dataResponse.data[shared.useClient]?.dataIn;
-      const plotData = dataToPlot.map(item => {
-        const [output, executionTime, input] = item;
-        return {
-          x: executionTime,
-          y1: output,
-          y2: input,
-        };
-      });
+      const data = dataResponse.data[shared.useClient].dataIn || [];
+      if (!data[0] || !data[0].length) return '';
 
-      const plotlyConf = {
-        data: [
-          {
-            x: plotData.map(item => item.x),
-            y: plotData.map(item => Math.max(item.y1, 0)),
-            type: 'scatter',
-            name: 'output (C)',
-          },
-          {
-            x: plotData.map(item => item.x),
-            y: plotData.map(item => item.y2 * (100 / 255)),
-            type: 'scatter',
-            name: 'input (%)',
-            yaxis: 'y2',
-          },
-        ],
-        layout: {
-          title: 'Plot',
-          xaxis: {
-            title: 'execution time',
-          },
-          yaxis: {title: 'temperature in C'},
-          yaxis2: {
-            title: 'input in % (0-255)',
-            titlefont: {color: 'rgb(148, 103, 189)'},
-            tickfont: {color: 'rgb(148, 103, 189)'},
-            overlaying: 'y',
-            side: 'right',
-            range: [0, 105],
-          },
-        },
-      };
+      const plotter = new DataPlotter(data[0][1], data);
+      const plotlyConf = plotter.getConfig();
 
-      //
       Plotly.newPlot(document.getElementById('__holder__plotData'), plotlyConf);
 
       return '';
     },
   },
 };
+
 
 const shared = {};
 
@@ -179,4 +142,144 @@ function refresh() {
     },
   });
 }
+
+// Model
+/**
+ * @param {0|1} mode - 0: heatshield, 1: tclab
+ * @param {EventData.dataIn} eventData.dataIn
+ * @param {PlotResolver} resolver
+ * @method getData
+ */
+class DataPlotter {
+  mode = -1;
+  dataIn = [];
+
+  constructor(mode, dataIn) {
+    this.mode = mode;
+    this.dataIn = dataIn;
+    this.resolver = dataResolvers[mode];
+  }
+
+  getConfig() {
+    const mapped = this.dataIn.map(this.resolver.mappingFn);
+    const dataInconf = this.resolver.getDataInConfig(mapped);
+
+    return plotlyDefault(this.resolver, dataInconf);
+  }
+}
+
+/**
+ * @typedef {Object} PlotResolver
+ * @property {number} mode
+ * @property {string} plotName
+ * @property {(p: number[]) => any} mappingFn
+ * @property {(p: number[][]) => any} getDataInConfig
+ */
+
+/**
+ * @define
+ * @type {Object.<number, PlotResolver>}
+ */
+const dataResolvers = {
+  [0]: {
+    plotName: 'heatshield',
+    mode: 0,
+    mappingFn: (dataIn) => {
+      const [executionTime, mode, output, input] = dataIn;
+      return {
+        x: executionTime,
+        yLeft1: output,
+        yRight1: input,
+      };
+    },
+    getDataInConfig: (allData) => {
+      const tempGraph = {
+        x: allData.map(item => item.x),
+        y: allData.map(item => Math.max(item.yLeft1, 0)),
+        type: 'scatter',
+        name: 'output (C)',
+      };
+
+      const inputGraph = {
+        x: allData.map(item => item.x),
+        y: allData.map(item => item.yRight1 * (100 / 255)),
+        type: 'scatter',
+        name: 'input (%)',
+        yaxis: 'y2',
+      };
+
+      return [tempGraph, inputGraph];
+    },
+  },
+  [1]: {
+    plotName: 'tclab',
+    mode: 1,
+    mappingFn: (dataIn) => {
+      const [executionTime, mode, o1, o2, i1, i2] = dataIn;
+      return {
+        x: executionTime,
+        yLeft1: o1,
+        yLeft2: o2,
+        yRight1: i1,
+        yRight2: i2,
+      };
+    },
+    getDataInConfig: (allData) => {
+      const tg1 = {
+        x: allData.map(item => item.x),
+        y: allData.map(item => Math.max(item.yLeft1, 0)),
+        type: 'scatter',
+        name: 'output (C)',
+      };
+
+      const tg2 = {
+        x: allData.map(item => item.x),
+        y: allData.map(item => Math.max(item.yLeft2, 0)),
+        type: 'scatter',
+        name: 'output (C)',
+      };
+
+      const ig1 = {
+        x: allData.map(item => item.x),
+        y: allData.map(item => item.yRight1 * (100 / 255)),
+        type: 'scatter',
+        name: 'input (%)',
+        yaxis: 'y2',
+      };
+
+      const ig2 = {
+        x: allData.map(item => item.x),
+        y: allData.map(item => item.yRight2 * (100 / 255)),
+        type: 'scatter',
+        name: 'input (%)',
+        yaxis: 'y2',
+      };
+
+      return [tg1, tg2, ig1, ig2];
+    },
+  },
+};
+
+/**
+ * @param {PlotResolver} plotResolver
+ * @param {any[]} plotData
+ */
+const plotlyDefault = (plotResolver, plotData) => ({
+  data: plotData,
+  layout: {
+    title: plotResolver.plotName,
+    xaxis: {
+      title: 'execution time',
+    },
+    yaxis: {title: 'temperature in C'},
+    yaxis2: {
+      title: 'input in % (0-255)',
+      titlefont: {color: 'rgb(148, 103, 189)'},
+      tickfont: {color: 'rgb(148, 103, 189)'},
+      overlaying: 'y',
+      side: 'right',
+      range: [0, 105],
+    },
+  },
+});
 

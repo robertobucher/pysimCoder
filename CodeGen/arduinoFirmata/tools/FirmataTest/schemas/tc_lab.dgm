@@ -1,0 +1,289 @@
+<root>
+  <pysimCoder>
+    <pysimCoderVersion>0.9</pysimCoderVersion>
+  </pysimCoder>
+  <Date>
+    <SavingDate>07.03.2022 - 19:12:45</SavingDate>
+  </Date>
+  <Simulation>
+    <Template>rt.tmf</Template>
+    <Ts>1</Ts>
+    <AddObj></AddObj>
+    <ParScript></ParScript>
+    <Tf>10</Tf>
+    <Priority></Priority>
+  </Simulation>
+  <block>
+    <name>Helper TCLab Temperature0</name>
+    <inp>1</inp>
+    <outp>1</outp>
+    <inset>0</inset>
+    <outset>0</outset>
+    <icon></icon>
+    <params>help_TCLab_temperature</params>
+    <help></help>
+    <width>80</width>
+    <flip>0</flip>
+    <posX>-520.0</posX>
+    <posY>-120.0</posY>
+  </block>
+  <block>
+    <name>Helper TCLab Temperature</name>
+    <inp>1</inp>
+    <outp>1</outp>
+    <inset>0</inset>
+    <outset>0</outset>
+    <icon></icon>
+    <params>help_TCLab_temperature</params>
+    <help></help>
+    <width>80</width>
+    <flip>0</flip>
+    <posX>-430.0</posX>
+    <posY>-220.0</posY>
+  </block>
+  <block>
+    <name>Const</name>
+    <inp>0</inp>
+    <outp>1</outp>
+    <inset>0</inset>
+    <outset>0</outset>
+    <icon>CONST</icon>
+    <params>constBlk|Value: 1</params>
+    <help>This block implements a constant input signal.
+</help>
+    <width>80</width>
+    <flip>0</flip>
+    <posX>-300.0</posX>
+    <posY>-330.0</posY>
+  </block>
+  <block>
+    <name>TCPsocketTX</name>
+    <inp>6</inp>
+    <outp>0</outp>
+    <inset>1</inset>
+    <outset>0</outset>
+    <icon>TCPSOCKET</icon>
+    <params>TCPsocketTxBlk|IP Addr:'127.0.0.1'|Port:5000</params>
+    <help>This block implements a TCP sender
+
+Parameters
+IP address of the receiver
+Port
+</help>
+    <width>80</width>
+    <flip>0</flip>
+    <posX>-40.0</posX>
+    <posY>-140.0</posY>
+  </block>
+  <block>
+    <name>Timer</name>
+    <inp>0</inp>
+    <outp>1</outp>
+    <inset>0</inset>
+    <outset>0</outset>
+    <icon>TIMER</icon>
+    <params>getTimerBlk</params>
+    <help>This block put the execution time as output value.
+</help>
+    <width>80</width>
+    <flip>0</flip>
+    <posX>-300.0</posX>
+    <posY>-240.0</posY>
+  </block>
+  <block>
+    <name>Analog Write0</name>
+    <inp>1</inp>
+    <outp>0</outp>
+    <inset>0</inset>
+    <outset>0</outset>
+    <icon></icon>
+    <params>analogWrite_af|Device pin: 5|Pin mode: 3</params>
+    <help>#define MODE_INPUT  0x00
+#define MODE_OUTPUT    0x01
+#define MODE_ANALOG    0x02
+#define MODE_PWM   0x03
+#define MODE_SERVO 0x04
+#define MODE_SHIFT 0x05
+#define MODE_I2C   0x06</help>
+    <width>80</width>
+    <flip>0</flip>
+    <posX>-50.0</posX>
+    <posY>80.0</posY>
+  </block>
+  <block>
+    <name>UnixSkServer</name>
+    <inp>0</inp>
+    <outp>2</outp>
+    <inset>0</inset>
+    <outset>1</outset>
+    <icon>UNIXSOCK</icon>
+    <params>unixsocketSBlk|Socket: 'ssock'|Default outputs:[0.]</params>
+    <help>This block implements a Unix Socket Server, which can receive signals from a client and pass them as double values into the block diagram.
+
+Parameters:
+Socket: the socket name
+Default output: the output before arriving of data
+</help>
+    <width>80</width>
+    <flip>0</flip>
+    <posX>-520.0</posX>
+    <posY>10.0</posY>
+  </block>
+  <block>
+    <name>Pin Read0</name>
+    <inp>0</inp>
+    <outp>1</outp>
+    <inset>0</inset>
+    <outset>0</outset>
+    <icon></icon>
+    <params>pinRead_af|Device pin: 16|Pin mode: 2</params>
+    <help>#define MODE_INPUT  0x00
+#define MODE_OUTPUT    0x01
+#define MODE_ANALOG    0x02
+#define MODE_PWM   0x03
+#define MODE_SERVO 0x04
+#define MODE_SHIFT 0x05
+#define MODE_I2C   0x06</help>
+    <width>80</width>
+    <flip>0</flip>
+    <posX>-660.0</posX>
+    <posY>-120.0</posY>
+  </block>
+  <block>
+    <name>Analog Write</name>
+    <inp>1</inp>
+    <outp>0</outp>
+    <inset>0</inset>
+    <outset>0</outset>
+    <icon></icon>
+    <params>analogWrite_af|Device pin: 3|Pin mode: 3</params>
+    <help>#define MODE_INPUT  0x00
+#define MODE_OUTPUT    0x01
+#define MODE_ANALOG    0x02
+#define MODE_PWM   0x03
+#define MODE_SERVO 0x04
+#define MODE_SHIFT 0x05
+#define MODE_I2C   0x06</help>
+    <width>80</width>
+    <flip>0</flip>
+    <posX>-330.0</posX>
+    <posY>-10.0</posY>
+  </block>
+  <block>
+    <name>Setup</name>
+    <inp>0</inp>
+    <outp>0</outp>
+    <inset>0</inset>
+    <outset>0</outset>
+    <icon>INIT</icon>
+    <params>setup_af|Port: '/dev/ttyACM0'</params>
+    <help></help>
+    <width>80</width>
+    <flip>0</flip>
+    <posX>-520.0</posX>
+    <posY>-340.0</posY>
+  </block>
+  <block>
+    <name>Pin Read</name>
+    <inp>0</inp>
+    <outp>1</outp>
+    <inset>0</inset>
+    <outset>0</outset>
+    <icon></icon>
+    <params>pinRead_af|Device pin: 14|Pin mode: 2</params>
+    <help>#define MODE_INPUT  0x00
+#define MODE_OUTPUT    0x01
+#define MODE_ANALOG    0x02
+#define MODE_PWM   0x03
+#define MODE_SERVO 0x04
+#define MODE_SHIFT 0x05
+#define MODE_I2C   0x06</help>
+    <width>80</width>
+    <flip>0</flip>
+    <posX>-650.0</posX>
+    <posY>-220.0</posY>
+  </block>
+  <connection>
+    <pos1X>-480.0</pos1X>
+    <pos1Y>-120.0</pos1Y>
+    <pos2X>-80.0</pos2X>
+    <pos2Y>-120.0</pos2Y>
+    <pt>-280.0,-120.0</pt>
+    <pt>-280.0,-120.0</pt>
+  </connection>
+  <connection>
+    <pos1X>-620.0</pos1X>
+    <pos1Y>-120.0</pos1Y>
+    <pos2X>-560.0</pos2X>
+    <pos2Y>-120.0</pos2Y>
+    <pt>-590.0,-120.0</pt>
+    <pt>-590.0,-120.0</pt>
+  </connection>
+  <connection>
+    <pos1X>-390.0</pos1X>
+    <pos1Y>-220.0</pos1Y>
+    <pos2X>-80.0</pos2X>
+    <pos2Y>-160.0</pos2Y>
+    <pt>-380.0,-220.0</pt>
+    <pt>-380.0,-160.0</pt>
+  </connection>
+  <connection>
+    <pos1X>-610.0</pos1X>
+    <pos1Y>-220.0</pos1Y>
+    <pos2X>-470.0</pos2X>
+    <pos2Y>-220.0</pos2Y>
+    <pt>-540.0,-220.0</pt>
+    <pt>-540.0,-220.0</pt>
+  </connection>
+  <connection>
+    <pos1X>-260.0</pos1X>
+    <pos1Y>-330.0</pos1Y>
+    <pos2X>-80.0</pos2X>
+    <pos2Y>-200.0</pos2Y>
+    <pt>-170.0,-330.0</pt>
+    <pt>-170.0,-200.0</pt>
+  </connection>
+  <connection>
+    <pos1X>-260.0</pos1X>
+    <pos1Y>-240.0</pos1Y>
+    <pos2X>-80.0</pos2X>
+    <pos2Y>-240.0</pos2Y>
+    <pt>-210.0,-240.0</pt>
+    <pt>-210.0,-240.0</pt>
+  </connection>
+  <connection>
+    <pos1X>-480.0</pos1X>
+    <pos1Y>-10.0</pos1Y>
+    <pos2X>-370.0</pos2X>
+    <pos2Y>-10.0</pos2Y>
+    <pt>-430.0,-10.0</pt>
+    <pt>-430.0,-10.0</pt>
+  </connection>
+  <connection>
+    <pos1X>-480.0</pos1X>
+    <pos1Y>30.0</pos1Y>
+    <pos2X>-90.0</pos2X>
+    <pos2Y>80.0</pos2Y>
+    <pt>-430.0,30.0</pt>
+    <pt>-430.0,80.0</pt>
+  </connection>
+  <connection>
+    <pos1X>-480.0</pos1X>
+    <pos1Y>-10.0</pos1Y>
+    <pos2X>-80.0</pos2X>
+    <pos2Y>-80.0</pos2Y>
+    <pt>-430.0,-10.0</pt>
+    <pt>-420.0,-10.0</pt>
+    <pt>-420.0,-80.0</pt>
+  </connection>
+  <connection>
+    <pos1X>-480.0</pos1X>
+    <pos1Y>30.0</pos1Y>
+    <pos2X>-80.0</pos2X>
+    <pos2Y>-40.0</pos2Y>
+    <pt>-430.0,30.0</pt>
+    <pt>-430.0,80.0</pt>
+    <pt>-210.0,80.0</pt>
+    <pt>-210.0,-40.0</pt>
+  </connection>
+</root>

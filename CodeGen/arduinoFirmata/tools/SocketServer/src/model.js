@@ -2,7 +2,7 @@
  * @property {('onDataIn'|'onDataOut'|'onClientConnect'|'onClientLeave')} type
  * @property {string} clientId
  * @property {number} port
- * @property {number[]} data
+ * @property {number[]} data - data[0] = exectution time,data[1] = mode (0: heatshield, 1: tclab), data[2..] = mode dependent
  */
 class EventData {
   type;
@@ -14,7 +14,7 @@ class EventData {
    * @param {('onDataIn'|'onDataOut'|'onClientConnect'|'onClientLeave')} type
    * @param {string} clientId
    * @param {number} port
-   * @param {number[]} data
+   * @param {number[]} data - data[0] = exectution time,data[1] = mode (0: heatshield, 1: tclab), data[2..] = mode dependent
    */
   constructor(type, clientId, port, data = []) {
     this.type = type;
