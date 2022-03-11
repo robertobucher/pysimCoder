@@ -43,6 +43,10 @@ ifeq ($(CONFIG_SENSORS_QENCODER),y)
 SRCALL += nuttxENC.c
 endif
 
+ifeq ($(CONFIG_SPI),y)
+SRCALL += heater.c
+endif
+
 ifeq ($(CONFIG_SENSORS_DHTXX),y)
 SRCALL += sensors/nuttxDHTXX.c
 endif
