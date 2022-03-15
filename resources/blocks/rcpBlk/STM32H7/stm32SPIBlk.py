@@ -1,11 +1,10 @@
-
 from supsisim.RCPblk import RCPblk
-from scipy import size
+from numpy import size, hstack
 
-def stm32SPIBlk(pin, pout, port, css):
+def stm32SPIBlk(pin, pout, port, css,  outs):
     """
 
-    Call:   stm32SPIBlk(pin, pout, port, pin, rxtx, index)
+    Call:   stm32SPIBlk(pin, pout, port, pin, outs)
 
     Parameters
     ----------
@@ -26,15 +25,17 @@ def stm32SPIBlk(pin, pout, port, css):
         p = port[-1]
         p = p.upper()
         pn = ord(p) - ord('A')
+
+    if size(pout) != size(outs):
+        raise ValueError("Number of outputs should fit the len of Outputs")
         
-        if pn<0 or pn > 6:
-            raise ValueError("Port should be between PORTA and PORTG not %s", (port))
+    if pn<-1 or pn > 6:
+        raise ValueError("Port should be between PORTA and PORTG not %s", (port))
     
-        if css<0 or css > 15:
-            raise ValueError("CSS should be between 0 and 15 not %i", (pin))
+    if css<0 or css > 15:
+        raise ValueError("CSS should be between 0 and 15 not %i", (pin))
 
-    print('pn: ', pn)
-    print('css: ', css)
-
-    blk = RCPblk('stm32SPI', pin, pout, [0,0], 1, [], [pn, css])
+    intP = hstack((pn, css, outs))
+ 
+    blk = RCPblk('stm32SPI', pin, pout, [0,0], 1, [], intP)
     return blk
