@@ -300,6 +300,37 @@ const dataResolvers = {
     },
     getRange: () => [[[0, 500], [0, 500]], [0, 100]],
   },
+  [3]: {
+    plotName: 'nano with capacitor',
+    mode: 3,
+    mappingFn: (dataIn) => {
+      const [executionTime, mode, input, output] = dataIn;
+      return {
+        x: executionTime,
+        yLeft1: output,
+        yRight1: input,
+      };
+    },
+    getDataInConfig: (allData) => {
+      const voltageGraph = {
+        x: allData.map(item => item.x),
+        y: allData.map(item => item.yLeft1),
+        type: 'scatter',
+        name: 'output (V)',
+      };
+
+      const inputGraph = {
+        x: allData.map(item => item.x),
+        y: allData.map(item => item.yRight1),
+        type: 'scatter',
+        name: 'input (%)',
+        yaxis: 'y2',
+      };
+
+      return [voltageGraph, inputGraph];
+    },
+    getRange: () => [undefined, [0, 1]],
+  },
 };
 
 /**
