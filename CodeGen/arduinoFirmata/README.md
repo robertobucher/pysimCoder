@@ -55,6 +55,7 @@ https://github.com/Chiff/FirmataC/include/Firmata.h
 - https://www.arduino.cc/en/reference/wire
 - https://www.instructables.com/Going-Beyond-StandardFirmata-Adding-New-Device-Sup/
 - https://github.com/AtmelUniversityFrance/atmel-avr-xmini-boardmanagermodule/wiki
+- https://ctms.engin.umich.edu/CTMS/index.php?aux=Activities_RCcircuitA
 
 ## TC Lab
 
