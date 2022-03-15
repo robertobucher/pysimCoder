@@ -7,6 +7,28 @@ IDE > File > Examples > Firmata > StandardFirmata).
 
 ---
 
+## New Blocks
+
+- setup - Initializes Firmata on `port='/dev/ttyACM0'` with `baud=57600`
+- analogWrite - uses arduino analogWrite function on `pin` with `mode` (firmata supported
+  modes: https://github.com/Chiff/FirmataC/blob/master/includes/firmata.h#L7-L13)
+- digitalWrite - uses arduino digitalWrite function on `pin`
+- pinRead - reads pin value from arduino `pin` with `mode` (firmata supported
+  modes: https://github.com/Chiff/FirmataC/blob/master/includes/firmata.h#L7-L13)
+- customRead - array from 0 to 6
+  - customRead[0] - VL53L0X distance sensor - distance in mm - SYSEX format = `START_SYSEX 0x72 msb lsb END_SYSEX`
+  - customRead[1] - **unused at the moment*
+  - customRead[2] - **unused at the moment*
+  - customRead[3] - **unused at the moment*
+  - customRead[4] - **unused at the moment*
+  - customRead[5] - **unused at the moment*
+  - customRead[6] - **unused at the moment*
+
+Helpers:
+
+- help_HeatShield_temperature - customized block to translate voltage to temperature based on shield
+- help_TCLab_temperature - customized block to translate voltage to temperature based on shield
+
 ## Tools
 
 #### SocketServer
@@ -33,12 +55,6 @@ Usage:
 
 ## Reference
 
-#### VL53L0X
-
-https://www.instructables.com/Going-Beyond-StandardFirmata-Adding-New-Device-Sup/
-https://docs.arduino.cc/hacking/software/FirmataLibrary
-https://github.com/pololu/vl53l0x-arduino
-
 #### Headers
 
 https://github.com/firmata/arduino/blob/4bd508aca4f2c73ed3528529eeb5c490815b5f9b/Boards.h
@@ -56,6 +72,12 @@ https://github.com/Chiff/FirmataC/include/Firmata.h
 - https://www.instructables.com/Going-Beyond-StandardFirmata-Adding-New-Device-Sup/
 - https://github.com/AtmelUniversityFrance/atmel-avr-xmini-boardmanagermodule/wiki
 - https://ctms.engin.umich.edu/CTMS/index.php?aux=Activities_RCcircuitA
+
+#### VL53L0X
+
+https://www.instructables.com/Going-Beyond-StandardFirmata-Adding-New-Device-Sup/
+https://docs.arduino.cc/hacking/software/FirmataLibrary
+https://github.com/pololu/vl53l0x-arduino
 
 ## TC Lab
 
