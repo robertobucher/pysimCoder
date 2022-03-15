@@ -51,7 +51,7 @@ static void inout(python_block * block) {
     }
 
     double * U = block->u[0];
-    printf("af - analogWrite - inout - pin[%d] = %f; mode=%d\n", pin, U[0], af_firmataInstance->pins[pin].mode);
+//    printf("af - analogWrite - inout - pin[%d] = %f; mode=%d\n", pin, U[0], af_firmataInstance->pins[pin].mode);
 
     int pinVal = (int) U[0];
     write(pinVal, pin);

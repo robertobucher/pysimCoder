@@ -9,8 +9,9 @@ t_firmata * af_firmataInstance;
 //  currently it seems it is not possible to oreder it in python api
 static void init(python_block * block) {
   char * port = (char * ) block->str;
+  int baud = block->intPar[0];
 
-  af_firmataInstance = firmata_new(port);
+  af_firmataInstance = firmata_new_with_baud(port, baud);
   while (!af_firmataInstance->isReady) {
     firmata_pull(af_firmataInstance);
   }

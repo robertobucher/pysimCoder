@@ -174,6 +174,7 @@ class DataPlotter {
  * @property {string} plotName
  * @property {(p: number[]) => any} mappingFn
  * @property {(p: number[][]) => any} getDataInConfig
+ * @property {() => number[][]} getRange
  */
 
 /**
@@ -210,6 +211,7 @@ const dataResolvers = {
 
       return [tempGraph, inputGraph];
     },
+    getRange: () => [[0, 120], [0, 120]],
   },
   [1]: {
     plotName: 'tclab',
@@ -257,28 +259,72 @@ const dataResolvers = {
 
       return [tg1, tg2, ig1, ig2];
     },
+    getRange: () => [[0, 120], [0, 120]],
+  },
+  [2]: {
+    plotName: 'floatshield',
+    mode: 2,
+    mappingFn: (dataIn) => {
+      const [executionTime, mode, current, desired, input] = dataIn;
+      return {
+        x: executionTime,
+        yLeft1: current,
+        yLeft2: desired,
+        yRight1: input,
+      };
+    },
+    getDataInConfig: (allData) => {
+      const distGrapgh = {
+        x: allData.map(item => item.x),
+        y: allData.map(item => item.yLeft1),
+        type: 'scatter',
+        name: 'distance (mm)',
+      };
+
+      const desiredGraph = {
+        x: allData.map(item => item.x),
+        y: allData.map(item => item.yLeft2),
+        type: 'scatter',
+        name: 'desired distance (mm)',
+      };
+
+      const inputGraph = {
+        x: allData.map(item => item.x),
+        y: allData.map(item => item.yRight1 * (100 / 255)),
+        type: 'scatter',
+        name: 'input (%)',
+        yaxis: 'y2',
+      };
+
+      return [distGrapgh, desiredGraph, inputGraph];
+    },
+    getRange: () => [[[0, 500], [0, 500]], [0, 100]],
   },
 };
 
 /**
  * @param {PlotResolver} plotResolver
  * @param {any[]} plotData
+ * @param {number[][]} range
  */
-const plotlyDefault = (plotResolver, plotData) => ({
+const plotlyDefault = (plotResolver, plotData, range = []) => ({
   data: plotData,
   layout: {
     title: plotResolver.plotName,
     xaxis: {
       title: 'execution time',
     },
-    yaxis: {title: 'temperature in C'},
+    yaxis: {
+      title: 'temperature in C',
+      range: plotResolver.getRange()[0],
+    },
     yaxis2: {
       title: 'input in % (0-255)',
       titlefont: {color: 'rgb(148, 103, 189)'},
       tickfont: {color: 'rgb(148, 103, 189)'},
       overlaying: 'y',
       side: 'right',
-      range: [0, 105],
+      range: plotResolver.getRange()[1],
     },
   },
 });

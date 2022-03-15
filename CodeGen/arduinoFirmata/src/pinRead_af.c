@@ -43,7 +43,7 @@ static void inout(python_block * block) {
 
   double * y = block->y[0];
     y[0] = af_firmataInstance->pins[pin].value;
-    printf("af - pinRead - inout - pin[%d] = %f; mode=%d\n",pin, y[0], af_firmataInstance->pins[pin].mode);
+//    printf("af - pinRead - inout - pin[%d] = %f; mode=%d\n",pin, y[0], af_firmataInstance->pins[pin].mode);
 }
 
 void pinRead_af(int flag, python_block * block) {

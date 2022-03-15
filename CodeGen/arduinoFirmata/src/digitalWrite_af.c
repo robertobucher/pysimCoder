@@ -51,7 +51,7 @@ static void inout(python_block * block) {
     }
 
     double * U = block->u[0];
-    printf("af - digitalWrite - inout - U[0] = %f\n", U[0]);
+//    printf("af - digitalWrite - inout - U[0] = %f\n", U[0]);
 
     int pinVal = (int) U[0];
     write(pinVal, pin);
