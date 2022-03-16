@@ -1,5 +1,5 @@
-all: addfiles modules fmu full_lib driver link
-reduced: addfiles modules fmu lib driver link
+all: addfiles modules fmu full_lib arduino_firmata driver link
+reduced: addfiles modules fmu lib arduino_firmata driver link
 
 BINDIR = /usr/local/bin
 CURDIR = $(shell pwd)
@@ -12,7 +12,7 @@ addfiles: control slycot
 control:
 	git clone https://github.com/python-control/python-control.git
 	cd python-control; python3 setup.py install
-	rm -rf python-control 
+	rm -rf python-control
 
 slycot:
 	git clone --recurse-submodules https://github.com/python-control/Slycot
@@ -26,11 +26,14 @@ modules:
 fmu:
 	cd CodeGen/LinuxRT/fmu; make all; make install; make clean
 
-lib: 
+lib:
 	cd CodeGen/LinuxRT/devices; make reduced
 
-full_lib: 
+full_lib:
 	cd CodeGen/LinuxRT/devices; make all
+
+arduino_firmata:
+	cd CodeGen/arduinoFirmata; make all
 
 link:
 	cd $(BINDIR); rm -f pyParams gen_pydev loadnrt defBlocks dataplot xblk2Blk
@@ -71,6 +74,7 @@ clean:
 	rm -rf resources/blocks/rcpBlk/__pycache__/
 	rm -rf /home/bucher/CACSD/pysimCoder/toolbox/supsictrl/build/
 	rm -rf /home/bucher/CACSD/pysimCoder/toolbox/supsisim/build/
+	rm -f CodeGen/arduinoFirmata/lib/*.a
 
 ############ Optional targets ############
 ######## Specific compiler required!!! ########

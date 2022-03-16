@@ -1,0 +1,247 @@
+<root>
+  <pysimCoder>
+    <pysimCoderVersion>0.9</pysimCoderVersion>
+  </pysimCoder>
+  <Date>
+    <SavingDate>15.03.2022 - 19:22:06</SavingDate>
+  </Date>
+  <Simulation>
+    <Template>rt.tmf</Template>
+    <Ts>0.05</Ts>
+    <AddObj></AddObj>
+    <ParScript></ParScript>
+    <Tf>10</Tf>
+    <Priority></Priority>
+  </Simulation>
+  <block>
+    <name>Analog Write</name>
+    <inp>1</inp>
+    <outp>0</outp>
+    <inset>0</inset>
+    <outset>0</outset>
+    <icon></icon>
+    <params>analogWrite_af|Device pin: 3|Pin mode: 3</params>
+    <help>#define MODE_INPUT  0x00
+#define MODE_OUTPUT    0x01
+#define MODE_ANALOG    0x02
+#define MODE_PWM   0x03
+#define MODE_SERVO 0x04
+#define MODE_SHIFT 0x05
+#define MODE_I2C   0x06</help>
+    <width>80</width>
+    <flip>0</flip>
+    <posX>170.0</posX>
+    <posY>30.0</posY>
+  </block>
+  <block>
+    <name>Custom Read</name>
+    <inp>0</inp>
+    <outp>1</outp>
+    <inset>0</inset>
+    <outset>0</outset>
+    <icon></icon>
+    <params>customRead_af|Value: 0</params>
+    <help>Values from 0 to 6; 0 = FIRMATA_VL53L0X_GET_DISTANCE</help>
+    <width>80</width>
+    <flip>0</flip>
+    <posX>-490.0</posX>
+    <posY>10.0</posY>
+  </block>
+  <block>
+    <name>Sub</name>
+    <inp>2</inp>
+    <outp>1</outp>
+    <inset>0</inset>
+    <outset>0</outset>
+    <icon>PM</icon>
+    <params>sumBlk|Gains: [1,-1]</params>
+    <help>This block get the weighted sum of the input signals.
+
+It can have more than 2 inputs.
+</help>
+    <width>80</width>
+    <flip>0</flip>
+    <posX>-200.0</posX>
+    <posY>30.0</posY>
+  </block>
+  <block>
+    <name>Discrete PID</name>
+    <inp>1</inp>
+    <outp>1</outp>
+    <inset>0</inset>
+    <outset>0</outset>
+    <icon>PID</icon>
+    <params>discretePIDBlk|Proportional gain: 0.01|Integral gain: 0.01|Derivative gain: 0.01|Min value: 0|Max value: 255</params>
+    <help>Discrete PID controller
+
+Parameters
+Proportional gain
+Integral gain
+Discrete gain
+Min value: minimal output value
+Max value: maximal output value
+</help>
+    <width>80</width>
+    <flip>0</flip>
+    <posX>-20.0</posX>
+    <posY>30.0</posY>
+  </block>
+  <block>
+    <name>Setup</name>
+    <inp>0</inp>
+    <outp>0</outp>
+    <inset>0</inset>
+    <outset>0</outset>
+    <icon>INIT</icon>
+    <params>setup_af|Port: '/dev/ttyACM0'|Baud: 115200</params>
+    <help></help>
+    <width>80</width>
+    <flip>0</flip>
+    <posX>-440.0</posX>
+    <posY>-130.0</posY>
+  </block>
+  <block>
+    <name>UnixSkServer</name>
+    <inp>0</inp>
+    <outp>1</outp>
+    <inset>0</inset>
+    <outset>1</outset>
+    <icon>UNIXSOCK</icon>
+    <params>unixsocketSBlk|Socket: 'ssock'|Default outputs:[0.]</params>
+    <help>This block implements a Unix Socket Server, which can receive signals from a client and pass them as double values into the block diagram.
+
+Parameters:
+Socket: the socket name
+Default output: the output before arriving of data
+</help>
+    <width>80</width>
+    <flip>0</flip>
+    <posX>-500.0</posX>
+    <posY>130.0</posY>
+  </block>
+  <block>
+    <name>Timer</name>
+    <inp>0</inp>
+    <outp>1</outp>
+    <inset>0</inset>
+    <outset>0</outset>
+    <icon>TIMER</icon>
+    <params>getTimerBlk</params>
+    <help>This block put the execution time as output value.
+</help>
+    <width>80</width>
+    <flip>0</flip>
+    <posX>20.0</posX>
+    <posY>-250.0</posY>
+  </block>
+  <block>
+    <name>Const</name>
+    <inp>0</inp>
+    <outp>1</outp>
+    <inset>0</inset>
+    <outset>0</outset>
+    <icon>CONST</icon>
+    <params>constBlk|Value: 2</params>
+    <help>This block implements a constant input signal.
+</help>
+    <width>80</width>
+    <flip>0</flip>
+    <posX>-220.0</posX>
+    <posY>-250.0</posY>
+  </block>
+  <block>
+    <name>TCPsocketTX</name>
+    <inp>5</inp>
+    <outp>0</outp>
+    <inset>1</inset>
+    <outset>0</outset>
+    <icon>TCPSOCKET</icon>
+    <params>TCPsocketTxBlk|IP Addr:'127.0.0.1'|Port:5000</params>
+    <help>This block implements a TCP sender
+
+Parameters
+IP address of the receiver
+Port
+</help>
+    <width>80</width>
+    <flip>0</flip>
+    <posX>270.0</posX>
+    <posY>-150.0</posY>
+  </block>
+  <connection>
+    <pos1X>-450.0</pos1X>
+    <pos1Y>10.0</pos1Y>
+    <pos2X>-240.0</pos2X>
+    <pos2Y>10.0</pos2Y>
+    <pt>-350.0,10.0</pt>
+    <pt>-350.0,10.0</pt>
+  </connection>
+  <connection>
+    <pos1X>20.0</pos1X>
+    <pos1Y>30.0</pos1Y>
+    <pos2X>130.0</pos2X>
+    <pos2Y>30.0</pos2Y>
+    <pt>30.0,30.0</pt>
+    <pt>30.0,30.0</pt>
+  </connection>
+  <connection>
+    <pos1X>-160.0</pos1X>
+    <pos1Y>30.0</pos1Y>
+    <pos2X>-60.0</pos2X>
+    <pos2Y>30.0</pos2Y>
+    <pt>-80.0,30.0</pt>
+    <pt>-80.0,30.0</pt>
+  </connection>
+  <connection>
+    <pos1X>-460.0</pos1X>
+    <pos1Y>130.0</pos1Y>
+    <pos2X>-240.0</pos2X>
+    <pos2Y>50.0</pos2Y>
+    <pt>-370.0,130.0</pt>
+    <pt>-370.0,50.0</pt>
+  </connection>
+  <connection>
+    <pos1X>60.0</pos1X>
+    <pos1Y>-250.0</pos1Y>
+    <pos2X>230.0</pos2X>
+    <pos2Y>-230.0</pos2Y>
+    <pt>150.0,-250.0</pt>
+    <pt>150.0,-230.0</pt>
+  </connection>
+  <connection>
+    <pos1X>-180.0</pos1X>
+    <pos1Y>-250.0</pos1Y>
+    <pos2X>230.0</pos2X>
+    <pos2Y>-190.0</pos2Y>
+    <pt>-170.0,-250.0</pt>
+    <pt>-170.0,-190.0</pt>
+  </connection>
+  <connection>
+    <pos1X>-450.0</pos1X>
+    <pos1Y>10.0</pos1Y>
+    <pos2X>230.0</pos2X>
+    <pos2Y>-150.0</pos2Y>
+    <pt>-350.0,10.0</pt>
+    <pt>-330.0,10.0</pt>
+    <pt>-330.0,-150.0</pt>
+  </connection>
+  <connection>
+    <pos1X>-460.0</pos1X>
+    <pos1Y>130.0</pos1Y>
+    <pos2X>230.0</pos2X>
+    <pos2Y>-110.0</pos2Y>
+    <pt>-370.0,130.0</pt>
+    <pt>-370.0,50.0</pt>
+    <pt>-290.0,50.0</pt>
+    <pt>-290.0,-110.0</pt>
+  </connection>
+  <connection>
+    <pos1X>20.0</pos1X>
+    <pos1Y>30.0</pos1Y>
+    <pos2X>230.0</pos2X>
+    <pos2Y>-70.0</pos2Y>
+    <pt>30.0,30.0</pt>
+    <pt>80.0,30.0</pt>
+    <pt>80.0,-70.0</pt>
+  </connection>
+</root>

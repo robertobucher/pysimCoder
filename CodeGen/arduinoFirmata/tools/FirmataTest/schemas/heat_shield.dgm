@@ -1,0 +1,209 @@
+<root>
+  <pysimCoder>
+    <pysimCoderVersion>0.9</pysimCoderVersion>
+  </pysimCoder>
+  <Date>
+    <SavingDate>07.03.2022 - 19:02:10</SavingDate>
+  </Date>
+  <Simulation>
+    <Template>rt.tmf</Template>
+    <Ts>1</Ts>
+    <AddObj></AddObj>
+    <ParScript></ParScript>
+    <Tf>5</Tf>
+    <Priority></Priority>
+  </Simulation>
+  <block>
+    <name>Const</name>
+    <inp>0</inp>
+    <outp>1</outp>
+    <inset>0</inset>
+    <outset>0</outset>
+    <icon>CONST</icon>
+    <params>constBlk|Value: 0</params>
+    <help>This block implements a constant input signal.
+</help>
+    <width>80</width>
+    <flip>0</flip>
+    <posX>-200.0</posX>
+    <posY>-150.0</posY>
+  </block>
+  <block>
+    <name>TCPsocketTX</name>
+    <inp>4</inp>
+    <outp>0</outp>
+    <inset>1</inset>
+    <outset>0</outset>
+    <icon>TCPSOCKET</icon>
+    <params>TCPsocketTxBlk|IP Addr: '127.0.0.1'|Port: 5000</params>
+    <help>This block implements a TCP sender
+
+Parameters
+IP address of the receiver
+Port
+</help>
+    <width>80</width>
+    <flip>0</flip>
+    <posX>40.0</posX>
+    <posY>-150.0</posY>
+  </block>
+  <block>
+    <name>Analog Write</name>
+    <inp>1</inp>
+    <outp>0</outp>
+    <inset>0</inset>
+    <outset>0</outset>
+    <icon></icon>
+    <params>analogWrite_af|Device pin: 3|Pin mode: 3</params>
+    <help>#define MODE_INPUT  0x00
+#define MODE_OUTPUT    0x01
+#define MODE_ANALOG    0x02
+#define MODE_PWM   0x03
+#define MODE_SERVO 0x04
+#define MODE_SHIFT 0x05
+#define MODE_I2C   0x06</help>
+    <width>80</width>
+    <flip>0</flip>
+    <posX>-220.0</posX>
+    <posY>30.0</posY>
+  </block>
+  <block>
+    <name>Setup</name>
+    <inp>0</inp>
+    <outp>0</outp>
+    <inset>0</inset>
+    <outset>0</outset>
+    <icon>INIT</icon>
+    <params>setup_af|Port: '/dev/ttyACM0'</params>
+    <help></help>
+    <width>80</width>
+    <flip>0</flip>
+    <posX>-420.0</posX>
+    <posY>-220.0</posY>
+  </block>
+  <block>
+    <name>Pin Read</name>
+    <inp>0</inp>
+    <outp>1</outp>
+    <inset>0</inset>
+    <outset>0</outset>
+    <icon></icon>
+    <params>pinRead_af|Device pin: 14|Pin mode: 2</params>
+    <help>#define MODE_INPUT  0x00
+#define MODE_OUTPUT    0x01
+#define MODE_ANALOG    0x02
+#define MODE_PWM   0x03
+#define MODE_SERVO 0x04
+#define MODE_SHIFT 0x05
+#define MODE_I2C   0x06</help>
+    <width>80</width>
+    <flip>0</flip>
+    <posX>-450.0</posX>
+    <posY>-80.0</posY>
+  </block>
+  <block>
+    <name>Helper HeatShield Temperature</name>
+    <inp>1</inp>
+    <outp>1</outp>
+    <inset>0</inset>
+    <outset>0</outset>
+    <icon></icon>
+    <params>help_HeatShield_temperature|adcref: 1023.0|aref: 5.0|ref_temp: 298.15|ntc_res: 100000.0|vd_res: 100000.0|vd_ref: 5.0|ntc_beta: 3950.0|abszero: 273.15</params>
+    <help>#define ADCREF 1023.0               // 10-bit resolution for AD converter
+#define AREF 5.0                              // ADC reference voltage for 5 V logic
+#define REF_TEMP (25.0 + ABSZERO) // Thermistor reference temperature
+#define NTC_RES 100000.0 // Resistance of the thermistor
+#define VD_RES 100000.0 // Resistance of voltage divider arm
+#define VD_REF 5.0        // Input for the voltage divider
+#define NTC_BETA 3950.0 // value of Beta factor from datasheet MF58
+#define ABSZERO 273.15 // Absolute zero in Celsius</help>
+    <width>80</width>
+    <flip>0</flip>
+    <posX>-210.0</posX>
+    <posY>-60.0</posY>
+  </block>
+  <block>
+    <name>Timer</name>
+    <inp>0</inp>
+    <outp>1</outp>
+    <inset>0</inset>
+    <outset>0</outset>
+    <icon>TIMER</icon>
+    <params>getTimerBlk</params>
+    <help>This block put the execution time as output value.
+</help>
+    <width>80</width>
+    <flip>0</flip>
+    <posX>-170.0</posX>
+    <posY>-240.0</posY>
+  </block>
+  <block>
+    <name>UnixSkServer</name>
+    <inp>0</inp>
+    <outp>1</outp>
+    <inset>0</inset>
+    <outset>1</outset>
+    <icon>UNIXSOCK</icon>
+    <params>unixsocketSBlk|Socket: 'ssock'|Default outputs: [0.]</params>
+    <help>This block implements a Unix Socket Server, which can receive signals from a client and pass them as double values into the block diagram.
+
+Parameters:
+Socket: the socket name
+Default output: the output before arriving of data
+</help>
+    <width>80</width>
+    <flip>0</flip>
+    <posX>-450.0</posX>
+    <posY>30.0</posY>
+  </block>
+  <connection>
+    <pos1X>-410.0</pos1X>
+    <pos1Y>30.0</pos1Y>
+    <pos2X>0.0</pos2X>
+    <pos2Y>-90.0</pos2Y>
+    <pt>-330.0,30.0</pt>
+    <pt>-330.0,110.0</pt>
+    <pt>-30.0,110.0</pt>
+    <pt>-30.0,-90.0</pt>
+  </connection>
+  <connection>
+    <pos1X>-170.0</pos1X>
+    <pos1Y>-60.0</pos1Y>
+    <pos2X>0.0</pos2X>
+    <pos2Y>-130.0</pos2Y>
+    <pt>-50.0,-60.0</pt>
+    <pt>-50.0,-130.0</pt>
+  </connection>
+  <connection>
+    <pos1X>-160.0</pos1X>
+    <pos1Y>-150.0</pos1Y>
+    <pos2X>0.0</pos2X>
+    <pos2Y>-170.0</pos2Y>
+    <pt>-40.0,-150.0</pt>
+    <pt>-40.0,-170.0</pt>
+  </connection>
+  <connection>
+    <pos1X>-130.0</pos1X>
+    <pos1Y>-240.0</pos1Y>
+    <pos2X>0.0</pos2X>
+    <pos2Y>-210.0</pos2Y>
+    <pt>-30.0,-240.0</pt>
+    <pt>-30.0,-210.0</pt>
+  </connection>
+  <connection>
+    <pos1X>-410.0</pos1X>
+    <pos1Y>30.0</pos1Y>
+    <pos2X>-260.0</pos2X>
+    <pos2Y>30.0</pos2Y>
+    <pt>-330.0,30.0</pt>
+    <pt>-330.0,30.0</pt>
+  </connection>
+  <connection>
+    <pos1X>-410.0</pos1X>
+    <pos1Y>-80.0</pos1Y>
+    <pos2X>-250.0</pos2X>
+    <pos2Y>-60.0</pos2Y>
+    <pt>-350.0,-80.0</pt>
+    <pt>-350.0,-60.0</pt>
+  </connection>
+</root>

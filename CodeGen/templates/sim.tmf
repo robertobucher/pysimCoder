@@ -4,8 +4,11 @@ all: ../$(MODEL)
 PYCODEGEN = $(PYSUPSICTRL)/CodeGen
 MAINDIR = $(PYCODEGEN)/src
 LIBDIR  = $(PYCODEGEN)/LinuxRT/lib
-INCDIR  = $(PYCODEGEN)/LinuxRT/include 
+INCDIR  = $(PYCODEGEN)/LinuxRT/include
 COMMON_INCDIR = $(PYCODEGEN)/Common/include
+
+FIRMATA_LIB  = $(PYCODEGEN)/arduinoFirmata/lib
+FIRMATA_INC  = $(PYCODEGEN)/arduinoFirmata/includes
 
 RM = rm -f
 FILES_TO_CLEAN = *.o $(MODEL)
@@ -18,9 +21,9 @@ ADD_FILES = $$ADD_FILES$$
 
 OBJSSTAN = $(MAIN).o $(MODEL).o $(ADD_FILES)
 
-LIB = $(LIBDIR)/libpyblk.a $(FMILIB)
+LIB = $(FIRMATA_LIB)/firmatapyblk.a $(LIBDIR)/libpyblk.a $(FMILIB)
 
-CFLAGS = $(CC_OPTIONS) -O2 -I$(INCDIR) -I$(COMMON_INCDIR) $(C_FLAGS) -DMODEL=$(MODEL) 
+CFLAGS = $(CC_OPTIONS) -O2 -I$(FIRMATA_INC) -I$(INCDIR) -I$(COMMON_INCDIR) $(C_FLAGS) -DMODEL=$(MODEL)
 
 $(MAIN).c: $(MAINDIR)/$(MAIN).c $(MODEL).c
 	cp $< .
