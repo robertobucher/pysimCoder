@@ -10,6 +10,9 @@ COMMON_INCDIR = $(PYCODEGEN)/Common/include
 FIRMATA_LIB  = $(PYCODEGEN)/arduinoFirmata/lib
 FIRMATA_INC  = $(PYCODEGEN)/arduinoFirmata/includes
 
+TOS1A_LIB  = $(PYCODEGEN)/tos1a/lib
+TOS1A_INC  = $(PYCODEGEN)/tos1a/includes
+
 RM = rm -f
 FILES_TO_CLEAN = *.o $(MODEL)
 
@@ -21,9 +24,9 @@ ADD_FILES = $$ADD_FILES$$
 
 OBJSSTAN = $(MAIN).o $(MODEL).o $(ADD_FILES)
 
-LIB = $(FIRMATA_LIB)/firmatapyblk.a $(LIBDIR)/libpyblk.a $(FMILIB)
+LIB = $(TOS1A_LIB)/tos1apyblk.a $(FIRMATA_LIB)/firmatapyblk.a $(LIBDIR)/libpyblk.a $(FMILIB)
 
-CFLAGS = $(CC_OPTIONS) -O2 -I$(FIRMATA_INC) -I$(INCDIR) -I$(COMMON_INCDIR) $(C_FLAGS) -DMODEL=$(MODEL)
+CFLAGS = $(CC_OPTIONS) -O2 -I$(TOS1A_INC) -I$(FIRMATA_INC) -I$(INCDIR) -I$(COMMON_INCDIR) $(C_FLAGS) -DMODEL=$(MODEL)
 
 $(MAIN).c: $(MAINDIR)/$(MAIN).c $(MODEL).c
 	cp $< .
