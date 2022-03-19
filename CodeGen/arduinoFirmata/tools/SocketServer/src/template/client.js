@@ -331,6 +331,71 @@ const dataResolvers = {
     },
     getRange: () => [undefined, [0, 1]],
   },
+  [4]: {
+    plotName: 'tos1a',
+    mode: 4,
+    mappingFn: (dataIn) => {
+      const [executionTime, mode, o1, o2, o3, i1, i2, i3] = dataIn;
+      return {
+        x: executionTime,
+        yLeft1: o1,
+        yLeft2: o2,
+        yLeft3: o3,
+        yRight1: i1,
+        yRight2: i2,
+        yRight3: i3,
+      };
+    },
+    getDataInConfig: (allData) => {
+      const tg1 = {
+        x: allData.map(item => item.x),
+        y: allData.map(item => Math.max(item.yLeft1, 0)),
+        type: 'scatter',
+        name: 'temp internal (C)',
+      };
+
+      const tg2 = {
+        x: allData.map(item => item.x),
+        y: allData.map(item => Math.max(item.yLeft2, 0)),
+        type: 'scatter',
+        name: 'light intensity (?)',
+      };
+
+      const tg3 = {
+        x: allData.map(item => item.x),
+        y: allData.map(item => Math.max(item.yLeft3, 0)),
+        type: 'scatter',
+        name: 'vent rpm (rpm)',
+      };
+
+      const ig1 = {
+        x: allData.map(item => item.x),
+        y: allData.map(item => item.yRight1),
+        type: 'scatter',
+        name: 'input temp (%)',
+        yaxis: 'y2',
+      };
+
+      const ig2 = {
+        x: allData.map(item => item.x),
+        y: allData.map(item => item.yRight2),
+        type: 'scatter',
+        name: 'input vent (%)',
+        yaxis: 'y2',
+      };
+
+      const ig3 = {
+        x: allData.map(item => item.x),
+        y: allData.map(item => item.yRight3),
+        type: 'scatter',
+        name: 'input lamp (%)',
+        yaxis: 'y2',
+      };
+
+      return [tg1, tg2, tg3, ig1, ig2, ig3];
+    },
+    getRange: () => [undefined, undefined, undefined, [0, 100], [0, 100], [0, 100]],
+  },
 };
 
 /**
