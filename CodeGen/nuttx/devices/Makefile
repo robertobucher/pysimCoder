@@ -45,6 +45,7 @@ endif
 
 ifeq ($(CONFIG_SPI),y)
 SRCALL += heater.c
+SRCALL += RLC.c
 endif
 
 ifeq ($(CONFIG_SENSORS_DHTXX),y)
