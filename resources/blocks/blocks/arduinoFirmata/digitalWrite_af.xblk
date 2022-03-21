@@ -1,1 +1,1 @@
-{"lib": "arduinoFirmata", "name": "Digital Write", "ip": 1, "op": 0, "stin": 0, "stout": 0, "icon": "DI", "params": "digitalWrite_af|Device pin:8", "help": ""}
+{"lib": "arduinoFirmata", "name": "Digital Write", "ip": 1, "op": 0, "stin": 0, "stout": 0, "icon": "FIRMDATA", "params": "digitalWrite_af|Device pin:8", "help": ""}
