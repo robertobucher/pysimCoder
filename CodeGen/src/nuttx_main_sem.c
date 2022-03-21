@@ -7,6 +7,8 @@
 #include <string.h>
 #include <fcntl.h>
 #include <pthread.h>
+#include <nuttx/semaphore.h>
+#include <nuttx/config.h>
 
 #ifdef HAVE_MLOCK
 #include <sys/mman.h>
@@ -30,6 +32,7 @@ double NAME(MODEL,_get_tsamp)(void);
 static volatile int end = 0;
 static double T = 0.0;
 static double Tsamp;
+static int nTick_per_Tsamp;
 
 /* Options presettings */
 static char rtversion[] = "0.9";
@@ -38,6 +41,8 @@ static int verbose = 0;
 static int wait = 0;
 static int extclock = 0;
 double FinalTime = 0.0;
+
+extern sem_t g_waitsem;
 
 double get_run_time()
 {
@@ -69,6 +74,8 @@ static void *rt_task(void *p)
 {
   struct timespec t_next, t_current, t_isr, T0;
   struct sched_param param;
+  static int nTick = 0;
+  int ret;
 
   param.sched_priority = prio;
   if(sched_setscheduler(0, SCHED_FIFO, &param)==-1){
@@ -81,6 +88,8 @@ static void *rt_task(void *p)
 #endif
 
   Tsamp = NAME(MODEL,_get_tsamp)();
+  
+  nTick_per_Tsamp = (int) (Tsamp/CONFIG_USEC_PER_TICK*1000000);
 
   t_isr.tv_sec =  0L;
   t_isr.tv_nsec = (long)(1e9*Tsamp);
@@ -89,6 +98,8 @@ static void *rt_task(void *p)
   T=0;
 
   NAME(MODEL,_init)();
+  sem_init(&g_waitsem, 0, 0);
+  
 
 #ifdef CANOPEN
   canopen_synch();
@@ -99,33 +110,36 @@ static void *rt_task(void *p)
   T0 = t_current;
   
   while(!end){
+    while (sem_wait(&g_waitsem) >= 0) {
+	if(nTick==0){
 
-    /* periodic task */
-    T = calcdiff(t_current,T0);
-    
-    NAME(MODEL,_isr)(T);
+	  /* periodic task */
+	  T = calcdiff(t_current,T0);
+	  NAME(MODEL,_isr)(T);
 
 #ifdef CANOPEN
-    canopen_synch();
+	  canopen_synch();
 #endif
 
-    if((FinalTime >0) && (T >= FinalTime)) break;
+	  if((FinalTime >0) && (T >= FinalTime)) break;
 
-    t_next.tv_sec = t_current.tv_sec + t_isr.tv_sec;
-    t_next.tv_nsec = t_current.tv_nsec + t_isr.tv_nsec;
-    tsnorm(&t_next);
+	  t_next.tv_sec = t_current.tv_sec + t_isr.tv_sec;
+	  t_next.tv_nsec = t_current.tv_nsec + t_isr.tv_nsec;
+	  tsnorm(&t_next);
 
-    /* Check if Overrun */
-    clock_gettime(CLOCK_MONOTONIC,&t_current);
-    if (t_current.tv_sec > t_next.tv_sec ||
-	(t_current.tv_sec == t_next.tv_sec && t_current.tv_nsec > t_next.tv_nsec)) {
-      int usec = (t_current.tv_sec - t_next.tv_sec) * 1000000 + (t_current.tv_nsec -
-								 t_next.tv_nsec)/1000;
-      fprintf(stderr, "Base rate overrun by %d us\n", usec);
-      t_next= t_current;
-    }
-    clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &t_next, NULL);
-    t_current = t_next;
+	  /* Check if Overrun */
+	  clock_gettime(CLOCK_MONOTONIC,&t_current);
+	  if (t_current.tv_sec > t_next.tv_sec ||
+	      (t_current.tv_sec == t_next.tv_sec && t_current.tv_nsec > t_next.tv_nsec)) {
+	    int usec = (t_current.tv_sec - t_next.tv_sec) * 1000000 + (t_current.tv_nsec -
+								       t_next.tv_nsec)/1000;
+	    fprintf(stderr, "Base rate overrun by %d us\n", usec);
+	    t_next= t_current;
+	  }
+	  t_current = t_next;
+	}
+	nTick = (nTick+1) % nTick_per_Tsamp;
+      }
   }
   NAME(MODEL,_end)();
   pthread_exit(0);
