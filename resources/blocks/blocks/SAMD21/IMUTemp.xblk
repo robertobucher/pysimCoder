@@ -1,1 +1,11 @@
-{"lib": "SAMD21", "name": "IMUTemp", "ip": 0, "op": 1, "stin": 0, "stout": 0, "icon": "IMU", "params": "ImuTempBlk", "help": " No help available for this block"}
+{
+  "lib": "SAMD21",
+  "name": "IMUTemp",
+  "ip": 0,
+  "op": 1,
+  "stin": 0,
+  "stout": 0,
+  "icon": "IMU",
+  "params": "ImuTempBlk",
+  "help": " No help available for this block"
+}

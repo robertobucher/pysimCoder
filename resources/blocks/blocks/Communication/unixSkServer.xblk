@@ -1,1 +1,11 @@
-{"lib": "Communication", "name": "UnixSkServer", "ip": 0, "op": 1, "stin": 0, "stout": 1, "icon": "UNIXSOCK", "params": "unixsocketSBlk|Socket: 'ssock'|Default outputs:[0.]", "help": "This block implements a Unix Socket Server, which can receive signals from a client and pass them as double values into the block diagram.\n\nParameters:\nSocket: the socket name\nDefault output: the output before arriving of data\n"}
+{
+  "lib": "Communication",
+  "name": "UnixSkServer",
+  "ip": 0,
+  "op": 1,
+  "stin": 0,
+  "stout": 1,
+  "icon": "UNIXSOCK",
+  "params": "unixsocketSBlk|Socket: 'ssock'|Default outputs:[0.]:int",
+  "help": "This block implements a Unix Socket Server, which can receive signals from a client and pass them as double values into the block diagram.\n\nParameters:\nSocket: the socket name\nDefault output: the output before arriving of data\n"
+}

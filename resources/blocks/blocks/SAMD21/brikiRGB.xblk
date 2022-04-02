@@ -1,1 +1,11 @@
-{"lib": "SAMD21", "name": "brikiRGB", "ip": 4, "op": 0, "stin": 0, "stout": 0, "icon": "LED", "params": "brikiRGBBlk", "help": "The 4 input signals represent\n\n1: brightness (0..1)\n2: Red (0..1)\n3: Green (0..1)\n4: Blue (0..1)\n"}
+{
+  "lib": "SAMD21",
+  "name": "brikiRGB",
+  "ip": 4,
+  "op": 0,
+  "stin": 0,
+  "stout": 0,
+  "icon": "LED",
+  "params": "brikiRGBBlk",
+  "help": "The 4 input signals represent\n\n1: brightness (0..1)\n2: Red (0..1)\n3: Green (0..1)\n4: Blue (0..1)\n"
+}

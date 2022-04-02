@@ -1,1 +1,11 @@
-{"lib": "linear", "name": "Discrete PID", "ip": 1, "op": 1, "stin": 0, "stout": 0, "icon": "PID", "params": "discretePIDBlk|Proportional gain: 1|Integral gain: 1|Derivative gain: 1|Min value: -3.3|Max value: 3.3", "help": "Discrete PID controller\n\nParameters\nProportional gain\nIntegral gain\nDiscrete gain\nMin value: minimal output value\nMax value: maximal output value\n"}
+{
+  "lib": "linear",
+  "name": "Discrete PID",
+  "ip": 1,
+  "op": 1,
+  "stin": 0,
+  "stout": 0,
+  "icon": "PID",
+  "params": "discretePIDBlk|Proportional gain: 1:double|Integral gain: 1:double|Derivative gain: 1:double|Min value: -3.3:double|Max value: 3.3:double",
+  "help": "Discrete PID controller\n\nParameters\nProportional gain\nIntegral gain\nDiscrete gain\nMin value: minimal output value\nMax value: maximal output value\n"
+}

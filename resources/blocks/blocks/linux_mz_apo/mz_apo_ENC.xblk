@@ -1,1 +1,11 @@
-{"lib": "linux_mz_apo", "name": "mzapoENC", "ip": 0, "op": 1, "stin": 0, "stout": 0, "icon": "ENC", "params": "mz_apo_ENCBlk|channel:0|init_val:0", "help": "Parameters\nChannel[0]: Encoder 1 (RED)\nChannel[1]: Encoder 2 (GREEN)\nChannel[2]: Encoder 3 (BLUE)\nInitial Value: any integer\n\n\n"}
+{
+  "lib": "linux_mz_apo",
+  "name": "mzapoENC",
+  "ip": 0,
+  "op": 1,
+  "stin": 0,
+  "stout": 0,
+  "icon": "ENC",
+  "params": "mz_apo_ENCBlk|channel:0:int|init_val:0:int",
+  "help": "Parameters\nChannel[0]: Encoder 1 (RED)\nChannel[1]: Encoder 2 (GREEN)\nChannel[2]: Encoder 3 (BLUE)\nInitial Value: any integer\n\n\n"
+}

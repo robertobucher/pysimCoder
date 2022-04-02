@@ -1,1 +1,11 @@
-{"lib": "linear", "name": "Integral", "ip": 1, "op": 1, "stin": 0, "stout": 0, "icon": "INTG", "params": "intgBlk|Initial conditions: 0", "help": "This block implements a continous integration block\n\nParameters:\nInitial condition\n"}
+{
+  "lib": "linear",
+  "name": "Integral",
+  "ip": 1,
+  "op": 1,
+  "stin": 0,
+  "stout": 0,
+  "icon": "INTG",
+  "params": "intgBlk|Initial conditions: 0:double",
+  "help": "This block implements a continous integration block\n\nParameters:\nInitial condition\n"
+}
