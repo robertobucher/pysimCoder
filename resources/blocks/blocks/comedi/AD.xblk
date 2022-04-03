@@ -1,1 +1,11 @@
-{"lib": "comedi", "name": "AD", "ip": 0, "op": 1, "stin": 0, "stout": 0, "icon": "AD", "params": "comediADBlk|Device: '/dev/comedi0'|Channel: 0|Range: 0", "help": "Implementation of a COMEDI Analog to Digital converter\n\nParameter\nDevice, channel and range (card specific!)\n\nFor more details get the COMEDI documentation (www.comedi.org)\n"}
+{
+  "lib": "comedi",
+  "name": "AD",
+  "ip": 0,
+  "op": 1,
+  "stin": 0,
+  "stout": 0,
+  "icon": "AD",
+  "params": "comediADBlk|Device: '/dev/comedi0'|Channel: 0:int|Range: 0:int",
+  "help": "Implementation of a COMEDI Analog to Digital converter\n\nParameter\nDevice,channel and range (card specific!)\n\nFor more details get the COMEDI documentation (www.comedi.org)\n"
+}

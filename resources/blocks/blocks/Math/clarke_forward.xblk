@@ -1,1 +1,11 @@
-{"lib": "math", "name": "Forward Clarke", "ip": 3, "op": 2, "stin": 1, "stout": 0, "icon": "FORWARD_CLARKE", "params": "clarke_forwardBlk", "help": "This block performs forward Clarke transformation.\nBlock can have either 2 or 3 inputs.\n"}
+{
+  "lib": "math",
+  "name": "Forward Clarke",
+  "ip": 3,
+  "op": 2,
+  "stin": 1,
+  "stout": 0,
+  "icon": "FORWARD_CLARKE",
+  "params": "clarke_forwardBlk",
+  "help": "This block performs forward Clarke transformation.\nBlock can have either 2 or 3 inputs.\n"
+}

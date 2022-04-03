@@ -1,1 +1,11 @@
-{"lib": "math", "name": "Inverse Clarke", "ip": 2, "op": 3, "stin": 0, "stout": 0, "icon": "INVERSE_CLARKE", "params": "clarke_inverseBlk", "help": "This block performs inverse Clarke transformation.\n"}
+{
+  "lib": "math",
+  "name": "Inverse Clarke",
+  "ip": 2,
+  "op": 3,
+  "stin": 0,
+  "stout": 0,
+  "icon": "INVERSE_CLARKE",
+  "params": "clarke_inverseBlk",
+  "help": "This block performs inverse Clarke transformation.\n"
+}

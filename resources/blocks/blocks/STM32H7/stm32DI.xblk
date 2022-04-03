@@ -1,1 +1,11 @@
-{"lib": "STM32H7", "name": "DI", "ip": 0, "op": 1, "stin": 0, "stout": 0, "icon": "DI", "params": "stm32DIBlk|Port:'PORTA'|Channel: 0", "help": "Parameters\nPort\nChannel\n"}
+{
+  "lib": "STM32H7",
+  "name": "DI",
+  "ip": 0,
+  "op": 1,
+  "stin": 0,
+  "stout": 0,
+  "icon": "DI",
+  "params": "stm32DIBlk|Port:'PORTA'|Channel: 0:int",
+  "help": "Parameters\nPort\nChannel\n"
+}

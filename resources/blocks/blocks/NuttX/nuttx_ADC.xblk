@@ -1,1 +1,11 @@
-{"lib": "NuttX", "name": "ADC", "ip": 0, "op": 1, "stin": 0, "stout": 1, "icon": "AD", "params": "nuttx_ADCBlk|Port:'/dev/adc0'|Channel: [0]|Resolution: 4095|Umin [V]:0.0|Umax [V]:3.3", "help": "Parameters\nChannel: [0, 1,..]     Target depending\nPort : device name (ex. '/dev/adc0')\nResolution of ADC\nUmin [V]: minimal value (0 volt read -> umin)\nUmax [V] : maximal value (3.3V read -> umax)\n"}
+{
+  "lib": "NuttX",
+  "name": "ADC",
+  "ip": 0,
+  "op": 1,
+  "stin": 0,
+  "stout": 1,
+  "icon": "AD",
+  "params": "nuttx_ADCBlk|Port:'/dev/adc0'|Channel: [0]|Resolution: 4095:double|Umin [V]:0.0:double|Umax [V]:3.3:double",
+  "help": "Parameters\nChannel: [0, 1,..]     Target depending\nPort : device name (ex. '/dev/adc0')\nResolution of ADC\nUmin [V]: minimal value (0 volt read -> umin)\nUmax [V] : maximal value (3.3V read -> umax)\n"
+}

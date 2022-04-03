@@ -1,1 +1,11 @@
-{"lib": "nonlin", "name": "Output Switch", "ip": 2, "op": 2, "stin": 0, "stout": 0, "icon": "SWITCH_OUT", "params": "switchOutBlk|Compare Value: 0.5", "help": "This block decides which output is used based on the value in input 2. If this value is greater than \"Compare\" value set in block\u00b4s parameters, then input 1 is routed to output 2 and vice versa.\n\nZero value is written to the output that is not currently used.\n"}
+{
+  "lib": "nonlin",
+  "name": "Output Switch",
+  "ip": 2,
+  "op": 2,
+  "stin": 0,
+  "stout": 0,
+  "icon": "SWITCH_OUT",
+  "params": "switchOutBlk|Compare Value: 0.5:double",
+  "help": "This block decides which output is used based on the value in input 2. If this value is greater than \"Compare\" value set in block\u00b4s parameters, then input 1 is routed to output 2 and vice versa.\n\nZero value is written to the output that is not currently used.\n"
+}

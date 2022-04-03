@@ -1,1 +1,11 @@
-{"lib": "nonlin", "name": "Lookup", "ip": 1, "op": 1, "stin": 0, "stout": 0, "icon": "LOOKUP", "params": "lutBlk|Coeff : [1,0]", "help": "This block calculates the output with polynomial coefficients applied to the input value.\n\nThe order of the polynom is given by the numebr of coefficients. The first coefficient is related to the higher exponent of the input signal.\n\n"}
+{
+  "lib": "nonlin",
+  "name": "Lookup",
+  "ip": 1,
+  "op": 1,
+  "stin": 0,
+  "stout": 0,
+  "icon": "LOOKUP",
+  "params": "lutBlk|Coeff : [1,0]",
+  "help": "This block calculates the output with polynomial coefficients applied to the input value.\n\nThe order of the polynom is given by the numebr of coefficients. The first coefficient is related to the higher exponent of the input signal.\n\n"
+}

@@ -1,1 +1,11 @@
-{"lib": "nonlin", "name": "Deadzone", "ip": 1, "op": 1, "stin": 0, "stout": 0, "icon": "DEAD", "params": "deadzoneBlk|Start:-1|End:1", "help": "This block implements a deadzone function\n\nParameters:\nLimits of the deadzone\n"}
+{
+  "lib": "nonlin",
+  "name": "Deadzone",
+  "ip": 1,
+  "op": 1,
+  "stin": 0,
+  "stout": 0,
+  "icon": "DEAD",
+  "params": "deadzoneBlk|Start:-1:double|End:1:double",
+  "help": "This block implements a deadzone function\n\nParameters:\nLimits of the deadzone\n"
+}

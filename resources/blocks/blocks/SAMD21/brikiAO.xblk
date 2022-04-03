@@ -1,1 +1,11 @@
-{"lib": "SAMD21", "name": "AnalogOut", "ip": 1, "op": 0, "stin": 0, "stout": 0, "icon": "DA", "params": "brikiAOBlk|Pin:26|Umin [V]:0.0|Umax [V]:3.3", "help": "Parameters\nPin: Output channel using value 0 \n\nPIN ->  ch\nA0   ->  0 (the only allowed channel)\n\nThe input signal can be a value between Umin and Umax and is automatically mapped to 0-3.3V on the output pin.\n\n\n"}
+{
+  "lib": "SAMD21",
+  "name": "AnalogOut",
+  "ip": 1,
+  "op": 0,
+  "stin": 0,
+  "stout": 0,
+  "icon": "DA",
+  "params": "brikiAOBlk|Pin:26:int|Umin [V]:0.0:double|Umax [V]:3.3:double",
+  "help": "Parameters\nPin: Output channel using value 0 \n\nPIN ->  ch\nA0   ->  0 (the only allowed channel)\n\nThe input signal can be a value between Umin and Umax and is automatically mapped to 0-3.3V on the output pin.\n\n\n"
+}

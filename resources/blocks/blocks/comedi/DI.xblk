@@ -1,1 +1,11 @@
-{"lib": "comedi", "name": "DI", "ip": 0, "op": 1, "stin": 0, "stout": 0, "icon": "DI", "params": "comediDIBlk|Device: '/dev/comedi0'|Channel: 0", "help": "Implementation of a COMEDI Digital Input interface.\n\nParameters:\nDevice and channel\n\nFor more details get the COMEDI documentation (www.comedi.org)\n"}
+{
+  "lib": "comedi",
+  "name": "DI",
+  "ip": 0,
+  "op": 1,
+  "stin": 0,
+  "stout": 0,
+  "icon": "DI",
+  "params": "comediDIBlk|Device: '/dev/comedi0'|Channel: 0:int",
+  "help": "Implementation of a COMEDI Digital Input interface.\n\nParameters:\nDevice and channel\n\nFor more details get the COMEDI documentation (www.comedi.org)\n"
+}

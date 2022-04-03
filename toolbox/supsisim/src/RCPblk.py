@@ -28,7 +28,9 @@ class RCPblk:
         self.nx = array(nx)
         self.uy = array(uy)
         self.realPar = array(realPar)
+        self.realParNames = []
         self.intPar = array(intPar)
+        self.intParNames = []
         self.str = str
 
     def __str__(self):
@@ -41,7 +43,9 @@ class RCPblk:
         str += "Nr. of states      : " + self.nx.__str__() + "\n"
         str += "Relation u->y      : " + self.uy.__str__() + "\n"
         str += "Real parameters    : " + self.realPar.__str__() + "\n"
+        str += "Names of real parameters : " + self.realParNames.__str__() + "\n"
         str += "Integer parameters : " + self.intPar.__str__() + "\n"
+        str += "Names of integer parameters : " + self.intParNames.__str__() + "\n"
         str += "String Parameter   : " + self.str.__str__() + "\n"
         return str
 

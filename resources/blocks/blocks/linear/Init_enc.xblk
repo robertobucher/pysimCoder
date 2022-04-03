@@ -1,1 +1,11 @@
-{"lib": "linear", "name": "Init_enc", "ip": 1, "op": 1, "stin": 0, "stout": 0, "icon": "INIT", "params": "init_encBlk|Trigger Time: 1|Default Output: 0|Offset: 0", "help": "Tis block can be used to initialize a generic input after a given time to a specific value\n\nThe block put in output the default value till the execution time reaches the \"trigger time\" and then put the difference between input signal and offset.\n"}
+{
+  "lib": "linear",
+  "name": "Init_enc",
+  "ip": 1,
+  "op": 1,
+  "stin": 0,
+  "stout": 0,
+  "icon": "INIT",
+  "params": "init_encBlk|Trigger Time: 1:double|Default Output: 0:double|Offset: 0:double",
+  "help": "Tis block can be used to initialize a generic input after a given time to a specific value\n\nThe block put in output the default value till the execution time reaches the \"trigger time\" and then put the difference between input signal and offset.\n"
+}

@@ -1,1 +1,11 @@
-{"lib": "arduinoFirmata", "name": "Analog Write", "ip": 1, "op": 0, "stin": 0, "stout": 0, "icon": "FIRMDATA", "params": "analogWrite_af|Device pin:7|Pin mode:0", "help": "#define MODE_INPUT  0x00\n#define MODE_OUTPUT    0x01\n#define MODE_ANALOG    0x02\n#define MODE_PWM   0x03\n#define MODE_SERVO 0x04\n#define MODE_SHIFT 0x05\n#define MODE_I2C   0x06"}
+{
+  "lib": "arduinoFirmata",
+  "name": "Analog Write",
+  "ip": 1,
+  "op": 0,
+  "stin": 0,
+  "stout": 0,
+  "icon": "FIRMDATA",
+  "params": "analogWrite_af|Device pin:7:int|Pin mode:0:int",
+  "help": "#define MODE_INPUT  0x00\n#define MODE_OUTPUT    0x01\n#define MODE_ANALOG    0x02\n#define MODE_PWM   0x03\n#define MODE_SERVO 0x04\n#define MODE_SHIFT 0x05\n#define MODE_I2C   0x06"
+}

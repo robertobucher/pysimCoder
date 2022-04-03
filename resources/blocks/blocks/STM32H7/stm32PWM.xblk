@@ -1,1 +1,11 @@
-{"lib": "STM32H7", "name": "PWM", "ip": 1, "op": 0, "stin": 0, "stout": 0, "icon": "PWM", "params": "stm32PWMBlk|Channel [1..4]:1|Umin [V]:0.0|Umax [V]:3.3", "help": "Input voltage is mapped to 0-3.3 V\n\nParameters\nChannel: PWM channel   (1-4)\nUmin [V]:  minimum voltage -> 0% PWM\nUmax [V]: maximum voltage -> 100% PWM\n\nChannel 1 --> PD12\nChannel 2 --> PD13\nChannel 3 --> PD14\nChannel 4 --> PD15\n"}
+{
+  "lib": "STM32H7",
+  "name": "PWM",
+  "ip": 1,
+  "op": 0,
+  "stin": 0,
+  "stout": 0,
+  "icon": "PWM",
+  "params": "stm32PWMBlk|Channel [1..4]:1:int|Umin [V]:0.0:double|Umax [V]:3.3:double",
+  "help": "Input voltage is mapped to 0-3.3 V\n\nParameters\nChannel: PWM channel   (1-4)\nUmin [V]:  minimum voltage -> 0% PWM\nUmax [V]: maximum voltage -> 100% PWM\n\nChannel 1 --> PD12\nChannel 2 --> PD13\nChannel 3 --> PD14\nChannel 4 --> PD15\n"
+}
