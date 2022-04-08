@@ -45,8 +45,12 @@ ELF_MODULE_LIBS = $(LDSTARTGROUP) $(EXTRA_LIBS) $(LDENDGROUP)
 
 LDFLAGS += -L $(NUTTX_EXPORT)/libs
 
+ifneq ($(shell $(CC) --target-help | grep -e '-mlong-calls\b'),)
+TARGET_ARCH_LONG_CALLS = -mlong-calls
+endif
+
 TARGET_ARCH_FLAGS ?= $(ARCHCFLAGS) $(ARCHCPUFLAGS) \
-	-mlong-calls -fno-common -DWITHOUT_MLOCK
+	$(TARGET_ARCH_LONG_CALLS) -fno-common -DWITHOUT_MLOCK
 
 DEFAULT_OPT_OPTS ?= $(ARCHOPTIMIZATION)
 
@@ -54,9 +58,9 @@ ifndef OPT_OPTS
 OPT_OPTS = $(DEFAULT_OPT_OPTS)
 endif
 
-LD_SCRIPT = $(NUTTX_EXPORT)/scripts/$(LDNAME)
+LD_SCRIPTS = $(LDNAME:%=$(NUTTX_EXPORT)/scripts/%)
 
-LDFLAGS += -T $(LD_SCRIPT)
+LDFLAGS_LD_SCRIPTS += $(LD_SCRIPTS:%=-T %)
 
 LDFLAGS  += --entry=__start
 
@@ -108,13 +112,14 @@ $(MAIN).c: $(MAINDIR)/$(MAIN).c $(MODEL).c
 	[ ! -e  $(ELF_FILE_LDSCRIPT) ] || \
 	$(LD) $(LDFLAGS) $(ADDITIONAL_LDFLAGS) -o $@ \
 	  -r -e main -T $(ELF_FILE_LDSCRIPT) \
-	  $(GCC_LD_OPTION)-Map $(GCC_LD_OPTION)$(1).elf.map \
+	  $(GCC_LD_OPTION)-Map $(GCC_LD_OPTION)$(notdir $@).map \
 	  $(OBJSSTAN) $(LIB) $(LIBS) $(ELF_MODULE_LIBS)
 	@echo "### Created ELF loadable file: $(MODEL).elf"
 
 ../$(MODEL): $(OBJSSTAN) $(OBJSSYSOVERRIDE) $(LIB)
-	$(LD) $(LDFLAGS) $(ADDITIONAL_LDFLAGS) \
-	  -o $@  $(OBJSSTAN) $(OBJSSYSOVERRIDE) $(LIB) $(SYSTEM_LIBS)
+	$(LD) $(LDFLAGS) $(ADDITIONAL_LDFLAGS) $(LDFLAGS_LD_SCRIPTS) \
+	  -o $@ $(HEAD_OBJ:%=$(NUTTX_EXPORT)/startup/%) \
+	  $(OBJSSTAN) $(OBJSSYSOVERRIDE) $(LIB) $(SYSTEM_LIBS)
 	@echo "### Created executable: $(MODEL)"
 
 ../$(MODEL).hex : ../$(MODEL)
