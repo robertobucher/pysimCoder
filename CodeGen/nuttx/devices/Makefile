@@ -78,8 +78,12 @@ ELF_MODULE_LIBS = --start-group $(EXTRA_LIBS) --end-group
 
 LDFLAGS += -L $(NUTTX_EXPORT)/libs
 
+ifneq ($(shell $(CC) --target-help | grep -e '-mlong-calls\b'),)
+TARGET_ARCH_LONG_CALLS = -mlong-calls
+endif
+
 TARGET_ARCH_FLAGS ?= $(ARCHCFLAGS) $(ARCHCPUFLAGS) \
-	-mlong-calls -fno-common -DWITHOUT_MLOCK
+	$(TARGET_ARCH_LONG_CALLS) -fno-common -DWITHOUT_MLOCK
 
 DEFAULT_OPT_OPTS ?= $(ARCHOPTIMIZATION)
 
