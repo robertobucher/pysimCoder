@@ -116,13 +116,13 @@ def genCode(model, Tsamp, blocks, rkstep = 10):
         if (nin!=0):
             strLn = "static void *inptr_" + str(n) + "[]  = {"
             for m in range(0,nin):
-                strLn += "0,"
+                strLn += "&Node_" + str(blk.pin[m]) + ","
             strLn = strLn[0:-1] + "};\n"
             f.write(strLn)
         if (nout!=0):
             strLn = "static void *outptr_" + str(n) + "[] = {"
             for m in range(0,nout):
-                strLn += "0,"
+                strLn += "&Node_" + str(blk.pout[m]) + ","
             strLn = strLn[0:-1] + "};\n"
             f.write(strLn)
 
@@ -132,20 +132,6 @@ def genCode(model, Tsamp, blocks, rkstep = 10):
     strLn = "void " + model + "_init(void)\n"
     strLn += "{\n"
     f.write(strLn)
-    for n in range(0,N):
-        blk = Blocks[n]
-        nin = size(blk.pin)
-        nout = size(blk.pout)
-
-        if (nin!=0):
-            for m in range(0,nin):
-                strLn = "  inptr_" + str(n) + "[" + str(m) + "]  = (void *) Node_" + str(blk.pin[m]) + ";\n"
-                f.write(strLn)
-        if (nout!=0):
-            for m in range(0,nout):
-                strLn = "  outptr_" + str(n) + "[" + str(m) + "] = (void *) Node_" + str(blk.pout[m]) + ";\n"
-                f.write(strLn)
-    f.write("\n")
 
     f.write("/* Block definition */\n\n")
     for n in range(0,N):
