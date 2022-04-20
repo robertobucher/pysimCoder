@@ -88,7 +88,7 @@ static void init(python_block *block)
 #endif
   }
 
-  info.frequency = realPar[2];
+  info.frequency = realPar[0];
 
   /* Set PWM characteristic and start the output */
 
@@ -133,7 +133,7 @@ static void inout(python_block *block)
   double *val;
   int ret;
 
-  info.frequency = realPar[2];
+  info.frequency = realPar[0];
 
 #ifdef CONFIG_PWM_MULTICHAN
   /* Set all channels initially to zero  */
@@ -160,10 +160,10 @@ static void inout(python_block *block)
       /* Get value from the input and saturate it */
 
       val = (double *) block->u[i];
-      if (val[0]>realPar[1]) val[0] = realPar[1];
-      if (val[0]<realPar[0]) val[0] = realPar[0];
+      if (val[0]>realPar[2]) val[0] = realPar[2];
+      if (val[0]<realPar[1]) val[0] = realPar[1];
 
-      double value = mapD2wD(val[0], realPar[0], realPar[1]);
+      double value = mapD2wD(val[0], realPar[1], realPar[2]);
 
       /* Save duty cycle value */
 
@@ -175,10 +175,10 @@ static void inout(python_block *block)
   /* Get value from the input and saturate it */
 
   val = (double *) block->u[0];
-  if (val[0]>realPar[1]) val[0] = realPar[1];
-  if (val[0]<realPar[0]) val[0] = realPar[0];
+  if (val[0]>realPar[2]) val[0] = realPar[2];
+  if (val[0]<realPar[1]) val[0] = realPar[1];
 
-  double value = mapD2wD(val[0], realPar[0], realPar[1]);
+  double value = mapD2wD(val[0], realPar[1], realPar[2]);
 
   /* Save duty cycle value */
 
