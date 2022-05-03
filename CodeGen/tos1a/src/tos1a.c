@@ -7,6 +7,13 @@
 #include <unistd.h>
 #include <pthread.h>
 
+//#define TOS1A_DEBUG
+#ifdef TOS1A_DEBUG
+#define printf(...) printf(__VA_ARGS__)
+#else
+#define printf(...)
+#endif
+
 char * doCrc(char * command) {
   int result = 0;
 
