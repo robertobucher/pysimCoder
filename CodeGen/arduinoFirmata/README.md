@@ -33,7 +33,9 @@ Helpers:
 
 #### SocketServer
 
-Express server that can be used to communicate with the Arduino.
+(moved to separate repo https://github.com/Chiff/pysimCoder-socketserver)
+
+Express server that can be used to communicate with pysimCoder over TCP
 
 Creates:
 
