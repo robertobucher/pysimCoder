@@ -4,8 +4,9 @@ import sys
 import os
 import socket
 import numpy as np
+
+from PyQt5 import QtWidgets, QtCore
 import pyqtgraph as pg
-from pyqtgraph import QtGui, QtCore
 
 COL = 170
 PENWIDTH = 2.0
@@ -34,7 +35,7 @@ for i in range(CONNECTION_TRIES):
         os.write(2, str.encode(msg))
 
 # some plot related stuff
-app = QtGui.QApplication([])
+app = QtWidgets.QApplication([])
 #win = pg.GraphicsWindow(title="Scope")
 win = pg.GraphicsLayoutWidget(title="Scope")
 win.resize(PLOT_WINDOM_SIZE[0], PLOT_WINDOM_SIZE[1])
@@ -82,4 +83,4 @@ timer.start(TIMER_PERIOD)
 if __name__ == "__main__":
     import sys
     if (1 != sys.flags.interactive) or not hasattr(QtCore, "PYQT_VERSION"):
-        QtGui.QApplication.instance().exec_()
+        QtWidgets.QApplication.instance().exec_()

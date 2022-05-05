@@ -7,7 +7,7 @@ BWmin = 80
 BHmin = 60
 PD = 40
 NW = 4
-LW =1.5
+LW =2
 DP = 100.0
 
 DB = 4

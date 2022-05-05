@@ -28,5 +28,5 @@ def nuttx_PWMBlk(pin, port, ch, freq, umin, umax):
 
     ch.append(0)
 
-    blk = RCPblk('nuttx_PWM', pin, [], [0,0], 1, [umin, umax, freq], ch, port)
+    blk = RCPblk('nuttx_PWM', pin, [], [0,0], 1, [freq, umin, umax], ch, port)
     return blk

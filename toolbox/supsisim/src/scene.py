@@ -297,9 +297,18 @@ class Scene(QGraphicsScene):
             txt += outp +','
         txt = txt.rstrip(',')
         N = len(ln)
+        parArr = []
         for n in range(1,N):
             par = ln[n].split(':')
             txt += ', ' + par[1].__str__()
+            parType = ""
+            try:
+                parType = str(par[2])
+                parType = parType.replace(' ','')
+            except:
+                parType = None
+
+            parArr.append((par[0], par[1], parType))
 
         # Check if Block is PLOT
         if ln[0] == 'plotBlk':
@@ -307,7 +316,7 @@ class Scene(QGraphicsScene):
         
         txt += ')'
         txt = txt.replace('(, ', '(')
-        return txt
+        return txt, parArr
     
     def generateCCode(self):
         try:
@@ -340,19 +349,52 @@ class Scene(QGraphicsScene):
         txt += 'from supsisim.RCPgen import *\n'
         txt += 'from control import *\n'
         blkList = []
+        realParNames = []
+        intParNames = []
         for item in items:
             if isinstance(item, Block):
                 blkList.append(item.name.replace(' ','_'))
-                txt += self.blkInstance(item) + '\n'
+                blkText, blkPar = self.blkInstance(item)
+                txt += blkText + '\n'
+
+                blkRealNames = []
+                blkIntNames = []
+                for par in blkPar:
+                    if (par[2] == "double"):
+                        blkRealNames.append(par[0])
+                    elif (par[2] == "int"):
+                        blkIntNames.append(par[0])
+
+                realParNames.append(tuple(blkRealNames))
+                intParNames.append(tuple(blkIntNames))
+
         fname = self.mainw.filename
         fn = open('tmp.py','w')
         fn.write(txt)
-        fn.write('\n')
+        fn.write('\n\n')
+
         txt = 'blks = ['
         for item in blkList:
             txt += item + ','
-        txt += ']\n'
+        txt += ']\n\n'
         fn.write(txt)
+
+        txt =  'realParNames = ' + str(tuple(realParNames)) + '\n'
+        txt += 'intParNames = ' + str(tuple(intParNames)) + '\n\n'
+        fn.write(txt)
+
+        txt =  'tmp = 0\n'
+        txt += 'for item in realParNames:\n'
+        txt += '  for par in item:\n'
+        txt += '    blks[tmp].realParNames.append(par)\n'
+        txt += '  tmp += 1\n\n'
+        txt += 'tmp = 0\n'
+        txt += 'for item in intParNames:\n'
+        txt += '  for par in item:\n'
+        txt += '    blks[tmp].intParNames.append(par)\n'
+        txt += '  tmp += 1\n\n'
+        fn.write(txt)
+
         fnm = './' + fname + '_gen'
                 
         fn.write('fname = ' + "'" + fname + "'\n")

@@ -24,7 +24,16 @@ ADD_FILES = $$ADD_FILES$$
 
 OBJSSTAN = $(MAIN).o $(MODEL).o $(ADD_FILES)
 
-LIB = $(TOS1A_LIB)/tos1apyblk.a $(FIRMATA_LIB)/firmatapyblk.a $(LIBDIR)/libpyblk.a
+LIB = $(LIBDIR)/libpyblk.a $(FMILIB)
+
+ifeq ($(shell test -e $(TOS1A_LIB)/tos1apyblk.a && echo -n yes),yes)
+     LIB += $(TOS1A_LIB)/tos1apyblk.a
+endif
+
+ifeq ($(shell test -e $(FIRMATA_LIB)/firmatapyblk.a && echo -n yes),yes)
+    LIB += $(FIRMATA_LIB)/firmatapyblk.a
+endif
+
 
 CFLAGS = $(CC_OPTIONS) -Wall -O2 -I$(TOS1A_INC) -I$(FIRMATA_INC) -I$(INCDIR) -I$(COMMON_INCDIR) $(C_FLAGS) -DMODEL=$(MODEL)
 

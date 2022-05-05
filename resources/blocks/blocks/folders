@@ -5,6 +5,7 @@ can_generic
 can_Maxon
 comedi
 Communication
+ControlBoard
 input
 linear
 linux_mz_apo

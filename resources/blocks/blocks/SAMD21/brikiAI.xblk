@@ -1,1 +1,11 @@
-{"lib": "SAMD21", "name": "AnalogIn", "ip": 0, "op": 1, "stin": 0, "stout": 0, "icon": "AD", "params": "brikiAIBlk|Pin:26|Umin [V]:0.0|Umax [V]:3.3", "help": "Parameters\nInput: Channel with value 0 to 5\n\nPIN\nA0   ->   26\t\nA1   ->   27\nA2   ->   28\nA3   ->   29\nA4   ->   30\nA5   ->   31\nA9   ->   20   (Microphone)\n\nThe input signal (0..3V) is automatically mapped to a value between Umin and Umax.\n"}
+{
+  "lib": "SAMD21",
+  "name": "AnalogIn",
+  "ip": 0,
+  "op": 1,
+  "stin": 0,
+  "stout": 0,
+  "icon": "AD",
+  "params": "brikiAIBlk|Pin:26:int|Umin [V]:0.0:double|Umax [V]:3.3:double",
+  "help": "Parameters\nInput: Channel with value 0 to 5\n\nPIN\nA0   ->   26\t\nA1   ->   27\nA2   ->   28\nA3   ->   29\nA4   ->   30\nA5   ->   31\nA9   ->   20   (Microphone)\n\nThe input signal (0..3V) is automatically mapped to a value between Umin and Umax.\n"
+}

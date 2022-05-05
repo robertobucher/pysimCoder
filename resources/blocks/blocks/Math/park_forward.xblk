@@ -1,1 +1,11 @@
-{"lib": "math", "name": "Forward Park", "ip": 3, "op": 2, "stin": 0, "stout": 0, "icon": "FORWARD_PARK", "params": "park_forwardBlk", "help": "This block performs forward Park transformation.\nFirst two inputs are for orthogonal stationary reference frame quantities, the third one is for the rotation angle.\n"}
+{
+  "lib": "math",
+  "name": "Forward Park",
+  "ip": 3,
+  "op": 2,
+  "stin": 0,
+  "stout": 0,
+  "icon": "FORWARD_PARK",
+  "params": "park_forwardBlk",
+  "help": "This block performs forward Park transformation.\nFirst two inputs are for orthogonal stationary reference frame quantities, the third one is for the rotation angle.\n"
+}

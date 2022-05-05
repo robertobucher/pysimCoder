@@ -1,1 +1,11 @@
-{"lib": "Communication", "name": "UnixSkClient", "ip": 1, "op": 0, "stin": 1, "stout": 0, "icon": "UNIXSOCK", "params": "unixsocketCBlk|Socket: 'bsock'", "help": "This block implements a Unix Sochet Client to send the data to a Unix Socket Server.\n\n\n"}
+{
+  "lib": "Communication",
+  "name": "UnixSkClient",
+  "ip": 1,
+  "op": 0,
+  "stin": 1,
+  "stout": 0,
+  "icon": "UNIXSOCK",
+  "params": "unixsocketCBlk|Socket: 'bsock'",
+  "help": "This block implements a Unix Sochet Client to send the data to a Unix Socket Server.\n\n\n"
+}

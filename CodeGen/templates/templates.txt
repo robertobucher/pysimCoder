@@ -5,3 +5,8 @@ rt_pi.tmf			Template for RT execution with cross compilation for Raspberry PI
 fmurt.tmf		Template for simulation with libraries for FMU blocks (Functional Mockup Interface)
 fmusim.tmf		Template for RT execution with libraries for FMU blocks (Functional Mockup Interface)
 rt_digi.tmf		Template for RT execution with Digilent libraries
+nuttx.tmf			Template for NuttX boards
+rt_mz_apo.tmf
+rt_nrt_iopl.tmf		Template for Linux with iopl and RT support
+samd21.tmf		Template for BRIKI board
+stm32h7.tmf		Template for NUCLEO-H745ZI-Q board

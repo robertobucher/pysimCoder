@@ -1,1 +1,11 @@
-{"lib": "NuttX", "name": "DO", "ip": 1, "op": 0, "stin": 0, "stout": 0, "icon": "DO", "params": "nuttxDOBlk|Port:'/dev/gpout4'|Threshold:0.5", "help": "Parameters\nPort: device associated to the output\nThreshold: Value between 0 and 1\n"}
+{
+  "lib": "NuttX",
+  "name": "DO",
+  "ip": 1,
+  "op": 0,
+  "stin": 0,
+  "stout": 0,
+  "icon": "DO",
+  "params": "nuttxDOBlk|Port:'/dev/gpio4'|Threshold:0.5:double",
+  "help": "Parameters\nPort: device associated to the output\nThreshold: Value between 0 and 1\n"
+}

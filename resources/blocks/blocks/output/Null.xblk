@@ -1,1 +1,11 @@
-{"lib": "output", "name": "NULL", "ip": 1, "op": 0, "stin": 1, "stout": 0, "icon": "NULL", "params": "nullBlk", "help": "Not used signals must be connecte to the inputs of this block.\n\nAttention: It is not possible to have unconnected signals in a block diagram yet!\n\n"}
+{
+  "lib": "output",
+  "name": "NULL",
+  "ip": 1,
+  "op": 0,
+  "stin": 1,
+  "stout": 0,
+  "icon": "NULL",
+  "params": "nullBlk",
+  "help": "Not used signals must be connecte to the inputs of this block.\n\nAttention: It is not possible to have unconnected signals in a block diagram yet!\n\n"
+}

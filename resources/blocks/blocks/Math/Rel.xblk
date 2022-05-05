@@ -1,1 +1,11 @@
-{"lib": "math", "name": "Relation Operator", "ip": 2, "op": 1, "stin": 0, "stout": 0, "icon": "REL", "params": "relBlk|operator: '=='", "help": "This block performs relational operation on two inputs\n\nSupported operations:\n    '=='    inputs are equal\n    '!='    inputs are not equal\n    '>='    input 1 is greater than or equal to input 2\n    '<='    input 1 is less than or equal to input 2\n    '>'     input 1 is greater than input 2\n    '<'     input 1 is less than input 2\n"}
+{
+  "lib": "math",
+  "name": "Relation Operator",
+  "ip": 2,
+  "op": 1,
+  "stin": 0,
+  "stout": 0,
+  "icon": "REL",
+  "params": "relBlk|operator: '=='",
+  "help": "This block performs relational operation on two inputs\n\nSupported operations:\n    '=='    inputs are equal\n    '!='    inputs are not equal\n    '>='    input 1 is greater than or equal to input 2\n    '<='    input 1 is less than or equal to input 2\n    '>'     input 1 is greater than input 2\n    '<'     input 1 is less than input 2\n"
+}

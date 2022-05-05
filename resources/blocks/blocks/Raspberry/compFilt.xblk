@@ -1,1 +1,11 @@
-{"lib": "Raspberry", "name": "CompFilter", "ip": 4, "op": 1, "stin": 0, "stout": 0, "icon": "COMPFILT", "params": "compFiltBlk|Alpha:0.001", "help": "Implementation of a complementary filter for the Raspberry PI uC.\nThis block can be used with other uC.\n\nParameters:\nalpha value (value between 0 and 1!)\n\nThe inputs are:\nAx, Ay, Az and Gy\n\nfor a standars system (rotation on the Y axes)."}
+{
+  "lib": "Raspberry",
+  "name": "CompFilter",
+  "ip": 4,
+  "op": 1,
+  "stin": 0,
+  "stout": 0,
+  "icon": "COMPFILT",
+  "params": "compFiltBlk|Alpha:0.001:double",
+  "help": "Implementation of a complementary filter for the Raspberry PI uC.\nThis block can be used with other uC.\n\nParameters:\nalpha value (value between 0 and 1!)\n\nThe inputs are:\nAx, Ay, Az and Gy\n\nfor a standars system (rotation on the Y axes)."
+}

@@ -1,1 +1,11 @@
-{"lib": "SAMD21", "name": "DO", "ip": 1, "op": 0, "stin": 0, "stout": 0, "icon": "DO", "params": "brikiDOBlk|Channel: 0|Threshold:0.5", "help": "Parameters\nChannel: Number is the same on the ABC Board (Digital Pins)\n\nPossible values are: 11, 13, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31\n\nThe threshold represents the level limit between the LOW and the HIGH signal"}
+{
+  "lib": "SAMD21",
+  "name": "DO",
+  "ip": 1,
+  "op": 0,
+  "stin": 0,
+  "stout": 0,
+  "icon": "DO",
+  "params": "brikiDOBlk|Channel: 0:int|Threshold:0.5:double",
+  "help": "Parameters\nChannel: Number is the same on the ABC Board (Digital Pins)\n\nPossible values are: 11, 13, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31\n\nThe threshold represents the level limit between the LOW and the HIGH signal"
+}

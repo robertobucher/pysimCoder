@@ -1,1 +1,11 @@
-{"lib": "can Faulhaber 5XXX", "name": "FH_5XXX_AD", "ip": 0, "op": 1, "stin": 0, "stout": 0, "icon": "AD", "params": "FH_5XXX_ADBlk|Can dev:'/dev/pcan32'|Device ID: 0x01|Channel: 0", "help": "This block implements the analog input interface of a MC5XXX Faulhaber motion controller.\n\nIn the Block diagram shoud be present the FH5XXX_INIT block!\n\nSee the Faulhaber homepage for more details (www.faulhaber.com)\n"}
+{
+  "lib": "can Faulhaber 5XXX",
+  "name": "FH_5XXX_AD",
+  "ip": 0,
+  "op": 1,
+  "stin": 0,
+  "stout": 0,
+  "icon": "AD",
+  "params": "FH_5XXX_ADBlk|Can dev:'/dev/pcan32'|Device ID: 0x01:int|Channel: 0:int",
+  "help": "This block implements the analog input interface of a MC5XXX Faulhaber motion controller.\n\nIn the Block diagram shoud be present the FH5XXX_INIT block!\n\nSee the Faulhaber homepage for more details (www.faulhaber.com)\n"
+}

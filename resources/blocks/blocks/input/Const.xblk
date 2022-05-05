@@ -1,1 +1,11 @@
-{"lib": "input", "name": "Const", "ip": 0, "op": 1, "stin": 0, "stout": 0, "icon": "CONST", "params": "constBlk|Value: 0", "help": "This block implements a constant input signal.\n"}
+{
+ "lib": "input",
+ "name": "Const",
+ "ip": 0,
+ "op": 1,
+ "stin": 0,
+ "stout": 0,
+ "icon": "CONST",
+ "params": "constBlk|Value: 0: double",
+ "help": "This block implements a constant input signal.\n"
+ }

@@ -59,10 +59,10 @@ static inline void tsnorm(struct timespec *ts)
 
 static inline double calcdiff(struct timespec t1, struct timespec t2)
 {
-  long diff;
-  diff = USEC_PER_SEC * ((long) t1.tv_sec - (long) t2.tv_sec);
-  diff += ((int) t1.tv_nsec - (int) t2.tv_nsec) / 1000;
-  return (1e-6*diff);
+  double diff;
+  diff = 1.0 * ((long) t1.tv_sec - (long) t2.tv_sec);
+  diff += 1e-9*t1.tv_nsec - 1e-9*t2.tv_nsec;
+  return (diff);
 }
 
 static void *rt_task(void *p)
@@ -102,6 +102,7 @@ static void *rt_task(void *p)
 
     /* periodic task */
     T = calcdiff(t_current,T0);
+    
     NAME(MODEL,_isr)(T);
 
 #ifdef CANOPEN

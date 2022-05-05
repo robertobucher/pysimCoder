@@ -107,7 +107,7 @@ class Block(QGraphicsPathItem):
         if self.flip:
             img = img.mirrored(True, False)
         rect = img.rect()
-        painter.drawImage(-rect.width()/2,-rect.height()/2,img)
+        painter.drawImage(int(-rect.width()/2),int(-rect.height()/2),img)
 
     def itemChange(self, change, value):
         return value

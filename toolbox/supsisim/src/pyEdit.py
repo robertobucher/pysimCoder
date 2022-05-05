@@ -202,6 +202,7 @@ class NewEditorMainWindow(QMainWindow):
 
         toolbarDir = self.addToolBar('Folder')
         self.actFolders = QComboBox()
+        self.actFolders.setMaximumWidth(400)
         self.actFolders.setSizeAdjustPolicy(QComboBox.AdjustToContents)
         self.actFolders.addItem(os.getcwd())
         toolbarDir.addWidget(self.actFolders)
