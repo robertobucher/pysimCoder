@@ -21,6 +21,7 @@ include $(NUTTX_EXPORT)/.config
 
 SRCALL = $(wildcard $(COMMON_DIR)/common_dev/*.c)
 SRCALL += $(wildcard $(COMMON_DIR)/posix/*.c)
+SRCALL += serialOut.c
 
 ifeq ($(CONFIG_ADC),y)
 SRCALL += nuttx_ADC.c
@@ -46,6 +47,7 @@ endif
 ifeq ($(CONFIG_SPI),y)
 SRCALL += heater.c
 SRCALL += RLC.c
+SRCALL += DCMOT.c
 endif
 
 ifeq ($(CONFIG_SENSORS_DHTXX),y)
