@@ -97,20 +97,32 @@ static void init(python_block *block)
 
 static void inout(python_block *block)
 {
-  int i;
   int * intPar = block->intPar;
+  int socketFd = intPar[1];
+
+  int i;
   double *u;
-  double data[block->nin];
-
-  int s = intPar[1];
-
+  double dataSend[block->nin];
   for(i=0;i<block->nin;i++)
     {
       u = block->u[i];
-      data[i] = u[0];
+      dataSend[i] = u[0];
     }
 
-  send(s, data, sizeof(data) , 0);
+  send(socketFd, dataSend, sizeof(dataSend) , 0);
+
+  /* Receive data from the server */
+  if (block->nout > 0) {
+    double *y;
+    double dataRead[block->nout];
+    read(socketFd, dataRead, sizeof(dataRead));
+
+    for(i=0;i<block->nout;i++)
+      {
+        y = block->y[i];
+        y[0] = dataRead[i];
+      }
+  }
 }
 
 /****************************************************************************
@@ -129,14 +141,14 @@ static void end(python_block *block)
 }
 
 /****************************************************************************
- * Name: TCPsocketTx
+ * Name: TCPsocketTxRx
  *
  * Description:
  *   Call needed function based on input flag.
  *
  ****************************************************************************/
 
-void TCPsocketTx(int flag, python_block *block)
+void TCPsocketTxRx(int flag, python_block *block)
 {
   if (flag==CG_OUT){          /* get input */
     inout(block);
