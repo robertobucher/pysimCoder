@@ -13,6 +13,10 @@ FIRMATA_INC  = $(PYCODEGEN)/arduinoFirmata/includes
 TOS1A_LIB  = $(PYCODEGEN)/tos1a/lib
 TOS1A_INC  = $(PYCODEGEN)/tos1a/includes
 
+SHV_INC = $(PYCODEGEN)/Common/shv/include
+ULUT_INC = $(PYSUPSICTRL)/ExtLibs/ulut
+EXT_SHV_INC = $(PYSUPSICTRL)/ExtLibs//libshv/libshvchainpack/c
+
 RM = rm -f
 FILES_TO_CLEAN = *.o $(MODEL)
 
@@ -36,6 +40,16 @@ endif
 
 
 CFLAGS = $(CC_OPTIONS) -Wall -O2 -I$(TOS1A_INC) -I$(FIRMATA_INC) -I$(INCDIR) -I$(COMMON_INCDIR) $(C_FLAGS) -DMODEL=$(MODEL)
+
+CFLAGS += -I$(SHV_INC)
+ifneq ($(wildcard $(ULUT_INC)),)
+ULUT_INC = $(PYSUPSICTRL)/ExtLibs/ulut
+CFLAGS += -I$(ULUT_INC)
+endif
+ifneq ($(wildcard $(EXT_SHV_INC)),)
+CFLAGS += -I$(EXT_SHV_INC)
+endif
+
 
 $(MAIN).c: $(MAINDIR)/$(MAIN).c $(MODEL).c
 	cp $< .
