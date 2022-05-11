@@ -1,0 +1,1 @@
+{"lib": "NuttX", "name": "Phase3Motor", "ip": 6, "op": 7, "stin": 0, "stout": 0, "icon": "MOT", "params": "P3MotNuttxBlk", "help": "Block for controlling 3-Phase DC Motor using SPI connection in NuttX\n\n\n\n"}
