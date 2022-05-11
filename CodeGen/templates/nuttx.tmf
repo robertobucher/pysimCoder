@@ -9,8 +9,12 @@ INCDIR  = $(PYCODEGEN)/nuttx/include
 NUTTX_EXPORT = $(PYCODEGEN)/nuttx/nuttx-export
 COMMON_INCDIR = $(PYCODEGEN)/Common/include
 
+SHV_INC = $(PYCODEGEN)/Common/shv/include
+ULUT_INC = $(PYSUPSICTRL)/ExtLibs/ulut
+EXT_SHV_INC = $(PYSUPSICTRL)/ExtLibs//libshv/libshvchainpack/c
+
 RM = rm -f
-FILES_TO_CLEAN = *.o $(MODEL) $(MODEL).elf
+FILES_TO_CLEAN = *.o $(MODEL) $(MODEL).elf $(MAIN)-builtintab.c
 
 ifndef NUTTX_EXPORT
 $(warning Specify NUTTX_EXPORT)
@@ -97,6 +101,15 @@ endif
 INCLUDES += -I$(INCDIR) -I$(COMMON_INCDIR) $(NUTTX_INCLUDES)
 
 CFLAGS = $(TARGET_ARCH_FLAGS) $(ARCHWARNINGS) $(OPT_OPTS) $(INCLUDES) -DMODEL=$(MODEL)
+
+CFLAGS += -I$(SHV_INC)
+ifneq ($(wildcard $(ULUT_INC)),)
+ULUT_INC = $(PYSUPSICTRL)/ExtLibs/ulut
+CFLAGS += -I$(ULUT_INC)
+endif
+ifneq ($(wildcard $(EXT_SHV_INC)),)
+CFLAGS += -I$(EXT_SHV_INC)
+endif
 
 CXXFLAGS = $(TARGET_ARCH_FLAGS) $(ARCHCXXFLAGS) $(ARCHWARNINGSXX) $(OPT_OPTS) $(INCLUDES) -DMODEL=$(MODEL)
 
