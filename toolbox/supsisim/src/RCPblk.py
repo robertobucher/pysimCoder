@@ -20,6 +20,7 @@ class RCPblk:
         else:
             raise ValueError("Needs 6 or 7 arguments; received %i." % len(args))
         
+        self.name = None
         self.fcn = fcn
         self.pin = array(pin)
         self.pout = array(pout)
@@ -35,7 +36,8 @@ class RCPblk:
 
     def __str__(self):
         """String representation of the Block"""
-        str =  "Function           : " + self.fcn.__str__() + "\n"
+        str =  "Block Name         : " + self.name.__str__() + "\n"
+        str += "Function           : " + self.fcn.__str__() + "\n"
         str += "Input ports        : " + self.pin.__str__() + "\n"
         str += "Output ports      : " + self.pout.__str__() + "\n"
         str += "Input dimensions : " + self.dimPin.__str__() + "\n"

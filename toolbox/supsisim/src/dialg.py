@@ -1,5 +1,5 @@
-from PyQt5.QtWidgets import QDialog, QGridLayout, QSpinBox, QLabel, QPushButton, \
-    QLineEdit, QFileDialog, QVBoxLayout, QTextEdit, QDialogButtonBox, QApplication
+from PyQt5.QtWidgets import QDialog, QGridLayout, QSpinBox, QLabel, QPushButton, QCheckBox, \
+    QComboBox, QLineEdit, QFileDialog, QVBoxLayout, QTextEdit, QDialogButtonBox, QApplication
 from PyQt5.QtGui import QFont
 from PyQt5.QtCore import Qt
 
@@ -29,7 +29,7 @@ class IO_Dialog(QDialog):
         self.setLayout(layout)
         self.pbOK.clicked.connect(self.accept)
         self.pbCANCEL.clicked.connect(self.reject)
-        
+
 class BlockName_Dialog(QDialog):
     def __init__(self,parent=None):
         super(BlockName_Dialog, self).__init__(parent)
@@ -54,7 +54,7 @@ class RTgenDlg(QDialog):
         super(RTgenDlg, self).__init__(None)
         self.setWindowModality(Qt.ApplicationModal)
         self.resize(600, 100)
-        
+
         lab1 = QLabel('Template Makefile')
         self.template = QLineEdit('')
         btn_template = QPushButton('BROWSE...')
@@ -70,11 +70,11 @@ class RTgenDlg(QDialog):
         self.Tf = QLineEdit('')
         lab6 = QLabel('Priority')
         self.prio = QLineEdit('')
-        
+
         pbOK = QPushButton('OK')
         pbCANCEL = QPushButton('CANCEL')
         grid = QGridLayout()
-        
+
         grid.addWidget(lab1, 0, 0)
         grid.addWidget(self.template, 0, 1)
         grid.addWidget(btn_template, 0, 2)
@@ -126,3 +126,54 @@ class RTgenDlg(QDialog):
             #script = ln[-1].__str__()
             self.parscript.setText(fname)
 
+class SHVDlg(QDialog):
+    def __init__(self, parent=None):
+        super(SHVDlg, self).__init__(None)
+        self.setWindowModality(Qt.ApplicationModal)
+        self.resize(600, 100)
+
+        lab1 = QLabel('Enable SHV protocol')
+        self.SHVused = QCheckBox('')
+        self.SHVused.setChecked(False)
+        lab2 = QLabel('SHV Broker IP')
+        self.SHVip = QLineEdit('')
+        lab3 = QLabel('SHV Broker Port')
+        self.SHVport = QLineEdit('')
+        lab4 = QLabel('SHV Broker User')
+        self.SHVuser = QLineEdit('')
+        lab5 = QLabel('SHV Broker Password')
+        self.SHVpassw = QLineEdit('')
+        lab6 = QLabel('SHV Device ID')
+        self.SHVdevid = QLineEdit('')
+        lab7 = QLabel('SHV Device Mount Point')
+        self.SHVmount = QLineEdit('')
+        lab8 = QLabel('SHV Tree Type')
+        self.SHVtree = QComboBox()
+        self.SHVtree.addItems(['GAVL', 'GSA', 'GSA_STATIC'])
+
+        pbOK = QPushButton('OK')
+        pbCANCEL = QPushButton('CANCEL')
+        grid = QGridLayout()
+
+        grid.addWidget(lab1, 0, 0)
+        grid.addWidget(self.SHVused, 0, 1)
+        grid.addWidget(lab2, 1, 0)
+        grid.addWidget(self.SHVip, 1, 1)
+        grid.addWidget(lab3, 2, 0)
+        grid.addWidget(self.SHVport, 2, 1)
+        grid.addWidget(lab4, 3, 0)
+        grid.addWidget(self.SHVuser, 3, 1)
+        grid.addWidget(lab5, 4, 0)
+        grid.addWidget(self.SHVpassw, 4, 1)
+        grid.addWidget(lab6, 5, 0)
+        grid.addWidget(self.SHVdevid, 5, 1)
+        grid.addWidget(lab7, 6, 0)
+        grid.addWidget(self.SHVmount, 6, 1)
+        grid.addWidget(lab8, 7, 0)
+        grid.addWidget(self.SHVtree, 7, 1)
+        grid.addWidget(pbOK, 8, 0)
+        grid.addWidget(pbCANCEL, 8, 1)
+        pbOK.clicked.connect(self.accept)
+        pbCANCEL.clicked.connect(self.reject)
+
+        self.setLayout(grid)

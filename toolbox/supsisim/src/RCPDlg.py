@@ -13,7 +13,7 @@ class BlkDlg(QDialog):
         self.line = line
         self.helpTxt = helpTxt
         self.blkID = ''
-        self.labels, self.params = self.parseParams(line)
+        self.labels, self.params, self.type = self.parseParams(line)
         self.setWindowTitle(self.blkID)
         N = len(self.labels)
         self.Values = []
@@ -63,6 +63,7 @@ class BlkDlg(QDialog):
         N = len(ln)
         lab = []
         val = []
+        type = []
         self.blkID = ln[0]
         self.fname = ln[0]
         for n in range(1,N):
@@ -71,13 +72,18 @@ class BlkDlg(QDialog):
             par = ll[1].__str__()
             par = par.lstrip(' ')
             val.append(par)
-        return lab,val
+            try:
+                parType = str(ll[2])
+                type.append(parType)
+            except:
+                type.append(None)
+        return lab,val,type
 
     def accept(self):
         N = len(self.labels)
         self.line = self.blkID
         for n in range(0,N):
-            self.line += '|' + self.labels[n] +': ' + str(self.Values[n].text())
+            self.line += '|' + self.labels[n] +': ' + str(self.Values[n].text()) + ': ' + str(self.type[n])
         super(BlkDlg, self).accept()
 
 def parsDialog(pars, helpT):

@@ -18,8 +18,10 @@ The following commands are provided:
 from scipy import mat, size, array, zeros
 from numpy import  nonzero, ones
 from os import environ
+import copy
 import sys
 from supsisim.RCPblk import RCPblk
+from supsisim.SHVgen import genSHVtree, genSHVcode, genSHVheader, genSHVend
 
 def genCode(model, Tsamp, blocks, rkstep = 10):
     """Generate C-Code
@@ -37,6 +39,7 @@ def genCode(model, Tsamp, blocks, rkstep = 10):
     -------
     -
 """
+
     maxNode = 0
     for blk in blocks:
         for n in range(0,size(blk.pin)):
@@ -53,17 +56,20 @@ def genCode(model, Tsamp, blocks, rkstep = 10):
             if outnodes[blk.pout[n]] == 0:
                 outnodes[blk.pout[n]] = 1
             else:
-                raise ValueError('Problem in diagram: outputs connected together!')           
-    
+                raise ValueError('Problem in diagram: outputs connected together!')
+
     Blocks = detBlkSeq(maxNode, blocks)
     if size(Blocks) == 0:
         raise ValueError('No possible to determine the block sequence')
-    
+
     fn = model + '.c'
     f=open(fn,'w')
-    strLn = "#include <pyblock.h>\n#include <stdio.h>\n\n"
+    strLn = "#include <pyblock.h>\n#include <stdio.h>\n#include <stdlib.h>\n\n"
     f.write(strLn)
+
     N = size(Blocks)
+
+    genSHVheader(f, model, N)
 
     totContBlk = 0
     for blk in Blocks:
@@ -84,17 +90,40 @@ def genCode(model, Tsamp, blocks, rkstep = 10):
     f.write(strLn)
 
     strLn = "python_block block_" + model + "[" + str(N) + "];\n\n"
-    f.write(strLn);
+    f.write(strLn)
 
     for n in range(0,N):
         blk = Blocks[n]
         if (size(blk.realPar) != 0):
             strLn = "static double realPar_" + str(n) +"[] = {"
             strLn += str(mat(blk.realPar).tolist())[2:-2] + "};\n"
+            strLn += "static char *realParNames_" + str(n) + "[] = {"
+            tmp = 0
+            if (size(blk.realPar) != size(blk.realParNames)):
+                for i in range(0, size(blk.realPar)):
+                    strLn += "\"double" + str(i) + "\""
+                    if ((tmp + 1) != size(blk.realPar)):
+                        strLn += ", "
+                    tmp += 1
+            else:
+                for i in range(0, size(blk.realPar)):
+                    strLn += "\"" + str(blk.realParNames[i]) + "\""
+                    if ((tmp + 1) != size(blk.realPar)):
+                        strLn += ", "
+                    tmp += 1
+            strLn += "};\n"
             f.write(strLn)
         if (size(blk.intPar) != 0):
             strLn = "static int intPar_" + str(n) +"[] = {"
             strLn += str(mat(blk.intPar).tolist())[2:-2] + "};\n"
+            strLn += "static char *intParNames_" + str(n) + "[] = {"
+            tmp = 0
+            for i in range(0, size(blk.intPar)):
+                strLn += "\"int" + str(i) + "\""
+                if ((tmp + 1) != size(blk.intPar)):
+                    strLn += ", "
+                tmp += 1
+            strLn += "};\n"
             f.write(strLn)
         strLn = "static int nx_" + str(n) +"[] = {"
         strLn += str(mat(blk.nx).tolist())[2:-2] + "};\n"
@@ -128,9 +157,19 @@ def genCode(model, Tsamp, blocks, rkstep = 10):
 
     f.write("\n\n")
 
+    Blks = []
+    for n in range(0,N):
+        Blks.append(Blocks[n].name)
+
+    BlksOrigin = copy.deepcopy(Blks)
+    Blks.sort()
+
+    if (environ["SHV_TREE_TYPE"] == "GSA_STATIC") and (environ["SHV_USED"] == "True"):
+        genSHVtree(f, Blocks, Blks)
+
     f.write("/* Initialization function */\n\n")
     strLn = "void " + model + "_init(void)\n"
-    strLn += "{\n"
+    strLn += "{\n\n"
     f.write(strLn)
 
     f.write("/* Block definition */\n\n")
@@ -138,6 +177,7 @@ def genCode(model, Tsamp, blocks, rkstep = 10):
         blk = Blocks[n]
         nin = size(blk.pin)
         nout = size(blk.pout)
+        num = 0
 
         strLn =  "  block_" + model + "[" + str(n) + "].nin  = " + str(nin) + ";\n"
         strLn += "  block_" + model + "[" + str(n) + "].nout = " + str(nout) + ";\n"
@@ -157,19 +197,34 @@ def genCode(model, Tsamp, blocks, rkstep = 10):
         strLn += "  block_" + model + "[" + str(n) + "].y    = " + port + ";\n"
         if (size(blk.realPar) != 0):
             par = "realPar_" + str(n)
+            parNames = "realParNames_" + str(n)
+            num = size(blk.realPar)
         else:
             par = "NULL"
+            parNames = "NULL"
+            num = 0
         strLn += "  block_" + model + "[" + str(n) + "].realPar = " + par + ";\n"
+        strLn += "  block_" + model + "[" + str(n) + "].realParNum = " + str(num) + ";\n"
+        strLn += "  block_" + model + "[" + str(n) + "].realParNames = " + parNames + ";\n"
         if (size(blk.intPar) != 0):
             par = "intPar_" + str(n)
+            parNames = "intParNames_" + str(n)
+            num = size(blk.intPar)
         else:
             par = "NULL"
+            parNames = "NULL"
+            num = 0
         strLn += "  block_" + model + "[" + str(n) + "].intPar = " + par + ";\n"
+        strLn += "  block_" + model + "[" + str(n) + "].intParNum = " + str(num) + ";\n"
+        strLn += "  block_" + model + "[" + str(n) + "].intParNames = " + parNames + ";\n"
         strLn += "  block_" + model + "[" + str(n) + "].str = " +'"' + blk.str + '"' + ";\n"
         strLn += "  block_" + model + "[" + str(n) + "].ptrPar = NULL;\n"
         f.write(strLn)
         f.write("\n")
     f.write("\n")
+
+    if environ["SHV_USED"] == "True":
+        genSHVcode(f, model, Blocks, Blks)
 
     f.write("/* Set initial outputs */\n\n")
 
@@ -177,7 +232,7 @@ def genCode(model, Tsamp, blocks, rkstep = 10):
         blk = Blocks[n]
         strLn = "  " + blk.fcn + "(CG_INIT, &block_" + model + "[" + str(n) + "]);\n"
         f.write(strLn)
-    f.write("}\n")
+    f.write("}\n\n")
 
     f.write("/* ISR function */\n\n")
     strLn = "void " + model + "_isr(double t)\n"
@@ -210,7 +265,7 @@ def genCode(model, Tsamp, blocks, rkstep = 10):
             if (blk.nx[0] != 0):
                 strLn = "  block_" + model + "[" + str(n) + "].realPar[0] = h;\n"
                 f.write(strLn)
-            
+
         strLn = "  for(i=0;i<" + str(rkstep) + ";i++){\n"
         f.write(strLn)
         for n in range(0,N):
@@ -230,9 +285,14 @@ def genCode(model, Tsamp, blocks, rkstep = 10):
     f.write("}\n")
 
     f.write("/* Termination function */\n\n")
+
     strLn = "void " + model + "_end(void)\n"
     strLn += "{\n"
     f.write(strLn)
+
+    if environ["SHV_USED"] == "True":
+        genSHVend(f, model)
+
     for n in range(0,N):
         blk = Blocks[n]
         strLn = "  " + blk.fcn + "(CG_END, &block_" + model + "[" + str(n) + "]);\n"
@@ -279,7 +339,7 @@ def detBlkSeq(Nodes, blocks):
     Returns
     -------
     Blocks    : List with the ordered blocks
-    
+
 """
     class blkDep:
         def __init__(self, block, blkL, nodeL):
@@ -289,9 +349,9 @@ def detBlkSeq(Nodes, blocks):
             if len(block.pin) != 0:
                 for node in block.pin:
                     if nodeL[node].block_in[0].uy == 1:
-                        self.block_in.append(nodeL[node].block_in[0])              
+                        self.block_in.append(nodeL[node].block_in[0])
   
-            
+
         def __str__(self):
             txt  = 'Block: ' + self.block.fcn.__str__() + '\n'
             txt += 'Inputs\n'
@@ -334,7 +394,7 @@ def detBlkSeq(Nodes, blocks):
             for n in blk.pout:
                 nL[n].block_in.append(blk)
         return nL
-    
+
     blks = []
     blks2order = []
 
@@ -351,7 +411,7 @@ def detBlkSeq(Nodes, blocks):
         else:
             block = blkDep(blk, blocks, nodes)
             blks2order.append(block)
-   
+
     # Order the remaining blocks
     counter = 0
     while len(blks2order) != counter:
@@ -379,5 +439,5 @@ def detBlkSeq(Nodes, blocks):
         for item in blks2order:
             print(item.block)
         raise ValueError("Algeabric loop!")
-    
+
     return blks
