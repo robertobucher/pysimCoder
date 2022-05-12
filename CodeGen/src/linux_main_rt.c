@@ -51,6 +51,18 @@ double get_Tsamp(void)
   return(Tsamp);
 }
 
+int get_priority_for_com()
+{
+  if (prio < 0)
+    {
+      return -1;
+    }
+  else
+    {
+      return prio - 1;
+    }
+}
+
 static inline void tsnorm(struct timespec *ts)
 {
   while (ts->tv_nsec >= NSEC_PER_SEC) {
@@ -149,13 +161,35 @@ void print_usage(void)
 	 "  -e  external clock\n"
 	 "  -w  wait to start\n"
 	 "  -V  print version\n"
+   "  -D  command line parameters\n"
+   "        SHV_BROKER=hostname:port\n"
 	 "\n");
+}
+
+char *parse_string(char ** str, int parse_char)
+{
+  char *p = strdup(*str);
+  char *r = p;
+  char *s = strchr(r, parse_char);
+  char *t = r;
+
+  if (s == NULL)
+    {
+      return p;
+    }
+
+  *s = '\0';
+  r = s + 1;
+
+  *str = r;
+
+  return t;
 }
 
 static void proc_opt(int argc, char *argv[])
 {
   int i;
-  while((i=getopt(argc,argv,"ef:hp:vVw"))!=-1){
+  while((i=getopt(argc,argv,"D:ef:hp:vVw"))!=-1){
     switch(i){
     case 'h':
       print_usage();
@@ -184,6 +218,28 @@ static void proc_opt(int argc, char *argv[])
         printf("-> Invalid final time.\n");
         exit(1);
       }
+      break;
+    case 'D':
+      char *t = parse_string(&optarg, '=');
+      if (t == NULL)
+        {
+          break;
+        }
+      if (strcmp(t, "SHV_BROKER") == 0)
+        {
+          t = parse_string(&optarg, ':');
+          if (t == NULL)
+            {
+              break;
+            }
+          setenv("SHV_BROKER_IP", t, 1);
+          t = parse_string(&optarg, ':');
+          if (t == NULL)
+            {
+              break;
+            }
+          setenv("SHV_BROKER_PORT", t, 1);
+        }
       break;
     }
   }

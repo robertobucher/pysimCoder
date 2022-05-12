@@ -26,6 +26,7 @@ class NewEditorMainWindow(QMainWindow):
         self.verticalLayout = QVBoxLayout(self.centralWidget)
         self.view = GraphicsView(self.centralWidget)
         self.view.setMouseTracking(True)
+        self.filename = fname
         self.scene = Scene(self)
         self.view.setScene(self.scene)
         self.view.setRenderHint(QPainter.Antialiasing)
@@ -34,7 +35,6 @@ class NewEditorMainWindow(QMainWindow):
         self.addactions()
         self.addMenubar()
         self.addToolbars()
-        self.filename = fname
         self.workingFolder = os.getcwd()
         self.filePath = mypath
         self.library = parent
@@ -159,16 +159,21 @@ class NewEditorMainWindow(QMainWindow):
                                                 statusTip = 'Settings',
                                                 triggered = self.setcodegenAct)
 
+        self.setSHVAction = QAction(QIcon(mypath+'shv.png'),
+                                                'SHV Support',self,
+                                                statusTip = 'SHV Support',
+                                                triggered = self.setSHVAct)
+
         self.showLibAction = QAction(QIcon(mypath+'library.png'),
                                      'Show/Hide Block Library',self,
                                      statusTip = 'Show/Hide Block Library',
                                      triggered = self.showLibAct)
-        
+
         self.debugAction = QAction(QIcon(mypath+'debug.png'),
                                              'Debugging',self,
                                              statusTip = 'Debug infos',
                                              triggered = self.debugAct)
-        
+
     def addToolbars(self):
         toolbarL = self.addToolBar('Library')
         toolbarL.addAction(self.showLibAction)
@@ -179,7 +184,7 @@ class NewEditorMainWindow(QMainWindow):
         toolbarF.addAction(self.saveFileAsAction)
         toolbarF.addAction(self.changeDirAction)
 
-        toolbarP = self.addToolBar('Print')      
+        toolbarP = self.addToolBar('Print')
         toolbarP.addAction(self.printAction)
  
         toolbarE = self.addToolBar('Edit')
@@ -193,6 +198,7 @@ class NewEditorMainWindow(QMainWindow):
         toolbarS.addAction(self.runAction)
         toolbarS.addAction(self.codegenAction)
         toolbarS.addAction(self.setCodegenAction)
+        toolbarS.addAction(self.setSHVAction)
 
         toolbarP = self.addToolBar('Python')
         toolbarP.addAction(self.startPythonAction)
@@ -219,7 +225,7 @@ class NewEditorMainWindow(QMainWindow):
         fileMenu.addAction(self.saveFileAction)
         fileMenu.addAction(self.saveFileAsAction)
         fileMenu.addAction(self.changeDirAction)
-        
+
         editMenu = menubar.addMenu('&Edit')
         editMenu.addAction(self.cutAction)
         editMenu.addAction(self.copyAction)
@@ -233,7 +239,10 @@ class NewEditorMainWindow(QMainWindow):
         simMenu.addAction(self.codegenAction)
 
         setMenu = menubar.addMenu('Se&ttings')
-        setMenu.addAction(self.setCodegenAction)        
+        setMenu.addAction(self.setCodegenAction)
+
+        shvMenu = menubar.addMenu('&Communication')
+        shvMenu.addAction(self.setSHVAction)
 
     def copyAct(self):
         self.scene.selection = []
@@ -436,6 +445,9 @@ class NewEditorMainWindow(QMainWindow):
 
     def setcodegenAct(self):
         self.scene.codegenDlg()
+
+    def setSHVAct(self):
+        self.scene.SHVSetDlg()
 
     def closeEvent(self,event):          
         try:

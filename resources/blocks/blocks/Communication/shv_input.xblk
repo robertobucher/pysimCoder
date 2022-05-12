@@ -1,0 +1,11 @@
+{
+  "lib": "Communication",
+  "name": "SHVInput",
+  "ip": 0,
+  "op": 1,
+  "stin": 0,
+  "stout": 1,
+  "icon": "SHV",
+  "params": "SHVInputBlk",
+  "help": "SHV Input block\n"
+}

@@ -1,12 +1,13 @@
-all: allfiles lib install
+all: dependencies allfiles lib install
 reduced: files lib install
 
 LIB = libpyblk.a
 GENERIC_INC = $(PYSUPSICTRL)/CodeGen/Common/include
 TARGET_INC = ../include
-INCLUDE =  -I$(GENERIC_INC) -I$(TARGET_INC) 
+INCLUDE =  -I$(GENERIC_INC) -I$(TARGET_INC)
 
 COMMON_DIR = $(PYSUPSICTRL)/CodeGen/Common
+EXT_LIBS = $(PYSUPSICTRL)/ExtLibs
 
 NUTTX_EXPORT = $(PWD)/../nuttx-export
 
@@ -22,6 +23,17 @@ include $(NUTTX_EXPORT)/.config
 SRCALL = $(wildcard $(COMMON_DIR)/common_dev/*.c)
 SRCALL += $(wildcard $(COMMON_DIR)/posix/*.c)
 SRCALL += serialOut.c
+
+ifeq ($(SHV),1)
+EXT_SHV_LIB = $(EXT_LIBS)/libshv/libshvchainpack/c
+
+SRCALL += $(EXT_SHV_LIB)/cchainpack.c $(EXT_SHV_LIB)/ccpcp.c \
+					$(EXT_SHV_LIB)/ccpcp_convert.c $(EXT_SHV_LIB)/ccpon.c \
+					$(EXT_SHV_LIB)/pack_double.c
+SRCALL += $(EXT_LIBS)/ulut/ulut/ul_gavlprim.c
+SRCALL += $(EXT_LIBS)/ulut/ulut/ul_gsacust.c
+SRCALL += $(wildcard $(COMMON_DIR)/shv/*.c)
+endif
 
 ifeq ($(CONFIG_ADC),y)
 SRCALL += nuttx_ADC.c
@@ -103,17 +115,29 @@ ELF_FILE_LDSCRIPT ?= $(wildcard $(NUTTX_EXPORT)/scripts/gnu-elf.ld)
 
 INCLUDES += $(NUTTX_INCLUDES)
 
-CFLAGS = $(TARGET_ARCH_FLAGS) $(ARCHWARNINGS) $(OPT_OPTS) $(INCLUDES)
+CFLAGS += $(TARGET_ARCH_FLAGS) $(ARCHWARNINGS) $(OPT_OPTS) $(INCLUDES)
 
 CXXFLAGS = $(TARGET_ARCH_FLAGS) $(ARCHCXXFLAGS) $(ARCHWARNINGSXX) $(OPT_OPTS) $(INCLUDES)
 
 OBJEX = $(SRC:.c=.o)
 DEFINES = -D PLOTTER_SCRIPT=\"$(CWD)/scope.py\"
-CC_FLAGS = -c $(DBG) $(INCLUDE) $(CFLAGS) 
+CC_FLAGS = -c $(DBG) $(INCLUDE) $(CFLAGS)
+ifeq ($(SHV),1)
+CC_FLAGS += -I$(COMMON_DIR)/shv/include
+CC_FLAGS += -I$(EXT_LIBS)/libshv/libshvchainpack/c
+CC_FLAGS += -I$(EXT_LIBS)/ulut
+endif
 CC_FLAGS_SCP = -c $(DBG) $(INCLUDE) $(CFLAGS) $(DEFINES)
 CC_FLAGS_FMU = -c $(DBG) $(INCLUDE) $(CFLAGS) -Wall -DFMI_COSIMULATION \
                              -DSTANDALONE_XML_PARSER -DLIBXML_STATIC \
                               -I$(FMUDIR)/fmuinc/include -I$(FMUDIR)/fmuinc/parser -I$(FMUDIR)/fmuinc
+
+dependencies:
+ifeq ($(SHV),1)
+	cd $(EXT_LIBS) && if [ ! -e libshv ]; then git clone https://github.com/silicon-heaven/libshv; fi
+	cd $(EXT_LIBS) && if [ ! -e ulut ]; then git clone https://git.code.sf.net/p/ulan/ulut; fi
+endif
+	cd $(PYSUPSICTRL)/CodeGen/nuttx/devices
 
 allfiles:
 
@@ -131,6 +155,35 @@ FMUinterface.o: FMUinterface.c
 	$(CC) $(CC_FLAGS) $<
 
 %.o: sensors/%.c
+	$(CC) $(CC_FLAGS) $<
+
+ifeq ($(SHV),1)
+cchainpack.o: $(EXT_SHV_LIB)/cchainpack.c
+	$(CC) $(CC_FLAGS) $<
+
+ccpcp.o: $(EXT_SHV_LIB)/ccpcp.c
+	$(CC) $(CC_FLAGS) $<
+
+ccpcp_convert.o: $(EXT_SHV_LIB)/ccpcp_convert.c
+	$(CC) $(CC_FLAGS) $<
+
+ccpon.o: $(EXT_SHV_LIB)/ccpon.c
+	$(CC) $(CC_FLAGS) $<
+
+pack_double.o: $(EXT_SHV_LIB)/pack_double.c
+	$(CC) $(CC_FLAGS) $<
+
+ul_gavlprim.o: $(EXT_LIBS)/ulut/ulut/ul_gavlprim.c
+	$(CC) $(CC_FLAGS) $<
+
+ul_gsacust.o: $(EXT_LIBS)/ulut/ulut/ul_gsacust.c
+	$(CC) $(CC_FLAGS) $<
+
+%.o: $(COMMON_DIR)/shv/%.c
+	$(CC) $(CC_FLAGS) $<
+endif
+
+%.o: $(COMMON_DIR)/shv/%.c
 	$(CC) $(CC_FLAGS) $<
 
 %.o: $(COMMON_DIR)/CAN_dev/%.c
@@ -156,4 +209,6 @@ install:
 	mv $(LIB) ../lib
 
 clean:
+	rm -rf $(EXT_LIBS)/libshv
+	rm -rf $(EXT_LIBS)/ulut
 	rm -f $(LIB) $(OBJ)

@@ -6,7 +6,7 @@ from supsisim.block import Block
 from supsisim.port import Port, InPort, OutPort
 from supsisim.connection import Connection
 from supsisim.editor import IDLE
-from supsisim.dialg import RTgenDlg
+from supsisim.dialg import RTgenDlg, SHVDlg
 from supsisim.const import pyrun, TEMP, respath, BWmin
 from lxml import etree
 import os
@@ -21,10 +21,22 @@ class GraphicsView(QGraphicsView):
         self.setRenderHint(QPainter.Antialiasing)
         self.setRenderHint(QPainter.TextAntialiasing)
         self.setAcceptDrops(True)
-        
+
     def wheelEvent(self, event):
         factor = 1.41 ** (-event.angleDelta().y() / 240.0)
         self.scale(factor, factor)
+
+class SHVInstance:
+    def __init__(self, filename):
+        self.used = False
+        self.ip = '127.0.0.1'
+        self.port = '3755'
+        self.user = 'admin'
+        self.passw = 'admin password'
+        self.devid = filename
+        self.mount = 'test'
+
+        self.tree = 'GAVL'
 
 class Scene(QGraphicsScene):
     def __init__(self, main, parent=None):
@@ -34,13 +46,15 @@ class Scene(QGraphicsScene):
         self.selection = []
         self.currentItem = None
         self.blocks = set()
-        
+
         self.template = 'sim.tmf'
         self.addObjs = ''
         self.Ts = '0.01'
         self.script = ''
         self.Tf = '10'
         self.prio = ''
+
+        self.SHV = SHVInstance(self.mainw.filename)
 
         self.undoList = []
 
@@ -49,7 +63,7 @@ class Scene(QGraphicsScene):
             event.accept()
         else:
             event.ignore()
-            
+
     def dragLeaveEvent(self, event):
         return
 
@@ -66,7 +80,7 @@ class Scene(QGraphicsScene):
                       item.findtext('params'), item.findtext('help'),
                       int(item.findtext('width')), item.findtext('flip')=='1' )
             b.setPos(event.scenePos())
-       
+
     def DgmToMsg(self):
         items = self.items()
         dgmBlocks = []
@@ -91,6 +105,15 @@ class Scene(QGraphicsScene):
         etree.SubElement(sim,'ParScript').text = self.script
         etree.SubElement(sim,'Tf').text = self.Tf
         etree.SubElement(sim,'Priority').text = self.prio
+        shv = etree.SubElement(root,'SHV')
+        etree.SubElement(shv,'SHVused').text = str(self.SHV.used)
+        etree.SubElement(shv,'SHVip').text = self.SHV.ip
+        etree.SubElement(shv,'SHVport').text = self.SHV.port
+        etree.SubElement(shv,'SHVuser').text = self.SHV.user
+        etree.SubElement(shv,'SHVpassw').text = self.SHV.passw
+        etree.SubElement(shv,'SHVdevid').text = self.SHV.devid
+        etree.SubElement(shv,'SHVmount').text = self.SHV.mount
+        etree.SubElement(shv,'SHVtree').text = self.SHV.tree
         for item in dgmBlocks:
             item.save(root)
         for item in dgmConnections:
@@ -107,7 +130,7 @@ class Scene(QGraphicsScene):
                         conn.remove()
             self.removeItem(item)
         self.blocks.clear()
-        
+
     def MsgToDgm(self, msg):
         self.clearDgm()
         root = etree.fromstring(msg)
@@ -126,7 +149,25 @@ class Scene(QGraphicsScene):
         self.prio = sim.findtext('Priority')
         if self.prio==None:
             self.prio=''
-            
+
+        """
+        We need to acess SHV field with try/except to keep support
+        for older pysimCoder diagrams.
+        """
+
+        try:
+            shv = root.findall('SHV')[0]
+            self.SHV.used = (shv.findtext('SHVused') == "True")
+            self.SHV.ip = shv.findtext('SHVip')
+            self.SHV.port = shv.findtext('SHVport')
+            self.SHV.user = shv.findtext('SHVuser')
+            self.SHV.passw = shv.findtext('SHVpassw')
+            self.SHV.devid = shv.findtext('SHVdevid')
+            self.SHV.mount = shv.findtext('SHVmount')
+            self.SHV.tree = shv.findtext('SHVtree')
+        except:
+            None
+
         blocks = root.findall('block')
         for item in blocks:
             self.loadBlock(item)
@@ -137,7 +178,7 @@ class Scene(QGraphicsScene):
             self.mainw.editor.redrawNodes()
         except:
             pass
-            
+
     def newDgm(self):
         self.clearDgm()
         self.addObjs=''
@@ -160,18 +201,18 @@ class Scene(QGraphicsScene):
         else:
             msg = self.undoList[0]
             self.mainw.modified = False
-            
+
         self.MsgToDgm(msg)
         self.mainw.editor.state = IDLE
-        
+
     def updateDgm(self):
         items = self.items()
-                    
+
         for item in items:
             if isinstance(item, Block):
                 pos = item.pos()
                 item.setPos(pos)
-                    
+
     def saveDgm(self,fname):
         f = open(fname,'w')
         msg = self.DgmToMsg()
@@ -185,7 +226,7 @@ class Scene(QGraphicsScene):
         f.close()
         self.MsgToDgm(msg)
         self.undoList = [msg]
-              
+
     def loadBlock(self, item, dx = 0, dy = 0):
         b = Block(None, self, item.findtext('name'),
                   int(item.findtext('inp')), int(item.findtext('outp')),
@@ -200,11 +241,11 @@ class Scene(QGraphicsScene):
             if isinstance(item, QGraphicsItem) and not isinstance(item, Connection):
                 return item
         return None
-    
+
     def loadConn(self, item, dx = 0.0, dy = 0.0):
         c = Connection(None, self)
-        c.load(item, dx, dy)            
-        
+        c.load(item, dx, dy)
+
     def setParamsBlk(self):
         self.mainw.paramsBlock()
 
@@ -226,7 +267,30 @@ class Scene(QGraphicsScene):
         self.script = str(dialog.parscript.text())
         self.prio =  str(dialog.prio.text())
         self.Tf = str(dialog.Tf.text())
-        
+
+    def SHVSetDlg(self):
+        dialog = SHVDlg(self)
+        dialog.SHVused.setChecked(self.SHV.used)
+        dialog.SHVip.setText(self.SHV.ip)
+        dialog.SHVport.setText(self.SHV.port)
+        dialog.SHVuser.setText(self.SHV.user)
+        dialog.SHVpassw.setText(self.SHV.passw)
+        dialog.SHVdevid.setText(self.SHV.devid)
+        dialog.SHVmount.setText(self.SHV.mount)
+        dialog.SHVtree.setCurrentText(self.SHV.tree)
+        res = dialog.exec_()
+        if res != 1:
+            return
+
+        self.SHV.used = dialog.SHVused.isChecked()
+        self.SHV.ip = str(dialog.SHVip.text())
+        self.SHV.port = str(dialog.SHVport.text())
+        self.SHV.user = str(dialog.SHVuser.text())
+        self.SHV.passw = str(dialog.SHVpassw.text())
+        self.SHV.devid = str(dialog.SHVdevid.text())
+        self.SHV.mount = str(dialog.SHVmount.text())
+        self.SHV.tree = str(dialog.SHVtree.currentText())
+
     def codegen(self, flag):
         try:
             items = self.items()
@@ -243,7 +307,7 @@ class Scene(QGraphicsScene):
                     if isinstance(thing, OutPort):
                         thing.nodeID = str(nid)
                         nid += 1
-                        
+
             for item in dgmBlocks:
                 for thing in item.childItems():
                     if isinstance(thing, InPort):
@@ -257,7 +321,7 @@ class Scene(QGraphicsScene):
                             except (AttributeError, ValueError):
                                 raise ValueError('Problem in diagram: outputs connected together!')
                         thing.nodeID = c.port1.nodeID
-                        
+
             self.generateCCode()
             self.mainw.statusLabel.setText('Code generation OK!')
             try:
@@ -272,11 +336,11 @@ class Scene(QGraphicsScene):
                     pass
                 p.wait()
             return True
-        
+
         except:
             self.mainw.statusLabel.setText('Error by Code generation!')
             return False
-        
+
     def blkInstance(self, item):
         ln = item.params.split('|')
         txt = item.name.replace(' ','_') + ' = ' + ln[0] + '('
@@ -287,7 +351,7 @@ class Scene(QGraphicsScene):
                     inp += thing.nodeID +','
             inp = inp.rstrip(',') + ']'
             txt += inp + ','
-            
+
         if item.outp != 0:
             outp = '['
             for thing in item.childItems():
@@ -313,11 +377,11 @@ class Scene(QGraphicsScene):
         # Check if Block is PLOT
         if ln[0] == 'plotBlk':
             txt += ", '" + item.name.replace(' ','_') + "'"
-        
+
         txt += ')'
         txt = txt.replace('(, ', '(')
         return txt, parArr
-    
+
     def generateCCode(self):
         try:
             f = open(self.script,'r')
@@ -326,11 +390,11 @@ class Scene(QGraphicsScene):
             txt += '\n'
         except:
             txt = ''
- 
+
         items = self.items()
         dir1 = respath + 'blocks/rcpBlk'
         txt += 'import os\n\n'
-        
+
         txt += 'from supsisim.RCPblk import RCPblk\n\n'
         txt += 'dirs = os.listdir("' + dir1 + '")\n'
         txt += 'for el in dirs:\n'
@@ -345,9 +409,10 @@ class Scene(QGraphicsScene):
         txt += '        except:\n'
         txt += '            print("import of block class failed " + cmd)\n'
         txt += '            pass\n'
-       
+
         txt += 'from supsisim.RCPgen import *\n'
         txt += 'from control import *\n'
+
         blkList = []
         realParNames = []
         intParNames = []
@@ -371,9 +436,12 @@ class Scene(QGraphicsScene):
         fname = self.mainw.filename
         fn = open('tmp.py','w')
         fn.write(txt)
-        fn.write('\n\n')
+        fn.write('\n')
 
-        txt = 'blks = ['
+        for item in blkList:
+            fn.write(item + '.name = \'' + item + '\'\n')
+
+        txt = '\nblks = ['
         for item in blkList:
             txt += item + ','
         txt += ']\n\n'
@@ -395,13 +463,24 @@ class Scene(QGraphicsScene):
         txt += '  tmp += 1\n\n'
         fn.write(txt)
 
+        txt =  'os.environ["SHV_USED"] = \"' + str(self.SHV.used) + '\"\n'
+        txt += 'os.environ["SHV_BROKER_IP"] = \"' + self.SHV.ip + '\"\n'
+        txt += 'os.environ["SHV_BROKER_PORT"] = \"' + self.SHV.port + '\"\n'
+        txt += 'os.environ["SHV_BROKER_USER"] = \"' + self.SHV.user + '\"\n'
+        txt += 'os.environ["SHV_BROKER_PASSWORD"] = \"' + self.SHV.passw + '\"\n'
+        txt += 'os.environ["SHV_BROKER_DEV_ID"] = \"' + self.SHV.devid + '\"\n'
+        txt += 'os.environ["SHV_BROKER_MOUNT"] = \"' + self.SHV.mount + "/" + self.SHV.devid + '\"\n'
+        txt += 'os.environ["SHV_TREE_TYPE"] = \"' + self.SHV.tree + '\"\n\n'
+        fn.write(txt)
+
         fnm = './' + fname + '_gen'
-                
+
         fn.write('fname = ' + "'" + fname + "'\n")
         fn.write('os.chdir("'+ fnm +'")\n')
         fn.write('genCode(fname, ' + self.Ts + ', blks)\n')
         fn.write("genMake(fname, '" + self.template + "', addObj = '" + self.addObjs + "')\n")
         fn.write('\nimport os\n')
+        fn.write('os.system("make clean")\n')
         fn.write('os.system("make")\n')
         fn.write('os.chdir("..")\n')
         fn.close()
@@ -431,7 +510,7 @@ class Scene(QGraphicsScene):
                 self.mainw.statusLabel.setText('Simulation finished')
             except:
                 pass
-         
+
     def debugInfo(self):
         items = self.items()
         dgmBlocks = []
