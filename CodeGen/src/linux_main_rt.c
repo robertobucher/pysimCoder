@@ -189,6 +189,8 @@ char *parse_string(char ** str, int parse_char)
 static void proc_opt(int argc, char *argv[])
 {
   int i;
+  char *t;
+
   while((i=getopt(argc,argv,"D:ef:hp:vVw"))!=-1){
     switch(i){
     case 'h':
@@ -220,7 +222,7 @@ static void proc_opt(int argc, char *argv[])
       }
       break;
     case 'D':
-      char *t = parse_string(&optarg, '=');
+      t = parse_string(&optarg, '=');
       if (t == NULL)
         {
           break;
