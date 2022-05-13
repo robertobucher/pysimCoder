@@ -1,4 +1,5 @@
 lib/*.a
 devices/*.o
+devices/mod/*
 objects/obj/*.o
-
+objects/objects.list1
