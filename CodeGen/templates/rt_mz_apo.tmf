@@ -7,6 +7,10 @@ LIBDIR  = $(PYCODEGEN)/linux_mz_apo/lib
 INCDIR  = $(PYCODEGEN)/linux_mz_apo/include
 COMMON_INCDIR = $(PYCODEGEN)/Common/include
 
+SHV_INC = $(PYCODEGEN)/Common/shv/include
+ULUT_INC = $(PYSUPSICTRL)/ExtLibs/ulut
+EXT_SHV_INC = $(PYSUPSICTRL)/ExtLibs//libshv/libshvchainpack/c
+
 RM = rm -f
 FILES_TO_CLEAN = *.o $(MODEL)
 
@@ -20,7 +24,16 @@ OBJSSTAN = $(MAIN).o $(MODEL).o $(ADD_FILES)
 
 CFLAGS = $(CC_OPTIONS) -O2 -I$(INCDIR) -I$(COMMON_INCDIR) $(C_FLAGS) -DMODEL=$(MODEL)
 
-LIB = $(LIBDIR)/libPipyblk.a
+CFLAGS += -I$(SHV_INC)
+ifneq ($(wildcard $(ULUT_INC)),)
+ULUT_INC = $(PYSUPSICTRL)/ExtLibs/ulut
+CFLAGS += -I$(ULUT_INC)
+endif
+ifneq ($(wildcard $(EXT_SHV_INC)),)
+CFLAGS += -I$(EXT_SHV_INC)
+endif
+
+LIB = $(LIBDIR)/libpyblk.a
 
 $(MAIN).c: $(MAINDIR)/$(MAIN).c $(MODEL).c
 	cp $< .
