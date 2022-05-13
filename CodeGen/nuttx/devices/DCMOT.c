@@ -33,7 +33,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 #define BUFLEN  5
 
 uint16_t TxBuf[BUFLEN];
-uint16_t RxBuf[BUFLEN];
+int16_t RxBuf[BUFLEN];
 
 struct spi_trans_s trans;
 struct spi_sequence_s seq;
@@ -75,9 +75,9 @@ static void inout(python_block *block)
   double *u = block->u[0];
 
   for(i=0;i<BUFLEN;i++) TxBuf[i] = 0;
-  if (u[0] < 0) TxBuf[1] = 0;
-  else             TxBuf[1] = 1;
-  TxBuf[0] = (uint16_t) (u[0]*999);
+  if(u[0] < -1.0) u[0] = -1.0;
+  if(u[0] >  1.0) u[0] = 1.0;
+  TxBuf[0] = (uint16_t) ((u[0]+1)*499.5);
   
   ret = ioctl(fd, SPIIOC_TRANSFER, (unsigned long)((uintptr_t) &seq));
 
@@ -90,7 +90,7 @@ static void inout(python_block *block)
     for( i=0;i<outputs;i++){
       index = intPar[i+1];
       y = block->y[i];
-      y[0] = 0.1*RxBuf[index];
+      y[0] = 1.0*RxBuf[index];
     }
   }
 }
