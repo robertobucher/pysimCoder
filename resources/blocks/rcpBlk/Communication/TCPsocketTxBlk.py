@@ -2,14 +2,22 @@
 from supsisim.RCPblk import RCPblk
 from scipy import size
 
-def TCPsocketTxBlk(pin, IP, port):
+# def TCPsocketTxRxBlk(pin, pout, IP, port):
+def TCPsocketTxRxBlk(*args):
+    if len(args) == 4:
+        pin, pout, IP, port = args
+    elif len(args) == 3:
+        pout = []
+        pin, IP, port = args
+
     """
 
-    Call:   TCPsocketTxBlk(pin, IP, port)
+    Call:   TCPsocketTxRxBlk(pin, pout, IP, port)
 
     Parameters
     ----------
        pin: connected input port(s)
+       pout: connected output port(s)
        IP : IP Addr
        port :  Port
 
@@ -19,5 +27,7 @@ def TCPsocketTxBlk(pin, IP, port):
 
     """
 
-    blk = RCPblk('TCPsocketTx', pin, [], [0,0], 1, [], [port, 0], IP)
+    blk = RCPblk('TCPsocketTxRx', pin, pout, [0,0], 1, [], [port, 0], IP)
     return blk
+
+
