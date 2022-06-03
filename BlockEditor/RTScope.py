@@ -39,7 +39,7 @@ TCP = 3
 UDP = 4
 
 path = os.environ.get('PYSUPSICTRL') + '/BlockEditor'
-form_class = uic.loadUiType(path + '/pyplt.ui')[0]    
+form_class = uic.loadUiType(path + '/pyplt.ui')[0]
 
 class ser_rcvServer(threading.Thread):
     def __init__(self, mainw):
@@ -68,7 +68,10 @@ class ser_rcvServer(threading.Thread):
                 
             val = self.port.read(L)
             data = self.st.unpack(val)
-           
+
+            if self.mainw.ckSaveData.isChecked():
+                self.mainw.saveData(data)
+
             for n in range(0,self.N):
                 try:
                     val = float(data[n])
@@ -105,6 +108,9 @@ class ser_rcvServer4bytes(threading.Thread):
                 
             val = self.port.read(L)
             data = self.st.unpack(val)
+            
+            if self.mainw.ckSaveData.isChecked():
+                self.mainw.saveData(data)
             
             for n in range(0,self.N):
                 try:
@@ -156,6 +162,10 @@ class tcp_rcvServer(threading.Thread):
                     break
 
                 data = self.st.unpack(buf)
+            
+                if self.mainw.ckSaveData.isChecked():
+                    self.mainw.saveData(data)
+            
                 for n in range(0,self.N):
                     try:
                         val = float(data[n])
@@ -203,6 +213,10 @@ class udp_rcvServer(threading.Thread):
                     break
 
                 data = self.st.unpack(buf)
+            
+                if self.mainw.ckSaveData.isChecked():
+                    self.mainw.saveData(data)
+            
                 for n in range(0,self.N):
                     try:
                         val = float(data[n])
@@ -244,6 +258,7 @@ class MainWindow(QMainWindow, form_class):
 
         self.edHist.textEdited.connect(self.edHistEdited)
         self.ckAutoscale.stateChanged.connect(self.setAutoscale)
+        self.ckSaveData.stateChanged.connect(self.setSaveData)
         self.edYmax.editingFinished.connect(self.YAxes)
         self.edYmin.editingFinished.connect(self.YAxes)
 
@@ -263,6 +278,27 @@ class MainWindow(QMainWindow, form_class):
             self.label_6.setEnabled(True)
             self.edYmin.setEnabled(True)
             self.edYmax.setEnabled(True)
+ 
+    def setSaveData(self):
+        if self.ckSaveData.isChecked():
+            self.f = open(self.lnFilename.text(),  'w')
+            self.N = self.sbNsig.value()
+            self.T0 = 0
+        else:
+            self.f.close()
+        
+    def saveData(self, data):
+        strData = self.T0.__str__() +'\t'
+        for n in range(0,self.N):
+            try:
+                val = float(data[n])
+                strData += val.__str__() + '\t'
+            except:
+                strData += '0.0\t'
+                
+        strData += '\n'
+        self.f.write(strData)
+        self.T0 += 1
  
     def YAxes(self):
         self.ymax = float(self.edYmax.text())
@@ -353,6 +389,8 @@ class MainWindow(QMainWindow, form_class):
         try:
             self.port.shutdown()
             self.port.close()
+            if ckSaveData.isChecked():
+                self.close()
         except:
             pass
 
