@@ -30,5 +30,5 @@ def heaterBlk(pin, pout, port, outs):
 
     intP = hstack((0, outs))
     
-    blk = RCPblk('heater', pin, pout, [0,0], 1, [], outs, port)
+    blk = RCPblk('heater', pin, pout, [0,0], 1, [], intP, port)
     return blk

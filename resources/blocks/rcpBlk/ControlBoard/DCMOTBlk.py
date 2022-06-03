@@ -19,8 +19,8 @@ def DCMOTBlk(pin, pout, port, outs):
 
     """
 
-    if size(pout)>2:
-        raise ValueError("Number of outputs should not be greater than 2")
+    if size(pout)>3:
+        raise ValueError("Number of outputs should not be greater than 3")
         
     if size(pin)>1:
         raise ValueError("Number of inputs should not be greater than 1")
@@ -30,5 +30,5 @@ def DCMOTBlk(pin, pout, port, outs):
 
     intP = hstack((0, outs))
     
-    blk = RCPblk('DCMOT', pin, pout, [0,0], 1, [], outs, port)
+    blk = RCPblk('DCMOT', pin, pout, [0,0], 1, [], intP, port)
     return blk

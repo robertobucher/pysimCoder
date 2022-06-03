@@ -76,8 +76,8 @@ static void inout(python_block *block)
 
   for(i=0;i<BUFLEN;i++) TxBuf[i] = 0;
   if(u[0] < -1.0) u[0] = -1.0;
-  if(u[0] >  1.0) u[0] = 1.0;
-  TxBuf[0] = (uint16_t) ((u[0]+1)*499.5);
+  if(u[0] >=  1.0) u[0] = 0.998;
+  TxBuf[0] = (uint16_t) ((u[0]+1)*500);
   
   ret = ioctl(fd, SPIIOC_TRANSFER, (unsigned long)((uintptr_t) &seq));
 
@@ -88,7 +88,7 @@ static void inout(python_block *block)
   }
   else {
     for( i=0;i<outputs;i++){
-      index = intPar[i+1];
+      index = intPar[1+i];
       y = block->y[i];
       y[0] = 1.0*RxBuf[index];
     }
