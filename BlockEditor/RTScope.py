@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 import sys
+import os
 
 try:
     from PyQt5.Qwt import QwtPlot, QwtPlotCurve, QwtPlotGrid
@@ -249,7 +250,8 @@ class MainWindow(QMainWindow, form_class):
         self.ymin = -1
         self.ymax = 1
         self.autoAxis = True
-
+        self.filename = 'data.txt'
+ 
     def connect_widget(self):
         self.pbStart_ser.clicked.connect(lambda: self.pbServerClicked(SER))
         self.pbStart_ser4.clicked.connect(lambda: self.pbServerClicked(SER4))
@@ -281,11 +283,22 @@ class MainWindow(QMainWindow, form_class):
  
     def setSaveData(self):
         if self.ckSaveData.isChecked():
-            self.f = open(self.lnFilename.text(),  'w')
-            self.N = self.sbNsig.value()
-            self.T0 = 0
+            filename = QFileDialog.getSaveFileName(self, 'Save',
+                                                   self.filename, filter='*.txt')
+            filename = filename[0]
+            if filename != '':
+                self.f = open(filename, 'w')
+                self.filename = filename
+                self.lnFilename.setText(filename)
+                self.N = self.sbNsig.value()
+                self.T0 = 0
+            else:
+                self.ckSaveData.setCheckState(False)
         else:
-            self.f.close()
+            try:
+                self.f.close()
+            except:
+                pass
         
     def saveData(self, data):
         strData = self.T0.__str__() +'\t'
