@@ -27,6 +27,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 #include <libpcan.h>
 
 /* #define VERB */
+/* #define CAN_BD     CAN_BAUD_1M */
+#define CAN_BD     CAN_BAUD_500K;
+
 
 static void * canHandle;
 static int dev_cnt = 0;                    /* CAN devices counter */
@@ -240,9 +243,8 @@ int canOpen()
   char txt[VERSIONSTRING_LEN];
 
   if(!dev_cnt){  /* This task is performed only one time */
-    bd = CAN_BAUD_500K;
+    bd = CAN_BD;
     canHandle = LINUX_CAN_Open("/dev/pcan32",O_RDWR);
-    /* canHandle = CAN_Open(HW_DONGLE_SJA_EPP, port,irq); */
 
     if(!canHandle) return -1;
     CAN_VersionInfo(canHandle,txt);
@@ -260,9 +262,8 @@ int canOpenTH()
   char txt[VERSIONSTRING_LEN];
 
   if(!dev_cnt){  /* This task is performed only one time */
-    bd = CAN_BAUD_500K;
+    bd = CAN_BD;
     canHandle = LINUX_CAN_Open("/dev/pcan32",O_RDWR);
-    /* canHandle = CAN_Open(HW_DONGLE_SJA_EPP, port,irq); */
 
     if(!canHandle) return -1;
     CAN_VersionInfo(canHandle,txt);

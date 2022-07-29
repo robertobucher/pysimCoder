@@ -101,7 +101,7 @@ static void inout(python_block *block)
   double * realPar = block->realPar;
   int * intPar = block->intPar;
   double *y = block->y[0];
-  int ret;
+  int i, j, ret;
   int res = intPar[block->nout];
   int fd = intPar[block->nout + 1];
   int conf_ch = intPar[block->nout + 2];
@@ -139,9 +139,10 @@ static void inout(python_block *block)
 
   /* Assing the outputs to only those channels set in block parameters by the user */
 
-  for (int i = 0; i < block->nout; i++)
+  for (i = 0; i < block->nout; i++)
     {
-      for (int j = 0; j < conf_ch; j++)
+      y = block->y[i];
+      for (j = 0; j < conf_ch; j++)
         {
           if (sample[j].am_channel == intPar[i])
             {
