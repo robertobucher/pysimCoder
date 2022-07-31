@@ -5,7 +5,7 @@
   "op": 1,
   "stin": 0,
   "stout": 0,
-  "icon": "",
+  "icon": "TCLAB",
   "params": "help_HeatShield_temperature|adcref:1023.0:double|aref:5.0:double|ref_temp:298.15:double|ntc_res:100000.0:double|vd_res:100000.0:double|vd_ref:5.0:double|ntc_beta:3950.0:double|abszero:273.15:double",
   "help": "#define ADCREF 1023.0               // 10-bit resolution for AD converter\n#define AREF 5.0                              // ADC reference voltage for 5 V logic\n#define REF_TEMP (25.0 + ABSZERO) // Thermistor reference temperature\n#define NTC_RES 100000.0 // Resistance of the thermistor\n#define VD_RES 100000.0 // Resistance of voltage divider arm\n#define VD_REF 5.0        // Input for the voltage divider\n#define NTC_BETA 3950.0 // value of Beta factor from datasheet MF58\n#define ABSZERO 273.15 // Absolute zero in Celsius"
 }
