@@ -1,1 +1,0 @@
-{"lib": "ControlBoard", "name": "DCMotor", "ip": 1, "op": 1, "stin": 0, "stout": 1, "icon": "MOT", "params": "DCMOTBlk|Port:'/dev/spi2'|Outputs (max 3):[0]", "help": "This block communicate through a the SPI bus to the process board\nPort: SPI device\nOutputs: Signals to extract from the message to put on output (max 3!)\n"}
