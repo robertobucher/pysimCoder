@@ -21,6 +21,6 @@ def comediDIBlk(pout, dev, ch):
     if size(pout) != 1:
         raise ValueError("Block should have 1 input port; received %i !" % size(pout))
 
-    blk = RCPblk('comedi_digital_input',[],pout,[0,0],0,[],[ch],dev)
+    blk = RCPblk('comedi_digital_input', [], pout, [0, 0], 0, [], [ch], dev)
     return blk
 

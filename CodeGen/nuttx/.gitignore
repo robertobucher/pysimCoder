@@ -1,3 +1,6 @@
 nuttx-export*
 lib/*.a
 devices/*.o
+get_lib
+set_lib
+

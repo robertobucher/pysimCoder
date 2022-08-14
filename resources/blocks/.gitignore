@@ -1,1 +1,8 @@
 rcpBlk/*/__pycache__
+rcpBlk/__pycache__
+Icons/SPIBDG.svg
+Icons/SUBSYSTEM.svg
+blocks/ControlBoard/*
+blocks/can_generic/hbm_df30.xblk
+rcpBlk/ControlBoard/spiBridge*
+rcpBlk/can_generic/hbm_df30Blk.py
