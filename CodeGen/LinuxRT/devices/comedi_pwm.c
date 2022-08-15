@@ -152,7 +152,7 @@ static int comedi_pwm_open(comedi_pwm *pwm)
 		fprintf(stderr, "PWM counter autodetection "
 				"gave subdev number %d\n", pwm->counter);
 	
-	/* localte subdev dio */
+	/* locate subdev dio */
 	pwm->dio = comedi_find_subdevice_by_type(pwm->dev,
                                                  COMEDI_SUBD_DIO, START_SUBD);
 	/* check whether a dio subdev was located */
