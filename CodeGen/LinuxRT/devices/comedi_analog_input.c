@@ -1,115 +1,172 @@
-// 31 Jan 2006 : Coding by Simone Mannori
-//               basic examples from Comedi PDF and comedilib/demo/<sourcecode> 
-//
-// Computational function for Comedi data acquisition cards 
-// 
+/*
+COPYRIGHT (C) 2022  Roberto Bucher (roberto.bucher@supsi.ch)
 
-//** -------------------------- COMEDI ANALOG INPUT --------------------------------------
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2 of the License, or (at your option) any later version.
 
-//**  General includes 
-#include <stdlib.h>
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+*/
+
 #include <stdio.h>
-#include <string.h>
+#include <stdlib.h>
 #include <unistd.h>
-#include <fcntl.h>
-#include <ctype.h>
 #include <sys/types.h>
-#include <asm/types.h>
+#include <sys/mman.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 #include <math.h>
-
-/* Specific for python block developement */
-#include <pyblock.h>
-
-/* Specific for Comedilib */
 #include <comedilib.h>
 
- //** Comedi static structure inside block->work  
-  typedef struct
-  {
-    char ComediDevName[20]; //** 
-    comedi_t *it      ; //** Comedi interface handler*/
-    
-    int subdev ; //** Comedi subdevice
-    int chan   ; //** channel selection
-    int range  ; //** range selection 
-    int aref   ; //** zero volt reference 
-    lsampl_t maxdata  ;        /* maximum sample value (raw data) */
-    comedi_range *range_ds   ; /* range */
-  
-  } ComediAnIn ;
+#include <pyblock.h>
 
-//** Main Python Block 
-void comedi_analog_input(int flag, python_block *block) 
+extern void *ComediDev[];
+extern int ComediDev_InUse[];
+extern int ComediDev_AIInUse[];
+
+//** Comedi static structure inside block->work  
+typedef struct
 {
-  ComediAnIn *AIdata ; //** define the local datastructure 
-  char sName[15]     ;
-  int NameLen ;
+  comedi_t *dev;
+  int subdev;
+  unsigned int channel; 
+  unsigned int range; 
+  unsigned int aref; 
+  lsampl_t maxdata;
+  comedi_range *lnx_range;
+  double range_min;
+  double range_max;
+} ComediAnIn ;
+
+static void init(python_block *block)
+{
+  ComediAnIn *AI ; //** define the local datastructure 
+  int * intPar    = block->intPar;
+  int index = block->str[11]-'0';
+   int n_channels;
+  const char * board;
   
-  lsampl_t data      ; //** local row data input 
-  double   volts     ; //* 
-  double * y         ; //** Roberto
+  block->ptrPar = malloc(sizeof(ComediAnIn));
+  AI = block->ptrPar;
+  AI->channel = intPar[0];
+  AI->range = intPar[1];
+  AI->aref = intPar[2];
+  
+  if (!ComediDev[index]) {
+    AI->dev = comedi_open(block->str);
+    if (!AI->dev) {
+      fprintf(stdout, "Comedi open failed\n");
+      exit(-1);
+    }
+    board = comedi_get_board_name(AI->dev);
+    printf("COMEDI %s (%s) opened.\n\n", block->str, board);
+    ComediDev[index] = AI->dev;
+    
+    if ((AI->subdev = comedi_find_subdevice_by_type(AI->dev, COMEDI_SUBD_AI, 0)) < 0) {
+      fprintf(stdout, "Comedi find_subdevice failed (No analog input)\n");
+      comedi_close(AI->dev);
+      exit(-1);
+    }
+    
+    if ((comedi_lock(AI->dev, AI->subdev)) < 0) {
+      fprintf(stdout, "Comedi lock failed for subdevice %d\n", AI->subdev);
+      comedi_close(AI->dev);
+      exit(-1);
+    }
+  }
+  else {
+    AI->dev = ComediDev[index];
+    AI->subdev = comedi_find_subdevice_by_type(AI->dev, COMEDI_SUBD_AI, 0);
+  }
+  
+  if ((n_channels = comedi_get_n_channels(AI->dev, AI->subdev)) < 0) {
+    fprintf(stdout, "Comedi get_n_channels failed for subdevice %d\n", AI->subdev);
+    comedi_unlock(AI->dev, AI->subdev);
+    comedi_close(AI->dev);
+    exit(-1);
+  }
+  
+  if (AI->channel >= n_channels) {
+    fprintf(stdout, "Comedi channel not available for subdevice %d\n", AI->subdev);
+    comedi_unlock(AI->dev, AI->subdev);
+    comedi_close(AI->dev);
+    exit(1);
+  }
+  
+  AI->lnx_range = comedi_get_range(AI->dev, AI->subdev, AI->channel, AI->range);
+  if (AI->lnx_range->min >= AI->lnx_range->max) {
+    fprintf(stdout, "Comedi get range failed for subdevice %d\n", AI->subdev);
+    comedi_unlock(AI->dev, AI->subdev);
+    comedi_close(AI->dev);
+    exit(-1);
+  }
+  
+  ComediDev_InUse[index]++;
+  ComediDev_AIInUse[index]++;
+  AI->range_min = (double)( AI->lnx_range->min);
+  AI->range_max = (double) (AI->lnx_range->max);
+  printf("AI Channel %d - Range : %1.2f [V] - %1.2f [V] (maxdata 0x%lx)\n",
+	 AI->channel, AI->range_min, AI->range_max,
+	 (unsigned long) comedi_get_maxdata(AI->dev, AI->subdev, AI->channel));
+}
 
-  switch (flag)
-  {  
-      case CG_INIT: //** Card and port init   
-        block->ptrPar = malloc(sizeof(ComediAnIn));
-        if (block->ptrPar  == NULL ) 
-          { //** in case of error exit
-            fprintf(stderr, " HELP ! \n"); 
-	   exit(-1); //** magic code 
-           return; //** --> Exit point  
-          }
-        else
-          {
-            /* fprintf(stderr, " Allocated ! \n");  */
-          }
+static void inout(python_block *block)
+{
+  int * intPar    = block->intPar;
+  double *y = block->y[0];
+  ComediAnIn *AI  = block->ptrPar;
+  
+  lsampl_t data; 
+  double x;
 
-        AIdata = (ComediAnIn *) block->ptrPar; //** map the local structure in the "python_block" user data  
-             
-	sprintf(AIdata->ComediDevName,block->str); //** create the string 
-	
-	AIdata->it = comedi_open(AIdata->ComediDevName); /* */
-        if (!(AIdata->it))
-          {
-            fprintf(stderr, "Comedi Analog Input at %s not found. \n", AIdata->ComediDevName);
-            exit(-1); //** magic code 
-            return; //** --> Exit point  
-          }
-        else
-            /* fprintf(stderr," Comedi AnalogInput found! \n");  */
-       
-        AIdata->subdev = 0 ; // analog channels input
-        AIdata->chan   = block->intPar[0] ; // channel selection  
-        AIdata->range  = block->intPar[1] ; // range selection 
-        AIdata->aref = AREF_GROUND      ; // zero volt reference 
-        AIdata->maxdata =   comedi_get_maxdata(AIdata->it, AIdata->subdev, AIdata->chan);
-        AIdata->range_ds =  comedi_get_range  (AIdata->it, AIdata->subdev, AIdata->chan, AIdata->range);
- 
-       break; 
-      
-      case CG_OUT:
-        AIdata = (ComediAnIn *) block->ptrPar;
+  AI->maxdata = comedi_get_maxdata(AI->dev, AI->subdev, AI->channel);
+  comedi_data_read(AI->dev, AI->subdev, AI->channel, AI->range, AI->aref, &data);
+  x = data;
+  x /= AI->maxdata;
+  x *= (AI->range_max - AI->range_min);
+  x += AI->range_min;
+  y[0] = x;
+  
+  /* y[0] = comedi_to_phys(data, AI->lnx_range, AI->maxdata); */
+}
 
-	comedi_data_read(AIdata->it, AIdata->subdev, AIdata->chan, AIdata->range, AIdata->aref, &data);
+static void end(python_block *block)
+{
+  int * intPar    = block->intPar;
+  int index  = block->str[11]-'0';
+  ComediAnIn *AI  = block->ptrPar;
+  
+  ComediDev_InUse[index]--;
+  ComediDev_AIInUse[index]--;
+  if (!ComediDev_AIInUse[index]) {
+    comedi_unlock(AI->dev, AI->subdev);
+  }
+  if (!ComediDev_InUse[index]) {
+    comedi_close(AI->dev);
+    printf("\nCOMEDI %s closed.\n\n", block->str);
+    ComediDev[index] = NULL;
+  }
+}
 
-        volts = comedi_to_phys(data, AIdata->range_ds, AIdata->maxdata);
+void comedi_analog_input(int flag, python_block *block)
+{
+  if (flag==CG_OUT){          /* get input */
+    inout(block);
+  }
+  else if (flag==CG_END){     /* termination */ 
+    end(block);
+  }
+  else if (flag ==CG_INIT){    /* initialisation */
+    init(block);
+  }
+}
 
-        //** fprintf(stderr,"  datain = %f \n", volts) ; //** DEBUG only 
-
-        y = block->y[0] ; 
-
-        y[0] = volts ; 
-
-     
-      break;
-      
-      case CG_END:
-      
-      // comedi_close(it);
-      
-      break;	  
-        
-  } // close the switch
-   
-} // close the function 
 
