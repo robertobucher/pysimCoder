@@ -35,19 +35,20 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 /* Specific for Comedilib */
 #include <comedilib.h>
 
-#define COMEDI_SUBD_INCREMENTALCOUNTER  17  /* Incremental Counter */
-
 //** Comedi static structure inside block->work  
 typedef struct{
-  char ComediDevName[20]; //** 
-  comedi_t *dev; //** Comedi interface handler*/
-  int subdevice;       //** Comedi subdevice
-  int channel   ;        //** channel selection
+  comedi_t *dev;
+  int subdev;
+  unsigned int channel;
   int a;
   int b;
   int z;
   int initial_value;
 } ComediEnc;
+
+extern void *ComediDev[];
+extern int ComediDev_InUse[];
+extern int ComediDev_CNTInUse[];
 
 int ni_gpct_start_encoder(comedi_t *device, unsigned subdevice,
 	unsigned int initial_value,
@@ -86,90 +87,127 @@ int ni_gpct_start_encoder(comedi_t *device, unsigned subdevice,
 	/* if(retval < 0) return retval; */
 
 	return 0;
-
-/* > insn.insn       = INSN_CONFIG; */
-/* > insn.n          = 1; // Is relevant to config! :) */
-/* > config_data[0]  = INSN_CONFIG_GPCT_QUADRATURE_ENCODER; */
-/* > config_data[1]  = quadraturemode; // {GPCT_X1, GPCT_X2, or GPCT_X4} */
-/* > config_data[2]  = indexphase; // {GPCT_IndexPhaseHighHigh,LH,LL,HL} */
-/* > config_data[3]  = indexreset; // {0,GPCT_RESET_COUNTER_ON_INDEX} */
-/* > insn.data       = config_data; */
-/* > insn.subdev     = subdev; */
-/* > insn.chanspec   = CR_PACK(channel,0,0); */
 }
 
 static void init(python_block *block)
 {
   int * intPar    = block->intPar;
   int retval;
-  ComediEnc *ENCdata ; //** define the local datastructure 
-  comedi_t *dev = NULL ; //** define the local datastructure 
+  int index = block->str[11]-'0';
+  const char * board;
+  int n_channels;
+  ComediEnc *ENC;
 
   block->ptrPar = malloc(sizeof(ComediEnc));
-  if (block->ptrPar  == NULL ) { //** in case of error exit
+  if (block->ptrPar  == NULL ) {
     fprintf(stdout, "Error by malloc\n"); 
     exit(-1); 
   }
  
-  ENCdata = (ComediEnc *) block->ptrPar; // local structure to python_block 
-  sprintf(ENCdata->ComediDevName,block->str); // create device
-  ENCdata->dev  = comedi_open(ENCdata->ComediDevName);
-  
-  if (!(ENCdata->dev)){
-    fprintf(stdout, "No device\n"); 
-    exit(-1);
+  ENC = (ComediEnc *) block->ptrPar;
+
+  ENC->channel  = block->intPar[0];
+  ENC->a = NI_GPCT_DISABLED_OTHER_SELECT;
+  ENC->b = NI_GPCT_DISABLED_OTHER_SELECT;
+  ENC->z = NI_GPCT_DISABLED_OTHER_SELECT;
+  ENC->initial_value= 0;
+
+  if (!ComediDev[index]) {
+    ENC->dev  = comedi_open(block->str);
+    if (!(ENC->dev)){
+      fprintf(stdout, "Comedi open failed\n");
+      exit(-1);
+    }
+    board = comedi_get_board_name(ENC->dev);
+    printf("COMEDI %s (%s) opened.\n\n", block->str, board);
+    ComediDev[index] = ENC->dev;
+
+    ENC->subdev = comedi_find_subdevice_by_type(ENC->dev,
+						     COMEDI_SUBD_COUNTER, 0);
+    if(ENC->subdev<0){
+      fprintf(stdout, "Comedi find_subdevice failed (No Incremental counter)\n");
+      comedi_close(ENC->dev);
+      exit(-1);
+    }
+    
+    if ((comedi_lock(ENC->dev, ENC->subdev)) < 0) {
+      fprintf(stdout, "Comedi lock failed for subdevice %d\n", ENC->subdev);
+      comedi_close(ENC->dev);
+      exit(-1);
+    }
+  }
+  else {
+    ENC->dev = ComediDev[index];
+    ENC->subdev = comedi_find_subdevice_by_type(ENC->dev, COMEDI_SUBD_COUNTER, 0);
   }
 
-  ENCdata->channel  = block->intPar[0] ; // channel selection
-  ENCdata->a = NI_GPCT_DISABLED_OTHER_SELECT;
-  ENCdata->b = NI_GPCT_DISABLED_OTHER_SELECT;
-  ENCdata->z = NI_GPCT_DISABLED_OTHER_SELECT;
-  ENCdata->initial_value= 0;
-    
-  ENCdata->subdevice = comedi_find_subdevice_by_type(ENCdata->dev,
-						     COMEDI_SUBD_COUNTER, 0);
-  if(ENCdata->subdevice<0){
-    fprintf(stdout, "Comedi find_subdevice failed (No Incremental counter)\n");
-    comedi_close(ENCdata->dev);
+   if ((n_channels = comedi_get_n_channels(ENC->dev, ENC->subdev)) < 0) {
+    fprintf(stdout, "Comedi get_n_channels failed for subdevice %d\n", ENC->subdev);
+    comedi_unlock(ENC->dev, ENC->subdev);
+    comedi_close(ENC->dev);
     exit(-1);
   }
   
-  retval = ni_gpct_start_encoder(ENCdata->dev, ENCdata->subdevice,
-				 ENCdata->initial_value, ENCdata->a,
-				 ENCdata->b, ENCdata->z);
+  if (ENC->channel >= n_channels) {
+    fprintf(stdout, "Comedi channel not available for subdevice %d\n", ENC->subdev);
+    comedi_unlock(ENC->dev, ENC->subdev);
+    comedi_close(ENC->dev);
+    exit(1);
+  }
+
+  ComediDev_InUse[index]++;
+  ComediDev_CNTInUse[index]++;
+
+  retval = ni_gpct_start_encoder(ENC->dev, ENC->subdev,
+				 ENC->initial_value, ENC->a,
+				 ENC->b, ENC->z);
 
   if(retval < 0){
     fprintf(stdout, "Error by starting encoder\n");
-    comedi_close(ENCdata->dev);
+    comedi_unlock(ENC->dev, ENC->subdev);
+    comedi_close(ENC->dev);
     exit(-1);
   }
-    fprintf(stdout, "Inizialization ok\n");
+  fprintf(stdout, "Inizialization ok\n");
 }
 
 static void inout(python_block *block)
 {
   int * intPar    = block->intPar;
   double *y = block->y[0];
-  ComediEnc *ENCdata = (ComediEnc *)  block->ptrPar;
-  
-}
+  ComediEnc *ENC = (ComediEnc *)  block->ptrPar;
+  comedi_insn insn;
+  lsampl_t encData;
 
-static void update(python_block *block)
-{
-  /* double * realPar = block->realPar; */
-  /* int * intPar    = block->intPar; */
-  /* double *y = block->y[0]; */
-  /* double *u = block->u[0]; */
+  insn.insn = INSN_READ;
+  insn.n = 1;
+  insn.data = &encData;
+  insn.subdev = ENC->subdev;
+  insn.chanspec = CR_PACK(ENC->channel, 0, AREF_GROUND);
+    
+  comedi_do_insn(ENC->dev, &insn);
+      
+  /* comedi_data_read(ENC->dev, ENC->subdev, ENC->channel, , 0, */
+  /* 		   AREF_GROUND,  &encData); */
   
+  *y = (double) ((int) encData);
 }
 
 static void end(python_block *block)
 {
-  /* double * realPar = block->realPar; */
-  /* int * intPar    = block->intPar; */
-  /* double *y = block->y[0]; */
-  /* double *u = block->u[0]; */
+   int index  = block->str[11]-'0';
+  ComediEnc *ENC  = block->ptrPar;
 
+  ComediDev_InUse[index]--;
+  ComediDev_CNTInUse[index]--;
+  if (!ComediDev_CNTInUse[index]) {
+    comedi_unlock(ENC->dev, ENC->subdev);
+  }
+  if (!ComediDev_InUse[index]) {
+    comedi_close(ENC->dev);
+    printf("\nCOMEDI %s closed.\n\n", block->str);
+    ComediDev[index] = NULL;
+  }
 }
 
 void comedi_encoder(int flag, python_block *block)

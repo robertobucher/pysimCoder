@@ -58,6 +58,10 @@ static void init(python_block *block)
   double u, s;
 
   block->ptrPar = malloc(sizeof(ComediAnOut));
+  if (block->ptrPar  == NULL ) {
+    fprintf(stdout, "Error by malloc\n"); 
+    exit(-1); 
+  }
   AO = block->ptrPar;
   AO->channel = intPar[0];
   AO->range = intPar[1];

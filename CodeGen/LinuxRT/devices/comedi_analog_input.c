@@ -51,10 +51,14 @@ static void init(python_block *block)
   ComediAnIn *AI ; //** define the local datastructure 
   int * intPar    = block->intPar;
   int index = block->str[11]-'0';
-   int n_channels;
+  int n_channels;
   const char * board;
   
   block->ptrPar = malloc(sizeof(ComediAnIn));
+  if (block->ptrPar  == NULL ) {
+    fprintf(stdout, "Error by malloc\n"); 
+    exit(-1); 
+  }
   AI = block->ptrPar;
   AI->channel = intPar[0];
   AI->range = intPar[1];
@@ -135,12 +139,10 @@ static void inout(python_block *block)
   x += AI->range_min;
   y[0] = x;
   
-  /* y[0] = comedi_to_phys(data, AI->lnx_range, AI->maxdata); */
 }
 
 static void end(python_block *block)
 {
-  int * intPar    = block->intPar;
   int index  = block->str[11]-'0';
   ComediAnIn *AI  = block->ptrPar;
   

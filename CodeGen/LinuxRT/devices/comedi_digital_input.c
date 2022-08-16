@@ -50,6 +50,10 @@ static void init(python_block *block)
   ComediDigIn *DI;
 
   block->ptrPar = malloc(sizeof(ComediDigIn));
+  if (block->ptrPar  == NULL ) {
+    fprintf(stdout, "Error by malloc\n"); 
+    exit(-1); 
+  }
   DI = block->ptrPar;
   DI->channel = intPar[0];
 

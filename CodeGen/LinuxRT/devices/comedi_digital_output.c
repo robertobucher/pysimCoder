@@ -55,6 +55,10 @@ static void init(python_block *block)
   ComediDigOut *DO;
 
   block->ptrPar = malloc(sizeof(ComediDigOut));
+  if (block->ptrPar  == NULL ) {
+    fprintf(stdout, "Error by malloc\n"); 
+    exit(-1); 
+  }
   DO = block->ptrPar;
   DO->channel = intPar[0];
   DO->threshold = realPar[0];

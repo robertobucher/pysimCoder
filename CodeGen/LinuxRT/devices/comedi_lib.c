@@ -20,3 +20,4 @@ int ComediDev_InUse[MAX_COMEDI_DEVICES] = {0};
 int ComediDev_AIInUse[MAX_COMEDI_DEVICES] = {0};
 int ComediDev_AOInUse[MAX_COMEDI_DEVICES] = {0};
 int ComediDev_DIOInUse[MAX_COMEDI_DEVICES] = {0};
+int ComediDev_CNTInUse[MAX_COMEDI_DEVICES] = {0};
