@@ -23,7 +23,7 @@ def comediPWMBlk(pin, devicename, channel, prescaler, pfiout):
     if size(pin)!=1:
         raise ValueError("Block should have only 1 input port, receivesd %i" % size(pin))
     
-    blk = RCPblk("comedi_pwm_generator",pin,[],[0,0],1,[],[channel,prescaler,pfiout], devicename)
+    blk = RCPblk("comedi_pwm_generator", pin, [], [0, 0], 1, [], [channel, prescaler, pfiout], devicename)
     return blk
     
 

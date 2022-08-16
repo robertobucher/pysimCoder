@@ -1,7 +1,7 @@
 from supsisim.RCPblk import RCPblk
 from scipy import size
 
-def comediDABlk(pin, dev, ch, cr):
+def comediDABlk(pin, dev, ch, cr,ref):
     """
 
     Call:   comediDABlk(pin, dev, ch, cr)
@@ -12,6 +12,7 @@ def comediDABlk(pin, dev, ch, cr):
        dev : Device
        ch : Channel
        cr : Range
+       ref : Reference
 
     Returns
     -------
@@ -22,6 +23,6 @@ def comediDABlk(pin, dev, ch, cr):
     if size(pin) != 1:
         raise ValueError("Block should have 1 input port; received %i !" % size(pin))
 
-    blk = RCPblk('comedi_analog_output',pin,[],[0,0],1,[],[ch, cr],dev)
+    blk = RCPblk('comedi_analog_output', pin, [], [0, 0], 1, [], [ch, cr, ref], dev)
     return blk
 
