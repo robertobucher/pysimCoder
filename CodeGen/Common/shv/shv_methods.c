@@ -158,14 +158,16 @@ int shv_dir(shv_con_ctx_t * shv_ctx, shv_node_t* item, int rid)
 
   met_num = item->dir->methods.count;
 
-  const char * str[met_num];
-
-  for (i = 0; i < met_num; i++)
     {
-      str[i] = shv_dmap_at(item->dir, i)->name;
-    }
+      const char * str[met_num];
 
-  shv_send_str_list(shv_ctx, rid, i, str);
+      for (i = 0; i < met_num; i++)
+        {
+          str[i] = shv_dmap_at(item->dir, i)->name;
+        }
+
+      shv_send_str_list(shv_ctx, rid, i, str);
+    }
 
   return 0;
 }
