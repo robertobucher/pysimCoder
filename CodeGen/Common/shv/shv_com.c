@@ -616,7 +616,7 @@ int shv_process_input(shv_con_ctx_t * shv_ctx)
             }
         }
     }
-  
+
   return i;
 }
 
@@ -657,7 +657,7 @@ static void *shv_process(void * p)
           ret = shv_process_input(shv_ctx);
         }
     }
-  
+
   return NULL;
 }
 
@@ -1117,7 +1117,7 @@ shv_con_ctx_t *shv_com_init(struct shv_node *root)
   pthread_t thrd;
   pthread_attr_t attr;
   struct sched_param schparam;
-  int priority_com; 
+  int priority_com;
 
   if (shv_init_done)
     {
