@@ -117,7 +117,6 @@ int shv_ls(shv_con_ctx_t * shv_ctx, shv_node_t* item, int rid)
       for (i = 0; i < count; i++)
         {
           item_child = shv_node_list_gsa_at(&item->children, i);
-          array[i] = (char *)malloc(strlen(item_child->name) + 1);
           array[i] = item_child->name;
         }
     }
@@ -126,7 +125,6 @@ int shv_ls(shv_con_ctx_t * shv_ctx, shv_node_t* item, int rid)
       i = 0;
       gavl_cust_for_each(shv_node_list_gavl, &item->children, item_child)
         {
-          array[i] = (char *)malloc(strlen(item_child->name) + 1);
           array[i] = item_child->name;
           i++;
         }
@@ -135,6 +133,8 @@ int shv_ls(shv_con_ctx_t * shv_ctx, shv_node_t* item, int rid)
   /* And send it */
 
   shv_send_str_list(shv_ctx, rid, i, array);
+
+  free(array);
 
   return 0;
 }
@@ -158,14 +158,16 @@ int shv_dir(shv_con_ctx_t * shv_ctx, shv_node_t* item, int rid)
 
   met_num = item->dir->methods.count;
 
-  const char * str[met_num];
-
-  for (i = 0; i < met_num; i++)
     {
-      str[i] = shv_dmap_at(item->dir, i)->name;
-    }
+      const char * str[met_num];
 
-  shv_send_str_list(shv_ctx, rid, i, str);
+      for (i = 0; i < met_num; i++)
+        {
+          str[i] = shv_dmap_at(item->dir, i)->name;
+        }
+
+      shv_send_str_list(shv_ctx, rid, i, str);
+    }
 
   return 0;
 }
