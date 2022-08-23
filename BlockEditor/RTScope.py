@@ -48,6 +48,7 @@ class ser_rcvServer(threading.Thread):
         self.mainw = mainw
         self.N = self.mainw.N
         self.st = struct.Struct(self.N*'d')
+        self.daemon = True
        
     def run(self):
         portN =  self.mainw.serCbBox.currentIndex()
@@ -88,6 +89,7 @@ class ser_rcvServer4bytes(threading.Thread):
         self.mainw = mainw
         self.N = self.mainw.N
         self.st = struct.Struct(self.N*'d')
+        self.daemon = True
        
     def run(self):
         portN =  self.mainw.ser4CbBox.currentIndex()
@@ -128,6 +130,7 @@ class tcp_rcvServer(threading.Thread):
         self.mainw = mainw
         self.N = self.mainw.N
         self.st = struct.Struct(self.N*'d')
+        self.daemon = True
 
     def run(self):
         portN =  self.mainw.tcpCbBox.currentIndex()
@@ -182,6 +185,7 @@ class udp_rcvServer(threading.Thread):
         self.mainw = mainw
         self.N = self.mainw.N
         self.st = struct.Struct(self.N*'d')
+        self.daemon = True
 
     def run(self):
         portN =  self.mainw.udpCbBox.currentIndex()
@@ -401,11 +405,16 @@ class MainWindow(QMainWindow, form_class):
     def closeEvent(self,event):          
         try:
             self.port.shutdown()
-            self.port.close()
-            if ckSaveData.isChecked():
-                self.close()
         except:
-            pass
+            print('Shutdown failed')
+            
+        try:
+            self.port.close()
+        except:
+            print('Port close failed')
+       
+        if self.ckSaveData.isChecked():
+            self.f.close()
 
         event.accept()
                     

@@ -151,7 +151,7 @@ static int scope_init(python_block * blk)
   }
   sc->buff_pos = 0;
   snprintf(sc->sock_name,
-	   SOCK_NAME_MAX_LEN, "%s%u", SOCKET_NAME, num_instances);
+	   SOCK_NAME_MAX_LEN, "/tmp/%s%u", SOCKET_NAME, num_instances);
   remove(sc->sock_name);
   blk->ptrPar = (void *)sc;
   /* count instances up */
