@@ -835,6 +835,69 @@ void shv_send_str_list(shv_con_ctx_t *shv_ctx, int rid, int num_str,
 }
 
 /****************************************************************************
+ * Name: shv_send_str_list_it
+ *
+ * Description:
+ *   Send list of strings to the broker.
+ *   This variant uses iterator to access strigs provided by other source.
+ *
+ ****************************************************************************/
+
+void shv_send_str_list_it(shv_con_ctx_t *shv_ctx, int rid, int num_str,
+                          shv_str_list_it_t *str_it)
+{
+  ccpcp_pack_context_init(&shv_ctx->pack_ctx,shv_ctx->shv_data, SHV_BUF_LEN,
+                          shv_overflow_handler);
+
+  for (shv_ctx->shv_send = 0; shv_ctx->shv_send < 2; shv_ctx->shv_send++)
+    {
+      int first_next_over;
+
+      if (shv_ctx->shv_send)
+        {
+          cchainpack_pack_uint_data(&shv_ctx->pack_ctx, shv_ctx->shv_len);
+        }
+
+      shv_ctx->shv_len = 0;
+      cchainpack_pack_uint_data(&shv_ctx->pack_ctx, 1);
+
+      shv_pack_head_reply(shv_ctx, rid);
+
+      cchainpack_pack_imap_begin(&shv_ctx->pack_ctx);
+      cchainpack_pack_int(&shv_ctx->pack_ctx, 2);
+      cchainpack_pack_list_begin(&shv_ctx->pack_ctx);
+
+      first_next_over = 1;
+      for (int i = 0; i < num_str; i++)
+        {
+	  const char *str = NULL;
+
+	  if (first_next_over >= 0)
+	    {
+	      str = str_it->get_next_entry(str_it, first_next_over);
+	      if (str != NULL)
+	        {
+                  first_next_over = 0;
+		}
+	      else
+	        {
+                  first_next_over = -1;
+		}
+	    }
+	  if (str == NULL)
+	    {
+	      str = "";
+	    }
+          cchainpack_pack_string(&shv_ctx->pack_ctx, str, strlen(str));
+        }
+
+      cchainpack_pack_container_end(&shv_ctx->pack_ctx);
+      cchainpack_pack_container_end(&shv_ctx->pack_ctx);
+      shv_overflow_handler(&shv_ctx->pack_ctx, 0);
+    }
+}
+
+/****************************************************************************
  * Name: shv_send_error
  *
  * Description:

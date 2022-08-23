@@ -91,50 +91,21 @@ const shv_dmap_t shv_root_dmap = {.methods = {.items = (void **)shv_root_dmap_it
 int shv_ls(shv_con_ctx_t * shv_ctx, shv_node_t* item, int rid)
 {
   int count;
-  const char **array;
-  shv_node_t *item_child;
-  int i;
+  shv_node_list_names_it_t names_it;
 
   shv_unpack_data(&shv_ctx->unpack_ctx, 0, 0);
 
-  /* Get item's children */
+  /* Get item's children count */
 
-  if (item->children.mode & SHV_NLIST_MODE_GSA)
-    {
-      count = item->children.list.gsa.root.count;
-    }
-  else
-    {
-      count = item->children.list.gavl.count;
-    }
-
-  array = malloc(count * sizeof(char *));
+  count = shv_node_list_count(&item->children);
 
   /* Find each child */
 
-  if (item->children.mode & SHV_NLIST_MODE_GSA)
-    {
-      for (i = 0; i < count; i++)
-        {
-          item_child = shv_node_list_gsa_at(&item->children, i);
-          array[i] = item_child->name;
-        }
-    }
-  else
-    {
-      i = 0;
-      gavl_cust_for_each(shv_node_list_gavl, &item->children, item_child)
-        {
-          array[i] = item_child->name;
-          i++;
-        }
-    }
+  shv_node_list_names_it_init(&item->children, &names_it);
 
   /* And send it */
 
-  shv_send_str_list(shv_ctx, rid, i, array);
-
-  free(array);
+  shv_send_str_list_it(shv_ctx, rid, count, &names_it.str_it);
 
   return 0;
 }
