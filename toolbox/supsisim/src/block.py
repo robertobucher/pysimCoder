@@ -128,12 +128,6 @@ class Block(QGraphicsPathItem):
             pt = self.gridPos(pt)
             super(Block, self).setPos(pt)
         
-    def gridPos(self, pt):
-         gr = GRID
-         x = gr * ((pt.x() + gr /2) // gr)
-         y = gr * ((pt.y() + gr /2) // gr)
-         return QPointF(x,y)
-
     def clone(self, pt):
         b = Block(None, self.scene, self.name, self.inp, self.outp, 
                       self.insetble, self.outsetble, self.icon, self.params, self.helpTxt, self.width, self.flip)
@@ -244,3 +238,10 @@ class Block(QGraphicsPathItem):
 
         b.scene.removeItem(b)
         return b
+
+    def gridPos(self, pt):
+         gr = GRID
+         x = gr * ((pt.x() + gr /2) // gr)
+         y = gr * ((pt.y() + gr /2) // gr)
+         return QPointF(x,y)
+

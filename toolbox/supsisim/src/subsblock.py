@@ -124,10 +124,11 @@ class subsBlock(Block):
         c.pos1 = port1.scenePos()
         c.port2 = port2
         c.pos2 = port2.scenePos()
-        p1 = QPointF((c.pos1.x()+c.pos2.x())/2, c.pos1.y())
-        p2 = QPointF((c.pos1.x()+c.pos2.x())/2, c.pos2.y())
+        p1 = self.gridPos(QPointF((c.pos1.x()+c.pos2.x())/2, c.pos1.y()))
+        p2 = self.gridPos(QPointF((c.pos1.x()+c.pos2.x())/2, c.pos2.y()))
         c.connPoints.append(p1)
         c.connPoints.append(p2)
+        c.update_ports_from_pos()
         return c
 
     def setIOPorts(self):
@@ -262,5 +263,11 @@ class subsBlock(Block):
                 pass
 
         return items
+
+    def gridPos(self, pt):
+         gr = GRID
+         x = gr * ((pt.x() + gr /2) // gr)
+         y = gr * ((pt.y() + gr /2) // gr)
+         return QPointF(x,y)
 
 

@@ -144,10 +144,10 @@ class Scene(QGraphicsScene):
 
     def old_MsgToDgm(self, msg, dataDict):
     # Required for loading files saved with previous format
-#         QMessageBox.warning(self.mainw,'Old file format',
-#         'This file is in an old format that will\n  \
-#         no more supported in the future!\n \
-#         Please save it to transform in the new format!')
+        QMessageBox.warning(self.mainw,'Old file format',
+        'This file is in an old format that will\n  \
+        no more supported in the future!\n \
+        Please save it to transform in the new format!')
         root = etree.fromstring(msg)
 
         init = {'code': 'pysimCoder',
@@ -169,7 +169,7 @@ class Scene(QGraphicsScene):
             Tf=''
         prio = sim.findtext('Priority')
         if prio==None:
-            self.prio=''
+            prio=''
         simulate= {
                 'template' : sim.findtext('Template'),
                 'Ts' : sim.findtext('Ts'),

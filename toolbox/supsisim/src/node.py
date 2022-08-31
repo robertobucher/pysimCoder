@@ -52,7 +52,6 @@ class Node(QGraphicsPathItem):
          x = gr * ((pt.x() + gr /2) // gr)
          y = gr * ((pt.y() + gr /2) // gr)
          return QPointF(x,y)
-     
 
         
 

@@ -436,4 +436,3 @@ class Connection(QGraphicsPathItem):
          y = gr * ((pt.y() + gr /2) // gr)
          return QPointF(x,y)
 
-
