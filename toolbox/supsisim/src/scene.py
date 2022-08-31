@@ -1,17 +1,20 @@
-from PyQt5.QtWidgets import QGraphicsItem, QGraphicsScene, QGraphicsView
+from PyQt5.QtWidgets import QGraphicsItem, QGraphicsScene, QGraphicsView, QMessageBox
 from PyQt5.QtGui import QPainter
 from PyQt5.QtCore import QRectF, QPointF, QSizeF, QEvent
 
 from supsisim.block import Block
+from supsisim.subsblock import subsBlock
 from supsisim.port import Port, InPort, OutPort
 from supsisim.connection import Connection
-from supsisim.editor import IDLE
 from supsisim.dialg import RTgenDlg, SHVDlg
 from supsisim.const import pyrun, TEMP, respath, BWmin
 from lxml import etree
 import os
 import subprocess
 import time
+import json
+
+IDLE = 0
 
 class GraphicsView(QGraphicsView):
     def __init__(self, parent=None):
@@ -71,55 +74,63 @@ class Scene(QGraphicsScene):
         if event.mimeData().hasText():
             self.DgmToUndo()
             msg = event.mimeData().text()
-            root = etree.fromstring(msg)
-            item = root.findall('block')[0]
-            b = Block(None, self, item.findtext('name'),
-                      int(item.findtext('inp')), int(item.findtext('outp')),
-                      item.findtext('inset')=='1', item.findtext('outset')=='1',
-                      item.findtext('icon'),
-                      item.findtext('params'), item.findtext('help'),
-                      int(item.findtext('width')), item.findtext('flip')=='1' )
-            b.setPos(event.scenePos())
+            blk = json.loads(msg)
+            blk['pos'] = (event.scenePos().x(), event.scenePos().y())
+            self.loadBlock(blk)
 
-    def DgmToMsg(self):
+    def DgmToDict(self, dataDict):
+        # Transform the block diagram into a python dict
+        init = {'code': 'pysimCoder',
+                'ver' : '0.91',
+                'date' : time.strftime("%d.%m.%Y - %H:%M:%S"),
+            }
+        dataDict['init'] = init
+
+        keys = ['template', 'Ts', 'AddObj', 'script', 'Tf', 'prio']
+        vals = [self.template, self.Ts, self.addObjs, self.script, self.Tf, self.prio]
+        dataDict['simulate'] = dict(zip(keys, vals))
+
+        keys = ['used', 'ip', 'port', 'user', 'passwd', 'devid', 'mount', 'tree']
+        vals = [str(self.SHV.used), self.SHV.ip, self.SHV.port, self.SHV.user, self.SHV.passw,
+                self.SHV.devid, self.SHV.mount, self.SHV.tree]
+        dataDict['SHV'] = dict(zip(keys, vals))
+
+        self.saveItems(dataDict)
+
+    def saveItems(self, dataDict):
         items = self.items()
+
         dgmBlocks = []
+        dgmSubsystem = []
         dgmConnections = []
+
         for item in items:
-            if isinstance(item, Block):
+            if isinstance(item, subsBlock):
+                dgmSubsystem.append(item)
+            elif isinstance(item, Block):
                 dgmBlocks.append(item)
             elif isinstance(item, Connection):
                 dgmConnections.append(item)
             else:
                 pass
 
-        root = etree.Element('root')
-        vers = etree.SubElement(root,'pysimCoder')
-        etree.SubElement(vers, 'pysimCoderVersion').text = '0.9'
-        now = etree.SubElement(root,'Date')
-        etree.SubElement(now, 'SavingDate').text = time.strftime("%d.%m.%Y - %H:%M:%S")
-        sim = etree.SubElement(root,'Simulation')
-        etree.SubElement(sim,'Template').text = self.template
-        etree.SubElement(sim,'Ts').text = self.Ts
-        etree.SubElement(sim,'AddObj').text = self.addObjs
-        etree.SubElement(sim,'ParScript').text = self.script
-        etree.SubElement(sim,'Tf').text = self.Tf
-        etree.SubElement(sim,'Priority').text = self.prio
-        shv = etree.SubElement(root,'SHV')
-        etree.SubElement(shv,'SHVused').text = str(self.SHV.used)
-        etree.SubElement(shv,'SHVip').text = self.SHV.ip
-        etree.SubElement(shv,'SHVport').text = self.SHV.port
-        etree.SubElement(shv,'SHVuser').text = self.SHV.user
-        etree.SubElement(shv,'SHVpassw').text = self.SHV.passw
-        etree.SubElement(shv,'SHVdevid').text = self.SHV.devid
-        etree.SubElement(shv,'SHVmount').text = self.SHV.mount
-        etree.SubElement(shv,'SHVtree').text = self.SHV.tree
+        blk = []
         for item in dgmBlocks:
-            item.save(root)
+            b = item.save()
+            blk.append(b)
+        dataDict['blocks'] = blk
+
+        conn = []
         for item in dgmConnections:
-            item.save(root)
-        msg = etree.tostring(root, pretty_print=True)
-        return msg
+            c = item.save()
+            conn.append(c)
+        dataDict['connections'] = conn
+
+        subs = []
+        for item in dgmSubsystem:
+            s = item.save()
+            subs.append(s)
+        dataDict['subsystems'] = subs
 
     def clearDgm(self):
         items = self.items()
@@ -131,25 +142,43 @@ class Scene(QGraphicsScene):
             self.removeItem(item)
         self.blocks.clear()
 
-    def MsgToDgm(self, msg):
-        self.clearDgm()
+    def old_MsgToDgm(self, msg, dataDict):
+    # Required for loading files saved with previous format
+#         QMessageBox.warning(self.mainw,'Old file format',
+#         'This file is in an old format that will\n  \
+#         no more supported in the future!\n \
+#         Please save it to transform in the new format!')
         root = etree.fromstring(msg)
-        sim = root.findall('Simulation')[0]
-        self.template = sim.findtext('Template')
-        self.Ts = sim.findtext('Ts')
-        self.addObjs = sim.findtext('AddObj')
-        if self.addObjs==None or self.addObjs=='':
-            self.addObjs=''
-        self.script = sim.findtext('ParScript')
-        if self.script==None or self.script=='':
-            self.script=''
-        self.Tf = sim.findtext('Tf')
-        if self.Tf==None:
-            self.Tf=''
-        self.prio = sim.findtext('Priority')
-        if self.prio==None:
-            self.prio=''
 
+        init = {'code': 'pysimCoder',
+                'ver' : '0.91',
+                'date' : time.strftime("%d.%m.%Y - %H:%M:%S"),
+            }
+        dataDict['init'] = init
+
+        sim = root.findall('Simulation')[0]
+
+        addObjs = sim.findtext('AddObj')
+        if addObjs==None or addObjs=='':
+            addObjs=''
+        script = sim.findtext('ParScript')
+        if script==None or script=='':
+            script=''
+        Tf = sim.findtext('Tf')
+        if Tf==None:
+            Tf=''
+        prio = sim.findtext('Priority')
+        if prio==None:
+            self.prio=''
+        simulate= {
+                'template' : sim.findtext('Template'),
+                'Ts' : sim.findtext('Ts'),
+                'AddObj' : addObjs,
+                'script' : script,
+                'Tf' : Tf,
+                'prio' : prio,
+                }
+        dataDict['simulate'] = simulate
         """
         We need to acess SHV field with try/except to keep support
         for older pysimCoder diagrams.
@@ -157,52 +186,147 @@ class Scene(QGraphicsScene):
 
         try:
             shv = root.findall('SHV')[0]
-            self.SHV.used = (shv.findtext('SHVused') == "True")
-            self.SHV.ip = shv.findtext('SHVip')
-            self.SHV.port = shv.findtext('SHVport')
-            self.SHV.user = shv.findtext('SHVuser')
-            self.SHV.passw = shv.findtext('SHVpassw')
-            self.SHV.devid = shv.findtext('SHVdevid')
-            self.SHV.mount = shv.findtext('SHVmount')
-            self.SHV.tree = shv.findtext('SHVtree')
+            used = (shv.findtext('SHVused') == "True")
+            ip = shv.findtext('SHVip')
+            port = shv.findtext('SHVport')
+            user = shv.findtext('SHVuser')
+            passw = shv.findtext('SHVpassw')
+            devid = shv.findtext('SHVdevid')
+            mount = shv.findtext('SHVmount')
+            tree = shv.findtext('SHVtree')
+            keys = ['used', 'ip', 'port', 'user', 'passwd', 'devid', 'mount', 'tree']
+            vals = [used, ip, port, user, passw, devid, mount, tree]
+            shv = dict(zip(keys, vals))
+            dataDict['SHV'] = shv
         except:
             None
 
         blocks = root.findall('block')
+        blk = []
         for item in blocks:
-            self.loadBlock(item)
+            b = self.getBlock(item)
+            blk.append(b)
+        dataDict['blocks'] = blk
+
         connections = root.findall('connection')
+        conn = []
         for item in connections:
-            self.loadConn(item)
+            c = self.getConnection(item)
+            conn.append(c)
+        dataDict['connections'] = conn
+
+    def getBlock(self, item):
+        pos = (float(item.findtext('posX')), float(item.findtext('posY')))
+        vals = [item.findtext('name'), int(item.findtext('inp')), int(item.findtext('outp')),
+                item.findtext('inset')=='1', item.findtext('outset')=='1', item.findtext('icon'),
+                item.findtext('params'), item.findtext('help'),
+                int(item.findtext('width')), item.findtext('flip')=='1', pos]
+        keys = ['name', 'inp', 'outp', 'inset', 'outset', 'icon', 'params', 'help', 'width', 'flip', 'pos']
+        return dict(zip(keys, vals))
+
+    def getConnection(self, item):
+        pos1 = (float(item.findtext('pos1X')), float(item.findtext('pos1Y')))
+        pos2 = (float(item.findtext('pos2X')), float(item.findtext('pos2Y')))
+        points = item.findall('pt')
+        pts = []
+        for el in points:
+            pt = el.text.split(',')
+            pt = (float(pt[0]), float(pt[1]))
+            pts.append(pt)
+        keys = ['pos1', 'pos2', 'points']
+        vals = [pos1, pos2, pts]
+        return dict(zip(keys, vals))
+
+    def DictToDgm(self, dataDict, dx = 0, dy = 0):
+        # Transform the file dict into a block diagram
+        try:
+            self.template = dataDict['simulate']['template']
+            self.Ts = dataDict['simulate']['Ts']
+            self.addObjs = dataDict['simulate']['AddObj']
+            self.script = dataDict['simulate']['script']
+            self.Tf = dataDict['simulate']['Tf']
+            self.prio = dataDict['simulate']['prio']
+        except:
+            pass
+
+        """
+        We need to access SHV field with try/except to keep support
+        for older pysimCoder diagrams.
+        """
+        try:
+            self.SHV.used = dataDict['SHV']['used']
+            self.SHV.ip = dataDict['SHV']['ip']
+            self.SHV.port = dataDict['SHV']['port']
+            self.SHV.user = dataDict['SHV']['user']
+            self.SHV.passw = dataDict['SHV']['passwd']
+            self.SHV.devid = dataDict['SHV']['devid']
+            self.SHV.mount = dataDict['SHV']['mount']
+            self.SHV.tree = dataDict['SHV']['tree']
+        except:
+            pass
+
+        try:
+            for item in dataDict['blocks']:
+                self.loadBlock(item, dx, dy)
+        except:
+            pass
+
+        try:
+            for item in dataDict['subsystems']:
+                self.loadSubsystem(item, dx, dy)
+        except:
+            pass
+
+        try:
+            for item in dataDict['connections']:
+                self.loadConn(item, dx, dy)
+        except:
+            pass
+
         try:
             self.mainw.editor.redrawNodes()
         except:
             pass
 
-    def newDgm(self):
-        self.clearDgm()
-        self.addObjs=''
-        self.script=''
-        self.Tf='10.0'
-        self.undoList = []
+    def loadBlock(self, item, dx = 0, dy = 0):
+        b = Block(None, self, item['name'], item['inp'], item['outp'],
+                  item['inset'], item['outset'], item['icon'],
+                  item['params'], item['help'], item['width'], item['flip'] )
+
+        b.setPos(item['pos'][0]+dx, item['pos'][1]+dy)
+
+    def loadConn(self, item, dx = 0.0, dy = 0.0):
+        c = Connection(None, self)
+        c.load(item, dx, dy)
+
+    def loadSubsystem(self, subs, dx = 0, dy = 0):
+        item = subs['block']
+        b = subsBlock(None, self, item['name'], item['inp'], item['outp'],
+                  item['inset'], item['outset'], item['icon'],
+                  item['params'], item['help'], item['width'], item['flip'] )
+
+        b.setPos(item['pos'][0]+dx, item['pos'][1]+dy)
+        b.load(subs)
 
     def clearLastUndo(self):
         if len(self.undoList) > 1:
             msg = self.undoList.pop()
 
     def DgmToUndo(self):
+        fileDict = {}
         self.mainw.modified = True
-        msg = self.DgmToMsg()
-        self.undoList.append(msg)
+        self.DgmToDict(fileDict)
+        self.undoList.append(fileDict)
 
     def undoDgm(self):
         if len(self.undoList) > 1:
-            msg = self.undoList.pop()
+            dgm = self.undoList.pop()
         else:
-            msg = self.undoList[0]
+            dgm = self.undoList[0]
             self.mainw.modified = False
 
-        self.MsgToDgm(msg)
+        self.clearDgm()
+        self.DictToDgm(dgm)
         self.mainw.editor.state = IDLE
 
     def updateDgm(self):
@@ -213,27 +337,29 @@ class Scene(QGraphicsScene):
                 pos = item.pos()
                 item.setPos(pos)
 
-    def saveDgm(self,fname):
+    def saveDgm(self, fname):
+        fileDict = {}
+        self.DgmToDict(fileDict)
         f = open(fname,'w')
-        msg = self.DgmToMsg()
-        msg = msg.decode()
-        f.write(msg)
+        js = json.dumps(fileDict)
+        f.write(js)
         f.close()
 
     def loadDgm(self, fname):
         f = open(fname,'r')
         msg = f.read()
         f.close()
-        self.MsgToDgm(msg)
-        self.undoList = [msg]
+        try:
+            root = etree.fromstring(msg)
+            fileDict = {}
+            self.clearDgm()
+            self.old_MsgToDgm(msg, fileDict)
+        except:
+            fileDict = json.loads(msg)
+            self.clearDgm()
 
-    def loadBlock(self, item, dx = 0, dy = 0):
-        b = Block(None, self, item.findtext('name'),
-                  int(item.findtext('inp')), int(item.findtext('outp')),
-                  item.findtext('inset')=='1', item.findtext('outset')=='1', item.findtext('icon'),
-                  item.findtext('params'), item.findtext('help'),
-                  int(item.findtext('width')), item.findtext('flip')=='1' )
-        b.setPos(float(item.findtext('posX'))+dx, float(item.findtext('posY'))+dy)
+        self.DictToDgm(fileDict)
+        self.undoList = [fileDict]
 
     def find_itemAt(self, pos):
         items = self.items(QRectF(pos-QPointF(1,1), QSizeF(3,3)))
@@ -241,10 +367,6 @@ class Scene(QGraphicsScene):
             if isinstance(item, QGraphicsItem) and not isinstance(item, Connection):
                 return item
         return None
-
-    def loadConn(self, item, dx = 0.0, dy = 0.0):
-        c = Connection(None, self)
-        c.load(item, dx, dy)
 
     def setParamsBlk(self):
         self.mainw.paramsBlock()
@@ -291,16 +413,101 @@ class Scene(QGraphicsScene):
         self.SHV.mount = str(dialog.SHVmount.text())
         self.SHV.tree = str(dialog.SHVtree.currentText())
 
-    def codegen(self, flag):
-        try:
-            items = self.items()
-            dgmBlocks = []
-            for item in items:
-                if isinstance(item, Block):
-                    dgmBlocks.append(item)
-                else:
+    def findAllItems(self, scene):
+        items = []
+        for item in scene.items():
+            if isinstance(item, subsBlock):
+                blk = item.getInternalBlocks()
+                for el in blk:
+                    items.append(el)
+            elif isinstance(item, Block):
+                items.append(item)
+
+            else:
+                pass
+
+        return items
+
+    def printTopo(self, items):
+        for item in items:
+            print(item)
+            for p in item.childItems():
+                print(p)
+                try:
+                    for c in p.connections:
+                        print(c)
+                except:
                     pass
 
+    def cleanBlkList(self, items):
+        item2rem = []
+        for item in items:
+            if item.params == 'IOBlk':
+                item2rem.append(item)
+                pin, pout = item.getPorts()
+                pInSub, pOutSub = item.subsParent.getPorts()
+                for p in pin:
+                    # This is a subsystem output!
+                    n = int(item.name.lstrip('out_'))
+                    for c in p.connections:
+                        prev_port = c.port1
+                        portSub =  pOutSub[n-1]
+                        for cs in portSub.connections:
+                            newConn = Connection(None, item.scene)
+                            newConn.port1 = c.port1
+                            newConn.pos1 = c.pos1
+                            newConn.port2 = cs.port2
+                            newConn.pos2 = cs.pos2
+                            prev_port.connections.append(newConn)
+                            try:
+                                prev_port.connections.remove(c)
+                            except:
+                                pass
+                            next_port = cs.port2
+                            next_port.connections.append(newConn)
+                            try:
+                                next_port.connections.remove(cs)
+                            except:
+                                pass
+                            item.scene.removeItem(newConn)
+
+                for p in pout:
+                    # This is a subsystem input!
+                    n = int(item.name.lstrip('in_'))
+                    for c in p.connections:
+                        next_port = c.port2
+                        portSub =  pInSub[n-1]
+                        for cs in portSub.connections:
+                            newConn = Connection(None, item.scene)
+                            newConn.port1 = cs.port1
+                            newConn.pos1 = cs.pos1
+                            newConn.port2 = c.port2
+                            newConn.pos2 = c.pos2
+                            next_port.connections.append(newConn)
+                            try:
+                                next_port.connections.remove(c)
+                            except:
+                                pass
+                            prev_port = cs.port1
+                            prev_port.connections.append(newConn)
+                            try:
+                                prev_port.connections.remove(cs)
+                            except:
+                                pass
+                            item.scene.removeItem(newConn)
+
+        for item in item2rem:
+            items.remove(item)
+
+        return items
+
+    def codegen(self, flag):
+        dgmBlocks = self.findAllItems(self)
+
+        # Clean Subsystems and reattach
+        dgmBlocks = self.cleanBlkList(dgmBlocks)
+#         self.printTopo(dgmBlocks)
+        try:
             nid = 1
             for item in dgmBlocks:
                 for thing in item.childItems():
@@ -322,7 +529,8 @@ class Scene(QGraphicsScene):
                                 raise ValueError('Problem in diagram: outputs connected together!')
                         thing.nodeID = c.port1.nodeID
 
-            self.generateCCode()
+            self.generateCCode(dgmBlocks)
+
             self.mainw.statusLabel.setText('Code generation OK!')
             try:
                 os.mkdir('./' + self.mainw.filename + '_gen')
@@ -340,6 +548,8 @@ class Scene(QGraphicsScene):
         except:
             self.mainw.statusLabel.setText('Error by Code generation!')
             return False
+        for item in dgmBlocks:
+            item.remove()
 
     def blkInstance(self, item):
         ln = item.params.split('|')
@@ -382,7 +592,7 @@ class Scene(QGraphicsScene):
         txt = txt.replace('(, ', '(')
         return txt, parArr
 
-    def generateCCode(self):
+    def generateCCode(self, items):
         try:
             f = open(self.script,'r')
             txt = f.read()
@@ -391,7 +601,7 @@ class Scene(QGraphicsScene):
         except:
             txt = ''
 
-        items = self.items()
+#         items = self.items()
         dir1 = respath + 'blocks/rcpBlk'
         txt += 'import os\n\n'
 

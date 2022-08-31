@@ -3,9 +3,8 @@ from PyQt5.QtGui import QPainterPath, QPen, QImage, QTransform
 from PyQt5.QtCore import Qt, QPointF
 
 from supsisim.port import Port, InPort, OutPort
+from supsisim.connection import Connection
 from supsisim.const import GRID, PW, LW, BWmin, BHmin, PD, respath
-
-from lxml import etree
 
 class Block(QGraphicsPathItem):
     """A block holds ports that can be connected to."""
@@ -49,7 +48,6 @@ class Block(QGraphicsPathItem):
         txt += 'Output ports :' + self.outp.__str__() + '\n'
         txt += 'Icon         :' + self.icon.__str__() + '\n'
         txt += 'Params       :' + self.params.__str__() + '\n'
-        txt += 'Help            :' + self.helpTxt.__str__() + '\n'        
         return txt
         
     def setup(self):
@@ -137,7 +135,7 @@ class Block(QGraphicsPathItem):
          return QPointF(x,y)
 
     def clone(self, pt):
-        b = Block(None, self.scene, self.name, self.inp, self.outp,
+        b = Block(None, self.scene, self.name, self.inp, self.outp, 
                       self.insetble, self.outsetble, self.icon, self.params, self.helpTxt, self.width, self.flip)
         b.setPos(self.scenePos().__add__(pt))
 
@@ -184,29 +182,65 @@ class Block(QGraphicsPathItem):
         else:
             self.label.setTransform(QTransform.fromScale(1,1))          
     
-    def save(self, root):
-        blk = etree.SubElement(root,'block')
-        etree.SubElement(blk,'name').text = self.name
-        etree.SubElement(blk,'inp').text = self.inp.__str__()
-        etree.SubElement(blk,'outp').text = self.outp.__str__()
-        
-        if self.insetble:
-            etree.SubElement(blk,'inset').text = '1'
-        else:
-            etree.SubElement(blk,'inset').text = '0'
-        if self.outsetble:
-            etree.SubElement(blk,'outset').text = '1'
-        else:
-            etree.SubElement(blk,'outset').text = '0'
+    def save(self):
+        pos = (self.pos().x(), self.pos().y())
+        vals = [self.name, self.inp, self.outp, self.insetble, self.outsetble, 
+                self.icon, self.params, self.helpTxt, self.width, self.flip, pos]
+        keys = ['name', 'inp', 'outp', 'inset', 'outset', 'icon', 'params', 'help', 'width', 'flip', 'pos']
+        return dict(zip(keys, vals))
 
-            
-        etree.SubElement(blk,'icon').text = self.icon
-        etree.SubElement(blk,'params').text = self.params
-        etree.SubElement(blk,'help').text = self.helpTxt
-        etree.SubElement(blk,'width').text = self.width.__str__()
-        if self.flip:
-            etree.SubElement(blk,'flip').text = '1'
-        else:
-            etree.SubElement(blk,'flip').text = '0'
-        etree.SubElement(blk,'posX').text = self.pos().x().__str__()
-        etree.SubElement(blk,'posY').text = self.pos().y().__str__()
+    def getPorts(self):
+        InP = []
+        OutP = []
+        for item in self.childItems():
+            if isinstance(item, InPort):
+                InP.append(item)
+            elif isinstance(item, OutPort):
+                OutP.append(item)
+            else:
+                pass
+
+        InP.sort(key=lambda p: p.pos().y())
+        OutP.sort(key=lambda p: p.pos().y())
+        return InP, OutP
+
+    def cloneBlkWithPorts(self):
+        # create a perfect copy of a block
+        b = Block(None, self.scene, self.name, self.inp, self.outp,
+                      self.insetble, self.outsetble, self.icon, self.params,
+                      self.helpTxt, self.width, self.flip)
+        b.name = self.name
+
+        inp1, outp1 = self.getPorts()
+        inp2, outp2 = b.getPorts()
+
+        for n in range(0, len(inp1)):
+            for c in inp1[n].connections:
+                newConn = Connection(None, self.scene)
+                newConn.port1 = c.port1
+                newConn.pos1 = c.pos1
+                newConn.port2 = inp2[n]
+                newConn.pos2 = c.pos2
+                for pt in c.connPoints:
+                    newConn.connPoints.append(pt)
+                inp2[n].connections.append(newConn)
+                if c in c.port1.connections:
+                    c.port1.connections.remove(c)
+                    c.port1.connections.append(newConn)                    
+                self.scene.removeItem(newConn)
+
+        for n in range(0, len(outp1)):
+            for c in outp1[n].connections:
+                newConn = Connection(None, self.scene)
+                newConn.port1 = outp2[n]
+                newConn.pos1 = c.pos2
+                newConn.port2 = c.port2
+                newConn.pos2 = c.pos2
+                outp2[n].connections.append(newConn)
+                if c in c.port2.connections:
+                    c.port2.connections.remove(c)
+                    c.port2.connections.append(newConn)                    
+                self.scene.removeItem(newConn)
+
+        b.scene.removeItem(b)
+        return b

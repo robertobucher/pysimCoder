@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 import os
+import json
 
 from PyQt5.QtWidgets import QGraphicsScene, QMainWindow, QWidget, QVBoxLayout, \
     QHBoxLayout, QGraphicsView,QTabWidget, QApplication, QFileDialog, \
@@ -14,7 +15,6 @@ from supsisim.pyEdit import NewEditorMainWindow
 
 import os
 import json
-from lxml import etree
 
 from supsisim.block import Block
 from supsisim.const import respath, BWmin
@@ -45,12 +45,10 @@ class CompViewer(QGraphicsScene):
 
     def mouseMoveEvent(self, event):
         if event.buttons() == Qt.LeftButton and isinstance(self.actComp, Block):
-            root = etree.Element('root')
-            self.actComp.save(root)
-            msg = etree.tostring(root, pretty_print=True)           
+            b = self.actComp.save()
+            msg = json.dumps(b)
             mimeData = QMimeData()
-            mimeData.setText(msg.decode())
-            
+            mimeData.setText(msg)
             drag = QDrag(self.parent)
             drag.setMimeData(mimeData)
             drag.exec_(Qt.CopyAction)

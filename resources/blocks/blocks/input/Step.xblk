@@ -7,5 +7,5 @@
   "stout": 0,
   "icon": "STEP",
   "params": "stepBlk|Step Time: 1: double|Initial Value: 0: double|Final Value: 1: double",
-  "help": "This block implements a step input signal.\n\nParameters:\nStep Tme:\nInitial value:\nFinal value:"
+  "help": "This block implements a step input signal.\n\nParameters:\nStep Time:\nInitial value:\nFinal value:"
 }

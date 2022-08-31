@@ -9,15 +9,16 @@ from PyQt5.QtPrintSupport import QPrinter, QPrintDialog
 from PyQt5.QtCore import Qt, QPointF, QFileInfo, QMimeData, QSettings, QVariant
 
 from supsisim.block import Block
+from supsisim.subsblock import subsBlock
 from supsisim.connection import Connection
 from supsisim.editor import Editor
 from supsisim.scene import Scene, GraphicsView
 from supsisim.dialg import IO_Dialog
 from supsisim.const import respath, pycmd, DP
 
-from lxml import etree
+import json
 
-DEBUG = False
+DEBUG = True
 
 class NewEditorMainWindow(QMainWindow):
     def __init__(self, fname, mypath, parent):
@@ -250,49 +251,79 @@ class NewEditorMainWindow(QMainWindow):
         self.scene.selection = self.scene.items(p)
         if self.scene.selection == []:
             self.scene.selection = self.scene.selectedItems()
+            
         dgmBlocks = []
         dgmConnections = []
-        for item in self.scene.selection:
-            if isinstance(item, Block):
+        dgmSubsystems = []                
+        
+        items = self.scene.selection
+        for item in items:
+            if isinstance(item, subsBlock):
+                dgmSubsystems.append(item)
+            elif isinstance(item, Block):
                 dgmBlocks.append(item)
-        for item in self.scene.selection:
+            else:
+                pass
+        for item in items:                
             if isinstance(item, Connection):
-                if item.port1.parent in dgmBlocks and item.port2.parent in dgmBlocks:
+                if (item.port1.parent in dgmBlocks or \
+                item.port1.parent in dgmSubsystems) and \
+                (item.port2.parent in dgmBlocks or \
+                item.port2.parent in dgmSubsystems):
                     dgmConnections.append(item)
-
-        root = etree.Element('root')
+                
+        data = {}
+        
+        blk = []
         for item in dgmBlocks:
-            item.save(root)
+            b = item.save()
+            blk.append(b)
+        data['blocks'] = blk
+
+        conn = []
         for item in dgmConnections:
-            item.save(root)
-        msg = etree.tostring(root, pretty_print=True)
+            c = item.save()
+            conn.append(c)
+        data['connections'] = conn
+
+        subs = []
+        for item in dgmSubsystems:
+            s = item.save()
+            subs.append(s)
+        data['subsystems'] = subs
+        
+        msg = json.dumps(data)
         clipboard = QApplication.clipboard()
-        mimeData = QMimeData()
-        mimeData.setText(msg.decode())
-        clipboard.setMimeData(mimeData)
+        clipboard.setText(msg)
 
     def cutAct(self):
         self.copyAct()
         self.editor.deleteSelected()
-        self.editor.redrawNodes()
             
     def pasteAct(self):
         self.scene.DgmToUndo()
         try:
             msg = QApplication.clipboard().text()
-            root = etree.fromstring(msg)
-            blocks = root.findall('block')
-            for item in blocks:
-                self.scene.loadBlock(item, DP, DP)
-            connections = root.findall('connection')
-            for item in connections:
-                self.scene.loadConn(item, DP, DP)
+            data = json.loads(msg)
             try:
-                self.editor.redrawNodes()
+                for item in data['blocks']:
+                    self.scene.loadBlock(item, DP, DP)
+            except:
+                pass
+            
+            try:
+                for item in data['connections']:
+                    self.scene.loadConn(item, DP, DP)
+            except:
+                pass
+                
+            try:
+                self.redrawNodes()
             except:
                 pass
         except:
             pass
+        self.editor.pasteBlock()
         
     def undoAct(self):
          self.scene.undoDgm()
@@ -339,10 +370,6 @@ class NewEditorMainWindow(QMainWindow):
         else:
             filename = self.filename
             if filename != '':
-                fname = QFileInfo(filename)
-                self.filename = str(fname.baseName())
-                self.filePath = str(fname.absolutePath())
-                self.setWindowTitle(self.filename)
                 self.scene.saveDgm(self.getFullFileName())
                 self.modified = False
 
@@ -448,6 +475,9 @@ class NewEditorMainWindow(QMainWindow):
 
     def setSHVAct(self):
         self.scene.SHVSetDlg()
+        
+    def getScene(self):
+        return Scene(self)
 
     def closeEvent(self,event):          
         try:
@@ -474,4 +504,4 @@ class NewEditorMainWindow(QMainWindow):
             
         settings.setValue('RecentFolders', recFolders)
         self.library.closeWindow(self)
-                
+                       

@@ -27,7 +27,7 @@ class Port(QGraphicsPathItem):
             for conn in self.connections:
                 try:
                     conn.update_pos_from_ports()
-                    #conn.redrawConnection()                                       
+                    #conn.redrawConnection()
                 except AttributeError:
                     self.connections.remove(conn)
         return value
@@ -39,7 +39,7 @@ class Port(QGraphicsPathItem):
         return False
 
     def remove(self):
-        clist = self.connections.copy()
+        clist = self.connections
         for el in clist:
             el.remove()
         self.scene().removeItem(self)
@@ -50,7 +50,7 @@ class Port(QGraphicsPathItem):
             self.setTransform(QTransform.fromScale(-1, 1))
         else:
             self.setTransform(QTransform.fromScale(1, 1))
-                                             
+
 class InPort(Port):
     def __init__(self, parent, scene):
         super(InPort, self).__init__(parent, scene)
@@ -61,12 +61,12 @@ class InPort(Port):
         txt += 'Node ID :' + self.nodeID + '\n'
         txt += 'Connections: ' + (len(self.connections)).__str__() + '\n'
         return txt
-    
+
     def setup(self):
         self.setPen(self.line_color)
         self.p.moveTo(-PW, -PW)
         self.p.lineTo(0.0,0.0)
-        self.p.lineTo(-PW, PW)             
+        self.p.lineTo(-PW, PW)
         self.setPath(self.p)
         self.setFlag(QGraphicsItem.ItemSendsScenePositionChanges)
 
@@ -80,7 +80,7 @@ class OutPort(Port):
         txt += 'Node ID :' + self.nodeID + '\n'
         txt += 'Connections: ' + (len(self.connections)).__str__() + '\n'
         return txt
-    
+
     def setup(self):
         self.setPen(self.line_color)
         self.setBrush(self.fill_color)
@@ -89,4 +89,3 @@ class OutPort(Port):
         self.p.lineTo(0.0, PW)
         self.setPath(self.p)
         self.setFlag(QGraphicsItem.ItemSendsScenePositionChanges)
-         

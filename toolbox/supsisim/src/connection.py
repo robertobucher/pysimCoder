@@ -5,7 +5,6 @@ from PyQt5.QtCore import Qt, QRectF, QPointF
 import numpy as np
 from supsisim.const import LW, DB, GRID
 from supsisim.port import InPort, OutPort
-from lxml import etree
 
 class Connection(QGraphicsPathItem):
     """Connects one port to another."""
@@ -401,31 +400,31 @@ class Connection(QGraphicsPathItem):
             pass
         self.scene.removeItem(self)
 
-    def save(self,root):
+    def save(self):
         try:
-            conn = etree.SubElement(root,'connection')
-            etree.SubElement(conn,'pos1X').text = self.pos1.x().__str__()
-            etree.SubElement(conn,'pos1Y').text = self.pos1.y().__str__()
-            etree.SubElement(conn,'pos2X').text = self.pos2.x().__str__()
-            etree.SubElement(conn,'pos2Y').text = self.pos2.y().__str__()
+            pos1 = (self.pos1.x(), self.pos1.y())
+            pos2 = (self.pos2.x(), self.pos2.y())
+            points = []
             for el in self.connPoints:
-                etree.SubElement(conn, 'pt').text = el.x().__str__() + ',' + el.y().__str__()
+                points.append((el.x(), el.y()))
+                
+            keys = ['pos1', 'pos2', 'points']
+            vals = [pos1, pos2, points]
+            
+            return dict(zip(keys, vals))
         except:
             pass
 
     def load(self, item, dx = 0.0, dy = 0.0):
         try:
-            pt1 = QPointF(float(item.findtext('pos1X')), float(item.findtext('pos1Y')))
-            pt2 = QPointF(float(item.findtext('pos2X')), float(item.findtext('pos2Y')))
+            pt1 = QPointF(item['pos1'][0], item['pos1'][1])
+            pt2 = QPointF(item['pos2'][0], item['pos2'][1])
             dpt = QPointF(dx, dy)
             self.pos1 = self.gridPos(pt1+dpt)
             self.pos2 = self.gridPos(pt2+dpt)
-            points = item.findall('pt')
-            for el in points:
-                pt = el.text.split(',')
-                x = float(pt[0])
-                y = float(pt[1])
-                pt = self.gridPos(QPointF(float(pt[0]), float(pt[1]))+dpt)
+            self.connPoints = []
+            for el in item['points']:
+                pt = QPointF(el[0], el[1])+dpt
                 self.connPoints.append(pt)
             self.update_ports_from_pos()
         except:

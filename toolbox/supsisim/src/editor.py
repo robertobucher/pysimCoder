@@ -4,13 +4,14 @@ from PyQt5.QtCore import Qt, QEvent, QObject, QPointF, QRectF, QSizeF, QMimeData
 
 from supsisim.port import Port, InPort, OutPort
 from supsisim.connection import Connection
+from supsisim.subsblock import subsBlock
 from supsisim.block import Block
 from supsisim.dialg import BlockName_Dialog
 import supsisim.RCPDlg as pDlg
 from supsisim.const import GRID, DB, DP
 from supsisim.node import Node
 import numpy as np
-from lxml import etree
+import json
 
 # States
 IDLE = 0
@@ -49,6 +50,14 @@ class Editor(QObject):
         copyBlkAction = self.menuIOBlk.addAction('Copy Block')
         deleteBlkAction = self.menuIOBlk.addAction('Delete Block')
         
+        self.menuSubsBlk = QMenu()
+        opensubsBlkAction = self.menuSubsBlk.addAction('Open subsystem')
+        loadsubsBlkAction = self.menuSubsBlk.addAction('Reload subsystem')
+        flpsubBlkAction = self.menuSubsBlk.addAction('Flip Block')
+        namesubBlkAction = self.menuSubsBlk.addAction('Change Name')
+        copysubBlkAction = self.menuSubsBlk.addAction('Copy Block')
+        deletesubBlkAction = self.menuSubsBlk.addAction('Delete Block')
+          
         parBlkAction.triggered.connect(self.parBlock)
         flpBlkAction.triggered.connect(self.flipBlock)
         nameBlkAction.triggered.connect(self.nameBlock)
@@ -56,7 +65,13 @@ class Editor(QObject):
         cloneBlkAction.triggered.connect(self.cloneBlock)
         copyBlkAction.triggered.connect(self.copyBlock)
         deleteBlkAction.triggered.connect(self.deleteBlock)
-
+        opensubsBlkAction.triggered.connect(self.openSubsystem)
+        loadsubsBlkAction.triggered.connect(self.reloadSubsystem)
+        flpsubBlkAction.triggered.connect(self.flipBlock)
+        copysubBlkAction.triggered.connect(self.copysubBlock)
+        namesubBlkAction.triggered.connect(self.nameBlock)
+        deletesubBlkAction.triggered.connect(self.deleteBlock)
+        
         self.subMenuConn = QMenu()
         connAddAction = self.subMenuConn.addAction('Add connection')
         connDelAction = self.subMenuConn.addAction('Delete connection')
@@ -67,12 +82,16 @@ class Editor(QObject):
         pasteAction = self.subMenuEditor.addAction('Paste')
         pasteAction.triggered.connect(self.pasteBlock)
 
+        self.subMenuSubsystem = QMenu()
+        subsystemAction = self.subMenuSubsystem.addAction('Create subsystem')
+        subsystemAction.triggered.connect(self.createSubsystem)
+
         # Matrix has two index [state, event]
         # States:
         # IDLE                                    0
         # LEFTMOUSEPRESSED         1
         # ITEMSELECTED                   2
-         #DRAWFROMOUTPORT        3
+        # DRAWFROMOUTPORT        3
         # DRAWFROMINPORT            4
         # DRAWFROMCONNECTION  5
         # MOVECONN                        6
@@ -153,42 +172,31 @@ class Editor(QObject):
         item.clone(QPointF(DP, DP))
 
     def copyBlock(self):
-        root = etree.Element('root')
         item = self.scene.item
-        item.save(root)
-        msg = etree.tostring(root, pretty_print=True)
+        blk = []
+        b = item.save()
+        blk.append(b)
+        data = {'blocks' : blk}
+        msg = json.dumps(data)
         clipboard = QApplication.clipboard()
-        mimeData = QMimeData()
-        mimeData.setText(msg.decode())
-        clipboard.setMimeData(mimeData)
+        clipboard.setText(msg)
+
+    def copysubBlock(self):
+        item = self.scene.item
+        blk = []
+        b = item.save()
+        blk.append(b)
+        data = {'subsystems' : blk}
+        msg = json.dumps(data)
+        clipboard = QApplication.clipboard()
+        clipboard.setText(msg)
 
     def pasteBlock(self):
         self.scene.DgmToUndo()
         try:
             msg = QApplication.clipboard().text()
-            root = etree.fromstring(msg)
-            blocks = root.findall('block')
-            meanPosX = 0.0
-            meanPosY = 0.0
-            numBlk = 0
-            for item in blocks:
-                pBlkX = float(item.findtext('posX'))
-                pBlkY = float(item.findtext('posY'))
-                meanPosX = meanPosX + pBlkX
-                meanPosY = meanPosY + pBlkY
-                numBlk += 1
-            deltaPosX = self.scene.evpos.x()-meanPosX/numBlk
-            deltaPosY = self.scene.evpos.y()-meanPosY/numBlk
-            blocks = root.findall('block')            
-            for item in blocks:
-                self.scene.loadBlock(item, deltaPosX, deltaPosY)
-            connections = root.findall('connection')
-            for item in connections:
-                self.scene.loadConn(item, deltaPosX, deltaPosY)
-            try:
-                self.redrawNodes()
-            except:
-                pass
+            data = json.loads(msg)
+            self.scene.DictToDgm(data, DP, DP)
         except:
             pass
        
@@ -198,6 +206,27 @@ class Editor(QObject):
         item.remove()
         self.removeNodes()
         self.redrawNodes()
+
+    def createSubsystem(self):
+        self.scene.DgmToUndo()
+        # Create subsystem Block        
+                
+        blocks = []
+                
+        for item in self.scene.selectedItems():
+            blocks.append(item)
+        b = subsBlock(None, self.scene, blocks)
+        
+        self.redrawNodes()
+                                    
+    def openSubsystem(self):
+        item = self.scene.item
+        item.openSubsystem()
+        
+    def reloadSubsystem(self):
+        item = self.scene.item
+        item.loadSubsystem()
+        
 
     def connectInPort(self, item):
         if len(item.connections)==0:
@@ -328,6 +357,13 @@ class Editor(QObject):
                     except:
                         pass
 
+    def getNumOfItems(self):
+        tot = 0;
+        for item in self.scene.selectedItems():
+            if isinstance(item, Block):
+                tot += 1
+        return tot
+
     def clean_points(self, pts, m):
         N = len(pts)
         remPt = []
@@ -381,29 +417,30 @@ class Editor(QObject):
     def redrawNodesFromPort(self, p):
         N = len(p.connections)
         for n in range(0,N):
-            pts1 = [p.connections[n].pos1]
-            for el in p.connections[n].connPoints:
-                pts1.append(el)
-            pts1.append(p.connections[n].pos2)
-            for m in range(n+1,N):
-                pts2 = [p.connections[m].pos1]
-                for el in p.connections[m].connPoints:
-                    pts2.append(el)
-                pts2.append(p.connections[m].pos2)
-
-                self.setNode(pts1, pts2)
+            if p.connections[n].port2.parent in self.scene.items():
+                pts1 = [p.connections[n].pos1]
+                for el in p.connections[n].connPoints:
+                    pts1.append(el)
+                pts1.append(p.connections[n].pos2)
+                for m in range(n+1,N):
+                    pts2 = [p.connections[m].pos1]
+                    for el in p.connections[m].connPoints:
+                        pts2.append(el)
+                    pts2.append(p.connections[m].pos2)
+                try:
+                    self.setNode(pts1, pts2)
+                except:
+                    pass
                
     def redrawNodes(self):
-        for el in self.scene.items():
-            if isinstance(el, Node):
-                el.remove()
+        self.removeNodes()
         for item in self.scene.items():
             if isinstance(item, Block):
                 for p in item.childItems():
                     if isinstance(p, OutPort):
                         if len(p.connections) > 1:
-                            self.redrawNodesFromPort(p)
-                                           
+                            self.redrawNodesFromPort(p) 
+                                            
     def removeNodes(self):
         for el in self.scene.items():
             if isinstance(el, Node):
@@ -483,16 +520,35 @@ class Editor(QObject):
         return None
 
     def deleteSelected(self):
-        items = self.scene.selectedItems()
-        self.scene.DgmToUndo()
+        self.removeNodes()
+        self.scene.selection = []
+        p = self.scene.selectionArea()
+        self.scene.selection = self.scene.items(p)
+        if self.scene.selection == []:
+            self.scene.selection = self.scene.selectedItems()
+            
+        items = self.scene.selection
+        
+        dgmBlocks = []
+        dgmSubsystems = []                
+        
+        items = self.scene.selection
         for item in items:
-            try:
-                item.remove()
-                self.editor.removeNodes()
-                self.editor.redrawNodes()
-            except:
+            if isinstance(item, subsBlock):
+                dgmSubsystems.append(item)
+            elif isinstance(item, Block):
+                dgmBlocks.append(item)
+            else:
                 pass
- 
+        for item in dgmBlocks:
+            item.remove()
+
+#         for item in dgmSubsystems:
+#             item.remove()
+        
+        self.redrawNodes()
+
+        
     def deselect_all(self):
         for el in self.scene.items():
             el.setSelected(False)
@@ -577,16 +633,27 @@ class Editor(QObject):
             self.state = LEFTMOUSEPRESSED
             
     def P02(self, obj, event):                                     # IDLE, ITEMSELECTED + RIGHTMOUSEPRESSED
+        # Check if more blocks are selected
+        NumOfItems = self.getNumOfItems()
+        if NumOfItems>1:
+            self.scene.evpos = event.scenePos()
+            self.subMenuSubsystem.exec_(event.screenPos())            
+            self.deselect_all()
+            return
+        
         item = self.findBlockAt(event.scenePos())
-        self.deselect_all()
+#         self.deselect_all()
         if isinstance(item, Block):
             item.setSelected(True)
             self.scene.item = item
             self.scene.evpos = event.scenePos()
-            try:
+            
+            if isinstance(item, subsBlock):
+                self.menuSubsBlk.exec_(event.screenPos())
+            else:
                 self.menuIOBlk.exec_(event.screenPos())
-            except:
-                pass
+#             except:
+#                 pass
         else:                
             item = self.findConnectionAt(event.scenePos())
             if isinstance(item,Connection):
@@ -605,11 +672,16 @@ class Editor(QObject):
     def P03(self, obj, event):                                     # IDLE, ITEMSELECTED + MOUSEDOUBLECLICK
         item = self.findBlockAt(event.scenePos())
         self.deselect_all()
-        if isinstance(item, Block):
+        if isinstance(item,subsBlock):
+            self.scene.item = item
+            self.openSubsystem()
+        elif isinstance(item, Block):
             item.setSelected(True)
             self.scene.item = item
             self.scene.evpos = event.scenePos()
             self.paramsBlock()
+        else:
+            pass
 
     def P04(self, obj, event):                                     # ITEMSELECTED + KEY_DEL
         self.deleteSelected()
