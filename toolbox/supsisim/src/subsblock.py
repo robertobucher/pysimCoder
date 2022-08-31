@@ -129,12 +129,11 @@ class subsBlock(Block):
         c.connPoints.append(p1)
         c.connPoints.append(p2)
         c.update_ports_from_pos()
+        c.update_path()
         return c
 
     def setIOPorts(self):
-        subsIn, subsOut = self.getPorts()
-
-        # Find internal connections
+        # Find internal connections and put them in sceneSubs
         for block in self.sceneSubs.items():
             for p in block.childItems():
                 if isinstance(p, OutPort):
@@ -144,6 +143,9 @@ class subsBlock(Block):
                             self.scene.removeItem(c)
                             self.sceneSubs.addItem(c)
 
+        # Subsystems ports
+        subsIn, subsOut = self.getPorts()
+
         # Inputs ports
         for el in self.inpP:
             n = self.inpP.index(el)
@@ -151,36 +153,29 @@ class subsBlock(Block):
             b = Block(self.parent, self.sceneSubs, name,
                      0, 1, False, False, 'IO',
                      'IOBlk', 'IO for subsystem', BWmin, False)
-            c = el.connections[0]
-            b.setPos(c.pos1)
+            b.setPos(el.scenePos())
 
-            inPort, outPort = b.getPorts()
-            Found = False
-            pSubIn = subsIn[n]
-            pIOout = outPort[0]
+            pIO = [p for p in b.childItems() if isinstance(p, OutPort)][0]
+            pSub = subsIn[n]
 
-            connections = el.connections.copy()
+            # Set all the connections related to this port
+            c2sub = [c for c in el.connections if c.port2.parent in self.sceneSubs.items()]
 
-            el.connections = []
+            for c in c2sub:
+                inPort2 = c.port2
+                c.remove()
 
-            for item in connections:
-                if item.port2.parent in self.sceneSubs.items():
-                    if not Found:
-                        # connection to subsystem
-                        c = self.newConn(item.port1, pSubIn, self.scene)
-                        el.connections.append(c)
-                        Found = True
-                        c.update_ports_from_pos()
-                    #connection in subsystem
-                    c = self.newConn(pIOout, item.port2, self.sceneSubs)
-                    pIOout.connections.append(c)
-                else:
-                    # connection outside subsystem
-                    c = self.newConn(item.port1, item.port2, self.scene)
-                    el.connections.append(c)
+                cnew = self.newConn(el, pSub, self.scene)
+                el.connections.append(cnew)
+                el.connections = list(set(el.connections))
+                pSub.connections.append(cnew)
+                pSub.connections = list(set(pSub.connections))
 
-                c.update_ports_from_pos()
-                item.remove()
+                cnew = self.newConn(pIO, inPort2, self.sceneSubs)
+                pIO.connections.append(cnew)
+                pIO.connections = list(set(pIO.connections))
+                inPort2.connections.append(cnew)
+                inPort2.connections = list(set(inPort2.connections))
 
         # Output ports
         for el in self.outpP:
@@ -189,36 +184,29 @@ class subsBlock(Block):
             b = Block(self.parent, self.sceneSubs, name,
                      1, 0, False, False, 'IO',
                      'IOBlk', 'IO for subsystem', BWmin, False)
-            c = el.connections[0]
-            b.setPos(c.pos2)
+            b.setPos(el.connections[0].port2.scenePos())
 
-            inPort, outPort = b.getPorts()
-            Found = False
-            pSubOut = subsOut[n]
-            pIOIn = inPort[0]
+            pIO = [p for p in b.childItems() if isinstance(p, InPort)][0]
+            pSub = subsOut[n]
 
-            connections = el.connections.copy()
+            # Set all the connections related to this port
+            c2out = [c for c in el.connections if c.port2.parent in self.scene.items()]
 
-            el.connections = []
+            for c in c2out:
+                outPort2 = c.port2
+                c.remove()
 
-            for item in connections:
-                if item.port2.parent in self.scene.items():
-                    if not Found:
-                        # connection to IO
-                        c = self.newConn(item.port1, pIOIn , self.sceneSubs)
-                        el.connections.append(c)
-                        Found = True
-                        c.update_ports_from_pos()
-                    #connection in subsystem
-                    c = self.newConn(pSubOut, item.port2, self.scene)
-                    pSubOut.connections.append(c)
-                else:
-                    # connection outside subsystem
-                    c = self.newConn(item.port1, item.port2, self.sceneSubs)
-                    el.connections.append(c)
+                cnew = self.newConn(pSub, outPort2, self.scene)
+                pSub.connections.append(cnew)
+                pSub.connections = list(set(pSub.connections))
+                outPort2.connections.append(cnew)
+                outPort2.connections = list(set(outPort2.connections))
 
-                c.update_ports_from_pos()
-                item.remove()
+                cnew = self.newConn(el, pIO, self.sceneSubs)
+                el.connections.append(cnew)
+                el.connections = list(set(el.connections))
+                pIO.connections.append(cnew)
+                pIO.connections = list(set(pIO.connections))
 
     def openSubsystem(self):
         QMessageBox.warning(self.scene.mainw,'Open the subsystem',
