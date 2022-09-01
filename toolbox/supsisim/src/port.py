@@ -39,10 +39,8 @@ class Port(QGraphicsPathItem):
         return False
 
     def remove(self):
-        clist = self.connections
-        for el in clist:
+        for el in self.connections.copy():
             el.remove()
-        self.scene().removeItem(self)
 
     def setFlip(self):
         isflipped = self.parent.flip
