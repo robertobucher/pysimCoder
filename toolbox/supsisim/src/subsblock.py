@@ -87,7 +87,6 @@ class subsBlock(Block):
         if isinstance(item, Block) and item not in self.blksList]
 
         for item in items:
-            print(item)
             outPorts = [p for p in item.childItems() if isinstance(p, OutPort)]
             cin = []
             for p in outPorts:
