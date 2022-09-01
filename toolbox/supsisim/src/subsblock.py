@@ -82,28 +82,43 @@ class subsBlock(Block):
         # Insert IO block
         inpP = []
         outpP = []
-        for el in self.blksList:
-            for el2 in el.childItems():
-                if isinstance(el2, InPort):
-                    blk = el2.connections[0].port1.parent
-                    if blk not in self.blksList:
-                        inpP.append(el2.connections[0].port1)
 
-                if isinstance(el2, OutPort):
-                    found = False
-                    for el3 in el2.connections:
-                        blk = el3.port2.parent
-                        if (blk not in self.blksList) and not found:
-                            outpP.append(el3.port1)
+        items = [item for item in self.scene.items() \
+        if isinstance(item, Block) and item not in self.blksList]
 
-        inpP = list(set(inpP))
-        outpP = list(set(outpP))
-        inpP.sort(key=lambda p: p.parent.pos().y())
-        outpP.sort(key=lambda p: p.parent.pos().y())
-        inp = len(inpP)
-        outp = len(outpP)
-        self.inpP = inpP
-        self.outpP = outpP
+        for item in items:
+            print(item)
+            outPorts = [p for p in item.childItems() if isinstance(p, OutPort)]
+            cin = []
+            for p in outPorts:
+                cin = [c for c in p.connections if c.port2.parent in self.blksList]
+                try:
+                    cin = list(set(cin))
+                    pPos = min([c.port2.scenePos().y() for c in cin])
+                    if len(cin) != 0:
+                        pDict = {'port' : p, 'pos'  : pPos}
+                        inpP.append(pDict)
+                except:
+                    pass
+
+        for item in self.blksList:
+            outPorts = [p for p in item.childItems() if isinstance(p, OutPort)]
+            cout = []
+            for p in outPorts:
+                cout = [c for c in p.connections if c.port2.parent not in self.blksList]
+                try:
+                    cout = list(set(cout))
+                    pPos = min(c.port1.scenePos().y() for c in cout)
+                    if len(cout) != 0:
+                        pDict = {'port' : p, 'pos'  : pPos}
+                        outpP.append(pDict)
+                except:
+                    pass
+
+        inpP.sort(key=lambda p: p.get('pos'))
+        self.inpP = [p['port'] for p in inpP]
+        outpP.sort(key=lambda p: p.get('pos'))
+        self.outpP = [p['port'] for p in outpP]
 
     def hideElements(self):
         for block in self.blksList:
@@ -124,10 +139,20 @@ class subsBlock(Block):
         c.pos1 = port1.scenePos()
         c.port2 = port2
         c.pos2 = port2.scenePos()
-        p1 = self.gridPos(QPointF((c.pos1.x()+c.pos2.x())/2, c.pos1.y()))
-        p2 = self.gridPos(QPointF((c.pos1.x()+c.pos2.x())/2, c.pos2.y()))
-        c.connPoints.append(p1)
-        c.connPoints.append(p2)
+        if c.pos1.x() > c.pos2.x():
+            p1 = self.gridPos(QPointF(c.pos1.x()+40, c.pos1.y()))
+            p2 = self.gridPos(QPointF(c.pos1.x()+40, c.pos1.y()+200))
+            p3 = self.gridPos(QPointF(c.pos2.x()-40, c.pos1.y()+200))
+            p4 = self.gridPos(QPointF(c.pos2.x()-40, c.pos2.y()))
+            c.connPoints.append(p1)
+            c.connPoints.append(p2)
+            c.connPoints.append(p3)
+            c.connPoints.append(p4)
+        else:
+            p1 = self.gridPos(QPointF((c.pos1.x()+c.pos2.x())/2, c.pos1.y()))
+            p2 = self.gridPos(QPointF((c.pos1.x()+c.pos2.x())/2, c.pos2.y()))
+            c.connPoints.append(p1)
+            c.connPoints.append(p2)
         c.update_ports_from_pos()
         c.update_path()
         return c
@@ -153,7 +178,13 @@ class subsBlock(Block):
             b = Block(self.parent, self.sceneSubs, name,
                      0, 1, False, False, 'IO',
                      'IOBlk', 'IO for subsystem', BWmin, False)
-            b.setPos(el.scenePos())
+
+            # Get position for IO as position of last connection point
+            cin = [c for c in el.connections if c.port2.parent in self.sceneSubs.items()]
+            cin = list(set(cin))
+            cin.sort(key=lambda c: c.port2.scenePos().y())
+            pPos = cin[0].pos2-QPointF(100.0,0.0)
+            b.setPos(pPos)
 
             pIO = [p for p in b.childItems() if isinstance(p, OutPort)][0]
             pSub = subsIn[n]
@@ -163,7 +194,6 @@ class subsBlock(Block):
 
             for c in c2sub:
                 inPort2 = c.port2
-                c.remove()
 
                 cnew = self.newConn(el, pSub, self.scene)
                 el.connections.append(cnew)
@@ -177,6 +207,8 @@ class subsBlock(Block):
                 inPort2.connections.append(cnew)
                 inPort2.connections = list(set(inPort2.connections))
 
+                c.remove()
+
         # Output ports
         for el in self.outpP:
             n = self.outpP.index(el)
@@ -184,7 +216,12 @@ class subsBlock(Block):
             b = Block(self.parent, self.sceneSubs, name,
                      1, 0, False, False, 'IO',
                      'IOBlk', 'IO for subsystem', BWmin, False)
-            b.setPos(el.connections[0].port2.scenePos())
+            # Get position for IO as position of next connection point
+            cin = [c for c in el.connections if c.port2.parent in self.scene.items()]
+            cin = list(set(cin))
+            cin.sort(key=lambda c: c.port2.scenePos().y())
+            pPos = cin[0].pos1+QPointF(100.0,0.0)
+            b.setPos(pPos)
 
             pIO = [p for p in b.childItems() if isinstance(p, InPort)][0]
             pSub = subsOut[n]
@@ -194,7 +231,6 @@ class subsBlock(Block):
 
             for c in c2out:
                 outPort2 = c.port2
-                c.remove()
 
                 cnew = self.newConn(pSub, outPort2, self.scene)
                 pSub.connections.append(cnew)
@@ -207,6 +243,8 @@ class subsBlock(Block):
                 el.connections = list(set(el.connections))
                 pIO.connections.append(cnew)
                 pIO.connections = list(set(pIO.connections))
+
+                c.remove()
 
     def openSubsystem(self):
         QMessageBox.warning(self.scene.mainw,'Open the subsystem',
