@@ -198,8 +198,8 @@ class subsBlock(Block):
             pSub.connections.append(cnew)
             pSub.connections = list(set(pSub.connections))
 
+            # Connections in subsystem
             for c in c2sub:
-                # Connections in subsystem
                 inPort2 = c.port2
                 cnew = self.newConn(pIO, inPort2, self.sceneSubs)
                 pIO.connections.append(cnew)
@@ -229,20 +229,21 @@ class subsBlock(Block):
             # Set all the connections related to this port
             c2out = [c for c in el.connections if c.port2.parent in self.scene.items()]
 
+            # Connection in subsystem
+            cnew = self.newConn(el, pIO, self.sceneSubs)
+            el.connections.append(cnew)
+            el.connections = list(set(el.connections))
+            pIO.connections.append(cnew)
+            pIO.connections = list(set(pIO.connections))
+
+            # Connection from subsystem
             for c in c2out:
                 outPort2 = c.port2
-
                 cnew = self.newConn(pSub, outPort2, self.scene)
                 pSub.connections.append(cnew)
                 pSub.connections = list(set(pSub.connections))
                 outPort2.connections.append(cnew)
                 outPort2.connections = list(set(outPort2.connections))
-
-                cnew = self.newConn(el, pIO, self.sceneSubs)
-                el.connections.append(cnew)
-                el.connections = list(set(el.connections))
-                pIO.connections.append(cnew)
-                pIO.connections = list(set(pIO.connections))
 
                 c.remove()
 
