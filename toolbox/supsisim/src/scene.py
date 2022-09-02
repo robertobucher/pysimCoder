@@ -490,6 +490,15 @@ class Scene(QGraphicsScene):
 
         return items
 
+    def reset_Items(self):
+        blk = [b for b in self.items() if (isinstance(b, subsBlock))]
+        for b in blk:
+            b.sceneSubs.reset_Items()
+
+        conn = [c for c in  self.items() if isinstance(c, Connection)]
+        for c in conn:
+            c.update_ports_from_pos()
+
     def codegen(self, flag):
         dgmBlocks = self.findAllItems(self)
 
@@ -534,10 +543,7 @@ class Scene(QGraphicsScene):
 
             # Reset block diagram to previous state
             del(dgmBlocks)
-            conn = [c for c in  self.items() if isinstance(c, Connection)]
-            for c in conn:
-                c.update_ports_from_pos()
-
+            self.reset_Items()
             return True
 
         except:
