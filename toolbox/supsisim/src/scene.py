@@ -428,17 +428,6 @@ class Scene(QGraphicsScene):
 
         return items
 
-    def printTopo(self, items):
-        for item in items:
-            print(item)
-            for p in item.childItems():
-                print(p)
-                try:
-                    for c in p.connections:
-                        print(c)
-                except:
-                    pass
-
     def cleanBlkList(self, items):
         item2rem = []
         for item in items:
@@ -506,7 +495,6 @@ class Scene(QGraphicsScene):
 
         # Clean Subsystems and reattach
         dgmBlocks = self.cleanBlkList(dgmBlocks)
-#         self.printTopo(dgmBlocks)
         try:
             nid = 1
             for item in dgmBlocks:
@@ -543,13 +531,18 @@ class Scene(QGraphicsScene):
                 except:
                     pass
                 p.wait()
+
+            # Reset block diagram to previous state
+            del(dgmBlocks)
+            conn = [c for c in  self.items() if isinstance(c, Connection)]
+            for c in conn:
+                c.update_ports_from_pos()
+
             return True
 
         except:
             self.mainw.statusLabel.setText('Error by Code generation!')
             return False
-        for item in dgmBlocks:
-            item.remove()
 
     def blkInstance(self, item):
         ln = item.params.split('|')
