@@ -93,8 +93,8 @@ class subsBlock(Block):
                 cin = [c for c in p.connections if c.port2.parent in self.blksList]
                 try:
                     cin = list(set(cin))
-                    pPos = min([c.port2.scenePos().y() for c in cin])
                     if len(cin) != 0:
+                        pPos = min([c.port2.scenePos().y() for c in cin])
                         pDict = {'port' : p, 'pos'  : pPos}
                         inpP.append(pDict)
                 except:
@@ -107,8 +107,8 @@ class subsBlock(Block):
                 cout = [c for c in p.connections if c.port2.parent not in self.blksList]
                 try:
                     cout = list(set(cout))
-                    pPos = min(c.port1.scenePos().y() for c in cout)
                     if len(cout) != 0:
+                        pPos = min(c.port1.scenePos().y() for c in cout)
                         pDict = {'port' : p, 'pos'  : pPos}
                         outpP.append(pDict)
                 except:
@@ -191,15 +191,16 @@ class subsBlock(Block):
             # Set all the connections related to this port
             c2sub = [c for c in el.connections if c.port2.parent in self.sceneSubs.items()]
 
+            # Connection to subsystem
+            cnew = self.newConn(el, pSub, self.scene)
+            el.connections.append(cnew)
+            el.connections = list(set(el.connections))
+            pSub.connections.append(cnew)
+            pSub.connections = list(set(pSub.connections))
+
             for c in c2sub:
+                # Connections in subsystem
                 inPort2 = c.port2
-
-                cnew = self.newConn(el, pSub, self.scene)
-                el.connections.append(cnew)
-                el.connections = list(set(el.connections))
-                pSub.connections.append(cnew)
-                pSub.connections = list(set(pSub.connections))
-
                 cnew = self.newConn(pIO, inPort2, self.sceneSubs)
                 pIO.connections.append(cnew)
                 pIO.connections = list(set(pIO.connections))
