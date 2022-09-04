@@ -235,7 +235,7 @@ class Editor(QObject):
     # Connections and ports
     
     def connectInPort(self, item):
-        self.conn.draw_color = Qt.black
+#         self.conn.draw_color = Qt.black
         if len(item.connections)==0:
             self.conn.port2 = item
             self.conn.pos2 = item.scenePos()
@@ -255,7 +255,7 @@ class Editor(QObject):
         self.conn = None
  
     def connectOutPort(self, item):        
-        self.conn.draw_color = Qt.black
+#         self.conn.draw_color = Qt.black
         self.conn.port1 = item
         self.conn.pos1 = item.scenePos()
         self.conn.port1.connections.append(self.conn)
@@ -631,7 +631,7 @@ class Editor(QObject):
             self.scene.DgmToUndo()
             self.state = DRAWFROMOUTPORT
             self.conn = Connection(None, self.scene)
-            self.conn.draw_color = Qt.red
+#             self.conn.draw_color = Qt.red
             self.mainw.view.setDragMode(QGraphicsView.NoDrag)
             self.conn.port1 = item
             self.conn.pos1 = self.gridPos(item.scenePos())
@@ -643,7 +643,7 @@ class Editor(QObject):
             self.scene.DgmToUndo()
             self.state = DRAWFROMINPORT
             self.conn = Connection(None, self.scene)
-            self.conn.draw_color = Qt.red
+#             self.conn.draw_color = Qt.red
             self.mainw.view.setDragMode(QGraphicsView.NoDrag)
             self.conn.port2 = item
             self.conn.pos1 = self.gridPos(item.scenePos())
@@ -780,6 +780,7 @@ class Editor(QObject):
     def P12(self, obj, event):                                      
         # MOVECONN + MOUSEMOVE
         item = self.scene.currentItem
+#         item.draw_color = Qt.red
         N = len(item.connPoints)
         oldPos = self.currentPos
         newPos = self.gridPos(event.scenePos())
@@ -796,6 +797,7 @@ class Editor(QObject):
     def P13(self, obj, event):                                         
         # MOVECONN + MOUSERELEASE
         item = self.scene.currentItem
+#         item.draw_color = Qt.black
         item.clean()
         N = len(item.connPoints)
         oldPos = self.currentPos
@@ -825,11 +827,12 @@ class Editor(QObject):
             self.redrawNodes()
             self.state = IDLE
             self.mainw.view.setDragMode(QGraphicsView.RubberBandDrag)
-        elif item2:
-            self.link2Connection(item2[0])
-            self.redrawNodes()
-            self.state = IDLE
-            self.mainw.view.setDragMode(QGraphicsView.RubberBandDrag)
+#         elif item2:
+#             self.link2Connection(item2[0])
+#             self.connectOutPort(item2[0].port1.parent)
+#             self.redrawNodes()
+#             self.state = IDLE
+#             self.mainw.view.setDragMode(QGraphicsView.RubberBandDrag)
         else:
             pt = self.gridPos(event.scenePos())
             if self.firstTime:
