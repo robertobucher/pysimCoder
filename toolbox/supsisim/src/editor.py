@@ -15,20 +15,20 @@ import json
 
 # States
 IDLE = 0
-LEFTMOUSEPRESSED = 1
-ITEMSELECTED = 2
-DRAWFROMOUTPORT = 3
-DRAWFROMINPORT = 4
-DRAWFROMCONNECTION = 5
-MOVECONN = 6
+LEFTMOUSEPRESSED    = 1
+ITEMSELECTED        = 2
+DRAWFROMOUTPORT     = 3
+DRAWFROMINPORT      = 4
+DRAWFROMCONNECTION  = 5
+MOVECONN            = 6
 
 MOUSEMOVE = 0
-LEFTMOUSEPRESSED = 1
-RIGHTMOUSEPRESSED = 2
-MOUSERELEASED = 3
-MOUSEDOUBLECLICK = 4
-KEY_DEL = 5
-KEY_ESC = 6
+LEFTMOUSEPRESSED    = 1
+RIGHTMOUSEPRESSED   = 2
+MOUSERELEASED       = 3
+MOUSEDOUBLECLICK    = 4
+KEY_DEL             = 5
+KEY_ESC             = 6
     
 class Editor(QObject):
     """ Editor to handles events"""
@@ -88,34 +88,36 @@ class Editor(QObject):
 
         # Matrix has two index [state, event]
         # States:
-        # IDLE                                    0
-        # LEFTMOUSEPRESSED         1
-        # ITEMSELECTED                   2
-        # DRAWFROMOUTPORT        3
-        # DRAWFROMINPORT            4
+        # IDLE                0
+        # LEFTMOUSEPRESSED    1
+        # ITEMSELECTED        2
+        # DRAWFROMOUTPORT     3
+        # DRAWFROMINPORT      4
         # DRAWFROMCONNECTION  5
-        # MOVECONN                        6
+        # MOVECONN            6
         
         # Events
-        # MOUSEMOVE                      0
-        # LEFTMOUSEPRESSED          1
-        # RIGHTMOUSEPRESSED       2
-        # MOUSERELEASED               3
-        # MOUSEDOUBLECLICK         4
-        # KEY_DEL                              5
-        # KEY_ESC                              6
+        # MOUSEMOVE           0
+        # LEFTMOUSEPRESSED    1
+        # RIGHTMOUSEPRESSED   2
+        # MOUSERELEASED       3
+        # MOUSEDOUBLECLICK    4
+        # KEY_DEL             5
+        # KEY_ESC             6
 
         self.Fun = [[self.P00, self.P01, self.P02, self.PDM, self.P03, self.P04, self.P05],
-                        [self.P06, self.PDM, self.PDM, self.P07, self.PDM, self.PDM, self.PDM],
-                        [self.P11, self.P01, self.P02, self.PDM, self.P03, self.P04, self.P05],
-                        [self.P10, self.P08, self.P09, self.P08, self.PDM, self.PDM, self.P09],
-                        [self.P15, self.P14, self.P09, self.P14, self.PDM, self.PDM, self.P09],
-                        [self.P10, self.P16, self.P09, self.P08, self.PDM, self.PDM, self.P09],
-                        [self.P12, self.PDM, self.PDM, self.P13, self.PDM, self.PDM, self.PDM]]
+                    [self.P06, self.PDM, self.PDM, self.P07, self.PDM, self.PDM, self.PDM],
+                    [self.P11, self.P01, self.P02, self.PDM, self.P03, self.P04, self.P05],
+                    [self.P10, self.P08, self.P09, self.P08, self.PDM, self.PDM, self.P09],
+                    [self.P15, self.P14, self.P09, self.P14, self.PDM, self.PDM, self.P09],
+                    [self.P10, self.P16, self.P09, self.P08, self.PDM, self.PDM, self.P09],
+                    [self.P12, self.PDM, self.PDM, self.P13, self.PDM, self.PDM, self.PDM]]
               
     def install(self, scene):
         scene.installEventFilter(self)
         self.scene = scene
+        
+    # Menu actions for blocks and subblocks
     
     def parBlock(self):
         self.scene.DgmToUndo()
@@ -154,7 +156,8 @@ class Editor(QObject):
         try:
             exec(streV)
             name =  item.name.replace(' ','_')
-            cmd = 'dlg.' + blk + '(' + str(item.inp) + ',' + str(item.outp) + ',"' + item.params + '"' +  ',"' +  name + '")'
+            cmd = 'dlg.' + blk + '(' + str(item.inp) + ',' + str(item.outp) + \
+                  ',  "' + item.params + '"' +  ',"' +  name + '")'
             pars = exec(cmd)
 
         except:
@@ -206,6 +209,8 @@ class Editor(QObject):
         item.remove()
         self.removeNodes()
         self.redrawNodes()
+        
+    # Subsystems
 
     def createSubsystem(self):
         self.scene.DgmToUndo()
@@ -227,8 +232,10 @@ class Editor(QObject):
         item = self.scene.item
         item.loadSubsystem()
         
-
+    # Connections and ports
+    
     def connectInPort(self, item):
+        self.conn.draw_color = Qt.black
         if len(item.connections)==0:
             self.conn.port2 = item
             self.conn.pos2 = item.scenePos()
@@ -248,6 +255,7 @@ class Editor(QObject):
         self.conn = None
  
     def connectOutPort(self, item):        
+        self.conn.draw_color = Qt.black
         self.conn.port1 = item
         self.conn.pos1 = item.scenePos()
         self.conn.port1.connections.append(self.conn)
@@ -343,8 +351,9 @@ class Editor(QObject):
         self.conn.port1.connections.append(self.conn)
         self.conn.port2.connections.append(self.conn)
         self.conn.clean()
-        self.conn.update_path()
         self.conn = None
+        
+    # Functions on diagram items
     
     def redrawSelectedItems(self):
         for item in self.scene.selectedItems():
@@ -353,6 +362,7 @@ class Editor(QObject):
                 for el in item.childItems():
                     try:
                         for conn in el.connections:
+                            conn.clean()
                             conn.update_pos_from_ports()
                     except:
                         pass
@@ -363,106 +373,11 @@ class Editor(QObject):
             if isinstance(item, Block):
                 tot += 1
         return tot
-
-    def clean_points(self, pts, m):
-        N = len(pts)
-        remPt = []
-        for n in range(1,N-1):
-            if m=='x':
-                if pts[n-1].x() == pts[n].x() == pts[n+1].x():
-                    remPt.append(pts[n])
-            elif m=='y':
-                if pts[n-1].y() == pts[n].y() == pts[n+1].y():
-                    remPt.append(pts[n])
-                
-        for el in remPt:
-            pts.remove(el)
-        return pts
         
-    def ptInLine(self, pt, p1, p2):
-        rect = QRectF(p1-QPointF(0.5,0.5), p2+QPointF(0.5,0.5))
-        if rect.contains(pt):
-            return True
-        else:
-            return False
-        
-    def setNode(self, pts1, pts2):
-        pts1 = self.clean_points(pts1, 'x')
-        pts1 = self.clean_points(pts1, 'y')
-        pts2 = self.clean_points(pts2, 'x')
-        pts2 = self.clean_points(pts2, 'y')
-        
-        n = 0
-        N = min(len(pts1), len(pts2))
-        try:
-            while pts1[n] == pts2[n] and n<N:
-                n +=1
-            p1_prev = pts1[n-1]
-            p1 = pts1[n]
-            p2_prev = pts2[n-1]
-            p2 = pts2[n]
- 
-            if self.ptInLine(p1, p2_prev, p2):
-                pos = p1
-            elif self.ptInLine(p2, p1_prev, p1):
-                pos = p2
-            else:
-                pos = p1_prev
-            
-            node = Node(None, self.scene)
-            node.setPos(pos)
-        except:
-            pass
-
-    def redrawNodesFromPort(self, p):
-        N = len(p.connections)
-        for n in range(0,N):
-            if p.connections[n].port2.parent in self.scene.items():
-                pts1 = [p.connections[n].pos1]
-                for el in p.connections[n].connPoints:
-                    pts1.append(el)
-                pts1.append(p.connections[n].pos2)
-                for m in range(n+1,N):
-                    pts2 = [p.connections[m].pos1]
-                    for el in p.connections[m].connPoints:
-                        pts2.append(el)
-                    pts2.append(p.connections[m].pos2)
-                try:
-                    self.setNode(pts1, pts2)
-                except:
-                    pass
-               
-    def redrawNodes(self):
-        self.removeNodes()
-        for item in self.scene.items():
-            if isinstance(item, Block):
-                for p in item.childItems():
-                    if isinstance(p, OutPort):
-                        if len(p.connections) > 1:
-                            self.redrawNodesFromPort(p) 
-                                            
-    def removeNodes(self):
-        for el in self.scene.items():
-            if isinstance(el, Node):
-                el.remove()
-                
     def itemAt(self, pos):
         rect = QRectF(pos+QPointF(-DB,-DB), QSizeF(2*DB,2*DB))
         items =  self.scene.items(rect)
-
-        for item in items:
-            if isinstance(self.findBlockAt(pos), Block):
-                return item
-        for item in items:
-            if isinstance(self.findOutPortAt(pos), OutPort):
-                return item
-        for item in items:
-            if isinstance(self.findInPortAt(pos), InPort):
-                return(item)
-        for item in items:
-            if isinstance(self.findConnectionAt(pos), Connection):
-                return(item)
-        return None
+        return items
 
     def itemByDraw(self, pos):
         rect = QRectF(pos-QPointF(DB,DB), QSizeF(2*DB,2*DB))
@@ -543,16 +458,109 @@ class Editor(QObject):
         for item in dgmBlocks:
             item.remove()
 
-#         for item in dgmSubsystems:
-#             item.remove()
-        
         self.redrawNodes()
-
         
     def deselect_all(self):
         for el in self.scene.items():
             el.setSelected(False)
+            
+    # Connections points
 
+    def clean_points(self, pts, m):
+        N = len(pts)
+        remPt = []
+        for n in range(1,N-1):
+            if m=='x':
+                if pts[n-1].x() == pts[n].x() == pts[n+1].x():
+                    remPt.append(pts[n])
+            elif m=='y':
+                if pts[n-1].y() == pts[n].y() == pts[n+1].y():
+                    remPt.append(pts[n])
+                
+        for el in remPt:
+            pts.remove(el)
+        return pts
+        
+    def ptInLine(self, pt, p1, p2):
+        rect = QRectF(p1-QPointF(0.5,0.5), p2+QPointF(0.5,0.5))
+        if rect.contains(pt):
+            return True
+        else:
+            return False
+        
+    # Functions for nodes
+    
+    def setNode(self, pts1, pts2):
+        pts1 = self.clean_points(pts1, 'x')
+        pts1 = self.clean_points(pts1, 'y')
+        pts2 = self.clean_points(pts2, 'x')
+        pts2 = self.clean_points(pts2, 'y')
+        
+        n = 0
+        N = min(len(pts1), len(pts2))
+        try:
+            while pts1[n] == pts2[n] and n<N:
+                n +=1
+            p1_prev = pts1[n-1]
+            p1 = pts1[n]
+            p2_prev = pts2[n-1]
+            p2 = pts2[n]
+ 
+            if self.ptInLine(p1, p2_prev, p2):
+                pos = p1
+            elif self.ptInLine(p2, p1_prev, p1):
+                pos = p2
+            else:
+                pos = p1_prev
+            
+            node = Node(None, self.scene)
+            node.setPos(pos)
+        except:
+            pass
+
+    def redrawNodesFromPort(self, p):
+        N = len(p.connections)
+        for n in range(0,N):
+            if p.connections[n].port2.parent in self.scene.items():
+                pts1 = [p.connections[n].pos1]
+                for el in p.connections[n].connPoints:
+                    pts1.append(el)
+                pts1.append(p.connections[n].pos2)
+                for m in range(n+1,N):
+                    pts2 = [p.connections[m].pos1]
+                    for el in p.connections[m].connPoints:
+                        pts2.append(el)
+                    pts2.append(p.connections[m].pos2)
+                try:
+                    self.setNode(pts1, pts2)
+                except:
+                    pass
+               
+    def redrawNodes(self):
+        self.removeNodes()
+        for item in self.scene.items():
+            if isinstance(item, Block):
+                for p in item.childItems():
+                    if isinstance(p, OutPort):
+                        if len(p.connections) > 1:
+                            self.redrawNodesFromPort(p) 
+                                            
+    def removeNodes(self):
+        for el in self.scene.items():
+            if isinstance(el, Node):
+                el.remove()
+                
+    # Positions functions
+                
+    def gridPos(self, pt):
+         gr = GRID
+         x = gr * ((pt.x() + gr /2) // gr)
+         y = gr * ((pt.y() + gr /2) // gr)
+         return QPointF(x,y)
+                
+                
+    # Mouse icons
+                
     def setMouseInitDraw(self, pos):
         pointer = Qt.ArrowCursor
         itemB = self.findBlockAt(pos)
@@ -580,59 +588,73 @@ class Editor(QObject):
             pointer = Qt.CrossCursor            
         else:
             pointer = Qt.DragLinkCursor
-        self.scene.mainw.view.setCursor(pointer)        
+        self.scene.mainw.view.setCursor(pointer) 
+        
+    # =================  State events functions  ========================
             
-    def PDM(self, obj, event):    # Dummy function - No action
+    def PDM(self, obj, event):    
+        # Dummy function - No action
         pass
 
-    def P00(self, obj, event):                                   # IDLE + MOUSEMOVE
+    def P00(self, obj, event):                                   
+        # IDLE + MOUSEMOVE
+        # Mouse is moving and blocks are selected if mouse over them
         self.setMouseInitDraw(event.scenePos())
         
-        item = self.itemAt(event.scenePos())
-        if item == None:
+        items = self.itemAt(event.scenePos())
+        item = [b for b in items if isinstance(b, Block)]
+        if not item:
             self.deselect_all()
         else:
             try:
-                item.setSelected(True)
+                item[0].setSelected(True)
             except:
                 pass
-        self.scene.updateDgm()
  
-    def P01(self, obj, event):                                     # IDLE, ITEMSELECTED + LEFTMOUSEPRESSED
-        item = self.findConnectionAt(event.scenePos())
-        if item != None:
-            self.scene.currentItem = item
+    def P01(self, obj, event):                                     
+        # IDLE, ITEMSELECTED + LEFTMOUSEPRESSED
+        # Look for connections and ports and begin drawing from them
+        items = self.itemAt(event.scenePos())
+        conn = [b for b in items if isinstance(b, Connection)]
+        pOut = [p for p in items if isinstance(p, OutPort)]
+        pIn  = [p for p in items if isinstance(p, InPort)]
+        
+        if conn:
+            self.scene.currentItem = conn[0]
             self.currentPos = event.scenePos()
             self.deselect_all()
             self.scene.DgmToUndo()
             self.state = MOVECONN
 
-        elif self.findOutPortAt(event.scenePos()) != None:
-            item = self.findOutPortAt(event.scenePos())
+        elif pOut:
+            item = pOut[0]
             self.scene.DgmToUndo()
             self.state = DRAWFROMOUTPORT
             self.conn = Connection(None, self.scene)
+            self.conn.draw_color = Qt.red
             self.mainw.view.setDragMode(QGraphicsView.NoDrag)
             self.conn.port1 = item
-            self.conn.pos1 = item.scenePos()
-            self.conn.pos2 = item.scenePos()
+            self.conn.pos1 = self.gridPos(item.scenePos())
+            self.conn.pos2 = self.gridPos(item.scenePos())
             self.firstTime = True
             
-        elif self.findInPortAt(event.scenePos()) != None:
-            item = self.findInPortAt(event.scenePos())
+        elif pIn:
+            item = pIn[0]
             self.scene.DgmToUndo()
             self.state = DRAWFROMINPORT
             self.conn = Connection(None, self.scene)
+            self.conn.draw_color = Qt.red
             self.mainw.view.setDragMode(QGraphicsView.NoDrag)
             self.conn.port2 = item
-            self.conn.pos1 = item.scenePos()
-            self.conn.pos2 = item.scenePos()
+            self.conn.pos1 = self.gridPos(item.scenePos())
+            self.conn.pos2 = self.gridPos(item.scenePos())
             self.firstTime = True
             
         else:
             self.state = LEFTMOUSEPRESSED
             
-    def P02(self, obj, event):                                     # IDLE, ITEMSELECTED + RIGHTMOUSEPRESSED
+    def P02(self, obj, event):                                     
+        # IDLE, ITEMSELECTED + RIGHTMOUSEPRESSED
         # Check if more blocks are selected
         NumOfItems = self.getNumOfItems()
         if NumOfItems>1:
@@ -641,84 +663,83 @@ class Editor(QObject):
             self.deselect_all()
             return
         
-        item = self.findBlockAt(event.scenePos())
-#         self.deselect_all()
-        if isinstance(item, Block):
+        items = self.itemAt(event.scenePos())
+        blks = [b for b in items if isinstance(b, Block)]
+        conn = [c for c in items if isinstance(c, Connection)]
+        if blks:
+            item = blks[0]
             item.setSelected(True)
             self.scene.item = item
-            self.scene.evpos = event.scenePos()
-            
+            self.scene.evpos = event.scenePos()           
             if isinstance(item, subsBlock):
                 self.menuSubsBlk.exec_(event.screenPos())
             else:
                 self.menuIOBlk.exec_(event.screenPos())
-#             except:
-#                 pass
-        else:                
-            item = self.findConnectionAt(event.scenePos())
-            if isinstance(item,Connection):
-                self.scene.item = item
+                
+        elif conn:                
+                self.scene.item = conn[0]
                 self.scene.evpos = event.scenePos()
                 try:
                     self.subMenuConn.exec_(event.screenPos())
                 except:
                     pass
-
-        if item == None:      
+                    
+        else:      
             self.scene.evpos = event.scenePos()
             self.subMenuEditor.exec_(event.screenPos())
             
 
-    def P03(self, obj, event):                                     # IDLE, ITEMSELECTED + MOUSEDOUBLECLICK
-        item = self.findBlockAt(event.scenePos())
-        self.deselect_all()
-        if isinstance(item,subsBlock):
-            self.scene.item = item
-            self.openSubsystem()
-        elif isinstance(item, Block):
-            item.setSelected(True)
-            self.scene.item = item
-            self.scene.evpos = event.scenePos()
-            self.paramsBlock()
-        else:
-            pass
+    def P03(self, obj, event):                                     
+        # IDLE, ITEMSELECTED + MOUSEDOUBLECLICK
+        items = self.itemAt(event.scenePos())
+        if items:
+            blk = [b for b in items if isinstance(b, Block)]
+            self.deselect_all()
+            if blk:
+                item = blk[0]
+                print(item)
+                if isinstance(item,subsBlock):
+                    self.scene.item = item
+                    self.openSubsystem()
+                elif isinstance(item, Block):
+                    item.setSelected(True)
+                    self.scene.item = item
+                    self.scene.evpos = event.scenePos()
+                    self.paramsBlock()
+                else:
+                    pass
 
-    def P04(self, obj, event):                                     # ITEMSELECTED + KEY_DEL
+    def P04(self, obj, event):                                     
+        # ITEMSELECTED + KEY_DEL
         self.deleteSelected()
         self.state = IDLE
         self.redrawNodes()
 
-    def P05(self, obj, event):                                     # ITEMSELECTED + KEY_ESC
+    def P05(self, obj, event):                                     
+        # ITEMSELECTED + KEY_ESC
         self.state = IDLE
 
-    def P06(self, obj, event):                                     # LEFTMOUSEPRESSED + MOUSEMOVE
+    def P06(self, obj, event):                                     
+        # LEFTMOUSEPRESSED + MOUSEMOVE
         self.redrawSelectedItems()
         self.removeNodes()
-        item = self.itemAt(event.scenePos())
                         
-    def P07(self, obj, event):                                      # LEFTMOUSEPRESSED + MOUSERELEASED
+    def P07(self, obj, event):                                      
+        # LEFTMOUSEPRESSED + MOUSERELEASED
         self.redrawSelectedItems()
         self.redrawNodes()
         
-        item = self.itemAt(event.scenePos())
-        if self.scene.currentItem != None:
-            self.scene.currentItem = None
-            self.deselect_all()
-            try:
-                item.setSelected(True)
-                self.scene.currentItem = item
-            except:
-                pass        
-
         if self.scene.selectedItems():
             self.state = ITEMSELECTED
         else:
             self.state = IDLE
         
-    def P08(self, obj, event):                                      # DRAWFROMOUTPORT + LEFTMOUSEPRESSED
-        item = self.findInPortAt(event.scenePos())
-        if isinstance(item,InPort):
-            self.connectInPort(item)
+    def P08(self, obj, event):                                      
+        # DRAWFROMOUTPORT + LEFTMOUSEPRESSED
+        items = self.itemAt(event.scenePos())
+        inPort = [p for p in items if isinstance(p, InPort)]
+        if inPort:
+            self.connectInPort(inPort[0])
             self.redrawNodes()
             self.state = IDLE
             self.mainw.view.setDragMode(QGraphicsView.RubberBandDrag)
@@ -732,7 +753,8 @@ class Editor(QObject):
                 self.conn.pos2 = pt            
             self.conn.update_path()
                 
-    def P09(self, obj, event):                                      # DRAWFROMOUTPORT + RIGHTMOUSEPRESSED, KEY_ESC
+    def P09(self, obj, event):                                      
+        # DRAWFROMOUTPORT + RIGHTMOUSEPRESSED, KEY_ESC
         try:
             self.conn.remove()
             self.scene.undoDgm()
@@ -741,19 +763,22 @@ class Editor(QObject):
         self.conn = None
         self.state = IDLE
        
-    def P10(self, obj, event):                                      # DRAWFROMOUTPORT + MOUSEMOVE
+    def P10(self, obj, event):                                      
+        # DRAWFROMOUTPORT + MOUSEMOVE
         item = self.itemByDraw(event.scenePos())
         self.setMouseByDraw(item)
-        self.conn.pos2 = event.scenePos()
+        self.conn.pos2 = self.gridPos(event.scenePos())
         if isinstance(item, InPort):
             self.conn.update_path_draw2InPort()
         else:
             self.conn.update_path_draw2Pt_fw()
                     
-    def P11(self, obj, event):                                      # ITEMSELECTED + MOUSEMOVE
+    def P11(self, obj, event):                                      
+        # ITEMSELECTED + MOUSEMOVE
         self.setMouseInitDraw(event.scenePos())
 
-    def P12(self, obj, event):                                      # MOVECONN + MOUSEMOVE
+    def P12(self, obj, event):                                      
+        # MOVECONN + MOUSEMOVE
         item = self.scene.currentItem
         N = len(item.connPoints)
         oldPos = self.currentPos
@@ -768,8 +793,10 @@ class Editor(QObject):
             if ok:
                 self.currentPos = newPos
 
-    def P13(self, obj, event):                                         # MOVECONN + MOUSERELEASE
+    def P13(self, obj, event):                                         
+        # MOVECONN + MOUSERELEASE
         item = self.scene.currentItem
+        item.clean()
         N = len(item.connPoints)
         oldPos = self.currentPos
         newPos = self.gridPos(event.scenePos())
@@ -787,20 +814,19 @@ class Editor(QObject):
         self.scene.currentItem = None
         self.state = IDLE
 
-    def P14(self, obj, event):                          # DRAWFROMINPORT + LEFTMOUSEPRESSED  OR MOUSERELEASED
-        item1 = self.findOutPortAt(event.scenePos())
-        item2 = None
-        try:
-            item2 = self.findOtherConnectionAt(event.scenePos(), self.conn)
-        except:
-            pass
-        if isinstance(item1,OutPort):
-            self.connectOutPort(item1)  
+    def P14(self, obj, event):                          
+        # DRAWFROMINPORT + LEFTMOUSEPRESSED  OR MOUSERELEASED
+        items = self.itemAt(event.scenePos())
+        item1 = [p for p in items if isinstance(p, OutPort)]
+        item2 = [c for c in items if isinstance(c, Connection)]
+        
+        if item1:
+            self.connectOutPort(item1[0])  
             self.redrawNodes()
             self.state = IDLE
             self.mainw.view.setDragMode(QGraphicsView.RubberBandDrag)
-        elif isinstance(item2, Connection):
-            self.link2Connection(item2)
+        elif item2:
+            self.link2Connection(item2[0])
             self.redrawNodes()
             self.state = IDLE
             self.mainw.view.setDragMode(QGraphicsView.RubberBandDrag)
@@ -814,7 +840,8 @@ class Editor(QObject):
                 self.conn.pos1 = pt            
             self.conn.update_path()
 
-    def P15(self, obj, event):                              # DRAWFROMINPORT + MOUSEMOVE  
+    def P15(self, obj, event):                              
+        # DRAWFROMINPORT + MOUSEMOVE  
         item = self.itemByDraw(event.scenePos())
         self.setMouseByDraw(item)
         self.conn.pos1 = event.scenePos()
@@ -826,7 +853,8 @@ class Editor(QObject):
             self.conn.update_path_draw2Pt_bk()
         pass
         
-    def P16(self, obj, event):                                      # DRAWFROMCONNECTION + LEFTMOUSEPRESSED
+    def P16(self, obj, event):                                      
+        # DRAWFROMCONNECTION + LEFTMOUSEPRESSED
         item = self.findInPortAt(event.scenePos())
         if isinstance(item,InPort):
             self.connectInPort(item)
@@ -835,12 +863,6 @@ class Editor(QObject):
             self.mainw.view.setDragMode(QGraphicsView.RubberBandDrag)
         else:
             pt = self.gridPos(event.scenePos())
-            """
-            if self.firstTime:
-                self.firstTime = False
-            else:
-                self.conn.addPoint(pt)
-            """
 
             self.conn.addPoint(pt)
            

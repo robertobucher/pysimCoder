@@ -399,7 +399,6 @@ class NewEditorMainWindow(QMainWindow):
     def clearDirAct(self):
         self.actFolders.clear()
         self.actFolders.addItem(os.getcwd())
-        #self.changeDir(0)
 
     def changeDir(self, index):
         try:

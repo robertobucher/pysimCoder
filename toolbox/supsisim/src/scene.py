@@ -600,7 +600,6 @@ class Scene(QGraphicsScene):
         except:
             txt = ''
 
-#         items = self.items()
         dir1 = respath + 'blocks/rcpBlk'
         txt += 'import os\n\n'
 

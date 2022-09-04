@@ -9,7 +9,6 @@ class Port(QGraphicsPathItem):
     def __init__(self, parent, scene, name = ''):
         super(Port, self).__init__(parent)
         self.scene = scene
-        #self.scene.addItem(self)
         self.block = None
         self.name = ''
         self.line_color = Qt.black
@@ -27,7 +26,6 @@ class Port(QGraphicsPathItem):
             for conn in self.connections:
                 try:
                     conn.update_pos_from_ports()
-                    #conn.redrawConnection()
                 except AttributeError:
                     self.connections.remove(conn)
         return value

@@ -87,7 +87,6 @@ class BlkDlg(QDialog):
         super(BlkDlg, self).accept()
 
 def parsDialog(pars, helpT):
-    #app = app = QApplication(sys.argv)
     dialog = BlkDlg(pars, helpT)
     res = dialog.exec_()
     return dialog.line

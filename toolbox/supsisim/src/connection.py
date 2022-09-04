@@ -22,7 +22,6 @@ class Connection(QGraphicsPathItem):
 
         self.connPoints = []
         self.draw_color = Qt.black
-        
         self.setup()
 
     def __str__(self):
@@ -47,7 +46,6 @@ class Connection(QGraphicsPathItem):
         pen = QPen(self.draw_color)
         pen.setWidth(LW)
         self.setPen(pen)
-        #self.setFlag(self.ItemIsSelectable)
 
     def addPoint(self, pos):
         if len(self.connPoints) == 0:
@@ -80,13 +78,11 @@ class Connection(QGraphicsPathItem):
     def clean(self):
         N = len(self.connPoints)
         if N> 2:
-            remPt = []
-            for n in range(1, N-2):
-                if self.connPoints[n-1] == self.connPoints[n]:
-                    remPt.append(self.connPoints[n])
-            for el in remPt:
-                self.connPoints.remove(el)
-
+            connPoints = self.connPoints.copy()
+            self.connPoints = []
+            [self.connPoints.append(x) for x in connPoints \
+             if x not in self.connPoints]
+            
     def move(self, npos, destPos):
         N = len(self.connPoints)
         initIndex = npos -1
@@ -179,17 +175,6 @@ class Connection(QGraphicsPathItem):
             pass        
         self.update_path()
 
-    def redrawConnection(self):
-        N = len(self.connPoints)
-        if N != 0:
-            for n in range(0,N-1):
-                if (n % 2) == 0:
-                    self.connPoints[n].setX(self.connPoints[n+1].x())
-                else:
-                    self.connPoints[n].setY(self.connPoints[n+1].y())
-        self.connPoints[N-1].setY(self.pos2.y())             
-        self.update_path()      
-        
     def update_path(self):
         p = QPainterPath()
         p.moveTo(self.pos1)
