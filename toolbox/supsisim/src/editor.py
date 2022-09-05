@@ -601,49 +601,43 @@ class Editor(QObject):
         # Mouse is moving and blocks are selected if mouse over them
         self.setMouseInitDraw(event.scenePos())
         
-        items = self.itemAt(event.scenePos())
-        item = [b for b in items if isinstance(b, Block)]
-        if not item:
+        item = self.itemAt(event.scenePos())
+        if item == None:
             self.deselect_all()
         else:
             try:
-                item[0].setSelected(True)
+                item.setSelected(True)
             except:
                 pass
+        self.scene.updateDgm()
  
     def P01(self, obj, event):                                     
         # IDLE, ITEMSELECTED + LEFTMOUSEPRESSED
         # Look for connections and ports and begin drawing from them
-        items = self.itemAt(event.scenePos())
-        conn = [b for b in items if isinstance(b, Connection)]
-        pOut = [p for p in items if isinstance(p, OutPort)]
-        pIn  = [p for p in items if isinstance(p, InPort)]
-        
-        if conn:
-            self.scene.currentItem = conn[0]
+        item = self.findConnectionAt(event.scenePos())
+        if item != None:
+            self.scene.currentItem = item
             self.currentPos = event.scenePos()
             self.deselect_all()
             self.scene.DgmToUndo()
             self.state = MOVECONN
 
-        elif pOut:
-            item = pOut[0]
+        elif self.findOutPortAt(event.scenePos()) != None:
+            item = self.findOutPortAt(event.scenePos())
             self.scene.DgmToUndo()
             self.state = DRAWFROMOUTPORT
             self.conn = Connection(None, self.scene)
-#             self.conn.draw_color = Qt.red
             self.mainw.view.setDragMode(QGraphicsView.NoDrag)
             self.conn.port1 = item
             self.conn.pos1 = self.gridPos(item.scenePos())
             self.conn.pos2 = self.gridPos(item.scenePos())
             self.firstTime = True
             
-        elif pIn:
-            item = pIn[0]
+        elif self.findInPortAt(event.scenePos()) != None:
+            item = self.findInPortAt(event.scenePos())
             self.scene.DgmToUndo()
             self.state = DRAWFROMINPORT
             self.conn = Connection(None, self.scene)
-#             self.conn.draw_color = Qt.red
             self.mainw.view.setDragMode(QGraphicsView.NoDrag)
             self.conn.port2 = item
             self.conn.pos1 = self.gridPos(item.scenePos())
@@ -691,24 +685,21 @@ class Editor(QObject):
 
     def P03(self, obj, event):                                     
         # IDLE, ITEMSELECTED + MOUSEDOUBLECLICK
-        items = self.itemAt(event.scenePos())
-        if items:
-            blk = [b for b in items if isinstance(b, Block)]
-            self.deselect_all()
-            if blk:
-                item = blk[0]
-                print(item)
-                if isinstance(item,subsBlock):
-                    self.scene.item = item
-                    self.openSubsystem()
-                elif isinstance(item, Block):
-                    item.setSelected(True)
-                    self.scene.item = item
-                    self.scene.evpos = event.scenePos()
-                    self.paramsBlock()
-                else:
-                    pass
-
+        item = self.findBlockAt(event.scenePos())
+        self.deselect_all()
+        if isinstance(item,subsBlock):
+            self.scene.item = item
+            self.openSubsystem()        
+        
+        elif isinstance(item, Block):
+            item.setSelected(True)
+            self.scene.item = item
+            self.scene.evpos = event.scenePos()
+            self.paramsBlock()
+            
+        else:
+            pass
+            
     def P04(self, obj, event):                                     
         # ITEMSELECTED + KEY_DEL
         self.deleteSelected()
@@ -736,10 +727,9 @@ class Editor(QObject):
         
     def P08(self, obj, event):                                      
         # DRAWFROMOUTPORT + LEFTMOUSEPRESSED
-        items = self.itemAt(event.scenePos())
-        inPort = [p for p in items if isinstance(p, InPort)]
-        if inPort:
-            self.connectInPort(inPort[0])
+        item = self.findInPortAt(event.scenePos())
+        if isinstance(item,InPort):
+            self.connectInPort(item)
             self.redrawNodes()
             self.state = IDLE
             self.mainw.view.setDragMode(QGraphicsView.RubberBandDrag)
@@ -818,21 +808,22 @@ class Editor(QObject):
 
     def P14(self, obj, event):                          
         # DRAWFROMINPORT + LEFTMOUSEPRESSED  OR MOUSERELEASED
-        items = self.itemAt(event.scenePos())
-        item1 = [p for p in items if isinstance(p, OutPort)]
-        item2 = [c for c in items if isinstance(c, Connection)]
-        
-        if item1:
-            self.connectOutPort(item1[0])  
+        item1 = self.findOutPortAt(event.scenePos())
+        item2 = None
+        try:
+            item2 = self.findOtherConnectionAt(event.scenePos(), self.conn)
+        except:
+            pass
+        if isinstance(item1,OutPort):
+            self.connectOutPort(item1)  
             self.redrawNodes()
             self.state = IDLE
             self.mainw.view.setDragMode(QGraphicsView.RubberBandDrag)
-#         elif item2:
-#             self.link2Connection(item2[0])
-#             self.connectOutPort(item2[0].port1.parent)
-#             self.redrawNodes()
-#             self.state = IDLE
-#             self.mainw.view.setDragMode(QGraphicsView.RubberBandDrag)
+        elif isinstance(item2, Connection):
+            self.link2Connection(item2)
+            self.redrawNodes()
+            self.state = IDLE
+            self.mainw.view.setDragMode(QGraphicsView.RubberBandDrag)
         else:
             pt = self.gridPos(event.scenePos())
             if self.firstTime:
