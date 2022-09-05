@@ -83,7 +83,7 @@ class Connection(QGraphicsPathItem):
             [self.connPoints.append(x) for x in connPoints[1:-1] \
              if x not in self.connPoints]
             self.connPoints.insert(0,connPoints[0])
-            self.connPoints.append(connPints[-1])
+            self.connPoints.append(connPoints[-1])
             
     def move(self, npos, destPos):
         N = len(self.connPoints)
