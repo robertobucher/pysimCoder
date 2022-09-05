@@ -178,6 +178,7 @@ class Connection(QGraphicsPathItem):
         self.update_path()
 
     def update_path(self):
+        self.clean()
         p = QPainterPath()
         p.moveTo(self.pos1)
         for el in self.connPoints:
