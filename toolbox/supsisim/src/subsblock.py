@@ -283,9 +283,8 @@ class subsBlock(Block):
                 for el in blk:
                     items.append(el)
             elif isinstance(item, Block):
-                blk = item.cloneBlkWithPorts()
-                blk.subsParent = self
-                items.append(blk)
+                item.subsParent = self
+                items.append(item)
             else:
                 pass
 
