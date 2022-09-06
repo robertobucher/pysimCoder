@@ -91,7 +91,7 @@ class Scene(QGraphicsScene):
         dataDict['simulate'] = dict(zip(keys, vals))
 
         keys = ['used', 'ip', 'port', 'user', 'passwd', 'devid', 'mount', 'tree']
-        vals = [str(self.SHV.used), self.SHV.ip, self.SHV.port, self.SHV.user, self.SHV.passw,
+        vals = [self.SHV.used, self.SHV.ip, self.SHV.port, self.SHV.user, self.SHV.passw,
                 self.SHV.devid, self.SHV.mount, self.SHV.tree]
         dataDict['SHV'] = dict(zip(keys, vals))
 

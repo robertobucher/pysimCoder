@@ -18,7 +18,7 @@ from supsisim.const import respath, pycmd, DP
 
 import json
 
-DEBUG = True
+DEBUG = False
 
 class NewEditorMainWindow(QMainWindow):
     def __init__(self, fname, mypath, parent):
