@@ -77,14 +77,42 @@ class Connection(QGraphicsPathItem):
 
     def clean(self):
         N = len(self.connPoints)
-        if N> 2:
+        if N>2:
             connPoints = self.connPoints.copy()
+            # Clean identic points
             self.connPoints = []
             [self.connPoints.append(x) for x in connPoints[1:-1] \
              if x not in self.connPoints]
             self.connPoints.insert(0,connPoints[0])
             self.connPoints.append(connPoints[-1])
             
+            #  Clean aligned points in x
+            connPoints = self.connPoints.copy()
+            N = len(self.connPoints)
+            if N>2:
+                connPoints = self.connPoints.copy()
+                self.connPoints = []
+                for n in range(1,N-1):
+                    if connPoints[n-1].x()==connPoints[n].x()==connPoints[n+1].x():
+                        if connPoints[n-1].y()<connPoints[n].y()<connPoints[n+1].y() or \
+                           connPoints[n-1].y()>connPoints[n].y()>connPoints[n+1].y():
+                                self.connPoints.append(connPoints[n])
+            self.connPoints.insert(0,connPoints[0])
+            self.connPoints.append(connPoints[-1])
+                         
+            #  Clean aligned points in y
+            N = len(self.connPoints)
+            if N> 2:
+                connPoints = self.connPoints.copy()
+                self.connPoints = []
+                for n in range(1,N-1):
+                    if connPoints[n-1].y()==connPoints[n].y()==connPoints[n+1].y():
+                        if connPoints[n-1].x()<connPoints[n].x()<connPoints[n+1].x() or \
+                           connPoints[n-1].x()>connPoints[n].x()>connPoints[n+1].x():
+                            self.connPoints.append(connPoints[n])
+            self.connPoints.insert(0,connPoints[0])
+            self.connPoints.append(connPoints[-1])
+                                      
     def move(self, npos, destPos):
         N = len(self.connPoints)
         initIndex = npos -1
