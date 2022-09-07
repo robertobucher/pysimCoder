@@ -24,6 +24,6 @@ def comediENCBlk(pout, dev, ch):
     if ch > 1:
         raise ValueError("Channel value can be 0 0r 1 not %i !" % ch)
 
-    blk = RCPblk('comedi_encoder',[],pout,[0,0],0,[],[ch],dev)
+    blk = RCPblk('comedi_encoder', [], pout, [0,0], 0, [], [ch], dev)
     return blk
 

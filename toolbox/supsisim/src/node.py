@@ -22,8 +22,6 @@ class Node(QGraphicsPathItem):
         p = QPainterPath()
         p.addEllipse(-NW/2, -NW/2, NW, NW)
         self.setPath(p)
-        #self.setFlag(self.ItemIsMovable)
-        #self.setFlag(self.ItemIsSelectable)
 
     def paint(self, painter, option, widget):
         painter.setPen(QPen(self.line_color))
@@ -52,7 +50,6 @@ class Node(QGraphicsPathItem):
          x = gr * ((pt.x() + gr /2) // gr)
          y = gr * ((pt.y() + gr /2) // gr)
          return QPointF(x,y)
-     
 
         
 

@@ -70,10 +70,6 @@ static void inout(python_block *block)
   block->intPar[2] = ++(block->intPar[2]) % block->intPar[1];
 }
 
-static void update(python_block *block)
-{
-}
-
 static void end(python_block *block)
 {
   int * intPar    = block->intPar;
@@ -91,9 +87,6 @@ void extdata(int flag, python_block *block)
 {
   if (flag==CG_OUT){          /* get input */
     inout(block);
-  }
-  else if (flag == CG_STUPD){
-    update(block);
   }
   else if (flag==CG_END){     /* termination */ 
     end(block);

@@ -122,8 +122,6 @@ class RTgenDlg(QDialog):
                                                   '.', 'Python file (*.py)')
         fname = fname[0]
         if len(fname) != 0:
-            #ln = fname.split('/')
-            #script = ln[-1].__str__()
             self.parscript.setText(fname)
 
 class SHVDlg(QDialog):

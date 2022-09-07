@@ -5,7 +5,6 @@ from PyQt5.QtCore import Qt, QRectF, QPointF
 import numpy as np
 from supsisim.const import LW, DB, GRID
 from supsisim.port import InPort, OutPort
-from lxml import etree
 
 class Connection(QGraphicsPathItem):
     """Connects one port to another."""
@@ -23,7 +22,6 @@ class Connection(QGraphicsPathItem):
 
         self.connPoints = []
         self.draw_color = Qt.black
-        
         self.setup()
 
     def __str__(self):
@@ -48,7 +46,6 @@ class Connection(QGraphicsPathItem):
         pen = QPen(self.draw_color)
         pen.setWidth(LW)
         self.setPen(pen)
-        #self.setFlag(self.ItemIsSelectable)
 
     def addPoint(self, pos):
         if len(self.connPoints) == 0:
@@ -80,14 +77,36 @@ class Connection(QGraphicsPathItem):
 
     def clean(self):
         N = len(self.connPoints)
-        if N> 2:
-            remPt = []
-            for n in range(1, N-2):
-                if self.connPoints[n-1] == self.connPoints[n]:
-                    remPt.append(self.connPoints[n])
-            for el in remPt:
-                self.connPoints.remove(el)
-
+        if N>2:
+            connPoints = self.connPoints.copy()
+            # Clean identic points
+            self.connPoints = []
+            [self.connPoints.append(x) for x in connPoints[0:-1] \
+             if x not in self.connPoints]
+            self.connPoints.append(connPoints[-1])
+            self.cleanXY()
+            
+    def cleanXY(self):
+        #  Clean wrong aligned points in x and y
+        N = len(self.connPoints)
+        if N>2:
+            connPoints = self.connPoints.copy()
+            for n in range(1,N-1):
+                prev_ptx, prev_pty = self.connPoints[n-1].x(), self.connPoints[n-1].y()
+                ptx, pty = self.connPoints[n].x(), self.connPoints[n].y()
+                next_ptx, next_pty = self.connPoints[n+1].x(), self.connPoints[n+1].y()
+                if prev_ptx==ptx==next_ptx:
+                    if pty > prev_pty and pty > next_pty or \
+                       pty < prev_pty and pty < next_pty:
+                          connPoints.remove(self.connPoints[n])
+                if prev_pty==pty==next_pty:
+                    if ptx > prev_ptx and ptx > next_ptx or \
+                       ptx < prev_ptx and pty < next_ptx:
+                          connPoints.remove(self.connPoints[n])                          
+            self.connPoints = []
+            for el in connPoints:
+                self.connPoints.append(el)
+                                                          
     def move(self, npos, destPos):
         N = len(self.connPoints)
         initIndex = npos -1
@@ -180,17 +199,6 @@ class Connection(QGraphicsPathItem):
             pass        
         self.update_path()
 
-    def redrawConnection(self):
-        N = len(self.connPoints)
-        if N != 0:
-            for n in range(0,N-1):
-                if (n % 2) == 0:
-                    self.connPoints[n].setX(self.connPoints[n+1].x())
-                else:
-                    self.connPoints[n].setY(self.connPoints[n+1].y())
-        self.connPoints[N-1].setY(self.pos2.y())             
-        self.update_path()      
-        
     def update_path(self):
         p = QPainterPath()
         p.moveTo(self.pos1)
@@ -401,31 +409,31 @@ class Connection(QGraphicsPathItem):
             pass
         self.scene.removeItem(self)
 
-    def save(self,root):
+    def save(self):
         try:
-            conn = etree.SubElement(root,'connection')
-            etree.SubElement(conn,'pos1X').text = self.pos1.x().__str__()
-            etree.SubElement(conn,'pos1Y').text = self.pos1.y().__str__()
-            etree.SubElement(conn,'pos2X').text = self.pos2.x().__str__()
-            etree.SubElement(conn,'pos2Y').text = self.pos2.y().__str__()
+            pos1 = (self.pos1.x(), self.pos1.y())
+            pos2 = (self.pos2.x(), self.pos2.y())
+            points = []
             for el in self.connPoints:
-                etree.SubElement(conn, 'pt').text = el.x().__str__() + ',' + el.y().__str__()
+                points.append((el.x(), el.y()))
+                
+            keys = ['pos1', 'pos2', 'points']
+            vals = [pos1, pos2, points]
+            
+            return dict(zip(keys, vals))
         except:
             pass
 
     def load(self, item, dx = 0.0, dy = 0.0):
         try:
-            pt1 = QPointF(float(item.findtext('pos1X')), float(item.findtext('pos1Y')))
-            pt2 = QPointF(float(item.findtext('pos2X')), float(item.findtext('pos2Y')))
+            pt1 = QPointF(item['pos1'][0], item['pos1'][1])
+            pt2 = QPointF(item['pos2'][0], item['pos2'][1])
             dpt = QPointF(dx, dy)
             self.pos1 = self.gridPos(pt1+dpt)
             self.pos2 = self.gridPos(pt2+dpt)
-            points = item.findall('pt')
-            for el in points:
-                pt = el.text.split(',')
-                x = float(pt[0])
-                y = float(pt[1])
-                pt = self.gridPos(QPointF(float(pt[0]), float(pt[1]))+dpt)
+            self.connPoints = []
+            for el in item['points']:
+                pt = QPointF(el[0], el[1])+dpt
                 self.connPoints.append(pt)
             self.update_ports_from_pos()
         except:
@@ -436,5 +444,4 @@ class Connection(QGraphicsPathItem):
          x = gr * ((pt.x() + gr /2) // gr)
          y = gr * ((pt.y() + gr /2) // gr)
          return QPointF(x,y)
-
 
