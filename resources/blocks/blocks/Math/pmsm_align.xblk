@@ -1,0 +1,11 @@
+{
+  "lib": "math",
+  "name": "PMSM Align",
+  "ip": 5,
+  "op": 1,
+  "stin": 0,
+  "stout": 0,
+  "icon": "PMSM_Align",
+  "params": "pmsm_alignBlk|Hall Offset:2:double|IRC per period:1000:double|Angle Offset:0:double",
+  "help": "Alignment of PMSM based on input from HALL sensors and encoder angle.\n\nParameters:\n Hall offset: offset between HALL sectors and motor angle\n Encoder resolution: IRC per period\n Angle offset: offset between encoder angle and motor angle\n\nInputs:\n Hall sector number\n Encoder position\n Last position of encoder's index\n Index count\n\nThe block takes those inputs and determines whether the HALL sensors or encoder are used for the motor's angle. HALL sensors are used until the encoder hits its index.\n\n"
+}
