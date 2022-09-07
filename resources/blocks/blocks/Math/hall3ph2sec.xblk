@@ -1,0 +1,11 @@
+{
+  "lib": "math",
+  "name": "Hall to 6 Sectors",
+  "ip": 3,
+  "op": 2,
+  "stin": 0,
+  "stout": 0,
+  "icon": "HALL_2_SEC",
+  "params": "hall3ph2secBlk|Inverted: 0:int",
+  "help": "Converstion of 3 phase Hall to 6 sectors.\nInverted: 1 (yes), 0 (no).\n"
+}

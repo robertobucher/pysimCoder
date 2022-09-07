@@ -20,5 +20,8 @@ def nuttxENCBlk(pout, port, res, reset):
 
     """
 
+    if (size(pout) != 1 and size(pout) != 3):
+       raise ValueError("NuttxENC: Number of outputs (%i) should be 1 or 3" % (size(pout)))
+
     blk = RCPblk('nuttxENC', [], pout, [0,0], 0, [4*res], [reset, 0], port)
     return blk

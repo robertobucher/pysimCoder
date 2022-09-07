@@ -34,19 +34,24 @@ static void init(python_block *block)
   int fd;
 
   fd = open(block->str, O_RDONLY);
-  if(fd<0) {
-    fprintf(stderr,"Error opening device: %s\n", block->str);
-    exit(1);
-  }
-  intPar[1] = fd;
-  if(intPar[0]){
-    int ret = ioctl(fd, QEIOC_RESET, 0);
-    if (ret < 0){
-      fprintf(stderr,"qe_main: ioctl(QEIOC_RESET) failed: %d\n", errno);
-      close(fd);
+  if(fd < 0)
+    {
+      fprintf(stderr,"Error opening device: %s\n", block->str);
       exit(1);
     }
-  }
+
+  intPar[1] = fd;
+
+  if (intPar[0])
+    {
+      int ret = ioctl(fd, QEIOC_RESET, 0);
+      if (ret < 0)
+        {
+          fprintf(stderr,"qe_main: ioctl(QEIOC_RESET) failed: %d\n", errno);
+          close(fd);
+          exit(1);
+        }
+    }
 }
 
 static void inout(python_block *block)
@@ -55,17 +60,58 @@ static void inout(python_block *block)
   double * realPar = block->realPar;
   double *y = block->y[0];
   int ret;
-  int fd = intPar[1];
+  int fd;
   int32_t position;
+  double scale = 1;
 
-  ret = ioctl(fd, QEIOC_POSITION, (unsigned long)((uintptr_t) &position));
-  if (ret < 0){
-    fprintf(stderr, "qe_main: ioctl(QEIOC_POSITION) failed");
-    close(fd);
-    exit(1);
-  }
+  /* Set scale only if realPar[0] (ENC resolution) is not zero */
+
+  if (realPar[0] != 0)
+    {
+      scale = 1/realPar[0];
+    }
+
+  fd = intPar[1];
+
+  /* Do we have more outputs */
+
+  if (block->nout == 3)
+    {
+      /* Yes, we want to get position, index and index count */
+
+      struct qe_index_s index;
+
+      double *y_index = block->y[1];
+      double *y_icnt = block->y[2];
+
+      ret = ioctl(fd, QEIOC_GETINDEX, (unsigned long)((uintptr_t)&index));
+      if (ret < 0)
+        {
+          fprintf(stderr, "qe_main: ioctl(QEIOC_GETINDEX) failed: %d\n", errno);
+          close(fd);
+          exit(1);
+        }
+
+      y_index[0] = index.indx_pos*scale;
+      y_icnt[0] = index.indx_cnt;
+      position = index.qenc_pos;
+    }
+  else
+    {
+      /* No, only position is required */
+
+      ret = ioctl(fd, QEIOC_POSITION, (unsigned long)((uintptr_t) &position));
+      if (ret < 0)
+        {
+          fprintf(stderr, "qe_main: ioctl(QEIOC_POSITION) failed");
+          close(fd);
+          exit(1);
+        }
+    }
   
-  y[0] = 1.0*position/realPar[0]; 
+  /* Scale resolution */
+
+  y[0] = position*scale;
 }
 
 static void end(python_block *block)
