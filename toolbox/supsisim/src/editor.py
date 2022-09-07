@@ -717,6 +717,8 @@ class Editor(QObject):
                         
     def P07(self, obj, event):                                      
         # LEFTMOUSEPRESSED + MOUSERELEASED        
+        self.redrawSelectedItems()
+        self.removeNodes()
         if self.scene.selectedItems():
             self.state = ITEMSELECTED
         else:

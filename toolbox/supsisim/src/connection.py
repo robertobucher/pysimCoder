@@ -81,41 +81,32 @@ class Connection(QGraphicsPathItem):
             connPoints = self.connPoints.copy()
             # Clean identic points
             self.connPoints = []
-            [self.connPoints.append(x) for x in connPoints[1:-1] \
+            [self.connPoints.append(x) for x in connPoints[0:-1] \
              if x not in self.connPoints]
-            self.connPoints.insert(0,connPoints[0])
             self.connPoints.append(connPoints[-1])
+            self.cleanXY()
             
-        #  Clean aligned points in x
-#         N = len(self.connPoints)
-#         if N>2:
-#             connPoints = self.connPoints.copy()
-#             self.connPoints = []
-#             for n in range(1,N-2):
-#                 if connPoints[n-1].x()==connPoints[n].x()==connPoints[n+1].x():
-#                     if connPoints[n-1].y()<connPoints[n].y()<connPoints[n+1].y() or \
-#                        connPoints[n-1].y()>connPoints[n].y()>connPoints[n+1].y():
-#                             self.connPoints.append(connPoints[n])
-#                     else:
-#                         print('No!')
-#                 else:
-#                     self.connPoints.append(connPoints[n])                        
-#             self.connPoints.insert(0,connPoints[0])
-#             self.connPoints.append(connPoints[-1])
-                         
-#             #  Clean aligned points in y
-#             N = len(self.connPoints)
-#             if N> 2:
-#                 connPoints = self.connPoints.copy()
-#                 self.connPoints = []
-#                 for n in range(1,N-1):
-#                     if connPoints[n-1].y()==connPoints[n].y()==connPoints[n+1].y():
-#                         if connPoints[n-1].x()<connPoints[n].x()<connPoints[n+1].x() or \
-#                            connPoints[n-1].x()>connPoints[n].x()>connPoints[n+1].x():
-#                             self.connPoints.append(connPoints[n])
-#             self.connPoints.insert(0,connPoints[0])
-#             self.connPoints.append(connPoints[-1])
-                                      
+    def cleanXY(self):
+        #  Clean wrong aligned points in x and y
+        N = len(self.connPoints)
+        if N>2:
+            connPoints = self.connPoints.copy()
+            for n in range(1,N-1):
+                prev_ptx, prev_pty = self.connPoints[n-1].x(), self.connPoints[n-1].y()
+                ptx, pty = self.connPoints[n].x(), self.connPoints[n].y()
+                next_ptx, next_pty = self.connPoints[n+1].x(), self.connPoints[n+1].y()
+                if prev_ptx==ptx==next_ptx:
+                    if pty > prev_pty and pty > next_pty or \
+                       pty < prev_pty and pty < next_pty:
+                          connPoints.remove(self.connPoints[n])
+                if prev_pty==pty==next_pty:
+                    if ptx > prev_ptx and ptx > next_ptx or \
+                       ptx < prev_ptx and pty < next_ptx:
+                          connPoints.remove(self.connPoints[n])                          
+            self.connPoints = []
+            for el in connPoints:
+                self.connPoints.append(el)
+                                                          
     def move(self, npos, destPos):
         N = len(self.connPoints)
         initIndex = npos -1
@@ -209,7 +200,6 @@ class Connection(QGraphicsPathItem):
         self.update_path()
 
     def update_path(self):
-        self.clean()
         p = QPainterPath()
         p.moveTo(self.pos1)
         for el in self.connPoints:
