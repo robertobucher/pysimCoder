@@ -10,6 +10,21 @@ The behaviour is similar to other RPC applications like Simulink and XCos.
 
 Despite the fact that the main purpose of pysimCoder is to generate RT control code, it is also possible to perfom simple simulations mixing continous time and discrete time blocks.
 
+Since 07.09.2022 pysimCoder implements subsystems (more than one block, right mouse click) and a new save format, based on json, which replaces the previous format of the files based on XML. Old files can be loaded and saved in the new format. The new format is better readable, because it can be simply opened by a python script like this:
+
+```
+import json
+import pprint
+
+fname = 'example.dgm'
+
+f = open(fname,'r')
+msg = f.read()
+f.close()
+fileDict = json.loads(msg)
+pprint.pprint(fileDict)
+```
+
 ![Screenshot_2021-10-31_07-16-53](https://user-images.githubusercontent.com/8348158/139570719-132cbe3c-190f-401b-b754-003959d08f5a.png)
 
 A Virtual Machine (Virtual Box) is available. Please write to me to get the address and password to download it.
