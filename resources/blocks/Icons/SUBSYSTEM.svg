@@ -41,8 +41,8 @@
      id="namedview4"
      showgrid="true"
      inkscape:zoom="4.9166667"
-     inkscape:cx="32.745762"
-     inkscape:cy="24"
+     inkscape:cx="8.338983"
+     inkscape:cy="23.59322"
      inkscape:window-x="0"
      inkscape:window-y="31"
      inkscape:window-maximized="1"
@@ -55,20 +55,20 @@
   </sodipodi:namedview>
   <text
      xml:space="preserve"
-     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9.33333px;line-height:0%;font-family:sans-serif;-inkscape-font-specification:Sans;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-     x="3.5254235"
-     y="27.677965"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.6667px;line-height:0%;font-family:sans-serif;-inkscape-font-specification:Sans;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+     x="2.9423265"
+     y="24.804201"
      id="text3361"><tspan
        sodipodi:role="line"
-       id="tspan3363"
-       x="3.5254235"
-       y="27.677965"
-       style="font-size:9.33333px;line-height:1.25;font-family:sans-serif">SUBSYSTEM</tspan></text>
+       x="2.9423265"
+       y="24.804201"
+       style="font-size:10.6667px;line-height:1.25;font-family:sans-serif;text-align:start;text-anchor:start"
+       id="tspan391">Subsystem</tspan></text>
   <rect
-     style="font-variation-settings:normal;opacity:1;vector-effect:none;fill:none;fill-opacity:0.829235;fill-rule:evenodd;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;-inkscape-stroke:none;stop-color:#000000;stop-opacity:1;stroke:#000000"
-     id="rect6248"
-     width="60"
-     height="45"
-     x="2"
-     y="2" />
+     style="font-variation-settings:normal;opacity:1;vector-effect:none;fill:none;fill-opacity:0.829235;fill-rule:evenodd;stroke:#000000;stroke-width:0.965541;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;-inkscape-stroke:none;stop-color:#000000;stop-opacity:1"
+     id="rect846"
+     width="60.597534"
+     height="37.137287"
+     x="2.2295599"
+     y="2.8627143" />
 </svg>
