@@ -787,23 +787,26 @@ class Editor(QObject):
         # MOVECONN + MOUSERELEASE
         item = self.scene.currentItem
 #         item.draw_color = Qt.black
-        item.clean()
-        N = len(item.connPoints)
-        oldPos = self.currentPos
-        newPos = self.gridPos(event.scenePos())
-        try:
-            npos, pos = item.find_exact_pos(oldPos)
-        except:
-            return
-            
-        if npos != 0 and npos != N:
-            ok = item.move(npos, newPos)
-            if ok:
-                self.currentPos = newPos
-
-        self.redrawNodes()
-        self.scene.currentItem = None
         self.state = IDLE
+        try:
+            item.clean()
+            N = len(item.connPoints)
+            oldPos = self.currentPos
+            newPos = self.gridPos(event.scenePos())
+            try:
+                npos, pos = item.find_exact_pos(oldPos)
+            except:
+                return
+                
+            if npos != 0 and npos != N:
+                ok = item.move(npos, newPos)
+                if ok:
+                    self.currentPos = newPos
+    
+            self.redrawNodes()
+            self.scene.currentItem = None
+        except:
+            None
 
     def P14(self, obj, event):                          
         # DRAWFROMINPORT + LEFTMOUSEPRESSED  OR MOUSERELEASED

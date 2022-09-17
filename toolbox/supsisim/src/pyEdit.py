@@ -21,14 +21,18 @@ import json
 DEBUG = False
 
 class NewEditorMainWindow(QMainWindow):
-    def __init__(self, fname, mypath, parent):
+    def __init__(self, fname, mypath, parent, scene= None):
         super(NewEditorMainWindow, self).__init__(parent)
+        self.filePath = mypath
         self.centralWidget = QWidget(self)
         self.verticalLayout = QVBoxLayout(self.centralWidget)
         self.view = GraphicsView(self.centralWidget)
         self.view.setMouseTracking(True)
         self.filename = fname
-        self.scene = Scene(self)
+        if scene == None:
+            self.scene = Scene(self)
+        else:
+            self.scene = scene
         self.view.setScene(self.scene)
         self.view.setRenderHint(QPainter.Antialiasing)
         self.verticalLayout.addWidget(self.view)
@@ -356,11 +360,11 @@ class NewEditorMainWindow(QMainWindow):
         if filename != '':
             self.fopen(filename)
 
-    def fopen(self, filename):
+    def fopen(self, filename, scene=None):
         fname = QFileInfo(filename)
-        self.filePath = str(fname.absolutePath())
+        filePath = str(fname.absolutePath())
         fn = str(fname.baseName())
-        main = NewEditorMainWindow(fn, self.filePath, self.library)
+        main = NewEditorMainWindow(fn, filePath, self.library, scene)
         self.library.mainWins.append(main)
         main.show()
         
