@@ -248,12 +248,9 @@ class subsBlock(Block):
                 c.remove()
 
     def openSubsystem(self):
-        QMessageBox.warning(self.scene.mainw,'Open the subsystem',
-        'If you do some modification in the subsystem,\nyou should save them and reload it\n \
-        to integrate the modifications!')
         name = '/tmp/' + self.name + '.dgm'
         self.sceneSubs.saveDgm(name)
-        self.sceneSubs.mainw.fopen(name)
+        self.sceneSubs.mainw.fopen(name, self.sceneSubs)
 
     def loadSubsystem(self):
         name = '/tmp/' + self.name + '.dgm'
