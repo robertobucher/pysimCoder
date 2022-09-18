@@ -21,7 +21,7 @@ import json
 DEBUG = False
 
 class NewEditorMainWindow(QMainWindow):
-    def __init__(self, fname, mypath, parent, scene= None):
+    def __init__(self, fname, mypath, parent, library, scene= None):
         super(NewEditorMainWindow, self).__init__(parent)
         self.filePath = mypath
         self.centralWidget = QWidget(self)
@@ -42,7 +42,8 @@ class NewEditorMainWindow(QMainWindow):
         self.addToolbars()
         self.workingFolder = os.getcwd()
         self.filePath = mypath
-        self.library = parent
+        self.library = library
+        self.parent = parent
         self.mainWins = []
         
         settings = QSettings('SUPSI', 'pysimCoder')
@@ -351,7 +352,7 @@ class NewEditorMainWindow(QMainWindow):
         return ret
             
     def newFile(self):
-        main = NewEditorMainWindow('untitled', self.workingFolder, self.library)
+        main = NewEditorMainWindow('untitled', self.workingFolder, self.library, self.library)
         self.library.mainWins.append(main)
         main.show()
 
@@ -365,18 +366,16 @@ class NewEditorMainWindow(QMainWindow):
         fname = QFileInfo(filename)
         filePath = str(fname.absolutePath())
         fn = str(fname.baseName())
-        main = NewEditorMainWindow(fn, filePath, self.library)
-        self.library.mainWins.append(main)
+        main = NewEditorMainWindow(fn, filePath, self.library, self.library)
         main.show()
         
     def openSubs(self, filename, scene, mainw):
         fname = QFileInfo(filename)
         filePath = str(fname.absolutePath())
         fn = str(fname.baseName())
-        main = NewEditorMainWindow(fn, filePath, mainw, scene)
-        mainw.mainWins.append(main)
+        main = NewEditorMainWindow(fn, filePath, mainw, self.library, scene)
+        self.mainWins.append(main)
         main.show()
-        
         
     def saveFile(self):
         if self.filename == 'untitled':

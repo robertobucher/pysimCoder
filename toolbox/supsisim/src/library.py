@@ -148,7 +148,7 @@ class Library(QMainWindow):
                                   triggered = self.close)
         
     def newFile(self):
-        main = NewEditorMainWindow('untitled', self.path, self)
+        main = NewEditorMainWindow('untitled', self.path, self, self)
         self.mainWins.append(main)
         main.show()
 
@@ -162,7 +162,7 @@ class Library(QMainWindow):
         fname = QFileInfo(filename)
         self.path = str(fname.absolutePath())
         fn = str(fname.baseName())
-        main = NewEditorMainWindow(fn, self.path, self)
+        main = NewEditorMainWindow(fn, self.path, self, self)
         self.mainWins.append(main)
         main.show()
 
