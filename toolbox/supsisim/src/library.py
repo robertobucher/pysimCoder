@@ -148,7 +148,7 @@ class Library(QMainWindow):
                                   triggered = self.close)
         
     def newFile(self):
-        main = NewEditorMainWindow('untitled', self.path, self, self)
+        main = NewEditorMainWindow('untitled', self.path, self)
         self.mainWins.append(main)
         main.show()
 
@@ -162,7 +162,7 @@ class Library(QMainWindow):
         fname = QFileInfo(filename)
         self.path = str(fname.absolutePath())
         fn = str(fname.baseName())
-        main = NewEditorMainWindow(fn, self.path, self, self)
+        main = NewEditorMainWindow(fn, self.path, self)
         self.mainWins.append(main)
         main.show()
 
@@ -225,9 +225,12 @@ class Library(QMainWindow):
         self.libConfig = sorted(blkList, key=lambda k: (k['lib'].lower(), k['name']))
  
     def closeWindow(self, mainW):
-        self.mainWins.remove(mainW)
-        if len(self.mainWins)!=0:
-            self.show()
+        try:
+            self.mainWins.remove(mainW)
+            if len(self.mainWins)!=0:
+                self.show()
+        except:
+            pass
    
     def closeEvent(self,event):
         for el in self.mainWins:
