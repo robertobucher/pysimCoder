@@ -250,7 +250,7 @@ class subsBlock(Block):
     def openSubsystem(self):
         name = '/tmp/' + self.name + '.dgm'
         self.sceneSubs.saveDgm(name)
-        self.sceneSubs.mainw.openSubs(name, self.sceneSubs, self.sceneSubs.mainw)
+        self.sceneSubs.mainw.fopen(name, self.sceneSubs)
 
     def save(self):
         subs = {}

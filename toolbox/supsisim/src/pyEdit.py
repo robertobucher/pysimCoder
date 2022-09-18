@@ -21,7 +21,7 @@ import json
 DEBUG = False
 
 class NewEditorMainWindow(QMainWindow):
-    def __init__(self, fname, mypath, parent, library, scene= None):
+    def __init__(self, fname, mypath, parent, scene= None):
         super(NewEditorMainWindow, self).__init__(parent)
         self.filePath = mypath
         self.centralWidget = QWidget(self)
@@ -42,9 +42,7 @@ class NewEditorMainWindow(QMainWindow):
         self.addToolbars()
         self.workingFolder = os.getcwd()
         self.filePath = mypath
-        self.library = library
-        self.parent = parent
-        self.mainWins = []
+        self.library = parent
         
         settings = QSettings('SUPSI', 'pysimCoder')
         try:
@@ -362,19 +360,12 @@ class NewEditorMainWindow(QMainWindow):
         if filename != '':
             self.fopen(filename)
 
-    def fopen(self, filename):
+    def fopen(self, filename, scene = None):
         fname = QFileInfo(filename)
         filePath = str(fname.absolutePath())
         fn = str(fname.baseName())
-        main = NewEditorMainWindow(fn, filePath, self.library, self.library)
-        main.show()
-        
-    def openSubs(self, filename, scene, mainw):
-        fname = QFileInfo(filename)
-        filePath = str(fname.absolutePath())
-        fn = str(fname.baseName())
-        main = NewEditorMainWindow(fn, filePath, mainw, self.library, scene)
-        self.mainWins.append(main)
+        main = NewEditorMainWindow(fn, filePath, self.library, scene)
+        self.library.mainWins.append(main)
         main.show()
         
     def saveFile(self):
@@ -491,23 +482,12 @@ class NewEditorMainWindow(QMainWindow):
     def getScene(self):
         return Scene(self)
 
-    def closeWindow(self, mainW):
-        self.mainWins.remove(mainW)
-   
-    def closeEvent(self,event):
-        for el in self.mainWins:
-            el.close()
-        event.accept()
-
     def closeEvent(self,event):          
         try:
             os.remove('tmp.py')
         except:
             pass
         
-        for el in self.mainWins:
-            el.close()
-            
         if self.modified:
             ret = self.askSaving()
             if ret == QMessageBox.Save:
