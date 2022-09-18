@@ -52,7 +52,6 @@ class Editor(QObject):
         
         self.menuSubsBlk = QMenu()
         opensubsBlkAction = self.menuSubsBlk.addAction('Open subsystem')
-        loadsubsBlkAction = self.menuSubsBlk.addAction('Reload subsystem')
         flpsubBlkAction = self.menuSubsBlk.addAction('Flip Block')
         namesubBlkAction = self.menuSubsBlk.addAction('Change Name')
         copysubBlkAction = self.menuSubsBlk.addAction('Copy Block')
@@ -66,7 +65,6 @@ class Editor(QObject):
         copyBlkAction.triggered.connect(self.copyBlock)
         deleteBlkAction.triggered.connect(self.deleteBlock)
         opensubsBlkAction.triggered.connect(self.openSubsystem)
-        loadsubsBlkAction.triggered.connect(self.reloadSubsystem)
         flpsubBlkAction.triggered.connect(self.flipBlock)
         copysubBlkAction.triggered.connect(self.copysubBlock)
         namesubBlkAction.triggered.connect(self.nameBlock)
@@ -227,10 +225,6 @@ class Editor(QObject):
     def openSubsystem(self):
         item = self.scene.item
         item.openSubsystem()
-        
-    def reloadSubsystem(self):
-        item = self.scene.item
-        item.loadSubsystem()
         
     # Connections and ports
     
