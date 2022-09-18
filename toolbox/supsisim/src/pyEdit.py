@@ -43,6 +43,7 @@ class NewEditorMainWindow(QMainWindow):
         self.workingFolder = os.getcwd()
         self.filePath = mypath
         self.library = parent
+        self.mainWins = []
         
         settings = QSettings('SUPSI', 'pysimCoder')
         try:
@@ -360,13 +361,22 @@ class NewEditorMainWindow(QMainWindow):
         if filename != '':
             self.fopen(filename)
 
-    def fopen(self, filename, scene=None):
+    def fopen(self, filename):
         fname = QFileInfo(filename)
         filePath = str(fname.absolutePath())
         fn = str(fname.baseName())
-        main = NewEditorMainWindow(fn, filePath, self.library, scene)
+        main = NewEditorMainWindow(fn, filePath, self.library)
         self.library.mainWins.append(main)
         main.show()
+        
+    def openSubs(self, filename, scene, mainw):
+        fname = QFileInfo(filename)
+        filePath = str(fname.absolutePath())
+        fn = str(fname.baseName())
+        main = NewEditorMainWindow(fn, filePath, mainw, scene)
+        mainw.mainWins.append(main)
+        main.show()
+        
         
     def saveFile(self):
         if self.filename == 'untitled':
@@ -482,12 +492,23 @@ class NewEditorMainWindow(QMainWindow):
     def getScene(self):
         return Scene(self)
 
+    def closeWindow(self, mainW):
+        self.mainWins.remove(mainW)
+   
+    def closeEvent(self,event):
+        for el in self.mainWins:
+            el.close()
+        event.accept()
+
     def closeEvent(self,event):          
         try:
             os.remove('tmp.py')
         except:
             pass
         
+        for el in self.mainWins:
+            el.close()
+            
         if self.modified:
             ret = self.askSaving()
             if ret == QMessageBox.Save:
