@@ -65,7 +65,6 @@ class NewEditorMainWindow(QMainWindow):
         self.editor.redrawNodes()
         self.statusLabel.setText('Ready')
 
-        self.active = True          # required!!!!!
         self.modified = False
 
     def addactions(self):
@@ -511,5 +510,5 @@ class NewEditorMainWindow(QMainWindow):
             recFolders = QVariant()
             
         settings.setValue('RecentFolders', recFolders)
-        self.active = False
+        self.editor.active = False
         self.library.closeWindow(self)
