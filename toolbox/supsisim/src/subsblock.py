@@ -24,7 +24,8 @@ class subsBlock(Block):
             self.parent = args[0]
             self.scene = args[1]
 
-            self.blksList = args[2]
+            blksList = args[2]
+            self.blksList = [el for el in blksList if el.params != 'IOBlk']
 
             self.setupIO()
             inp = len(self.inpP)
