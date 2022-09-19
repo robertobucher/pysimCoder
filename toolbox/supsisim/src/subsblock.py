@@ -248,9 +248,7 @@ class subsBlock(Block):
                 c.remove()
 
     def openSubsystem(self):
-        name = '/tmp/' + self.name + '.dgm'
-        self.sceneSubs.saveDgm(name)
-        self.sceneSubs.mainw.fopen(name, self.sceneSubs)
+        self.sceneSubs.mainw.openSubs(self.name, self.sceneSubs)
 
     def save(self):
         subs = {}

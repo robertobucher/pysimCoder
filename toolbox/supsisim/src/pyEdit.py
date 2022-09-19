@@ -31,8 +31,11 @@ class NewEditorMainWindow(QMainWindow):
         self.filename = fname
         if scene == None:
             self.scene = Scene(self)
+            if fname != 'untitled':
+                self.scene.loadDgm(self.getFullFileName())
         else:
             self.scene = scene
+            self.scene.mainw = self
         self.view.setScene(self.scene)
         self.view.setRenderHint(QPainter.Antialiasing)
         self.verticalLayout.addWidget(self.view)
@@ -41,7 +44,6 @@ class NewEditorMainWindow(QMainWindow):
         self.addMenubar()
         self.addToolbars()
         self.workingFolder = os.getcwd()
-        self.filePath = mypath
         self.library = parent
         
         settings = QSettings('SUPSI', 'pysimCoder')
@@ -53,9 +55,6 @@ class NewEditorMainWindow(QMainWindow):
             pass
         self.actFolders.setCurrentIndex(0)
                 
-        if fname != 'untitled':
-            self.scene.loadDgm(self.getFullFileName())
-            
         self.setWindowTitle(self.filename)
         self.status = self.statusBar()
         self.statusLabel = QLabel('')
@@ -66,6 +65,7 @@ class NewEditorMainWindow(QMainWindow):
         self.editor.redrawNodes()
         self.statusLabel.setText('Ready')
 
+        self.active = True          # required!!!!!
         self.modified = False
 
     def addactions(self):
@@ -368,6 +368,11 @@ class NewEditorMainWindow(QMainWindow):
         self.library.mainWins.append(main)
         main.show()
         
+    def openSubs(self, name, scene):
+        main = NewEditorMainWindow(name, self.filePath, self.library, scene)
+        self.library.mainWins.append(main)
+        main.show()
+        
     def saveFile(self):
         if self.filename == 'untitled':
             self.saveFileAs()
@@ -506,5 +511,5 @@ class NewEditorMainWindow(QMainWindow):
             recFolders = QVariant()
             
         settings.setValue('RecentFolders', recFolders)
+        self.active = False
         self.library.closeWindow(self)
-                       
