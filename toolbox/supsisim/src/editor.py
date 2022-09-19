@@ -40,6 +40,7 @@ class Editor(QObject):
         self.movBlk = False
         self.event = None
         self.state = IDLE
+        self.active = True
 
         self.menuIOBlk = QMenu()
         parBlkAction = self.menuIOBlk.addAction('Block I/Os')
@@ -887,7 +888,7 @@ class Editor(QObject):
                 ev = KEY_DEL
             if event.key() == Qt.Key_Escape:
                 ev = KEY_ESC
-        if self.mainw.active:
+        if self.active:
             if ev != -1:
                 fun = self.Fun[self.state][ ev]
                 fun(obj, event)
