@@ -676,7 +676,6 @@ class Editor(QObject):
             self.scene.evpos = event.scenePos()
             self.subMenuEditor.exec_(event.screenPos())
             
-
     def P03(self, obj, event):                                     
         # IDLE, ITEMSELECTED + MOUSEDOUBLECLICK
         item = self.findBlockAt(event.scenePos())
@@ -888,10 +887,10 @@ class Editor(QObject):
                 ev = KEY_DEL
             if event.key() == Qt.Key_Escape:
                 ev = KEY_ESC
-
-        if ev != -1:
-            fun = self.Fun[self.state][ ev]
-            fun(obj, event)
+        if self.mainw.active:
+            if ev != -1:
+                fun = self.Fun[self.state][ ev]
+                fun(obj, event)
                  
         return False
 
