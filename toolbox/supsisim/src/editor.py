@@ -864,31 +864,31 @@ class Editor(QObject):
                 self.conn.connPoints.remove(self.conn.connPoints[-1])
                 
     def eventFilter(self, obj, event):
-        ev = -1
-        if event.type() ==  QEvent.GraphicsSceneMouseMove:
-            ev = MOUSEMOVE
-             
-        if event.type() ==  QEvent.GraphicsSceneMousePress:
-            self.mainw.statusLabel.setText('')
-            if event.button() == Qt.LeftButton:
-                ev = LEFTMOUSEPRESSED
-            if event.button() == Qt.RightButton:
-                ev = RIGHTMOUSEPRESSED
-        
-        if event.type() == QEvent.GraphicsSceneMouseRelease:
-            ev = MOUSERELEASED
-                
-        if event.type() == QEvent.GraphicsSceneMouseDoubleClick:
-            self.mainw.statusLabel.setText('')
-            ev = MOUSEDOUBLECLICK
-
-        if event.type() == QEvent.KeyPress:
-            self.mainw.statusLabel.setText('')
-            if event.key() == Qt.Key_Delete:
-                ev = KEY_DEL
-            if event.key() == Qt.Key_Escape:
-                ev = KEY_ESC
         if self.active:
+            ev = -1
+            if event.type() ==  QEvent.GraphicsSceneMouseMove:
+                ev = MOUSEMOVE
+                
+            if event.type() ==  QEvent.GraphicsSceneMousePress:
+                self.mainw.statusLabel.setText('')
+                if event.button() == Qt.LeftButton:
+                    ev = LEFTMOUSEPRESSED
+                if event.button() == Qt.RightButton:
+                    ev = RIGHTMOUSEPRESSED
+            
+            if event.type() == QEvent.GraphicsSceneMouseRelease:
+                ev = MOUSERELEASED
+                    
+            if event.type() == QEvent.GraphicsSceneMouseDoubleClick:
+                self.mainw.statusLabel.setText('')
+                ev = MOUSEDOUBLECLICK
+    
+            if event.type() == QEvent.KeyPress:
+                self.mainw.statusLabel.setText('')
+                if event.key() == Qt.Key_Delete:
+                    ev = KEY_DEL
+                if event.key() == Qt.Key_Escape:
+                    ev = KEY_ESC
             if ev != -1:
                 fun = self.Fun[self.state][ ev]
                 fun(obj, event)
