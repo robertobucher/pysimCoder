@@ -64,6 +64,8 @@ class NewEditorMainWindow(QMainWindow):
         self.editor.install(self.scene)
         self.editor.redrawNodes()
         self.statusLabel.setText('Ready')
+        
+        self.notSubsystem = True
 
         self.modified = False
 
@@ -370,6 +372,7 @@ class NewEditorMainWindow(QMainWindow):
     def openSubs(self, name, scene):
         main = NewEditorMainWindow(name, self.filePath, self.library, scene)
         self.library.mainWins.append(main)
+        main.notSubsystem = False
         main.show()
         
     def saveFile(self):
@@ -491,8 +494,8 @@ class NewEditorMainWindow(QMainWindow):
             os.remove('tmp.py')
         except:
             pass
-        
-        if self.modified:
+            
+        if self.modified and self.notSubsystem:
             ret = self.askSaving()
             if ret == QMessageBox.Save:
                 self.saveFile()
