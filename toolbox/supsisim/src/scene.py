@@ -7,7 +7,7 @@ from supsisim.subsblock import subsBlock
 from supsisim.port import Port, InPort, OutPort
 from supsisim.connection import Connection
 from supsisim.dialg import RTgenDlg, SHVDlg
-from supsisim.const import pyrun, TEMP, respath, BWmin
+from supsisim.const import VERSION, pyrun, TEMP, respath, BWmin
 from lxml import etree
 import os
 import subprocess
@@ -81,7 +81,7 @@ class Scene(QGraphicsScene):
     def DgmToDict(self, dataDict):
         # Transform the block diagram into a python dict
         init = {'code': 'pysimCoder',
-                'ver' : '0.91',
+                'ver' : VERSION,
                 'date' : time.strftime("%d.%m.%Y - %H:%M:%S"),
             }
         dataDict['init'] = init
