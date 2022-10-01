@@ -12,6 +12,8 @@ DP = 100.0
 
 DB = 4
 
+VERSION = 0.95
+
 path = os.environ.get('PYSUPSICTRL') + '/'
 respath = path+'resources/'
 pycmd = 'jupyter qtconsole &'
