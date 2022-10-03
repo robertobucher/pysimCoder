@@ -10,14 +10,16 @@ export PYSUPSICTRL=$(shell pwd)
 addfiles: control slycot
 
 control:
-	git clone https://github.com/python-control/python-control.git
-	cd python-control; python3 setup.py install
-	rm -rf python-control
+	pip install control
+	# git clone https://github.com/python-control/python-control.git
+	# cd python-control; pip install .
+	# rm -rf python-control
 
 slycot:
-	git clone --recurse-submodules https://github.com/python-control/Slycot
-	cd Slycot; python3 setup.py install
-	rm -rf Slycot
+	pip install slycot
+	#git clone --recurse-submodules https://github.com/python-control/Slycot
+	#cd Slycot; python3 setup.py install
+	#rm -rf Slycot
 
 modules:
 	cd toolbox/supsictrl; python3 setup.py install; python3 setup.py clean --all
