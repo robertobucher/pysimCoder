@@ -10,7 +10,7 @@ addfiles: control slycot
 
 control:
 	git clone https://github.com/python-control/python-control.git
-	cd python-control; python3 setup.py install
+	cd python-control; pip install .
 	rm -rf python-control 
 
 slycot:
