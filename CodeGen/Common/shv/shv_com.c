@@ -308,6 +308,40 @@ void shv_pack_head_reply(shv_con_ctx_t *shv_ctx, int rid)
 }
 
 /****************************************************************************
+ * Name: shv_unpack_skip
+ *
+ * Description:
+ *   Skip data inside container
+ *
+ ****************************************************************************/
+
+int shv_unpack_skip(shv_con_ctx_t * shv_ctx)
+{
+  struct ccpcp_unpack_context *ctx = &shv_ctx->unpack_ctx;
+  int level = 1;
+
+  do
+    {
+      cchainpack_unpack_next(ctx);
+      if (ctx->err_no != CCPCP_RC_OK) return -1;
+
+      if ((ctx->item.type == CCPCP_ITEM_META) ||
+          (ctx->item.type == CCPCP_ITEM_LIST) ||
+          (ctx->item.type == CCPCP_ITEM_MAP) ||
+          (ctx->item.type == CCPCP_ITEM_IMAP))
+        {
+          level++;
+        }
+      else if (ctx->item.type == CCPCP_ITEM_CONTAINER_END)
+        {
+          level--;
+        }
+    }
+  while (level);
+}
+
+
+/****************************************************************************
  * Name: shv_unpack_head
  *
  * Description:
@@ -319,7 +353,7 @@ int shv_unpack_head(shv_con_ctx_t * shv_ctx, int * rid, char * method,
                     char * path)
 {
   int l;
-  int i,j;
+  int i;
   bool ok;
 
   method[0] = '\0';
@@ -403,57 +437,53 @@ int shv_unpack_head(shv_con_ctx_t * shv_ctx, int * rid, char * method,
               shv_ctx->cid_ptr[0] = ctx->item.as.UInt;
             }
         }
-      if (ctx->item.type == CCPCP_ITEM_LIST)
+      if ((ctx->item.type == CCPCP_ITEM_MAP) ||
+          (ctx->item.type == CCPCP_ITEM_IMAP))
         {
-          if (i == TAG_CALLER_IDS)
+          if (shv_unpack_skip(shv_ctx) < 0)
+             return -1;
+        }
+      else if (ctx->item.type == CCPCP_ITEM_LIST)
+        {
+          if (i != TAG_CALLER_IDS)
             {
               shv_ctx->cid_cnt = 0;
-	            j = 1;
+              do
+                {
+                  cchainpack_unpack_next(ctx);
+                  if (ctx->err_no != CCPCP_RC_OK) return -1;
+                  if ((ctx->item.type == CCPCP_ITEM_INT) ||
+                      (ctx->item.type == CCPCP_ITEM_UINT))
+                    {
+                      int ret;
+                      shv_ctx->cid_cnt += 1;
+
+                      /* Allocate memory for CIDs */
+
+                      ret = cid_alloc(shv_ctx);
+                      if (ret < 0)
+                        {
+                          printf("ERROR: Memory allocation for CID failed\n");
+                          exit(-1);
+                        }
+
+                      if (ctx->item.type == CCPCP_ITEM_INT)
+                        {
+                          shv_ctx->cid_ptr[shv_ctx->cid_cnt - 1] = ctx->item.as.Int;
+                        }
+                      else
+                        {
+                          shv_ctx->cid_ptr[shv_ctx->cid_cnt - 1] = ctx->item.as.UInt;
+                        }
+                    }
+	        }
+              while (ctx->item.type != CCPCP_ITEM_CONTAINER_END);
             }
           else
             {
-              j = 0;
+              if (shv_unpack_skip(shv_ctx) < 0)
+                return -1;
             }
-
-          do
-            {
-              cchainpack_unpack_next(ctx);
-              if (ctx->err_no != CCPCP_RC_OK) return -1;
-              if (j)
-                {
-                  if (ctx->item.type == CCPCP_ITEM_INT)
-                    {
-                      shv_ctx->cid_cnt += 1;
-
-                      /* Allocate memory for CIDs */
-
-                      int ret = cid_alloc(shv_ctx);
-                      if (ret < 0)
-                        {
-                          printf("ERROR: Memory allocation for CID failed\n");
-                          exit(-1);
-                        }
-
-                      shv_ctx->cid_ptr[shv_ctx->cid_cnt - 1] = ctx->item.as.Int;
-                    }
-
-                  else if (ctx->item.type == CCPCP_ITEM_UINT)
-                    {
-                      shv_ctx->cid_cnt += 1;
-
-                      /* Allocate memory for CIDs */
-
-                      int ret = cid_alloc(shv_ctx);
-                      if (ret < 0)
-                        {
-                          printf("ERROR: Memory allocation for CID failed\n");
-                          exit(-1);
-                        }
-
-                      shv_ctx->cid_ptr[shv_ctx->cid_cnt - 1] = ctx->item.as.UInt;
-                    }
-	              }
-            } while (ctx->item.type != CCPCP_ITEM_CONTAINER_END);
         }
       else if (ctx->item.type == CCPCP_ITEM_STRING)
         {
