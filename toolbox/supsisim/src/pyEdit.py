@@ -351,7 +351,7 @@ class NewEditorMainWindow(QMainWindow):
         return ret
             
     def newFile(self):
-        main = NewEditorMainWindow('untitled', self.workingFolder, self.library, self.library)
+        main = NewEditorMainWindow('untitled', self.workingFolder, self.library)
         self.library.mainWins.append(main)
         main.show()
 
