@@ -308,6 +308,40 @@ void shv_pack_head_reply(shv_con_ctx_t *shv_ctx, int rid)
 }
 
 /****************************************************************************
+ * Name: shv_unpack_skip
+ *
+ * Description:
+ *   Skip data inside container
+ *
+ ****************************************************************************/
+
+int shv_unpack_skip(shv_con_ctx_t * shv_ctx)
+{
+  struct ccpcp_unpack_context *ctx = &shv_ctx->unpack_ctx;
+  int level = 1;
+
+  do
+    {
+      cchainpack_unpack_next(ctx);
+      if (ctx->err_no != CCPCP_RC_OK) return -1;
+
+      if ((ctx->item.type == CCPCP_ITEM_META) ||
+          (ctx->item.type == CCPCP_ITEM_LIST) ||
+          (ctx->item.type == CCPCP_ITEM_MAP) ||
+          (ctx->item.type == CCPCP_ITEM_IMAP))
+        {
+          level++;
+        }
+      else if (ctx->item.type == CCPCP_ITEM_CONTAINER_END)
+        {
+          level--;
+        }
+    }
+  while (level);
+}
+
+
+/****************************************************************************
  * Name: shv_unpack_head
  *
  * Description:
@@ -319,7 +353,7 @@ int shv_unpack_head(shv_con_ctx_t * shv_ctx, int * rid, char * method,
                     char * path)
 {
   int l;
-  int i,j;
+  int i;
   bool ok;
 
   method[0] = '\0';
@@ -403,57 +437,53 @@ int shv_unpack_head(shv_con_ctx_t * shv_ctx, int * rid, char * method,
               shv_ctx->cid_ptr[0] = ctx->item.as.UInt;
             }
         }
-      if (ctx->item.type == CCPCP_ITEM_LIST)
+      if ((ctx->item.type == CCPCP_ITEM_MAP) ||
+          (ctx->item.type == CCPCP_ITEM_IMAP))
         {
-          if (i == TAG_CALLER_IDS)
+          if (shv_unpack_skip(shv_ctx) < 0)
+             return -1;
+        }
+      else if (ctx->item.type == CCPCP_ITEM_LIST)
+        {
+          if (i != TAG_CALLER_IDS)
             {
               shv_ctx->cid_cnt = 0;
-	            j = 1;
+              do
+                {
+                  cchainpack_unpack_next(ctx);
+                  if (ctx->err_no != CCPCP_RC_OK) return -1;
+                  if ((ctx->item.type == CCPCP_ITEM_INT) ||
+                      (ctx->item.type == CCPCP_ITEM_UINT))
+                    {
+                      int ret;
+                      shv_ctx->cid_cnt += 1;
+
+                      /* Allocate memory for CIDs */
+
+                      ret = cid_alloc(shv_ctx);
+                      if (ret < 0)
+                        {
+                          printf("ERROR: Memory allocation for CID failed\n");
+                          exit(-1);
+                        }
+
+                      if (ctx->item.type == CCPCP_ITEM_INT)
+                        {
+                          shv_ctx->cid_ptr[shv_ctx->cid_cnt - 1] = ctx->item.as.Int;
+                        }
+                      else
+                        {
+                          shv_ctx->cid_ptr[shv_ctx->cid_cnt - 1] = ctx->item.as.UInt;
+                        }
+                    }
+	        }
+              while (ctx->item.type != CCPCP_ITEM_CONTAINER_END);
             }
           else
             {
-              j = 0;
+              if (shv_unpack_skip(shv_ctx) < 0)
+                return -1;
             }
-
-          do
-            {
-              cchainpack_unpack_next(ctx);
-              if (ctx->err_no != CCPCP_RC_OK) return -1;
-              if (j)
-                {
-                  if (ctx->item.type == CCPCP_ITEM_INT)
-                    {
-                      shv_ctx->cid_cnt += 1;
-
-                      /* Allocate memory for CIDs */
-
-                      int ret = cid_alloc(shv_ctx);
-                      if (ret < 0)
-                        {
-                          printf("ERROR: Memory allocation for CID failed\n");
-                          exit(-1);
-                        }
-
-                      shv_ctx->cid_ptr[shv_ctx->cid_cnt - 1] = ctx->item.as.Int;
-                    }
-
-                  else if (ctx->item.type == CCPCP_ITEM_UINT)
-                    {
-                      shv_ctx->cid_cnt += 1;
-
-                      /* Allocate memory for CIDs */
-
-                      int ret = cid_alloc(shv_ctx);
-                      if (ret < 0)
-                        {
-                          printf("ERROR: Memory allocation for CID failed\n");
-                          exit(-1);
-                        }
-
-                      shv_ctx->cid_ptr[shv_ctx->cid_cnt - 1] = ctx->item.as.UInt;
-                    }
-	              }
-            } while (ctx->item.type != CCPCP_ITEM_CONTAINER_END);
         }
       else if (ctx->item.type == CCPCP_ITEM_STRING)
         {
@@ -826,6 +856,69 @@ void shv_send_str_list(shv_con_ctx_t *shv_ctx, int rid, int num_str,
       for (int i = 0; i < num_str; i++)
         {
           cchainpack_pack_string(&shv_ctx->pack_ctx,str[i], strlen(str[i]));
+        }
+
+      cchainpack_pack_container_end(&shv_ctx->pack_ctx);
+      cchainpack_pack_container_end(&shv_ctx->pack_ctx);
+      shv_overflow_handler(&shv_ctx->pack_ctx, 0);
+    }
+}
+
+/****************************************************************************
+ * Name: shv_send_str_list_it
+ *
+ * Description:
+ *   Send list of strings to the broker.
+ *   This variant uses iterator to access strigs provided by other source.
+ *
+ ****************************************************************************/
+
+void shv_send_str_list_it(shv_con_ctx_t *shv_ctx, int rid, int num_str,
+                          shv_str_list_it_t *str_it)
+{
+  ccpcp_pack_context_init(&shv_ctx->pack_ctx,shv_ctx->shv_data, SHV_BUF_LEN,
+                          shv_overflow_handler);
+
+  for (shv_ctx->shv_send = 0; shv_ctx->shv_send < 2; shv_ctx->shv_send++)
+    {
+      int first_next_over;
+
+      if (shv_ctx->shv_send)
+        {
+          cchainpack_pack_uint_data(&shv_ctx->pack_ctx, shv_ctx->shv_len);
+        }
+
+      shv_ctx->shv_len = 0;
+      cchainpack_pack_uint_data(&shv_ctx->pack_ctx, 1);
+
+      shv_pack_head_reply(shv_ctx, rid);
+
+      cchainpack_pack_imap_begin(&shv_ctx->pack_ctx);
+      cchainpack_pack_int(&shv_ctx->pack_ctx, 2);
+      cchainpack_pack_list_begin(&shv_ctx->pack_ctx);
+
+      first_next_over = 1;
+      for (int i = 0; i < num_str; i++)
+        {
+	  const char *str = NULL;
+
+	  if (first_next_over >= 0)
+	    {
+	      str = str_it->get_next_entry(str_it, first_next_over);
+	      if (str != NULL)
+	        {
+                  first_next_over = 0;
+		}
+	      else
+	        {
+                  first_next_over = -1;
+		}
+	    }
+	  if (str == NULL)
+	    {
+	      str = "";
+	    }
+          cchainpack_pack_string(&shv_ctx->pack_ctx, str, strlen(str));
         }
 
       cchainpack_pack_container_end(&shv_ctx->pack_ctx);

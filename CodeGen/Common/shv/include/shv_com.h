@@ -32,12 +32,19 @@ typedef struct shv_con_ctx {
   struct shv_node *root;
 } shv_con_ctx_t;
 
+typedef struct shv_str_list_it_t shv_str_list_it_t;
+
+struct shv_str_list_it_t {
+   const char * (*get_next_entry)(shv_str_list_it_t *it, int reset_to_first);
+};
+
 shv_con_ctx_t *shv_com_init(struct shv_node *root);
 void shv_com_end(shv_con_ctx_t *ctx);
 void shv_send_int(shv_con_ctx_t *shv_ctx, int rid, int num);
 void shv_send_double(shv_con_ctx_t *shv_ctx, int rid, double num);
 void shv_send_str(shv_con_ctx_t *shv_ctx, int rid, const char *str);
 void shv_send_str_list(shv_con_ctx_t *shv_ctx, int rid, int num_str, const char **str);
+void shv_send_str_list_it(shv_con_ctx_t *shv_ctx, int rid, int num_str, shv_str_list_it_t *str_it);
 void shv_send_error(shv_con_ctx_t *shv_ctx, int rid, const char *msg);
 void shv_send_ping(shv_con_ctx_t *shv_ctx);
 

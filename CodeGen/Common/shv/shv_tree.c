@@ -85,6 +85,113 @@ shv_node_t *shv_node_find(shv_node_t *node, const char * path)
 }
 
 /****************************************************************************
+ * Name: shv_node_list_it_reset
+ *
+ * Description:
+ *   Reset position to the first node in the shv_node_list.
+ *
+ ****************************************************************************/
+
+void shv_node_list_it_reset(shv_node_list_it_t *it)
+{
+  if (it->node_list->mode & SHV_NLIST_MODE_GSA)
+    {
+      it->list_it.gsa_next_indx = shv_node_list_gsa_first_indx(it->node_list);
+    }
+  else
+    {
+      it->list_it.gavl_next_node = shv_node_list_gavl_first(it->node_list);
+    }
+}
+
+/****************************************************************************
+ * Name: shv_node_list_it_init
+ *
+ * Description:
+ *   Setup iterator for consecutive access to the list nodes.
+ *
+ ****************************************************************************/
+
+void shv_node_list_it_init(shv_node_list_t *list, shv_node_list_it_t *it)
+{
+  it->node_list = list;
+  shv_node_list_it_reset(it);
+}
+
+/****************************************************************************
+ * Name: shv_node_list_it_next
+ *
+ * Description:
+ *   Get next node from the shv_node_list according to iterator position.
+ *
+ ****************************************************************************/
+
+shv_node_t *shv_node_list_it_next(shv_node_list_it_t *it)
+{
+  shv_node_t *node;
+
+  if (it->node_list->mode & SHV_NLIST_MODE_GSA)
+    {
+       node = shv_node_list_gsa_at(it->node_list, it->list_it.gsa_next_indx);
+       it->list_it.gsa_next_indx++;
+    }
+  else
+    {
+      node = it->list_it.gavl_next_node;
+      it->list_it.gavl_next_node = shv_node_list_gavl_next(it->node_list, node);
+    }
+  return node;
+}
+
+/****************************************************************************
+ * Name: shv_node_list_names_get_next
+ *
+ * Description:
+ *   Helper function for the names as string list iterator.
+ *
+ ****************************************************************************/
+
+static const char *shv_node_list_names_get_next(shv_str_list_it_t *it,
+                                                int reset_to_first)
+{
+  shv_node_list_names_it_t *names_it;
+  shv_node_t *node;
+
+  names_it = UL_CONTAINEROF(it, shv_node_list_names_it_t, str_it);
+
+  if (reset_to_first)
+    {
+      shv_node_list_it_reset(&names_it->list_it);
+    }
+
+  node = shv_node_list_it_next(&names_it->list_it);
+
+  if (node != NULL)
+    {
+      return node->name;
+    }
+  else
+    {
+      return NULL;
+    }
+}
+
+/****************************************************************************
+ * Name: shv_node_list_names_it_init
+ *
+ * Description:
+ *   Setup iterator for consecutive access to the node list children names.
+ *
+ ****************************************************************************/
+
+void shv_node_list_names_it_init(shv_node_list_t *list,
+                                 shv_node_list_names_it_t *names_it)
+{
+  shv_node_list_it_init(list, &names_it->list_it);
+  names_it->str_it.get_next_entry = shv_node_list_names_get_next;
+}
+
+/****************************************************************************
  * Name: shv_tree_add_child
  *
  * Description:

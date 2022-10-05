@@ -76,6 +76,38 @@ shv_method_des_comp_func(const shv_method_des_key_t *a, const shv_method_des_key
 GSA_CUST_DEC(shv_dmap, shv_dmap_t, shv_method_des_t, shv_method_des_key_t,
 	methods, name, shv_method_des_comp_func)
 
+typedef struct shv_node_list_it_t {
+  shv_node_list_t *node_list;
+  union {
+    shv_node_t *gavl_next_node;
+    int gsa_next_indx;
+  } list_it;
+} shv_node_list_it_t;
+
+void shv_node_list_it_init(shv_node_list_t *list, shv_node_list_it_t *it);
+void shv_node_list_it_reset(shv_node_list_it_t *it);
+shv_node_t *shv_node_list_it_next(shv_node_list_it_t *it);
+
+static inline int
+shv_node_list_count(shv_node_list_t *node_list)
+{
+  if (node_list->mode & SHV_NLIST_MODE_GSA)
+    {
+      return node_list->list.gsa.root.count;
+    }
+  else
+    {
+      return node_list->list.gavl.count;
+    }
+}
+
+typedef struct shv_node_list_names_it_t {
+  shv_str_list_it_t str_it;
+  shv_node_list_it_t list_it;
+} shv_node_list_names_it_t;
+
+void shv_node_list_names_it_init(shv_node_list_t *list, shv_node_list_names_it_t *names_it);
+
 /* Public functions definition */
 
 int shv_node_process(shv_con_ctx_t *shv_ctx, int rid, const char * met, const char * path);
