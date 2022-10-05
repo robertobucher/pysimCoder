@@ -35,7 +35,7 @@ class SHVInstance:
         self.ip = '127.0.0.1'
         self.port = '3755'
         self.user = 'admin'
-        self.passw = 'admin password'
+        self.passw = 'admin!123'
         self.devid = filename
         self.mount = 'test'
 
