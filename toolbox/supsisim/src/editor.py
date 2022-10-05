@@ -431,13 +431,6 @@ class Editor(QObject):
 
     def deleteSelected(self):
         self.removeNodes()
-#         self.scene.selection = []
-#         p = self.scene.selectionArea()
-#         self.scene.selection = self.scene.items(p)
-#         if self.scene.selection == []:
-#             self.scene.selection = self.scene.selectedItems()
-            
-#         items = self.scene.selection
         
         dgmBlocks = []
         dgmSubsystems = []                
