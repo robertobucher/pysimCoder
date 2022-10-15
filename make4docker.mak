@@ -23,7 +23,7 @@ fmu:
 	cd CodeGen/LinuxRT/fmu; make all; make install; make clean
 
 lib: 
-	cd CodeGen/LinuxRT/devices; make;make clean
+	cd CodeGen/LinuxRT/devices; make SHV=1;make clean
 
 link:
 	cd $(BINDIR); rm -f pyParams gen_pydev loadnrt defBlocks dataplot xblk2Blk
