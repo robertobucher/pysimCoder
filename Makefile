@@ -5,21 +5,18 @@ BINDIR = /usr/local/bin
 CURDIR = $(shell pwd)
 PYCTL = export PYSUPSICTRL=$(CURDIR)
 
+RESBASH=$(shell grep PYSUPSICTRL $(HOME)/.bashrc)
+RESALIAS=$(shell grep pysimCoder= $(HOME)/.bash_aliases)
+
 export PYSUPSICTRL=$(shell pwd)
 
 addfiles: control slycot
 
 control:
 	pip install control
-	# git clone https://github.com/python-control/python-control.git
-	# cd python-control; pip install .
-	# rm -rf python-control
 
 slycot:
 	pip install slycot
-	#git clone --recurse-submodules https://github.com/python-control/Slycot
-	#cd Slycot; python3 setup.py install
-	#rm -rf Slycot
 
 modules:
 	cd toolbox/supsictrl; python3 setup.py install; python3 setup.py clean --all
@@ -52,6 +49,7 @@ driver:
 	cd DriverNRT; make; make install
 
 user:
+ifneq ($(findstring PYSUPSICTRL,$(RESBASH)),PYSUPSICTRL)
 	echo $(PYCTL) >> ~/.bashrc
 	echo 'export PYEDITOR=emacs' >> ~/.bashrc
 	echo 'export PYTHONPATH=$(HOME)/Documents/PYTHON:$(CURDIR)/resources/blocks/rcpBlk' >> ~/.bashrc
@@ -59,9 +57,13 @@ user:
 	echo 'export ARDUINO_DIR=$(HOME)/sviluppo/arduino' >> ~/.bashrc
 	echo 'export SAMD21_HOME=$(CURDIR)/CodeGen/SAMD21' >> ~/.bashrc
 	echo 'export STM32H7_HOME=$(CURDIR)/CodeGen/STM32H7' >> ~/.bashrc
+endif
 
 alias:
+	@echo $(RESALIAS)
+ifneq ($(findstring pysimCoder=, $(RESALIAS)),pysimCoder=)
 	echo 'alias pysimCoder='"'$(CURDIR)/pysim-run.sh'"''  >> ~/.bash_aliases
+endif
 
 clean:
 	rm -f CodeGen/LinuxRT/lib/*.a
