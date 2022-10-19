@@ -19,8 +19,8 @@ slycot:
 	pip install slycot
 
 modules:
-	cd toolbox/supsictrl; pip install .
-	cd toolbox/supsisim; pip install .
+	cd toolbox/supsictrl; pip install .; rm -r build *.egg-info
+	cd toolbox/supsisim; pip install .; rm -r build *.egg-info
 
 fmu:
 	cd CodeGen/LinuxRT/fmu; make all; make install; make clean
