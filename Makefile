@@ -19,8 +19,8 @@ slycot:
 	pip install slycot
 
 modules:
-	cd toolbox/supsictrl; python3 setup.py install; python3 setup.py clean --all
-	cd toolbox/supsisim; python3 setup.py install; python3 setup.py clean --all
+	cd toolbox/supsictrl; pip install .
+	cd toolbox/supsisim; pip install .
 
 fmu:
 	cd CodeGen/LinuxRT/fmu; make all; make install; make clean
