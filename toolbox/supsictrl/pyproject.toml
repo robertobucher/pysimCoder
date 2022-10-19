@@ -1,0 +1,42 @@
+[build-system]
+requires = [
+    "setuptools",
+    "setuptools-scm",
+    "wheel"
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "supsictrl"
+description = "Python SUPSI Control Systems Library"
+authors = [{name = "Roberto Bucher et al.", email = "roberto.bucher@supsi.ch"}]
+license = {text = "GPL-2.0"}
+version = "0.3"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: GNU General Public License v2 (GPLv2)",
+    "License :: OSI Approved :: BSD License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Topic :: Software Development",
+    "Topic :: Scientific/Engineering",
+     "Operating System :: Unix",
+]
+requires-python = ">=3.7"
+
+dependencies = [
+    "numpy",
+    "matplotlib",
+    "control",
+]
+
+[tool.setuptools]
+packages = ["supsictrl"]
+
+[project.urls]
+homepage = "https://github.com/robertobucher/pysimCoder"
