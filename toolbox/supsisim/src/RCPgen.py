@@ -240,7 +240,7 @@ def genCode(model, Tsamp, blocks, rkstep = 10):
     f.write(strLn)
 
     if (totContBlk != 0):
-        f.write("int i, j;\n")
+        f.write("int i;\n")
         f.write("double h;\n\n")
 
     for n in range(0,N):
