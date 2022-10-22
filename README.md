@@ -42,55 +42,55 @@ http://robertobucher.dti.supsi.ch/pysimcoder/
 
 # Installation
 
-Install dependencies
+Project requires Python 3.9 runtime to be present on the system. Installation instructions 
+and scripts expect Debian derived distibution and may require adjustements on other systems.
+
+Superuser privileges are necessary for installation of the compiled drivers.
+
+In cases when environment doesn't fulfill the aforementioned conditions,
+a containerized deployment with one of the provided images is preferrable.
+
+Install system dependencies and python libraries
 ```
 
-sudo apt install python3-venv python3-pip libxml2-dev libxmlsec1-dev libcomedi-dev python-pyqt5 python-scipy
+sudo apt install gcc gfortran git cmake binutils emacs python3.9 python3-numpy \
+    python3-scipy python3-sympy python3-matplotlib python3-pip jupyter-qtconsole \
+    python3-lxml python3-pyqtgraph libopenblas-dev liblapack-dev libxml2-dev \
+    libcomedi-dev python3-pyqt5
 
+sudo pip install -r requirements.txt
+```
+
+Alternatively the dependencies can be installed with provided scripts:
+```
 sudo python3 ubuntu_dependency_installer.py
-pip install -U numpy
-pip install tornado
-```
-
-Install python libs
-```
 sudo python3 python_libs_install.py
 ```
 
-Switch to superuser
+Build and install the code as a superuser with:
 ```
-su
-```
-
-Install additional python libs
-```
-pip install scikit-build
-pip install cmake
+sudo make
 ```
 
-Make
-```
-make
-```
-
-Exit superuser
-```
-exit
-```
-
-Make as user
+Set environment variables in user `.bashrc`
 ```
 make user
 ```
 
-Launch application
+You may also install modules for different targets as a normal user with:
+```
+make <target>
+```
+
+Finally you launch the application from the command line.
+The `.bashrc` may have to be reloaded beforehand.
 ```
 pysimCoder
 ```
 
 # pysimCoder as docker image
 
-It is now possible to use a docker container and image to run pysimCoder:
+It is now possible to pull a docker image to run pysimCoder in a container.
 
 Install docker (see https://docs.docker.com/engine/install/ubuntu/).
 
@@ -125,9 +125,3 @@ psc
 ```
 
 More info and the 2 Dockerfiles can be found at https://github.com/robertobucher/pysimCoder-Docker
-
-
-
-
-
-
