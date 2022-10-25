@@ -146,7 +146,7 @@ static void inout(python_block *block)
         {
           if (sample[j].am_channel == intPar[i])
             {
-              y[i] = maprD2D((double) sample[j].am_data/res, realPar[0], realPar[1]);
+              y[0] = maprD2D((double) sample[j].am_data/res, realPar[0], realPar[1]);
               break;
             }
         }
