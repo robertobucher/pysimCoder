@@ -84,6 +84,26 @@ class subsBlock(Block):
         inpP = []
         outpP = []
 
+        # First find not connected ports
+
+        for item in self.blksList:
+            outPorts = [p for p in item.childItems() if isinstance(p, OutPort)]
+            for p in outPorts:
+                if not p.connections:
+                    pPos = p.scenePos().y()
+                    pDict = {'port' : p, 'pos'  : pPos, 'orphan' : True}
+                    outpP.append(pDict)
+
+            inPorts = [p for p in item.childItems() if isinstance(p, InPort)]
+            for p in inPorts:
+                if not p.connections:
+                    pPos = p.scenePos().y()
+                    pDict = {'port' : p, 'pos'  : pPos, 'orphan' : True}
+                    inpP.append(pDict)
+
+        # Find connections outside of the superblock
+
+        # Search for blocks outside of superblock, connected to block in superblock
         items = [item for item in self.scene.items() \
         if isinstance(item, Block) and item not in self.blksList]
 
@@ -96,11 +116,12 @@ class subsBlock(Block):
                     cin = list(set(cin))
                     if len(cin) != 0:
                         pPos = min([c.port2.scenePos().y() for c in cin])
-                        pDict = {'port' : p, 'pos'  : pPos}
+                        pDict = {'port' : p, 'pos'  : pPos, 'orphan' : False}
                         inpP.append(pDict)
                 except:
                     pass
 
+        # Search for blocks in superblock, connected to block outside
         for item in self.blksList:
             outPorts = [p for p in item.childItems() if isinstance(p, OutPort)]
             cout = []
@@ -109,16 +130,20 @@ class subsBlock(Block):
                 try:
                     cout = list(set(cout))
                     if len(cout) != 0:
-                        pPos = min(c.port1.scenePos().y() for c in cout)
-                        pDict = {'port' : p, 'pos'  : pPos}
+                        pPos = p.scenePos()
+                        pDict = {'port' : p, 'pos'  : pPos, 'orphan' : False}
                         outpP.append(pDict)
                 except:
                     pass
 
         inpP.sort(key=lambda p: p.get('pos'))
-        self.inpP = [p['port'] for p in inpP]
+        self.inpP = []
+        for item in inpP:
+            self.inpP.append(item)
+        self.outpP = []
         outpP.sort(key=lambda p: p.get('pos'))
-        self.outpP = [p['port'] for p in outpP]
+        for item in outpP:
+            self.outpP.append(item)
 
     def hideElements(self):
         for block in self.blksList:
@@ -172,81 +197,86 @@ class subsBlock(Block):
         subsIn, subsOut = self.getPorts()
 
         # Inputs ports
-        for el in self.inpP:
-            n = self.inpP.index(el)
+        for item in self.inpP:
+            el = item['port']
+            n = self.inpP.index(item)
             name = 'in_' + str(n+1)
             b = Block(self.parent, self.sceneSubs, name,
                      0, 1, False, False, 'IO',
                      'IOBlk', 'IO for subsystem', BWmin, False)
-
-            # Get position for IO as position of last connection point
-            cin = [c for c in el.connections if c.port2.parent in self.sceneSubs.items()]
-            cin = list(set(cin))
-            cin.sort(key=lambda c: c.port2.scenePos().y())
-            pPos = cin[0].pos2-QPointF(100.0,0.0)
+            pPos = el.scenePos()-QPointF(100.0,0.0)
             b.setPos(pPos)
 
-            pIO = [p for p in b.childItems() if isinstance(p, OutPort)][0]
-            pSub = subsIn[n]
-
-            # Set all the connections related to this port
-            c2sub = [c for c in el.connections if c.port2.parent in self.sceneSubs.items()]
-
-            # Connection to subsystem
-            cnew = self.newConn(el, pSub, self.scene)
-            el.connections.append(cnew)
-            el.connections = list(set(el.connections))
-            pSub.connections.append(cnew)
-            pSub.connections = list(set(pSub.connections))
-
-            # Connections in subsystem
-            for c in c2sub:
-                inPort2 = c.port2
-                cnew = self.newConn(pIO, inPort2, self.sceneSubs)
+            if item['orphan']:
+                pIO = [p for p in b.childItems() if isinstance(p, OutPort)][0]
+                cnew = self.newConn(pIO, el, self.sceneSubs)
                 pIO.connections.append(cnew)
-                pIO.connections = list(set(pIO.connections))
-                inPort2.connections.append(cnew)
-                inPort2.connections = list(set(inPort2.connections))
+                el.connections.append(cnew)
+            else:
+                pIO = [p for p in b.childItems() if isinstance(p, OutPort)][0]
+                pSub = subsIn[n]
 
-                c.remove()
+                # Set all the connections related to this port
+                c2sub = [c for c in el.connections if c.port2.parent in self.sceneSubs.items()]
+
+                # Connection to subsystem
+                cnew = self.newConn(el, pSub, self.scene)
+                el.connections.append(cnew)
+                el.connections = list(set(el.connections))
+                pSub.connections.append(cnew)
+                pSub.connections = list(set(pSub.connections))
+
+                # Connections in subsystem
+                for c in c2sub:
+                    inPort2 = c.port2
+                    cnew = self.newConn(pIO, inPort2, self.sceneSubs)
+                    pIO.connections.append(cnew)
+                    pIO.connections = list(set(pIO.connections))
+                    inPort2.connections.append(cnew)
+                    inPort2.connections = list(set(inPort2.connections))
+
+                    c.remove()
 
         # Output ports
-        for el in self.outpP:
-            n = self.outpP.index(el)
+        for item in self.outpP:
+            el = item['port']
+            n = self.outpP.index(item)
             name = 'out_' + str(n+1)
             b = Block(self.parent, self.sceneSubs, name,
                      1, 0, False, False, 'IO',
                      'IOBlk', 'IO for subsystem', BWmin, False)
-            # Get position for IO as position of next connection point
-            cin = [c for c in el.connections if c.port2.parent in self.scene.items()]
-            cin = list(set(cin))
-            cin.sort(key=lambda c: c.port2.scenePos().y())
-            pPos = cin[0].pos1+QPointF(100.0,0.0)
+            pPos = el.scenePos()+QPointF(100.0,0.0)
             b.setPos(pPos)
 
-            pIO = [p for p in b.childItems() if isinstance(p, InPort)][0]
-            pSub = subsOut[n]
+            if item['orphan']:
+                pIO = [p for p in b.childItems() if isinstance(p, InPort)][0]
+                cnew = self.newConn(el, pIO, self.sceneSubs)
+                pIO.connections.append(cnew)
+                el.connections.append(cnew)
+            else:
+                pIO = [p for p in b.childItems() if isinstance(p, InPort)][0]
+                pSub = subsOut[n]
 
-            # Set all the connections related to this port
-            c2out = [c for c in el.connections if c.port2.parent in self.scene.items()]
+                # Set all the connections related to this port
+                c2out = [c for c in el.connections if c.port2.parent in self.scene.items()]
 
-            # Connection in subsystem
-            cnew = self.newConn(el, pIO, self.sceneSubs)
-            el.connections.append(cnew)
-            el.connections = list(set(el.connections))
-            pIO.connections.append(cnew)
-            pIO.connections = list(set(pIO.connections))
+                # Connection in subsystem
+                cnew = self.newConn(el, pIO, self.sceneSubs)
+                el.connections.append(cnew)
+                el.connections = list(set(el.connections))
+                pIO.connections.append(cnew)
+                pIO.connections = list(set(pIO.connections))
 
-            # Connection from subsystem
-            for c in c2out:
-                outPort2 = c.port2
-                cnew = self.newConn(pSub, outPort2, self.scene)
-                pSub.connections.append(cnew)
-                pSub.connections = list(set(pSub.connections))
-                outPort2.connections.append(cnew)
-                outPort2.connections = list(set(outPort2.connections))
+                # Connection from subsystem
+                for c in c2out:
+                    outPort2 = c.port2
+                    cnew = self.newConn(pSub, outPort2, self.scene)
+                    pSub.connections.append(cnew)
+                    pSub.connections = list(set(pSub.connections))
+                    outPort2.connections.append(cnew)
+                    outPort2.connections = list(set(outPort2.connections))
 
-                c.remove()
+                    c.remove()
 
     def openSubsystem(self):
         self.sceneSubs.mainw.openSubs(self.name, self.sceneSubs)
