@@ -130,7 +130,7 @@ class subsBlock(Block):
                 try:
                     cout = list(set(cout))
                     if len(cout) != 0:
-                        pPos = p.scenePos().y()
+                        pPos = min(c.port1.scenePos().y() for c in cout)
                         pDict = {'port' : p, 'pos'  : pPos, 'orphan' : False}
                         outpP.append(pDict)
                 except:
