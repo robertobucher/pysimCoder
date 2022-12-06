@@ -69,9 +69,7 @@ static void init(python_block *block)
 
     if ((DI->subdev = comedi_find_subdevice_by_type(DI->dev, COMEDI_SUBD_DI, 0)) < 0) {
       fprintf(stdout, "Comedi find_subdevice failed (No digital input)\n");
-      comedi_close(DI->dev);
-      exit(-1);
-    }
+     }
     else {
       subdev_type = COMEDI_SUBD_DI;
     }  
@@ -85,6 +83,7 @@ static void init(python_block *block)
 	subdev_type = COMEDI_SUBD_DIO;
       }  
     }
+    
     if ((comedi_lock(DI->dev, DI->subdev)) < 0) {
       fprintf(stdout, "Comedi lock failed for subdevice %d\n", DI->subdev);
       comedi_close(DI->dev);
