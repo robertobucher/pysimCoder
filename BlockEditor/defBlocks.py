@@ -165,7 +165,7 @@ class MainWindow(QMainWindow, form_class):
             d = self.getFields()
             d['params'] = params
             d['help'] = self.helpText.document(). toPlainText()
-            js = json.dumps(d)
+            js = json.dumps(d, indent=2)
             f = open(self.filename,'w')
             f.write(js)
             f.close()
@@ -183,7 +183,7 @@ class MainWindow(QMainWindow, form_class):
             d = self.getFields()
             d['params'] = params
             d['help'] = self.helpText.document(). toPlainText()
-            js = json.dumps(d)
+            js = json.dumps(d, indent=2)
             f = open(self.filename,'w')
             f.write(js)
             f.close()

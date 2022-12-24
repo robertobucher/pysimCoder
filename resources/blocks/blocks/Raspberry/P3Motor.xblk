@@ -1,1 +1,11 @@
-{"lib": "Raspberry", "name": "Phase3Motor", "ip": 6, "op": 7, "stin": 0, "stout": 0, "icon": "MOT", "params": "P3MotBlk", "help": "Block for controlling 3-Phase DC Motor using SPI connection in RPi\n\n\n\n"}
+{
+  "lib": "Raspberry",
+  "name": "Phase3Motor",
+  "ip": 6,
+  "op": 7,
+  "stin": 0,
+  "stout": 0,
+  "icon": "MOT",
+  "params": "P3MotBlk",
+  "help": "Block for controlling 3-Phase DC Motor using SPI connection in RPi\n\n\n\n"
+}
