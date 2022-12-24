@@ -3,7 +3,7 @@
   "name": "Setup",
   "lib": "arduinoFirmata",
   "ip": 0,
-  "help": "",
+  "help": "Setup the channel for the communication",
   "params": "setup_af|Port:'/dev/ttyACM0'|Baud:57600:int",
   "stout": 0,
   "icon": "INIT",

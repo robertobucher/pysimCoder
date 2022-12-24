@@ -1,7 +1,0 @@
-Parameters
-Enable Pin: PIN for applying the PWM signal
-In1 Pin: 1. PIN for direction
-In2 Pin: 2. PIN for direction
-
-The input signal can get a value between -1.0 and 1.0
-

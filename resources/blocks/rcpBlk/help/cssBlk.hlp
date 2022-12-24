@@ -1,7 +1,0 @@
-This block implements a linear continous dynamic system.
-
-It can be defined as transfer function (control.tf) or as state space system (control.ss)
-
-Parameters:
-LTI continous system
-Initial conditions of the state(s) as array, or "0" (all states have 0 initial conditions)

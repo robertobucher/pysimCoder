@@ -1,7 +1,0 @@
-This block implements a linear discrete dynamic system.
-
-It can be defined as transfer function (control.tf) or as state space system (control.ss)
-
-Parameters:
-LTI discrete system
-Initial conditions of the state(s) as array, or "0" (in case that all the states have 0 initial condition).

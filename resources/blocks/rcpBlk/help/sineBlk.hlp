@@ -1,8 +1,0 @@
-This block implements a Sinus input signal
-
-Parameters:
-Amplitude
-Frequency (Hz)
-Phase
-Bias
-Delay

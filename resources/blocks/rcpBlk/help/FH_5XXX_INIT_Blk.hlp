@@ -1,9 +1,0 @@
-This file implements the initialisation of a MC5XXX Faulhaber motion controllers.
-
-Parameters:
-Can dev: device (ex. '/dev/can0')
-Device ID
-Controllers Values (if "0" -> no change of the internal saved parameters)
-Flag for encoder reset
-
-See the Faulhaber homepage for more details (www.faulhaber.com)

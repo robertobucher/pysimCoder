@@ -1,9 +1,0 @@
-Parameters
-Pin: Output channel using value 0 
-
-PIN ->  ch
-A0   ->  0 (the only allowed channel)
-
-The input signal can be a value between Umin and Umax and is automatically mapped to 0-3.3V on the output pin.
-
-

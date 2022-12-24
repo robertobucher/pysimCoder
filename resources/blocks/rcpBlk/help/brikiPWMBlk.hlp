@@ -1,9 +1,0 @@
-This block implements a PWM output on the Briki system.
-
-Parameters:
-Channel: Channels on the ABC board
-
-
-Possible values for the channel are: 11, 13, 21, 22, 23, 24, 25
-
-The input signal can be a value between Umin and Umax and is automatically mapped to the PWM width 0-100%, with a resolution of 12 bit.

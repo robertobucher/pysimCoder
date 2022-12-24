@@ -12,10 +12,6 @@ from PyQt5.QtCore import Qt, QMimeData, QFileInfo
 
 from supsisim.const import respath
 from supsisim.pyEdit import NewEditorMainWindow
-
-import os
-import json
-
 from supsisim.block import Block
 from supsisim.const import respath, BWmin
 

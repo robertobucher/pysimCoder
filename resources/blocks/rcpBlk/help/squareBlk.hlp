@@ -1,8 +1,0 @@
-This block implements a Pulse input signal
-
-Parameters:
-Amplitude
-Period (in sec)
-Width of the High signal
-Bias
-Delay

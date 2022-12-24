@@ -1,9 +1,0 @@
-Input voltage is mapped to 0-3.3 V
-
-Parameters
-ch : channel (0 or 1) to be connected
-Umin [V] :  minimum voltage -> 0V
-Umax [V] : maximum voltage -> 3.3V
-
-Channel 0 --> PA4
-Channel 1 --> PA5

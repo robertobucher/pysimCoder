@@ -1,8 +1,0 @@
-Discrete PID controller
-
-Parameters
-Proportional gain
-Integral gain
-Discrete gain
-Min value: minimal output value
-Max value: maximal output value

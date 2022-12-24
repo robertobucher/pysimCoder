@@ -1,7 +1,0 @@
-Block for DHT22 and DHT11 sensors.
-
-Output 1: humidity
-Output 2: temperture
-
-Parameters
-Port : device name (ex. '/dev/hum0')

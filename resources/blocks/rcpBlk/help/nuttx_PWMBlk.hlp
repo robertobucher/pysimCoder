@@ -1,9 +1,0 @@
-Parameters
-Port        :  device name
-channel: 1..4 (array)
-Frequency: PWM freq in Hz
-Umin [V]: minimal value (umin -> 0%)
-Umax [V] : maximal value (umax -> 100%)
-
-Can have multiple inputs to support
-multiple channel PWM.

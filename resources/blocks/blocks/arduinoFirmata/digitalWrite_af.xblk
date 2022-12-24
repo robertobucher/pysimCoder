@@ -7,5 +7,5 @@
   "stout": 0,
   "icon": "FIRMDATA",
   "params": "digitalWrite_af|Device pin:8:int",
-  "help": ""
+  "help": "No help available"
 }
