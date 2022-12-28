@@ -77,9 +77,13 @@ def genCode(model, Tsamp, blocks, rkstep = 10):
 
     f.write("/* Function prototypes */\n\n")
 
+    prototypes = []
+    
     for blk in Blocks:
-        strLn = "void " + blk.fcn + "(int Flag, python_block *block);\n"
-        f.write(strLn)
+        prototypes.append("void " + blk.fcn + "(int Flag, python_block *block);\n")
+    setProto = set(prototypes)
+    for el in setProto:
+        f.write(el)
 
     f.write("\n")
 
