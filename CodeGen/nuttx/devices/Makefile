@@ -68,6 +68,10 @@ ifeq ($(CONFIG_SENSORS_DHTXX),y)
 SRCALL += sensors/nuttxDHTXX.c
 endif
 
+ifeq ($(CONFIG_MICROROSLIB),y)
+SRCALL += microros.c
+endif
+
 have_can =
 ifeq ($(CONFIG_CAN),y)
 	have_can = yes

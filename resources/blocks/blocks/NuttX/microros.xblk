@@ -1,0 +1,11 @@
+{
+  "lib": "NuttX",
+  "name": "MICROROS",
+  "ip": 1,
+  "op": 1,
+  "stin": 1,
+  "stout": 1,
+  "icon": "MICROROS",
+  "params": "microrosBlk",
+  "help": "This block only works with NuttX if microros have been installed!\n"
+}
