@@ -198,7 +198,18 @@ class Editor(QObject):
         try:
             msg = QApplication.clipboard().text()
             data = json.loads(msg)
-            self.scene.DictToDgm(data, DP, DP)
+            n = 0
+            px = 0
+            py = 0
+            for item in data['blocks']:
+                n += 1
+                px += item['pos'][0]
+                py += item['pos'][1]
+            px = px/n
+            py = py/n
+            DPx = self.scene.evpos.x()-px
+            DPy = self.scene.evpos.y()-py
+            self.scene.DictToDgm(data, DPx, DPy)
         except:
             pass
        

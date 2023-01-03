@@ -310,25 +310,9 @@ class NewEditorMainWindow(QMainWindow):
         try:
             msg = QApplication.clipboard().text()
             data = json.loads(msg)
-            try:
-                for item in data['blocks']:
-                    self.scene.loadBlock(item, DP, DP)
-            except:
-                pass
-            
-            try:
-                for item in data['connections']:
-                    self.scene.loadConn(item, DP, DP)
-            except:
-                pass
-                
-            try:
-                self.redrawNodes()
-            except:
-                pass
+            self.scene.DictToDgm(data, DP, DP)
         except:
             pass
-        self.editor.pasteBlock()
         
     def undoAct(self):
          self.scene.undoDgm()
