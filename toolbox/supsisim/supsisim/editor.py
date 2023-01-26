@@ -67,7 +67,7 @@ class Editor(QObject):
         deleteBlkAction.triggered.connect(self.deleteBlock)
         opensubsBlkAction.triggered.connect(self.openSubsystem)
         flpsubBlkAction.triggered.connect(self.flipBlock)
-        copysubBlkAction.triggered.connect(self.copysubBlock)
+        copysubBlkAction.triggered.connect(self.copyBlock)
         namesubBlkAction.triggered.connect(self.nameBlock)
         deletesubBlkAction.triggered.connect(self.deleteBlock)
         
@@ -174,24 +174,10 @@ class Editor(QObject):
         item.clone(QPointF(DP, DP))
 
     def copyBlock(self):
-        item = self.scene.item
-        blk = []
-        b = item.save()
-        blk.append(b)
-        data = {'blocks' : blk}
-        msg = json.dumps(data)
-        clipboard = QApplication.clipboard()
-        clipboard.setText(msg)
+        self.mainw.copyAct()
 
     def copysubBlock(self):
-        item = self.scene.item
-        blk = []
-        b = item.save()
-        blk.append(b)
-        data = {'subsystems' : blk}
-        msg = json.dumps(data)
-        clipboard = QApplication.clipboard()
-        clipboard.setText(msg)
+        self.mainw.copyAct()
 
     def pasteBlock(self):
         self.scene.DgmToUndo()
@@ -205,10 +191,17 @@ class Editor(QObject):
                 n += 1
                 px += item['pos'][0]
                 py += item['pos'][1]
+            for item in data['subsystems']:
+                n += 1
+                px += item['block']['pos'][0]
+                py += item['block']['pos'][1]
             px = px/n
             py = py/n
             DPx = self.scene.evpos.x()-px
             DPy = self.scene.evpos.y()-py
+            gr = GRID
+            DPx = gr * ((DPx + gr /2) // gr)
+            DPy = gr * ((DPy + gr /2) // gr)            
             self.scene.DictToDgm(data, DPx, DPy)
         except:
             pass
@@ -219,7 +212,7 @@ class Editor(QObject):
         item.remove()
         self.removeNodes()
         self.redrawNodes()
-        
+                
     # Subsystems
 
     def createSubsystem(self):
@@ -241,7 +234,6 @@ class Editor(QObject):
     # Connections and ports
     
     def connectInPort(self, item):
-#         self.conn.draw_color = Qt.black
         if len(item.connections)==0:
             self.conn.port2 = item
             self.conn.pos2 = item.scenePos()
@@ -261,7 +253,6 @@ class Editor(QObject):
         self.conn = None
  
     def connectOutPort(self, item):        
-#         self.conn.draw_color = Qt.black
         self.conn.port1 = item
         self.conn.pos1 = item.scenePos()
         self.conn.port1.connections.append(self.conn)
@@ -455,6 +446,8 @@ class Editor(QObject):
             else:
                 pass
         for item in dgmBlocks:
+            item.remove()
+        for item in dgmSubsystems:
             item.remove()
 
         self.redrawNodes()
