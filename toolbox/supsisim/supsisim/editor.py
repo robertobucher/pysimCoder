@@ -82,7 +82,9 @@ class Editor(QObject):
         pasteAction.triggered.connect(self.pasteBlock)
 
         self.subMenuSubsystem = QMenu()
+        subcopyAction = self.subMenuSubsystem.addAction('Copy')
         subsystemAction = self.subMenuSubsystem.addAction('Create subsystem')
+        subcopyAction.triggered.connect(self.copyBlock)
         subsystemAction.triggered.connect(self.createSubsystem)
 
         # Matrix has two index [state, event]
