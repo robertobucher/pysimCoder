@@ -35,6 +35,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 /* Specific for Comedilib */
 #include <comedilib.h>
 
+/*DEFINES*/
+ 
+#define ZEROCNT 8388608
 //** Comedi static structure inside block->work  
 typedef struct{
   comedi_t *dev;
@@ -70,21 +73,38 @@ int ni_gpct_start_encoder(comedi_t *device, unsigned subdevice,
 	comedi_set_gate_source(device, subdevice, 0, 1, NI_GPCT_DISABLED_GATE_SELECT);
 	/* note, the comedi_set_other_source calls will fail on 660x boards, since they
 	 * don't support user selection of the inputs used for the A/B/Z signals. */
-	comedi_set_other_source(device, subdevice, 0, NI_GPCT_SOURCE_ENCODER_A, a);
-	comedi_set_other_source(device, subdevice, 0, NI_GPCT_SOURCE_ENCODER_B, b);
-	comedi_set_other_source(device, subdevice, 0, NI_GPCT_SOURCE_ENCODER_Z, z);
+      
 
-	counter_mode = (NI_GPCT_COUNTING_MODE_QUADRATURE_X4_BITS |
-		NI_GPCT_COUNTING_DIRECTION_HW_UP_DOWN_BITS);
-	if (z != NI_GPCT_DISABLED_GATE_SELECT) {
-		counter_mode |= (NI_GPCT_INDEX_ENABLE_BIT |
-			NI_GPCT_INDEX_PHASE_HIGH_A_HIGH_B_BITS);
-	}
+	retval = comedi_set_clock_source(device,subdevice,0,40,0);
+	//NI_GPCT_PFI_CLOCK_SRC_BITS((subdevice==11)?8:3) can replace the 4th argument
+	if(retval< 0)comedi_perror("comedi_set_clock_source");
+	
+	//changing the mode to NORMAL_BITS, X1 ,X2,X4, TWO_PULSE_BITS or SYNC_SOURCE_BITS
+	//(all defined in comedi.h) does not have any effect
+	counter_mode = NI_GPCT_COUNTING_MODE_QUADRATURE_X4_BITS;
+	
+	// output pulse on terminal count (doesn't really matter for this application)
+	counter_mode |= NI_GPCT_OUTPUT_TC_PULSE_BITS;
+	
+	// Don't alternate the reload source between the load a and load b registers.
+	// Doesn't really matter here, since we aren't going to be reloading the counter
+	counter_mode |= NI_GPCT_RELOAD_SOURCE_FIXED_BITS;
+
+       	// count on up/down signal, if disabled: counts only down whether the rotation
+	//sense is clock-wise or counter-clock-wise
+	counter_mode|=NI_GPCT_COUNTING_DIRECTION_HW_UP_DOWN_BITS;
+	
+	// don't stop on terminal count, if disabled: no visible difference
+	counter_mode |= NI_GPCT_STOP_ON_GATE_BITS;
+	
+	// don't disarm on terminal count or gate signal, if disabled: no visible difference
+	counter_mode |= NI_GPCT_NO_HARDWARE_DISARM_BITS;
+	
 	retval = comedi_set_counter_mode(device, subdevice, 0, counter_mode);
 	if(retval < 0) return retval;
 
-	/* retval = comedi_arm(device, subdevice, NI_GPCT_ARM_IMMEDIATE); */
-	/* if(retval < 0) return retval; */
+	retval = comedi_arm(device, subdevice, NI_GPCT_ARM_IMMEDIATE); 
+        if(retval < 0) return retval; 
 
 	return 0;
 }
@@ -105,12 +125,12 @@ static void init(python_block *block)
   }
  
   ENC = (ComediEnc *) block->ptrPar;
-
   ENC->channel  = block->intPar[0];
-  ENC->a = NI_GPCT_DISABLED_OTHER_SELECT;
-  ENC->b = NI_GPCT_DISABLED_OTHER_SELECT;
-  ENC->z = NI_GPCT_DISABLED_OTHER_SELECT;
-  ENC->initial_value= 0;
+
+  ENC->a = NI_GPCT_SOURCE_ENCODER_A;
+  ENC->b = NI_GPCT_SOURCE_ENCODER_B;
+  ENC->z = NI_GPCT_SOURCE_ENCODER_Z;
+  ENC->initial_value= ZEROCNT;
 
   if (!ComediDev[index]) {
     ENC->dev  = comedi_open(block->str);
@@ -122,8 +142,13 @@ static void init(python_block *block)
     printf("COMEDI %s (%s) opened.\n\n", block->str, board);
     ComediDev[index] = ENC->dev;
 
+    
     ENC->subdev = comedi_find_subdevice_by_type(ENC->dev,
 						     COMEDI_SUBD_COUNTER, 0);
+    printf("COMEDI_SUBD_COUNTER=%d\n",COMEDI_SUBD_COUNTER);
+    printf("a=%d b=%d Subdev: %d\n",ENC->a, ENC->b, ENC->subdev);
+    printf("channel %d\n",ENC->channel);
+    
     if(ENC->subdev<0){
       fprintf(stdout, "Comedi find_subdevice failed (No Incremental counter)\n");
       comedi_close(ENC->dev);
@@ -135,18 +160,20 @@ static void init(python_block *block)
       comedi_close(ENC->dev);
       exit(-1);
     }
+    printf("Comedi locked\n");
   }
   else {
     ENC->dev = ComediDev[index];
     ENC->subdev = comedi_find_subdevice_by_type(ENC->dev, COMEDI_SUBD_COUNTER, 0);
   }
 
-   if ((n_channels = comedi_get_n_channels(ENC->dev, ENC->subdev)) < 0) {
+  if ((n_channels = comedi_get_n_channels(ENC->dev, ENC->subdev)) < 0) {
     fprintf(stdout, "Comedi get_n_channels failed for subdevice %d\n", ENC->subdev);
     comedi_unlock(ENC->dev, ENC->subdev);
     comedi_close(ENC->dev);
     exit(-1);
   }
+  printf("n_channels: %d\n", n_channels);
   
   if (ENC->channel >= n_channels) {
     fprintf(stdout, "Comedi channel not available for subdevice %d\n", ENC->subdev);
@@ -157,6 +184,7 @@ static void init(python_block *block)
 
   ComediDev_InUse[index]++;
   ComediDev_CNTInUse[index]++;
+  printf("Comedi started...\n");
 
   retval = ni_gpct_start_encoder(ENC->dev, ENC->subdev,
 				 ENC->initial_value, ENC->a,
@@ -176,21 +204,12 @@ static void inout(python_block *block)
   int * intPar    = block->intPar;
   double *y = block->y[0];
   ComediEnc *ENC = (ComediEnc *)  block->ptrPar;
-  comedi_insn insn;
-  lsampl_t encData;
-
-  insn.insn = INSN_READ;
-  insn.n = 1;
-  insn.data = &encData;
-  insn.subdev = ENC->subdev;
-  insn.chanspec = CR_PACK(ENC->channel, 0, AREF_GROUND);
-    
-  comedi_do_insn(ENC->dev, &insn);
-      
-  /* comedi_data_read(ENC->dev, ENC->subdev, ENC->channel, , 0, */
-  /* 		   AREF_GROUND,  &encData); */
+ 
+  lsampl_t encData;   
+  comedi_data_read(ENC->dev, ENC->subdev, ENC->channel, 0,
+		   AREF_GROUND,  &encData);
   
-  *y = (double) ((int) encData);
+  *y = (double) ((long int) encData)-ZEROCNT;
 }
 
 static void end(python_block *block)
