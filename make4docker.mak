@@ -4,20 +4,25 @@ BINDIR = /usr/local/bin
 CURDIR = $(shell pwd)
 PYCTL = export PYSUPSICTRL=$(CURDIR)
 
+PIPVERS=$(shell pip --version)
+ifeq ($(findstring pip 23,$(PIPVERS)),pip 23)
+	PIPFLAGS = --break-system-packages
+endif
+
 export PYSUPSICTRL=$(shell pwd)
 
 addfiles: control slycot
 
 control:
-	pip install control
+	pip install control $(PIPFLAGS)
 
 slycot:
-	pip install scikit-build
-	pip install slycot
+	pip install scikit-build $(PIPFLAGS)
+	pip install slycot $(PIPFLAGS)
 	
 modules:
-	cd toolbox/supsictrl; pip install .; rm -rf build *.egg-info
-	cd toolbox/supsisim; pip install .; rm -rf build *.egg-info
+	cd toolbox/supsictrl; pip install . $(PIPFLAGS); rm -rf build *.egg-info
+	cd toolbox/supsisim; pip install . $(PIPFLAGS); rm -rf build *.egg-info
 
 fmu:
 	cd CodeGen/LinuxRT/fmu; make all; make install; make clean
