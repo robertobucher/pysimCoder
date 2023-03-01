@@ -8,19 +8,24 @@ PYCTL = export PYSUPSICTRL=$(CURDIR)
 RESBASH=$(shell grep PYSUPSICTRL $(HOME)/.bashrc)
 RESALIAS=$(shell grep pysimCoder= $(HOME)/.bash_aliases)
 
+PIPVERS=$(shell pip --version)
+ifeq ($(findstring pip 23,$(PIPVERS)),pip 23)
+	PIPFLAGS = --break-system-packages
+endif
+
 export PYSUPSICTRL=$(shell pwd)
 
 addfiles: control slycot
 
 control:
-	pip install control
+	pip install control $(PIPFLAGS)
 
 slycot:
 	pip install slycot
 
 modules:
-	cd toolbox/supsictrl; pip install .; rm -rf build *.egg-info
-	cd toolbox/supsisim; pip install .; rm -rf build *.egg-info
+	cd toolbox/supsictrl; pip install .  $(PIPFLAGS); rm -rf build *.egg-info
+	cd toolbox/supsisim; pip install .  $(PIPFLAGS); rm -rf build *.egg-info
 
 fmu:
 	cd CodeGen/LinuxRT/fmu; make all; make install; make clean
