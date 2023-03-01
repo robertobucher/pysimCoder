@@ -21,7 +21,7 @@ control:
 	pip install control $(PIPFLAGS)
 
 slycot:
-	pip install slycot
+	pip install slycot $(PIPFLAGS)
 
 modules:
 	cd toolbox/supsictrl; pip install .  $(PIPFLAGS); rm -rf build *.egg-info
