@@ -665,7 +665,8 @@ class Editor(QObject):
                 self.menuIOBlk.exec_(event.screenPos())
                 
         elif conn:                
-                self.scene.item = conn[0]
+#                 self.scene.item = conn[0]
+                self.scene.item = self.findConnectionAt(event.scenePos())  # New
                 self.scene.evpos = event.scenePos()
                 try:
                     self.subMenuConn.exec_(event.screenPos())
