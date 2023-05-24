@@ -384,8 +384,8 @@ class Editor(QObject):
         for item in items:
             if isinstance(item, Port):
                 return(item)
-            elif isinstance(item, Connection) and item != self.conn:
-                return item
+#             elif isinstance(item, Connection) and item != self.conn:
+#                 return item
         return None
     
     def findInPortAt(self, pos):
@@ -430,7 +430,17 @@ class Editor(QObject):
         items =  self.scene.items(QRectF(pos-QPointF(DB,DB), QSizeF(2*DB,2*DB)))
         for c in items:
             if isinstance(c, Connection) and isinstance(c.port1, OutPort):
-                return(c)
+                points = [c.pos1]
+                for el in c.connPoints:
+                    points.append(el)
+                points.append(c.pos2)
+                N = len(points)
+                for n in range(0,N-1):
+                    p1 = points[n]
+                    p2 = points[n+1]
+                    rect = QRectF(p1 - QPointF(DB,DB) ,p2 + QPointF(DB,DB))
+                    if rect.contains(pos):
+                        return c               
         return None
 
     def deleteSelected(self):
@@ -805,17 +815,19 @@ class Editor(QObject):
     def P14(self, obj, event):                          
         # DRAWFROMINPORT + LEFTMOUSEPRESSED  OR MOUSERELEASED
         item1 = self.findOutPortAt(event.scenePos())
-        item2 = None
-        try:
-            item2 = self.findOtherConnectionAt(event.scenePos(), self.conn)
-        except:
-            pass
         if isinstance(item1,OutPort):
             self.connectOutPort(item1)  
             self.redrawNodes()
             self.state = IDLE
             self.mainw.view.setDragMode(QGraphicsView.RubberBandDrag)
-        elif isinstance(item2, Connection):
+            return
+        
+        try:
+            item2 = self.findOtherConnectionAt(event.scenePos(), self.conn)
+        except:
+            pass
+            
+        if isinstance(item2, Connection):
             self.link2Connection(item2)
             self.redrawNodes()
             self.state = IDLE
