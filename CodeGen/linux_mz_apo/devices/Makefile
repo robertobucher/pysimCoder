@@ -21,8 +21,7 @@ ifeq ($(SHV),1)
 EXT_SHV_LIB = $(EXT_LIBS)/libshv/libshvchainpack/c
 
 SRCALL += $(EXT_SHV_LIB)/cchainpack.c $(EXT_SHV_LIB)/ccpcp.c \
-					$(EXT_SHV_LIB)/ccpcp_convert.c $(EXT_SHV_LIB)/ccpon.c \
-					$(EXT_SHV_LIB)/proof-of-concept-code/pack_double.c
+					$(EXT_SHV_LIB)/ccpcp_convert.c $(EXT_SHV_LIB)/ccpon.c 
 SRCALL += $(EXT_LIBS)/ulut/ulut/ul_gavlprim.c
 SRCALL += $(EXT_LIBS)/ulut/ulut/ul_gsacust.c
 SRCALL += $(wildcard $(COMMON_DIR)/shv/*.c)
@@ -84,9 +83,6 @@ ccpcp_convert.o: $(EXT_SHV_LIB)/ccpcp_convert.c
 	$(CC) $(CC_FLAGS) $<
 
 ccpon.o: $(EXT_SHV_LIB)/ccpon.c
-	$(CC) $(CC_FLAGS) $<
-
-pack_double.o: $(EXT_SHV_LIB)/proof-of-concept-code/pack_double.c
 	$(CC) $(CC_FLAGS) $<
 
 ul_gavlprim.o: $(EXT_LIBS)/ulut/ulut/ul_gavlprim.c
