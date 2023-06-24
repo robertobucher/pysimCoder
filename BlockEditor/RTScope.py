@@ -150,22 +150,27 @@ class tcp_rcvServer(threading.Thread):
             ret = QMessageBox.warning(self.mainw, '', 'Port already in use, please close it',
                                       QMessageBox.Ok, QMessageBox.Ok)
             return
-        
+
         while self.mainw.ServerActive==1:
             conn, addr = self.port.accept()
+            buf = bytearray()
             while True:
+                chunk = bytearray(conn.recv(L - len(buf)))
+                if (len(chunk) == 0):
+                    conn.close()
+                    break
+                buf.extend(chunk)
+                if len(buf) < L:
+                    continue
+
                 self.mainw.timebase.append(T)
                 T+=1
 
                 if len(self.mainw.timebase) > self.mainw.Hist:
                     self.mainw.timebase = self.mainw.timebase[-self.mainw.Hist:]
 
-                buf = bytearray(conn.recv(L))
-                if (len(buf) == 0):
-                    conn.close()
-                    break
-
                 data = self.st.unpack(buf)
+                buf = bytearray()
             
                 if self.mainw.ckSaveData.isChecked():
                     self.mainw.saveData(data)
