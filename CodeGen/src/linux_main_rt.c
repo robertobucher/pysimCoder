@@ -51,7 +51,7 @@ double get_Tsamp(void)
   return(Tsamp);
 }
 
-int get_priority_for_com()
+int get_priority_for_com(void)
 {
   if (prio < 0)
     {
@@ -241,6 +241,10 @@ static void proc_opt(int argc, char *argv[])
               break;
             }
           setenv("SHV_BROKER_PORT", t, 1);
+        }
+      else
+        {
+          setenv(t, optarg, 1);
         }
       break;
     }
