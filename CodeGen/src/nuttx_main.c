@@ -239,6 +239,10 @@ static void proc_opt(int argc, char *argv[])
             }
           setenv("SHV_BROKER_PORT", t, 1);
         }
+      else
+        {
+          setenv(t, optarg, 1);
+        }
       break;
     }
   }
