@@ -1,6 +1,4 @@
-from PyQt5.QtWidgets import QGraphicsPathItem, QGraphicsItem
-from PyQt5.QtGui import QPainterPath, QTransform
-from PyQt5.QtCore import Qt
+from supsisim.qtvers import *
 
 from supsisim.const import PW
 
@@ -11,8 +9,8 @@ class Port(QGraphicsPathItem):
         self.scene = scene
         self.block = None
         self.name = ''
-        self.line_color = Qt.black
-        self.fill_color = Qt.black
+        self.line_color = Qt.GlobalColor.black
+        self.fill_color = Qt.GlobalColor.black
         self.p = QPainterPath()
         self.connections = []
         self.nodeID = '0'
@@ -22,7 +20,8 @@ class Port(QGraphicsPathItem):
         pass
 
     def itemChange(self, change, value):
-        if change == self.ItemScenePositionHasChanged:
+#        if change == self.ItemScenePositionHasChanged:
+        if change == QGraphicsItem.GraphicsItemFlag.ItemSendsScenePositionChanges:
             for conn in self.connections:
                 try:
                     conn.update_pos_from_ports()
@@ -64,7 +63,7 @@ class InPort(Port):
         self.p.lineTo(0.0,0.0)
         self.p.lineTo(-PW, PW)
         self.setPath(self.p)
-        self.setFlag(QGraphicsItem.ItemSendsScenePositionChanges)
+        self.setFlag(QGraphicsItem.GraphicsItemFlag.ItemSendsScenePositionChanges)
 
 class OutPort(Port):
     def __init__(self, parent, scene):
@@ -84,4 +83,4 @@ class OutPort(Port):
         self.p.lineTo(PW,0.0)
         self.p.lineTo(0.0, PW)
         self.setPath(self.p)
-        self.setFlag(QGraphicsItem.ItemSendsScenePositionChanges)
+        self.setFlag(QGraphicsItem.GraphicsItemFlag.ItemSendsScenePositionChanges)

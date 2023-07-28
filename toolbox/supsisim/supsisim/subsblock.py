@@ -1,6 +1,4 @@
-from PyQt5.QtWidgets import QGraphicsPathItem, QGraphicsTextItem, QMessageBox
-from PyQt5.QtGui import QPainterPath, QPen, QImage, QTransform
-from PyQt5.QtCore import Qt, QPointF
+from supsisim.qtvers import *
 
 from supsisim.block import Block
 from supsisim.connection import Connection

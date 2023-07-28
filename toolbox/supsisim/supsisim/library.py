@@ -3,12 +3,7 @@
 import os
 import json
 
-from PyQt5.QtWidgets import QGraphicsScene, QMainWindow, QWidget, QVBoxLayout, \
-    QHBoxLayout, QGraphicsView,QTabWidget, QApplication, QFileDialog, \
-    QAction,  QMenu, QMessageBox, QComboBox
-
-from PyQt5.QtGui import QTransform, QDrag, QIcon
-from PyQt5.QtCore import Qt, QMimeData, QFileInfo
+from supsisim.qtvers import *
 
 from supsisim.const import respath
 from supsisim.pyEdit import NewEditorMainWindow
@@ -40,14 +35,14 @@ class CompViewer(QGraphicsScene):
         self.actComp = self.itemAt(x, y, t)
 
     def mouseMoveEvent(self, event):
-        if event.buttons() == Qt.LeftButton and isinstance(self.actComp, Block):
+        if event.buttons() == Qt.MouseButton.LeftButton and isinstance(self.actComp, Block):
             b = self.actComp.save()
             msg = json.dumps(b)
             mimeData = QMimeData()
             mimeData.setText(msg)
             drag = QDrag(self.parent)
             drag.setMimeData(mimeData)
-            drag.exec_(Qt.CopyAction)
+            drag.exec(Qt.DropAction.CopyAction)
 
     def mouseReleaseEvent(self, event):
         pass
@@ -119,7 +114,7 @@ class Library(QMainWindow):
         self.widget = QWidget()
         self.widget.setLayout(layout)
         self.setCentralWidget(self.widget)
-        self.tabs.setTabPosition(QTabWidget.West)
+        self.tabs.setTabPosition(QTabWidget.TabPosition.West)
         self.tabs.setCurrentIndex(index)
 
     def addActions(self):
@@ -243,5 +238,5 @@ if __name__ == '__main__':
     library.setGeometry(20, 20, 400, 500)
     library.show()
 
-    app.exec_()
+    app.exec()
     sys.exit()

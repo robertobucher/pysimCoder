@@ -1,6 +1,4 @@
-from PyQt5.QtWidgets import QMenu, QGraphicsItem, QApplication, QGraphicsView
-from PyQt5.QtGui import QTransform
-from PyQt5.QtCore import Qt, QEvent, QObject, QPointF, QRectF, QSizeF, QMimeData
+from supsisim.qtvers import *
 
 from supsisim.port import Port, InPort, OutPort
 from supsisim.connection import Connection
@@ -137,7 +135,7 @@ class Editor(QObject):
         item = self.scene.item
         dialog = BlockName_Dialog(self.scene.mainw)
         dialog.name.setText(item.name)
-        res = dialog.exec_()
+        res = dialog.exec()
         if res == 1:
             item.name = str(dialog.name.text())
             item.label.setPlainText(item.name)
@@ -566,32 +564,32 @@ class Editor(QObject):
     # Mouse icons
                 
     def setMouseInitDraw(self, pos):
-        pointer = Qt.ArrowCursor
+        pointer = Qt.CursorShape.ArrowCursor
         itemB = self.findBlockAt(pos)
         itemOP = self.findOutPortAt(pos)
         itemIP = self.findInPortAt(pos)
         itemC = self.findConnectionAt(pos)
         if isinstance(itemB, Block):
-            pointer = Qt.ArrowCursor
+            pointer = Qt.CursorShape.ArrowCursor
         elif isinstance(itemOP, OutPort) and len(itemOP.connections)==0:
-            pointer = Qt.CrossCursor
+            pointer = Qt.CursorShape.CrossCursor
         elif isinstance(itemIP, InPort) and len(itemIP.connections)==0:
-            pointer = Qt.CrossCursor
+            pointer = Qt.CursorShape.CrossCursor
         elif isinstance(itemC, Connection):
-            pointer = Qt.PointingHandCursor
+            pointer = Qt.CursorShape.PointingHandCursor
         else:
-            pointer = Qt.ArrowCursor
+            pointer = Qt.CursorShape.ArrowCursor
         self.scene.mainw.view.setCursor(pointer)        
             
     def setMouseByDraw(self, item):
         if isinstance(item, InPort) and len(item.connections)==0:
-            pointer = Qt.CrossCursor
+            pointer = Qt.CursorShape.CrossCursor
         elif isinstance(item, OutPort):
-            pointer = Qt.CrossCursor
+            pointer = Qt.CursorShape.CrossCursor
         elif isinstance(item, Connection) and self.state==DRAWFROMINPORT:
-            pointer = Qt.CrossCursor            
+            pointer = Qt.CursorShape.CrossCursor            
         else:
-            pointer = Qt.DragLinkCursor
+            pointer = Qt.CursorShape.DragLinkCursor
         self.scene.mainw.view.setCursor(pointer) 
         
     # =================  State events functions  ========================
@@ -631,7 +629,7 @@ class Editor(QObject):
             self.scene.DgmToUndo()
             self.state = DRAWFROMOUTPORT
             self.conn = Connection(None, self.scene)
-            self.mainw.view.setDragMode(QGraphicsView.NoDrag)
+            self.mainw.view.setDragMode(QGraphicsView.DragMode.NoDrag)
             self.conn.port1 = item
             self.conn.pos1 = self.gridPos(item.scenePos())
             self.conn.pos2 = self.gridPos(item.scenePos())
@@ -642,7 +640,7 @@ class Editor(QObject):
             self.scene.DgmToUndo()
             self.state = DRAWFROMINPORT
             self.conn = Connection(None, self.scene)
-            self.mainw.view.setDragMode(QGraphicsView.NoDrag)
+            self.mainw.view.setDragMode(QGraphicsView.DragMode.NoDrag)
             self.conn.port2 = item
             self.conn.pos1 = self.gridPos(item.scenePos())
             self.conn.pos2 = self.gridPos(item.scenePos())
@@ -657,7 +655,7 @@ class Editor(QObject):
         NumOfItems = self.getNumOfItems()
         if NumOfItems>1:
             self.scene.evpos = event.scenePos()
-            self.subMenuSubsystem.exec_(event.screenPos())            
+            self.subMenuSubsystem.exec(event.screenPos())            
             self.deselect_all()
             return
         
@@ -670,22 +668,22 @@ class Editor(QObject):
             self.scene.item = item
             self.scene.evpos = event.scenePos()           
             if isinstance(item, subsBlock):
-                self.menuSubsBlk.exec_(event.screenPos())
+                self.menuSubsBlk.exec(event.screenPos())
             else:
-                self.menuIOBlk.exec_(event.screenPos())
+                self.menuIOBlk.exec(event.screenPos())
                 
         elif conn:                
 #                 self.scene.item = conn[0]
                 self.scene.item = self.findConnectionAt(event.scenePos())  # New
                 self.scene.evpos = event.scenePos()
                 try:
-                    self.subMenuConn.exec_(event.screenPos())
+                    self.subMenuConn.exec(event.screenPos())
                 except:
                     pass
                     
         else:      
             self.scene.evpos = event.scenePos()
-            self.subMenuEditor.exec_(event.screenPos())
+            self.subMenuEditor.exec(event.screenPos())
             
     def P03(self, obj, event):                                     
         # IDLE, ITEMSELECTED + MOUSEDOUBLECLICK
@@ -735,7 +733,7 @@ class Editor(QObject):
             self.connectInPort(item)
             self.redrawNodes()
             self.state = IDLE
-            self.mainw.view.setDragMode(QGraphicsView.RubberBandDrag)
+            self.mainw.view.setDragMode(QGraphicsView.DragMode.RubberBandDrag)
         else:
             pt = self.gridPos(event.scenePos())
             if self.firstTime:
@@ -773,7 +771,7 @@ class Editor(QObject):
     def P12(self, obj, event):                                      
         # MOVECONN + MOUSEMOVE
         item = self.scene.currentItem
-#         item.draw_color = Qt.red
+#         item.draw_color = Qt.GlobalColor.red
         N = len(item.connPoints)
         oldPos = self.currentPos
         newPos = self.gridPos(event.scenePos())
@@ -790,7 +788,7 @@ class Editor(QObject):
     def P13(self, obj, event):                                         
         # MOVECONN + MOUSERELEASE
         item = self.scene.currentItem
-#         item.draw_color = Qt.black
+#         item.draw_color = Qt.GlobalColor.black
         self.state = IDLE
         try:
             item.clean()
@@ -819,7 +817,7 @@ class Editor(QObject):
             self.connectOutPort(item1)  
             self.redrawNodes()
             self.state = IDLE
-            self.mainw.view.setDragMode(QGraphicsView.RubberBandDrag)
+            self.mainw.view.setDragMode(QGraphicsView.DragMode.RubberBandDrag)
             return
         
         try:
@@ -831,7 +829,7 @@ class Editor(QObject):
             self.link2Connection(item2)
             self.redrawNodes()
             self.state = IDLE
-            self.mainw.view.setDragMode(QGraphicsView.RubberBandDrag)
+            self.mainw.view.setDragMode(QGraphicsView.DragMode.RubberBandDrag)
         else:
             pt = self.gridPos(event.scenePos())
             if self.firstTime:
@@ -862,7 +860,7 @@ class Editor(QObject):
             self.connectInPort(item)
             self.redrawNodes()
             self.state = IDLE
-            self.mainw.view.setDragMode(QGraphicsView.RubberBandDrag)
+            self.mainw.view.setDragMode(QGraphicsView.DragMode.RubberBandDrag)
         else:
             pt = self.gridPos(event.scenePos())
 
@@ -878,28 +876,28 @@ class Editor(QObject):
     def eventFilter(self, obj, event):
         if self.active:
             ev = -1
-            if event.type() ==  QEvent.GraphicsSceneMouseMove:
+            if event.type() ==  QEvent.Type.GraphicsSceneMouseMove:
                 ev = MOUSEMOVE
                 
-            if event.type() ==  QEvent.GraphicsSceneMousePress:
+            if event.type() ==  QEvent.Type.GraphicsSceneMousePress:
                 self.mainw.statusLabel.setText('')
-                if event.button() == Qt.LeftButton:
+                if event.button() == Qt.MouseButton.LeftButton:
                     ev = LEFTMOUSEPRESSED
-                if event.button() == Qt.RightButton:
+                if event.button() == Qt.MouseButton.RightButton:
                     ev = RIGHTMOUSEPRESSED
             
-            if event.type() == QEvent.GraphicsSceneMouseRelease:
+            if event.type() == QEvent.Type.GraphicsSceneMouseRelease:
                 ev = MOUSERELEASED
                     
-            if event.type() == QEvent.GraphicsSceneMouseDoubleClick:
+            if event.type() == QEvent.Type.GraphicsSceneMouseDoubleClick:
                 self.mainw.statusLabel.setText('')
                 ev = MOUSEDOUBLECLICK
     
-            if event.type() == QEvent.KeyPress:
+            if event.type() == QEvent.Type.KeyPress:
                 self.mainw.statusLabel.setText('')
-                if event.key() == Qt.Key_Delete:
+                if event.key() == Qt.Key.Key_Delete:
                     ev = KEY_DEL
-                if event.key() == Qt.Key_Escape:
+                if event.key() == Qt.Key.Key_Escape:
                     ev = KEY_ESC
             if ev != -1:
                 fun = self.Fun[self.state][ ev]

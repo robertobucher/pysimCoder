@@ -1,6 +1,4 @@
-from PyQt5.QtWidgets import QGraphicsItem, QGraphicsScene, QGraphicsView, QMessageBox
-from PyQt5.QtGui import QPainter
-from PyQt5.QtCore import QRectF, QPointF, QSizeF, QEvent
+from supsisim.qtvers import *
 
 from supsisim.block import Block
 from supsisim.subsblock import subsBlock
@@ -19,10 +17,10 @@ IDLE = 0
 class GraphicsView(QGraphicsView):
     def __init__(self, parent=None):
         super(GraphicsView, self).__init__(parent)
-        self.setDragMode(QGraphicsView.RubberBandDrag)
+        self.setDragMode(QGraphicsView.DragMode.RubberBandDrag)
         self.setSceneRect(QRectF(-2000, -2000, 4000, 4000))
-        self.setRenderHint(QPainter.Antialiasing)
-        self.setRenderHint(QPainter.TextAntialiasing)
+        self.setRenderHint(QPainter.RenderHint.Antialiasing)
+        self.setRenderHint(QPainter.RenderHint.TextAntialiasing)
         self.setAcceptDrops(True)
 
     def wheelEvent(self, event):
@@ -379,7 +377,7 @@ class Scene(QGraphicsScene):
         dialog.parscript.setText(self.script)
         dialog.Tf.setText(self.Tf)
         dialog.prio.setText(self.prio)
-        res = dialog.exec_()
+        res = dialog.exec()
         if res != 1:
             return
 
@@ -400,7 +398,7 @@ class Scene(QGraphicsScene):
         dialog.SHVdevid.setText(self.SHV.devid)
         dialog.SHVmount.setText(self.SHV.mount)
         dialog.SHVtree.setCurrentText(self.SHV.tree)
-        res = dialog.exec_()
+        res = dialog.exec()
         if res != 1:
             return
 

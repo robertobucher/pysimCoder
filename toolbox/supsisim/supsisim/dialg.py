@@ -1,7 +1,4 @@
-from PyQt5.QtWidgets import QDialog, QGridLayout, QSpinBox, QLabel, QPushButton, QCheckBox, \
-    QComboBox, QLineEdit, QFileDialog, QVBoxLayout, QTextEdit, QDialogButtonBox, QApplication
-from PyQt5.QtGui import QFont
-from PyQt5.QtCore import Qt
+from supsisim.qtvers import *
 
 from supsisim.const import path
 
@@ -9,7 +6,7 @@ class IO_Dialog(QDialog):
     def __init__(self,parent=None):
         super(IO_Dialog, self).__init__(parent)
         layout = QGridLayout()
-        self.setWindowModality(Qt.ApplicationModal)
+        self.setWindowModality(Qt.WindowModality.ApplicationModal)
         self.resize(380, 180)
         self.spbInput = QSpinBox()
         self.spbOutput = QSpinBox()
@@ -34,7 +31,7 @@ class BlockName_Dialog(QDialog):
     def __init__(self,parent=None):
         super(BlockName_Dialog, self).__init__(parent)
         layout = QGridLayout()
-        self.setWindowModality(Qt.ApplicationModal)
+        self.setWindowModality(Qt.WindowModality.ApplicationModal)
         self.resize(380, 100)
         self.name = QLineEdit()
 
@@ -52,7 +49,7 @@ class BlockName_Dialog(QDialog):
 class RTgenDlg(QDialog):
     def __init__(self, parent=None):
         super(RTgenDlg, self).__init__(None)
-        self.setWindowModality(Qt.ApplicationModal)
+        self.setWindowModality(Qt.WindowModality.ApplicationModal)
         self.resize(600, 100)
 
         lab1 = QLabel('Template Makefile')
@@ -127,7 +124,7 @@ class RTgenDlg(QDialog):
 class SHVDlg(QDialog):
     def __init__(self, parent=None):
         super(SHVDlg, self).__init__(None)
-        self.setWindowModality(Qt.ApplicationModal)
+        self.setWindowModality(Qt.WindowModality.ApplicationModal)
         self.resize(600, 100)
 
         lab1 = QLabel('Enable SHV protocol')

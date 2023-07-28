@@ -1,8 +1,6 @@
 #import sys
 
-from PyQt5.QtWidgets import QDialog, QGridLayout, QLabel, QLineEdit, QPushButton, \
-    QListWidget, QMessageBox
-from PyQt5.QtCore import Qt
+from supsisim.qtvers import *
 
 from supsisim.const import pyrun, respath
 
@@ -51,13 +49,13 @@ class BlkDlg(QDialog):
                     text = "No help for this block"
         else:
             text = self.helpTxt.replace('\\n','\n')
-            
+
         msg = QMessageBox(self)
         msg.setIcon(QMessageBox.Information)
         msg.setWindowTitle('Help for ' + self.fname)
         msg.setText(text)
-        msg.exec_()
-    
+        msg.exec()
+
     def parseParams(self, line):
         ln = line.split('|')
         N = len(ln)
@@ -88,6 +86,6 @@ class BlkDlg(QDialog):
 
 def parsDialog(pars, helpT):
     dialog = BlkDlg(pars, helpT)
-    res = dialog.exec_()
+    res = dialog.exec()
     return dialog.line
 

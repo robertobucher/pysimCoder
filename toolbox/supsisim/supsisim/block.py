@@ -1,6 +1,4 @@
-from PyQt5.QtWidgets import QGraphicsPathItem, QGraphicsTextItem
-from PyQt5.QtGui import QPainterPath, QPen, QImage, QTransform
-from PyQt5.QtCore import Qt, QPointF
+from supsisim.qtvers import *
 
 from supsisim.port import Port, InPort, OutPort
 from supsisim.connection import Connection
@@ -34,8 +32,8 @@ class Block(QGraphicsPathItem):
         else:
             raise ValueError('Needs 12 or 3 arguments; received %i.' % len(args))
 
-        self.line_color = Qt.black
-        self.fill_color = Qt.black
+        self.line_color = Qt.GlobalColor.black
+        self.fill_color = Qt.GlobalColor.black
         self.setup()
         try:
             self.scene.blocks.add(self)
@@ -65,8 +63,8 @@ class Block(QGraphicsPathItem):
         for n in range(0,self.outp):
             self.add_outPort(n)
 
-        self.setFlag(self.ItemIsMovable)
-        self.setFlag(self.ItemIsSelectable)
+        self.setFlag(QGraphicsItem.GraphicsItemFlag.ItemIsMovable)
+        self.setFlag(QGraphicsItem.GraphicsItemFlag.ItemIsSelectable)
         
         self.setFlip()
         
@@ -98,7 +96,7 @@ class Block(QGraphicsPathItem):
         pen.setBrush(self.line_color)
         pen.setWidth = LW
         if self.isSelected():
-            pen.setStyle(Qt.DotLine)
+            pen.setStyle(Qt.PenStyle.DotLine)
         painter.setPen(pen)
         painter.drawPath(self.path())
         img = QImage(respath + 'blocks/Icons/' + self.icon + '.svg')

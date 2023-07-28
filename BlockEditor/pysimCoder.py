@@ -3,8 +3,8 @@
 import sys
 import os
 
-from PyQt5.QtWidgets import QApplication
-from PyQt5.QtCore import Qt, QFileInfo
+from supsisim.qtvers import *
+
 from supsisim.library import Library
 
 if __name__ == "__main__":
@@ -35,14 +35,14 @@ if __name__ == "__main__":
     library.setMaximumSize(400,h)
     library.setMinimumSize(400,h)
     library.show()
-    library.setWindowState(Qt.WindowMaximized)
+    library.setWindowState(Qt.WindowState.WindowMaximized)
        
     if fname == 'untitled':
         library.newFile()
-        library.setWindowState(Qt.WindowMaximized)
+        library.setWindowState(Qt.WindowState.WindowMaximized)
     else:
         library.fopen(fname)
-        library.setWindowState(Qt.WindowMinimized)
-    ret = app.exec_()
+        library.setWindowState(Qt.WindowState.WindowMinimized)
+    ret = app.exec()
     app.deleteLater()
 

@@ -1,6 +1,4 @@
-from PyQt5.QtWidgets import QGraphicsPathItem
-from PyQt5.QtGui import QPainterPath, QPen
-from PyQt5.QtCore import Qt, QRectF, QPointF
+from supsisim.qtvers import *
 
 import numpy as np
 from supsisim.const import LW, DB, GRID
@@ -21,7 +19,7 @@ class Connection(QGraphicsPathItem):
         self.port2 = None
 
         self.connPoints = []
-        self.draw_color = Qt.black
+        self.draw_color =Qt.GlobalColor.black
         self.setup()
 
     def __str__(self):

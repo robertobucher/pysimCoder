@@ -2,11 +2,7 @@
 
 import os
 
-from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout,  QAction, \
-    QMessageBox, QFileDialog, QDialog, QApplication, QComboBox, QLabel
-from PyQt5.QtGui import QPainter, QIcon
-from PyQt5.QtPrintSupport import QPrinter, QPrintDialog
-from PyQt5.QtCore import Qt, QPointF, QFileInfo, QMimeData, QSettings, QVariant
+from supsisim.qtvers import *
 
 from supsisim.block import Block
 from supsisim.subsblock import subsBlock
@@ -37,7 +33,7 @@ class NewEditorMainWindow(QMainWindow):
             self.scene = scene
             self.scene.mainw = self
         self.view.setScene(self.scene)
-        self.view.setRenderHint(QPainter.Antialiasing)
+        self.view.setRenderHint(QPainter.RenderHint.Antialiasing)
         self.verticalLayout.addWidget(self.view)
         self.setCentralWidget(self.centralWidget)
         self.addactions()
@@ -215,7 +211,7 @@ class NewEditorMainWindow(QMainWindow):
         toolbarDir = self.addToolBar('Folder')
         self.actFolders = QComboBox()
         self.actFolders.setMaximumWidth(400)
-        self.actFolders.setSizeAdjustPolicy(QComboBox.AdjustToContents)
+        self.actFolders.setSizeAdjustPolicy(QComboBox.SizeAdjustPolicy.AdjustToContents)
         self.actFolders.addItem(os.getcwd())
         toolbarDir.addWidget(self.actFolders)
         self.actFolders.currentIndexChanged.connect(self.changeDir)
@@ -326,12 +322,12 @@ class NewEditorMainWindow(QMainWindow):
     def askSaving(self):
         items = self.scene.items()
         if len(items) == 0:
-            return QMessageBox.Discard
+            return QMessageBox.StandardButton.Discard
         
         ret = QMessageBox.question(self, 'The Document has been modified',
                                    'Do you want to save your changes?',
-                                   QMessageBox.Save | QMessageBox.Discard | QMessageBox.Cancel,
-                                   QMessageBox.Cancel)
+                                   QMessageBox.StandardButton.Save | QMessageBox.StandardButton.Discard | QMessageBox.StandardButton.Cancel,
+                                   QMessageBox.StandardButton.Cancel)
         return ret
             
     def newFile(self):
@@ -388,7 +384,7 @@ class NewEditorMainWindow(QMainWindow):
             self.actFolders.setCurrentIndex(itemIndex)
 
     def changeDirAct(self):
-        newDir = QFileDialog.getExistingDirectory(self, 'Select a folder:', '.', QFileDialog.ShowDirsOnly)
+        newDir = QFileDialog.getExistingDirectory(self, 'Select a folder:', '.', QFileDialog.Option.ShowDirsOnly)
         self.setFolders(newDir)
 
     def clearDirAct(self):
@@ -405,10 +401,10 @@ class NewEditorMainWindow(QMainWindow):
     def print_scheme(self):
         self.printer = QPrinter()
         printDialog = QPrintDialog(self.printer)
-        if (printDialog.exec_() == QDialog.Accepted):
+        if printDialog.exec():
             painter = QPainter(self.printer)
-            painter.setRenderHint(QPainter.Antialiasing)
-            painter.setRenderHint(QPainter.TextAntialiasing)
+            painter.setRenderHint(QPainter.RenderHint.Antialiasing)
+            painter.setRenderHint(QPainter.RenderHint.TextAntialiasing)
             self.scene.clearSelection()
             self.scene.render(painter)
 
@@ -430,7 +426,7 @@ class NewEditorMainWindow(QMainWindow):
         outsetble = item.outsetble
         helpTxt = item.helpTxt
         width = item.width
-        res = dialog.exec_()
+        res = dialog.exec()
         if res == 1 and (insetble or outsetble):
             item.remove()
             inp = dialog.spbInput.value()
@@ -448,9 +444,9 @@ class NewEditorMainWindow(QMainWindow):
 
     def showLibAct(self):
         if self.library.isMinimized():
-            self.library.setWindowState(Qt.WindowMaximized)
+            self.library.setWindowState(Qt.WindowState.WindowMaximized)
         else:
-            self.library.setWindowState(Qt.WindowMinimized)
+            self.library.setWindowState(Qt.WindowState.WindowMinimized)
             
     def debugAct(self):
         self.scene.debugInfo()
@@ -481,9 +477,9 @@ class NewEditorMainWindow(QMainWindow):
             
         if self.modified and self.notSubsystem:
             ret = self.askSaving()
-            if ret == QMessageBox.Save:
+            if ret == QMessageBox.StandardButton.Save:
                 self.saveFile()
-            elif ret == QMessageBox.Cancel:
+            elif ret == QMessageBox.StandardButton.Cancel:
                 event.ignore()
                 return
 
