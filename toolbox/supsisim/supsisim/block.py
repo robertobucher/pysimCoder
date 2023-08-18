@@ -11,7 +11,9 @@ class Block(QGraphicsPathItem):
         parent = args[0]
         super(Block, self).__init__(parent)
         self.scene.addItem(self)
- 
+        self.syspath = ''
+        self.ident = -1
+
         if len(args) == 12:
             parent, self.scene, self.name, self.inp, self.outp, self.insetble, self.outsetble, self.icon, self.params, self.helpTxt, self.width, self.flip = args
         elif len(args) == 3:
@@ -243,3 +245,8 @@ class Block(QGraphicsPathItem):
          y = gr * ((pt.y() + gr /2) // gr)
          return QPointF(x,y)
 
+    def setSysPath(self,basepath):
+        self.syspath = f"{basepath}/{self.name}"
+
+    def getCodeName(self):
+        return self.name + '_' + str(self.ident)

@@ -9,6 +9,7 @@ The following class is provided:
 
 """
 from numpy import array, ones
+import re
 
 class RCPblk:
     def __init__(self, *args):  
@@ -33,11 +34,14 @@ class RCPblk:
         self.intPar = array(intPar)
         self.intParNames = []
         self.str = str
+        self.sysPath = ''
+        self.no_fcn_call = False
 
     def __str__(self):
         """String representation of the Block"""
         str =  "Block Name         : " + self.name.__str__() + "\n"
         str += "Function           : " + self.fcn.__str__() + "\n"
+        str += "System path        : " + self.sysPath.__str__() + "\n"
         str += "Input ports        : " + self.pin.__str__() + "\n"
         str += "Output ports      : " + self.pout.__str__() + "\n"
         str += "Input dimensions : " + self.dimPin.__str__() + "\n"

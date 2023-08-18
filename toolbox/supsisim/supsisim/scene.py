@@ -413,16 +413,23 @@ class Scene(QGraphicsScene):
 
     def findAllItems(self, scene):
         items = []
+        count = 0
         for item in scene.items():
             if isinstance(item, subsBlock):
                 blk = item.getInternalBlocks()
                 for el in blk:
+                    el.setSysPath(f'/{item.name}')
+                    el.ident = count
                     items.append(el)
             elif isinstance(item, Block):
+                item.setSysPath('')
+                item.ident = count
                 items.append(item)
 
             else:
                 pass
+            
+            count = count + 1
 
         return items
 
@@ -540,7 +547,7 @@ class Scene(QGraphicsScene):
 
     def blkInstance(self, item):
         ln = item.params.split('|')
-        txt = item.name.replace(' ','_') + ' = ' + ln[0] + '('
+        txt = item.getCodeName().replace(' ','_') + ' = ' + ln[0] + '('
         if item.inp != 0:
             inp = '['
             for thing in item.childItems():
@@ -573,7 +580,7 @@ class Scene(QGraphicsScene):
 
         # Check if Block is PLOT
         if ln[0] == 'plotBlk':
-            txt += ", '" + item.name.replace(' ','_') + "'"
+            txt += ", '" + item.getCodeName().replace(' ','_') + "'"
 
         txt += ')'
         txt = txt.replace('(, ', '(')
@@ -599,12 +606,12 @@ class Scene(QGraphicsScene):
         txt += '        if not f.endswith(".py"):\n'
         txt += '            continue\n'
         txt += '        f = f.rstrip("*.py")\n'
-        txt += '        try:\n'
+        txt += '        if True: #try:\n'
         txt += '            cmd = "from " + el + "." + f + " import *"\n'
         txt += '            exec(cmd)\n'
-        txt += '        except:\n'
-        txt += '            print("import of block class failed " + cmd)\n'
-        txt += '            pass\n'
+        txt += '        #except:\n'
+        txt += '        #    print("import of block class failed " + cmd)\n'
+        txt += '        #    pass\n'
 
         txt += 'from supsisim.RCPgen import *\n'
         txt += 'from control import *\n'
@@ -612,9 +619,11 @@ class Scene(QGraphicsScene):
         blkList = []
         realParNames = []
         intParNames = []
+        sysPathList = []
         for item in items:
             if isinstance(item, Block):
-                blkList.append(item.name.replace(' ','_'))
+ #               print(item)
+                blkList.append(item.getCodeName().replace(' ','_'))
                 blkText, blkPar = self.blkInstance(item)
                 txt += blkText + '\n'
 
@@ -626,6 +635,7 @@ class Scene(QGraphicsScene):
                     elif (par[2] == "int"):
                         blkIntNames.append(par[0])
 
+                sysPathList.append(item.syspath)
                 realParNames.append(tuple(blkRealNames))
                 intParNames.append(tuple(blkIntNames))
 
@@ -644,7 +654,8 @@ class Scene(QGraphicsScene):
         fn.write(txt)
 
         txt =  'realParNames = ' + str(tuple(realParNames)) + '\n'
-        txt += 'intParNames = ' + str(tuple(intParNames)) + '\n\n'
+        txt += 'intParNames = ' + str(tuple(intParNames)) + '\n'
+        txt += 'sysPath = '+ str(sysPathList) + '\n\n'
         fn.write(txt)
 
         txt =  'tmp = 0\n'
@@ -657,6 +668,10 @@ class Scene(QGraphicsScene):
         txt += '  for par in item:\n'
         txt += '    blks[tmp].intParNames.append(par)\n'
         txt += '  tmp += 1\n\n'
+        txt += 'tmp = 0\n'
+        txt += 'for item in sysPath:\n'
+        txt += '  blks[tmp].sysPath = item\n'
+        txt += '  tmp += 1\n\n'  
         fn.write(txt)
 
         txt =  'os.environ["SHV_USED"] = \"' + str(self.SHV.used) + '\"\n'

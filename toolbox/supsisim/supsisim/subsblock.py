@@ -301,6 +301,7 @@ class subsBlock(Block):
             if isinstance(item, subsBlock):
                 blk = item.getInternalBlocks()
                 for el in blk:
+                    el.setSysPath(item.syspath)
                     items.append(el)
             elif isinstance(item, Block):
                 item.subsParent = self
