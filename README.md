@@ -8,6 +8,8 @@ At present it is possible to generate code for Linux (with or without preempt-rt
 
 The behaviour is similar to other RPC applications like Simulink and XCos.
 
+**pysimCoder can run in any Linux environment or in Windows using WSL.** (at the bottom of this README is explained how to install pysimCoder in WSL)
+
 Despite the fact that the main purpose of pysimCoder is to generate RT control code, it is also possible to perfom simple simulations mixing continous time and discrete time blocks.
 
 Since 07.09.2022 pysimCoder implements subsystems (more than one block, right mouse click) and a new save format, based on json, which replaces the previous format of the files based on XML. Old files can be loaded and saved in the new format. The new format is better readable, because it can be simply opened by a python script like this:
@@ -99,12 +101,8 @@ Download a pysimCoder image directly from the Docker Container page:
 ```
 docker pull robertobucher/pysimcoder:latest
 ```
-or
-```
-docker pull robertobucher/pysimcoder:novnc
-```
 
-The first image can be launched with
+The image can be launched with
 ```
 $ docker run --rm --env="DISPLAY" --net=host -v $XAUTHORITY:/tmp/.XAuthority -e XAUTHORITY=/tmp/.XAuthority robertobucher/pysimcoder:latest
 ```
@@ -113,15 +111,58 @@ At the prompt launch
 psc
 ```
 
-The second image (pysimcoder:novnc) runs from a web browser:
-```
-$ docker run --rm -it -p 8080:8080 robertobucher/pysimcoder:novnc
-```
-Open a browser and go to  `http://<server>:8080/vnc.html`
+More info and the Dockerfile can be found at https://github.com/robertobucher/pysimCoder-Docker
 
-In the terminal launch
+# pysimCoder in Windows
+
+pysimCoder can run in Windows under WSL.
+
+Simply install some additional packages download pysimCoder and istall it.
+
 ```
-psc
+sudo apt-get install \
+	gcc \
+	gfortran \
+	git \
+	cmake \
+	binutils \
+	emacs \
+	python3 \
+	python3-numpy \
+	python3-scipy \
+	python3-sympy \
+	python3-matplotlib \
+	python3-pip \
+	jupyter-qtconsole \
+	python3-lxml \
+	python3-pyqtgraph \
+	libopenblas-dev \
+	liblapack-dev \
+	libxml2-dev \
+	libcomedi-dev \
+	python3-pyqt5 \
+	python3-qwt \
+	python3-serial \
+	qt6-svg-dev
 ```
 
-More info and the 2 Dockerfiles can be found at https://github.com/robertobucher/pysimCoder-Docker
+Then move to a directory where to install pysimCoder and do
+
+```
+git clone https://github.com/robertobucher/pysimCoder
+cd pysimCoder
+make addfiles
+make modules
+make fmu
+sudo make link
+make user
+make alias
+make full_lib
+```
+
+
+
+
+
+
+
