@@ -51,7 +51,7 @@ class BlkDlg(QDialog):
             text = self.helpTxt.replace('\\n','\n')
 
         msg = QMessageBox(self)
-        msg.setIcon(QMessageBox.Information)
+        msg.setIcon(QMessageBox.Icon.Information)
         msg.setWindowTitle('Help for ' + self.fname)
         msg.setText(text)
         msg.exec()
