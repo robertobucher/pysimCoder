@@ -154,7 +154,7 @@ class Editor(QObject):
         streV = 'import dialogs.' + blk +  ' as dlg'
         try:
             exec(streV)
-            name =  item.name.replace(' ','_')
+            name =  item.name.replace(' ','_') + '_' + str(item.ident)
             cmd = 'dlg.' + blk + '(' + str(item.inp) + ',' + str(item.outp) + \
                   ',  "' + item.params + '"' +  ',"' +  name + '")'
             pars = exec(cmd)
