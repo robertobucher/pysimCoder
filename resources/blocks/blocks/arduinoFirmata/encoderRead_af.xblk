@@ -1,0 +1,11 @@
+{
+  "lib": "arduinoFirmata",
+  "name": "Encoder",
+  "ip": 0,
+  "op": 1,
+  "stin": 0,
+  "stout": 0,
+  "icon": "ENC",
+  "params": "encoderRead_af|Encode no:0|Pin A:2|Pin B:3",
+  "help": "Define an encoder block"
+}

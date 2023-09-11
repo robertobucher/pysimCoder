@@ -27,7 +27,7 @@ SRC=$(filter-out $(EXCLUDE),$(SRC_ALL))
 
 dependencies:
 	mkdir vendor
-	cd vendor; git clone https://github.com/Chiff/FirmataC.git
+	cd vendor; git clone https://github.com/robertobucher/FirmataC.git
 
 %.o: %.c
 	cc $(CC_FLAGS) $<

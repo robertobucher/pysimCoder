@@ -7,11 +7,10 @@ extern t_firmata * af_firmataInstance;
 
 static void write(int newValue, int pin) {
     if (pin == -1) {
-        printf("af - digitalWrite - pin not set\n");
         return;
     }
 
-    firmata_pull(af_firmataInstance);
+    /* firmata_pull(af_firmataInstance); */
     firmata_digitalWrite(af_firmataInstance, pin, newValue);
 }
 
@@ -24,38 +23,18 @@ static void setPinMode(python_block *block) {
 }
 
 static void inout(python_block * block) {
-    if (af_firmataInstance == NULL) {
-        printf("af - digitalWrite - inout - firmataInstance is empty - waiting\n");
-        return;
-    }
-
     while (!af_firmataInstance->isReady) {
-        //Wait until device is up
         firmata_pull(af_firmataInstance);
     }
 
+    setPinMode(block);
+    firmata_pull(af_firmataInstance);    
     int pin = block->intPar[0];
     int mode = MODE_OUTPUT;
 
-    if (af_firmataInstance->isReady) {
-        setPinMode(block);
-    } else  {
-        return;
-    }
-
-    firmata_pull(af_firmataInstance);
-    if (af_firmataInstance->pins[pin].mode != mode) {
-        printf("af - digitalWrite - inout - pin %d is not in correct mode; expected=%d real=%d\n", pin, mode, af_firmataInstance->pins[pin].mode);
-        setPinMode(block);
-        return;
-    }
-
     double * U = block->u[0];
-//    printf("af - digitalWrite - inout - U[0] = %f\n", U[0]);
-
     int pinVal = (int) U[0];
     write(pinVal, pin);
-
 }
 
 static void end(python_block * block) {
