@@ -5,6 +5,15 @@
 Install the [Arduino IDE](https://www.arduino.cc/en/software) and the upload StandardFirmata on your Arduino (Arduino
 IDE > File > Examples > Firmata > StandardFirmata).
 
+In order to use the **encoders**, the following Arduino libraries are required:
+
+  * Configurable firmata
+  * Encoder
+  * FirmataEncoder
+  * Servo (?)
+
+Instead of the *StandardFirmata *SW, install *firmataMotor* SW on Arduino
+
 ---
 
 ## New Blocks
