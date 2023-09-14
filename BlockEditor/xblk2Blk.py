@@ -57,7 +57,6 @@ class MainWindow(QMainWindow, form_class):
         self.btnGenText.clicked.connect(self.genFunction)
         self.btnWriteText.clicked.connect(self.writeFunction)
         self.btnGenSkel.clicked.connect(self.genSkeleton)
-        self.btnGenHelp.clicked.connect(self.genHelp)
        
     def params2grid(self,pars):
         ln = pars.split('|')
@@ -186,14 +185,7 @@ class MainWindow(QMainWindow, form_class):
             name = self.edFun.rstrip('Blk')
             cmd = 'gen_pydev ' + name
             os.system(cmd)
-        
-    def genHelp(self):
-        f = open(self.edFun + '.hlp', 'w')
-        f.write('Parameters\n')
-        for n in range(1, self.N):
-            f.write(self.gridLayout.itemAtPosition(n,0).widget().text() + '\n')
-        f.close()
-            
+                    
 app = QApplication(sys.argv)
 frame = MainWindow()
 frame.show()
