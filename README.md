@@ -152,12 +152,13 @@ sudo apt-get install \
 In **Debian** the following package should be installed for pyQt6
 
 ```
-	qt6-svg-dev
+sudo apt-get install qt6-svg-dev
 
 ```
 In **Ubuntu** the following packages should be installed for pyQt6
 ```
-    qt6-base-dev
+sudo apt-get install \
+    qt6-base-dev \
     libqt6svg6-dev
 ```
 Then move to a directory where to install pysimCoder and do
