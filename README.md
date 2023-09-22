@@ -118,6 +118,11 @@ More info and the Dockerfile can be found at https://github.com/robertobucher/py
 pysimCoder can run in Windows under WSL.
 
 Simply install some additional packages download pysimCoder and istall it.
+```
+    sudo apt-get update
+    sudo apt-det dist-upgrade
+```
+and
 
 ```
 sudo apt-get install \
