@@ -142,10 +142,19 @@ sudo apt-get install \
 	libcomedi-dev \
 	python3-pyqt5 \
 	python3-qwt \
-	python3-serial \
-	qt6-svg-dev
+	python3-serial
 ```
+In **Debian** the following package should be installed for pyQt6
 
+```
+	qt6-svg-dev
+
+```
+In **Ubuntu** the following packages should be installed for pyQt6
+```
+    qt6-base-dev
+    libqt6svg6-dev
+```
 Then move to a directory where to install pysimCoder and do
 
 ```
