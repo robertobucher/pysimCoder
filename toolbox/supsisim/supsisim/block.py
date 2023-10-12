@@ -14,6 +14,8 @@ class Block(QGraphicsPathItem):
         self.syspath = ''
         self.ident = -1
 
+        self.roundedBlocks = True
+        
         if len(args) == 12:
             parent, self.scene, self.name, self.inp, self.outp, self.insetble, self.outsetble, self.icon, self.params, self.helpTxt, self.width, self.flip = args
         elif len(args) == 3:
@@ -99,8 +101,14 @@ class Block(QGraphicsPathItem):
         pen.setWidth = LW
         if self.isSelected():
             pen.setStyle(Qt.PenStyle.DotLine)
+        
         painter.setPen(pen)
-        painter.drawPath(self.path())
+
+        if self.roundedBlocks:
+            painter.drawRoundedRect(self.boundingRect(), 10, 10)
+        else:
+            painter.drawPath(self.path())
+            
         img = QImage(respath + 'blocks/Icons/' + self.icon + '.svg')
         if self.flip:
             img = img.mirrored(True, False)

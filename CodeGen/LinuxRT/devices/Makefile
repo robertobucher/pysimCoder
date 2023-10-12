@@ -16,6 +16,7 @@ SRCALL += $(wildcard $(COMMON_DIR)/common_dev/*.c)
 SRCALL += $(wildcard $(COMMON_DIR)/Faulhaber_dev/*.c)
 SRCALL += $(wildcard $(COMMON_DIR)/Maxon_dev/*.c)
 SRCALL += $(wildcard $(COMMON_DIR)/posix/*.c)
+SRCALL += $(wildcard $(COMMON_DIR)/AR2INO/*.c)
 
 ifeq ($(SHV),1)
 EXT_SHV_LIB = $(EXT_LIBS)/libshv/libshvchainpack/c
@@ -86,6 +87,9 @@ FMUinterface.o: FMUinterface.c
 	$(CC) $(CC_FLAGS) $<
 
 %.o: $(COMMON_DIR)/posix/%.c
+	$(CC) $(CC_FLAGS) $<
+
+%.o: $(COMMON_DIR)/AR2INO/%.c
 	$(CC) $(CC_FLAGS) $<
 
 ifeq ($(SHV),1)

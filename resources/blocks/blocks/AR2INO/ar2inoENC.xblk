@@ -1,0 +1,11 @@
+{
+  "lib": "AR2INO",
+  "name": "Encoder",
+  "ip": 0,
+  "op": 1,
+  "stin": 0,
+  "stout": 0,
+  "icon": "ENC",
+  "params": "ar2inoENCBlk|Encode no:0|Resolution:1|Reset [0=no/1=yes]:1",
+  "help": "Define an encoder block (0 or 1)"
+}

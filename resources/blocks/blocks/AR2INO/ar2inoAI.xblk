@@ -1,0 +1,11 @@
+{
+  "lib": "AR2INO",
+  "name": "Analog Input",
+  "ip": 0,
+  "op": 1,
+  "stin": 0,
+  "stout": 0,
+  "icon": "AD",
+  "params": "ar2inoAIBlk|Pin:18|Umin [V]:0.0|Umax [V]:5.0",
+  "help": "Parameters\nInput: Analog input PIN\n\nThe input signal (0..3V) is automatically mapped to a value between Umin and Umax.\n"
+}

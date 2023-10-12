@@ -1,0 +1,22 @@
+This is a new protocllo to use Arduino I/Os from an application generated in RT by pysimCoder.
+
+I my opinion, the Firmata protocol is to heavy to be used to implement controllers with a usable sampling rate,
+This new protocol is lighter, simpler and more usable.
+
+It implements 5 I/O system:
+
+  * Analog input
+  * PWM output
+  * Digital input
+  * Digital output
+  * 2 encoders
+
+Encoders are associated to fixed pins:
+
+  * Channel 0 ->  PIN 2 and 3
+  * Channel 1 ->  PIN 4 and 5
+
+These pins can't be used for other I/O's!
+
+The "Setup" (INIT) block must be inserted into the pysimCoder Block Diagram in order to have the Arduino working!
+
