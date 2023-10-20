@@ -1,0 +1,10 @@
+eps/*
+*.aux
+*.bbl
+*.blg
+*.dvi
+*.lof
+*.log
+*.synctex.gz
+*.toc
+*.bst
