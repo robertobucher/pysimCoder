@@ -37,7 +37,7 @@ static void init(python_block *block)
     BuffOut[0] = 0;
     BuffOut[1] = intPar[0];
     int16_t *value = (int16_t *) &BuffOut[2];
-    *value =  ENCRESET;
+    *value =  ENCRESET+intPar[2];
     write(fdSerial, BuffOut, MAXLEN);
     usleep(50000);
   }
