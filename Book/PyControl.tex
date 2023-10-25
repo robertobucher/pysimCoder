@@ -3,11 +3,11 @@
 \section{Install the packages}
 
 \section{The simplest way}
-I prepared a VirtualBox disk image \cite{VIRTUALBOX} with a Debian distribution 
-and all the required packages. VirtualBox is available for Windows, Linux, 
-OS X and Solaris. All the features described in this document are available.
+A docker image is available and can be intalled using
 
-Please contact me via email to receive the link to the files.
+\begin{verbatim}
+docker pull robertobucher/pysimcoder:latest
+\end{verbatim}
 
 \section{Linux}
 
@@ -99,6 +99,7 @@ As last step it is important to update the ``.bashrc'' file as normal user with 
 
 \begin{verbatim}
 make user
+make alias
 \end{verbatim}
 
 The system has been tested under ``Debian stable'', ``Debian testing'' with 
@@ -113,10 +114,16 @@ The Slycot libraries for Windows can be downloaded from here~\cite{SLYCOT2}.
 
 At present it is not possible to perform hybrid simulation and code generation under the Windows OS.
 
+As alternative, it is possible to install pysimCoder under WSL 2, or to work using the docker version of the software.
+
 \section{Mac OSX}
 
 The Anaconda package~\cite{ANACONDA} is available for Mac OSX. The Slycot 
 libraries can be downloaded from here~\cite{SLYCOT2}.
+
+At present it is not possible to perform hybrid simulation and code generation under the Mac OS.
+
+As alternative, it is possible to work using the docker version of the software.
 
 \chapter{Python - Some hints for Matlab users}
 
@@ -148,12 +155,11 @@ started as \textbf{jupyter-qtconsole}, jupyter already loads at startup
 a set of functions and modules. 
 
 Another interesting environment, more similar to the Matlab shell, is 
-represented by the \textbf{Spyder} application. In this application it is 
+represented by the \textbf{Spyder or Pyzo} application. In this application it is
 possible to debug scripts and functions like in the Matlab environment.
 
 In this document we are mostly working with \textbf{jupyter} launched with the 
-shell 
-commands
+shell commands
 
 \begin{verbatim}
 jupyter-qtconsole
@@ -491,6 +497,8 @@ feedback control systems.
 In addition, a MATLAB compatibility package (control.matlab) has been 
 integrated in order to provide functions equivalent to the commands available 
 in the MATLAB Control Systems Toolbox.
+
+In this chapter I introduce some basics of the Control system toolbox for Python. This tool is still in development. A more complete description of the toolbox is available here (\cite{MANUALTBX})
 
 \section{Models}
 
@@ -2099,8 +2107,7 @@ J2*M2*R1**2)]])
 
 \subsection{Define the system and the project specifications}
 
-In this first example we design a controller for a plant with the transfer 
-function
+In this first example we design a controller for a plant with the transfer function
  
 $$
 G(s)=\frac{1}{s^2 + 6\cdot s + 5}
@@ -2632,7 +2639,7 @@ figure~\ref{F16}.
 
 \begin{figure}[htbp]	% Step
 \centering
-\includegraphics[width=0.8\textwidth]{ctrmot.eps}
+\includegraphics[width=0.8\textwidth]{ctrmot.pdf}
 \caption{Block diagram of the controlled system}
 \label{F16}
 \end{figure}
@@ -2687,7 +2694,7 @@ blocks is shown in figure~\ref{F17}.
  
  \begin{figure}[htbp]	% Step
  \centering
- \includegraphics[width=0.7\textwidth]{blocks.eps}
+ \includegraphics[width=0.7\textwidth]{blocks.pdf}
  \caption{Some pysimCoder blocks for control design}
  \label{F17}
  \end{figure}
@@ -2697,7 +2704,7 @@ blocks is shown in figure~\ref{F17}.
  
 \begin{figure}[htbp]	% Step
 \centering
-\includegraphics[width=0.7\textwidth]{exa_final.eps}
+\includegraphics[width=0.7\textwidth]{exa_final.pdf}
 \caption{The first example}
 \label{Fig:exa1}
 \end{figure}
@@ -2712,7 +2719,7 @@ The application opens 2 windows as shown in figure~\ref{Fig:envEdit}
 
 \begin{figure}[htbp]	% Step
 \centering
-\includegraphics[width=\textwidth]{env_pyEdit.eps}
+\includegraphics[width=\textwidth]{env_pyEdit.pdf}
 \caption{The pysimCoder environment}
 \label{Fig:envEdit}
 \end{figure}
@@ -2729,7 +2736,7 @@ Now we should obtain the diagram shown in figure~\ref{Fig:exa_step1}
 
 \begin{figure}[htbp]	% Step
 \centering
-\includegraphics[width=0.7\textwidth]{exa_step1.eps}
+\includegraphics[width=0.7\textwidth]{exa_step1.pdf}
 \caption{Result from the drag and drop operations}
 \label{Fig:exa_step1}
 \end{figure}
@@ -2749,7 +2756,7 @@ Figure~\ref{Fig:exa_step2} shows the new diagram.
 
 \begin{figure}[htbp]	% Step
 \centering
-\includegraphics[width=0.7\textwidth]{exa_step2.eps}
+\includegraphics[width=0.7\textwidth]{exa_step2.pdf}
 \caption{Result after parametrization}
 \label{Fig:exa_step2}
 \end{figure}
@@ -2815,7 +2822,7 @@ The first application (defBlocks) is used to generate the ``.xblk'' file, with t
 
 \begin{figure}[htbp]	% Step
 \centering
-\includegraphics[width=0.9\textwidth]{defBlocks.eps}
+\includegraphics[width=0.9\textwidth]{defBlocks.pdf}
 \caption{The ``defBlocks'' application}
 \label{Fig:defBlocks}
 \end{figure}
@@ -2830,7 +2837,8 @@ The parameters in the window represent:
 \item [Outputs]: number of the output ports
 \item [input settable]is a flag which indicates if the number of input ports can be changed or not
 \item [output settable]is a flag which indicates if the number of output ports can be changed or not
-\item [Bottom window] is a grid which contains the parameters of the block (Label+default value)
+\item [Bottom window] is a grid which contains the parameters of the block (Label+default value).
+\item [Help] contains an help about the block and the fields.
 \end{description}
 
 The ``Save'' or ``Save as'' operation generates the ``.xblk'' file. This file must be placed under ``resources/blocks/blocks''
@@ -2839,77 +2847,24 @@ The second step is to call the application ``xblk2Blk'' (see figure~\ref{Fig:xbl
 
 \begin{figure}[htbp]	% Step
 \centering
-\includegraphics[width=0.9\textwidth]{xblk2Blk.eps}
+\includegraphics[width=0.9\textwidth]{xblk2Blk.pdf}
 \caption{The ``xblk2Blk'' application}
 \label{Fig:xblk2Blk}
 \end{figure}
 
 After opening the ``.xblk'' file, it is possible to set a name and a type of each parameters of the block.
 
-These informations are used to generate the ``.py'' which can be modified and saved, the help file, incomplete (``.hlp'' extension``) and the `*.c* skeleton, which should be modified for the specific block tasks.
+These informations are used to generate the ``.py'' which can be modified and saved and the `*.c* skeleton, which should be modified for the specific block tasks.
 
-The ``.py'' and the ``.hlp'' files must be moved in the folder ``resources/blocks/rcpBlk'', the ``*.c* file must be edited and stored under ''CodeGen/devices``.
+The ``.py'' file must be moved in the folder ``resources/blocks/rcpBlk'', the ``*.c* file must be edited and stored under ''CodeGen/XXX/devices`` where ''XXX`` represents the specific target.
 
 \section{Special libraries and blocks}
 
 \subsection{The ''tab`` of the library}
 
-All the blocks are available in different ''tabs`` on the left of the library panel.
+All the blocks are available in different ''tabs`` on the left of the library panel. The ''Common`` tab is a special library that can be personalized from the user whit his more used blocks.
 
-\subsubsection{The common tab - Personalize the most used blocks}
-A special file ``common.blks'' is defined in the ``resources/block/block'' folder. This file contains a list of blocks, that the user can modify to have its own most used blocks. The blocks are shown in the library both in the ``common'' tab and in the specific tab.
-
-\subsubsection{The input tab}
-Different signals are available as input signals: Step, Pulse generator, Sinus signal, Const value. 
-
-The ``Ext data'' block, in particular, allows to get the signal values from a file (more input signals are possible). The signals are periodical repeated.
-
-\subsubsection{The output tab}
-Here the user can find different output blocks, for plotting, display or save signal values. The ``RT Plot'' block shows the signals in real time during the execution of the generated application.
-
-Another ``strange'' block is represented by the ``NULL'' block, which is used to collect signals from outputs that are not used in the simulation or in the real time application.
-
-\subsubsection{The linear tab}
-This tab contains the block representing dynamic systems. A dynamic system can be represented by a transfer function or by a state space representation, both in continous (LTI\_continous) and in discrete (LTI\_discrete) time.
-
-\subsubsection{The nonlinear tab}
-Non linearity are available as block in this tab. 3 particular blocks have been implemented:
-
-\begin{description}
-\item[Switch] switches from input 1 to input 2 depending on the value on input 3 and the compare condition given in the block parameters. The ``Persistent'' value disable the possibility to change back from one input to the other
-\item[Generic\_C\_Block] is used for specific functions not already implemented in the available list of blocks. It is possible to program these functions in C. The skeleton of the function can be generated using the ``gen\_pydev'' script.
-\item[FMU] FMI defines a standardized interface to be used in computer simulations to develop complex cyber-physical systems. Using this block it is possible to integrate in the block diagram FMI for Cosimulation impemented as FMU 2.0. At present it is not possible to use this block for FMI 1.0 and for FMU saved as ``model exchange''.
-\end{description}
-
-\subsubsection{The math tab}
-The blocks here implement some mathematical functions, linear and nonlinear.
-
-\subsubsection{The socket tab}
-The blocks here can be used to perform communication using UDP or UNIX sockets.
-
-\subsubsection{The can Faulhaber 3XXX tab}
-The blocks here impement the functions related to the MCDC 3002 S and the MCBL 3002 S motion controllers with can interface from Faulhaber.
-
-\subsubsection{The can Faulhaber 5XXX tab}
-The blocks here impement the functions related to the MC 5004, theMC 5005 and the MC 5010 with can interface from Faulhaber.
-
-\subsubsection{The can Maxon tab}
-The blocks here implement the functions related with the motion controllers (in particular the EPOS controllers) with can bus from Maxon Motor.
-
-\subsubsection{The can generic tab}
-Some generic can blocks are available here.
-
-\subsubsection{The COMEDI tab}
-Here the user can find blocks for the Linux control and measurement device interface.
-
-\subsubsection{The Raspberry tab}
-The pysimCoder application can generate code for the Raspberry PI platform. Here the user can find some particular blocks for specific functions (IMU platform, PWM etc.)
-
-\subsubsection{The Route tab}
-The MUX and DEMUX blocks in this tab are only defined for future works. \textbf{At present, thay should be not used!}
-
-\subsubsection{The Digilent tab}
-The blocks here can be used together with the Digilent Analog 2 USB oscilloscope.
+The application ''configLibs`` allow to choose the library that must be shown in the library panel.
 
 \section{The editor window}
 
@@ -2920,7 +2875,7 @@ figure~\ref{Fig:pysimCoder}.
 
 \begin{figure}[htbp]
  \centering
- \includegraphics[width=0.8\textwidth]{pyedit.eps}
+ \includegraphics[width=0.8\textwidth]{pyedit.pdf}
  \caption{The pysimCoder application}
  \label{Fig:pysimCoder}
  \end{figure}
@@ -2944,6 +2899,11 @@ with a double click tool
 \item [Clone block] to get a copy of the selected block
 \end{description}
 
+\subsection{Operations with the right mouse button on multiple selected blocks}
+
+Clocking with the right mouse button on a blocck between multiple selected blocks allows to generate a subsystem.
+
+
 \subsection{Operations with the right mouse button on a connection}
 
 Moving the mouse on a connection, change the pointer to a pointing hand and by 
@@ -2953,25 +2913,13 @@ commands:
 \begin{description}
 \item[Start connection] Insert a node and start a new connection
 \item[Delete connection] deletes the pointed connection
-\item [Insert node] inserts a new node on the connection. This is needed for 
-examples if we have to draw a new connection.
 \end{description}
 
-\subsection{Operations with the right mouse button on a node}
-
-Moving the mouse on a node, change the pointer to a cross and by 
-clicking with the right mouse button a popup menu is opened with the following 
-commands:
-
-\begin{description}
-\item[Delete node] deletes the node and the connections associated with this 
-node.
-\item [Bind node] eliminate the node without eliminate the connection.
-\end{description}
+\subsection{Behaviour of the left mouse button by drawing a connection}
+Clicking the left mouse button by drawing a connection starts a new segment of this connection.
 
 \subsection{Behaviour of the right mouse button by drawing a connection}
-Clicking the right mouse button by drawing a connection, put a new node in the 
-mouse position and exit the drawing mode.
+Clicking the right mouse button by drawing a connection abort the connection.
 
 \section{Basic editor operations}
 
@@ -2979,60 +2927,37 @@ mouse position and exit the drawing mode.
 Get a block from a library and drag it into the main window.
 
 \subsection{Connecting blocks}
+
+It is possible to connect blocks with usual operations:
+
 \begin{itemize}
-\item Move to the output port of a block or to a node.
-\item Click and release the left button of the mouse.
-\item Move the mouse to draw the connection.
-\item Click again the left mouse on an input port of a block to finish the 
-connection or click the mouse to obtain a ''node`` and to continue to draw the 
-connection.
+\item Starting from an output port of a block and moving to an input port of another block. Mouse button can be released or not during this operation.
+\item Starting from an input port of a block and moving to a connection or an aoutput port of a block.
+\item Starting from a connection (after clicking with the right mouse button and choosing ''Add connection``),
 \end{itemize}
 
-\subsection{Inserting a node}
+\subsection{Deleting a block}
 \begin{itemize}
-\item Move to a connection and click the right mouse button
-\item Select the ''insert node`` menu.
-\end{itemize}
-
-If a new ''node`` is needed into a connection simply click on it with the right 
-mouse button.
-
-\subsection{Deleting a block or a node}
-\begin{itemize}
-\item Move to a block or node and click with the right mouse button.
+\item Move to a block and click with the right mouse button.
 \item Choose the submenu ''delete``
 \end{itemize}
 
-\section{Remove a node}
-\begin{itemize}
-\item Move to the node.
-\item Click with the right mouse button on the node. 
-\item Choose the submenu ''Bind node`` The connection is maintained 
-but the node is cleared.
-\end{itemize}
+It is also possible to select a block and use the ''DEL`` key.
 
 \chapter{Simulation and Code generation}
 
-Each element of a block diagram is defined with three or four functions:
+Each element of a block diagram is defined with three (or in special cases four) functions:
 
 \begin{description}
-\item [The interface function] that describes how the block must be drawn in 
-the block diagram
-\item [The Implementation function] that contains the code  to be executed to 
-perform the tasks related with this block.
-\item The translation of the block into the RCPblk class described in the 
-RCPblk.py module
-\item A dlg function to implement a special dialog box for the block parameters 
-(only if required)
+\item [The interface function] that describes how the block must be drawn in the block diagram
+\item [The Implementation function] that contains the code  to be executed to perform the tasks related with this block.
+\item The translation of the block into the RCPblk class described in the RCPblk.py module.
+\item If required, a particular dlg function to implement a special dialog box for the block parameters.
 \end{description}
-
-In addition we need to know all the nodes connected to the inputs and to the 
-outputs of each block.
 
 \section{Interface functions}
 
-Each block is defined into a file with extension ``.xblk'', stored in 
-the ``resources/blocks/blocks'' folder.
+Each block is defined into a file with extension ``.xblk'', stored in the ``resources/blocks/blocks'' folder.
 The file is defined as a Python dictionary:
 
 \scriptsize
