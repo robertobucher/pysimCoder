@@ -3,7 +3,6 @@ linear/LTI_continous.xblk
 linear/LTI_discrete.xblk
 output/Plot.xblk
 output/streamPlot.xblk
+output/streamLed.xblk
 input/Step.xblk
-math/Sub.xblk
-math/Sum.xblk
-output/toFile.xblk
+Math/Sub.xblk

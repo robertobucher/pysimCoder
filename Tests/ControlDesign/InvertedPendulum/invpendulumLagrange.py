@@ -2,7 +2,7 @@ from sympy import symbols, Matrix, pi, cos, sin
 from sympy.physics.mechanics import *
 import numpy as np
 
-# Modeling the system with Kane method
+# Modeling the system with Lagrange method
 
 # Signals
 x, th  = dynamicsymbols('x th')

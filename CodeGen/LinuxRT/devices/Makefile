@@ -39,7 +39,8 @@ DBG = -g
 CC ?= cc
 AR ?= ar
 OBJEX = $(SRC:.c=.o)
-DEFINES = -D PLOTTER_SCRIPT=\"$(CWD)/scope.py\"
+DEFINES_SCP = -D PLOTTER_SCRIPT=\"$(CWD)/scope.py\"
+DEFINES_LED = -D LED_SCRIPT=\"$(CWD)/led.py\"
 CC_FLAGS = -c $(DBG) $(INCLUDE)
 ifeq ($(SHV),1)
 CC_FLAGS += -I$(COMMON_DIR)/shv/include
@@ -47,7 +48,8 @@ CC_FLAGS += -I$(EXT_LIBS)/libshv/libshvchainpack/c
 CC_FLAGS += -I$(EXT_LIBS)/ulut
 endif
 CC_FLAGS += -D CG_WITH_ENV_HOST_ADDR
-CC_FLAGS_SCP = -c $(DBG) $(INCLUDE)  $(DEFINES)
+CC_FLAGS_SCP = -c $(DBG) $(INCLUDE)  $(DEFINES_SCP)
+CC_FLAGS_LED = -c $(DBG) $(INCLUDE)  $(DEFINES_LED)
 CC_FLAGS_FMU = -c $(DBG) $(INCLUDE) -Wall -DFMI_COSIMULATION \
                              -DSTANDALONE_XML_PARSER -DLIBXML_STATIC \
                               -I$(FMUDIR)/fmuinc/include -I$(FMUDIR)/fmuinc/parser -I$(FMUDIR)/fmuinc
@@ -67,6 +69,9 @@ SRC=$(filter-out $(EXCLUDE),$(SRCALL))
 
 scope.o: scope.c
 	$(CC) $(CC_FLAGS_SCP) $<
+
+led.o: led.c
+	$(CC) $(CC_FLAGS_LED) $<
 
 FMUinterface.o: FMUinterface.c
 	$(CC) $(CC_FLAGS_FMU) $<

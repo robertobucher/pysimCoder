@@ -26,7 +26,8 @@ default:
 	$(MAKE) -C $(KDIR) $(SUBD) modules
 
 clean:
-	rm -f *.mod.* *.o *.ko
+	rm -f *.mod.* *.o *.ko .* *.mod Module.symvers  modules.order 
+
 
 install:
 	cp nrt.ko $(MDIR)
