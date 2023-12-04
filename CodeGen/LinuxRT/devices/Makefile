@@ -44,7 +44,7 @@ DEFINES_LED = -D LED_SCRIPT=\"$(CWD)/led.py\"
 CC_FLAGS = -c $(DBG) $(INCLUDE)
 ifeq ($(SHV),1)
 CC_FLAGS += -I$(COMMON_DIR)/shv/include
-CC_FLAGS += -I$(EXT_LIBS)/libshv/libshvchainpack/c
+CC_FLAGS += -I$(EXT_LIBS)/libshv/libshvchainpack/c/include
 CC_FLAGS += -I$(EXT_LIBS)/ulut
 endif
 CC_FLAGS += -D CG_WITH_ENV_HOST_ADDR
