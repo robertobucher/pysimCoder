@@ -4,7 +4,7 @@
   "ip": 2,
   "op": 1,
   "stin": 1,
-  "stout": 1,
+  "stout": 0,
   "icon": "PROD",
   "params": "prodBlk",
   "help": "This block multiply the two input signals.\n"
