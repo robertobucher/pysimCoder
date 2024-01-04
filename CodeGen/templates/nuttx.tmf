@@ -11,7 +11,7 @@ COMMON_INCDIR = $(PYCODEGEN)/Common/include
 
 SHV_INC = $(PYCODEGEN)/Common/shv/include
 ULUT_INC = $(PYSUPSICTRL)/ExtLibs/ulut
-EXT_SHV_INC = $(PYSUPSICTRL)/ExtLibs//libshv/libshvchainpack/c
+EXT_SHV_INC = $(PYSUPSICTRL)/ExtLibs//libshv/libshvchainpack/c/include/shv/chainpack
 
 RM = rm -f
 FILES_TO_CLEAN = *.o $(MODEL) $(MODEL).elf $(MAIN)-builtintab.c
