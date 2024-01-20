@@ -30,8 +30,8 @@
 #include <math.h>
 #include <errno.h>
 
-#include <cchainpack.h>
-#include <ccpon.h>
+#include <shv/chainpack/cchainpack.h>
+#include <shv/chainpack/ccpon.h>
 
 #include "ulut/ul_utdefs.h"
 

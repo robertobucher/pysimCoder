@@ -3,7 +3,7 @@
 
 #include <ulut/ul_gavlcust.h>
 #include <ulut/ul_gsacust.h>
-#include <cchainpack.h>
+#include <shv/chainpack/cchainpack.h>
 #include <string.h>
 
 #include "shv_com.h"
