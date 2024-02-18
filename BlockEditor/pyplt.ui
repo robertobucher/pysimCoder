@@ -55,7 +55,7 @@
    <property name="geometry">
     <rect>
      <x>350</x>
-     <y>180</y>
+     <y>210</y>
      <width>111</width>
      <height>16</height>
     </rect>
@@ -103,7 +103,7 @@
    <property name="geometry">
     <rect>
      <x>490</x>
-     <y>170</y>
+     <y>200</y>
      <width>91</width>
      <height>31</height>
     </rect>
@@ -634,6 +634,22 @@
    </property>
    <property name="text">
     <string>data.txt</string>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="ckTimeEnabled">
+   <property name="geometry">
+    <rect>
+     <x>380</x>
+     <y>170</y>
+     <width>181</width>
+     <height>24</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Time base is passed</string>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
    </property>
   </widget>
  </widget>

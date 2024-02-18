@@ -26,7 +26,7 @@
 #define DOUBLE_SIZE sizeof(double)
 
 #define PYCONTROL_PATH_ENV_VAR "PYSUPSICTRL"
-#define PLOTTER_COMMAND_ARGV_NUM 4
+#define PLOTTER_COMMAND_ARGV_NUM 5
 /* when compiling define PLOTTER_SCRIPT */
 
 struct _scope {
@@ -40,6 +40,8 @@ struct _scope {
 static int scope_init(python_block * blk);
 static void scope_out(python_block * blk);
 static void scope_end(python_block * blk);
+
+double get_Tsamp();
 
 void scope(int flag, python_block * blk) 
 {
@@ -72,7 +74,7 @@ static char * unsigned_to_str(unsigned u)
   return str;
 }
 
-static void start_plotter(unsigned nin, int sock, const char * sock_name)
+static void start_plotter(unsigned nin, int sock, int timed, const char * sock_name)
 {
   /* fork off process that will NOT run as rt */
   pid_t pid = fork();
@@ -87,6 +89,10 @@ static void start_plotter(unsigned nin, int sock, const char * sock_name)
     }
     /* start plotter with sock_name and packet num as args */
     char * packet_num_str = unsigned_to_str(PACKET_NUM);
+    char dtime[10];
+    if(timed) sprintf(dtime, "%9.6lf", get_Tsamp());
+    else        sprintf(dtime, "1");
+	    
     if (!packet_num_str) {
       unlink(sock_name);
       fprintf(stderr, "mem error in start_plotter\n");
@@ -104,6 +110,7 @@ static void start_plotter(unsigned nin, int sock, const char * sock_name)
 							(char *)sock_name,
 							packet_num_str,
 							nin_str,
+							dtime,
 							0,
     };
     int execv_ret = execv(PLOTTER_SCRIPT, cargv);
@@ -195,7 +202,7 @@ static int scope_init(python_block * blk)
   }
 
   /* try to start plotter process */
-  start_plotter(blk->nin, sock, sc->sock_name);
+  start_plotter(blk->nin, sock, intPar[0], sc->sock_name);
 
   /* accept (blocking call) plotter */
   int conn = accept(sock, 0, 0);
@@ -209,7 +216,7 @@ static int scope_init(python_block * blk)
   }
   close(sock);
   sc->sock = conn;
-  intPar[1] = 0;	
+  intPar[2] = 0;	
 }
 
 static void scope_out(python_block * blk)
@@ -224,7 +231,7 @@ static void scope_out(python_block * blk)
   unsigned nin = blk->nin;
   /* write values to buffer */
 	
-  if((intPar[1] % intPar[0]) == 0){
+  if((intPar[2] % intPar[1]) == 0){
     for (unsigned i = 0; nin > i; i++)
       memcpy((void *)(buff + (sc->buff_pos + i) * DOUBLE_SIZE),
 	     blk->u[i], DOUBLE_SIZE);
@@ -245,7 +252,7 @@ static void scope_out(python_block * blk)
       sc->buff_pos = 0;
     }
   }
-  intPar[1] = intPar[1]+1;
+  intPar[2] = intPar[2]+1;
 }
 
 static void scope_end(python_block * blk)

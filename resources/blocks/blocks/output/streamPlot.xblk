@@ -6,6 +6,6 @@
   "stin": 1,
   "stout": 0,
   "icon": "PLOT",
-  "params": "scopeStream|Decimation:1:int",
+  "params": "scopeStream|Sample(0) or time(1) based:1:int|Decimation:1:int",
   "help": "This block allows to display in real time the input signals.\n\n"
 }

@@ -62,26 +62,10 @@ class ser_rcvServer(threading.Thread):
         L = 8*self.N
         
         while self.mainw.ServerActive==1:
-            self.mainw.timebase.append(T);
-            T+=1
-            
-            if len(self.mainw.timebase) > self.mainw.Hist:
-                self.mainw.timebase = self.mainw.timebase[-self.mainw.Hist:]
-                
             val = self.port.read(L)
             data = self.st.unpack(val)
-
-            if self.mainw.ckSaveData.isChecked():
-                self.mainw.saveData(data)
-
-            for n in range(0,self.N):
-                try:
-                    val = float(data[n])
-                except:
-                    val = 0.0
-                self.mainw.x[n].append(val)
-                if len(self.mainw.x[n]) > self.mainw.Hist:
-                    self.mainw.x[n] = self.mainw.x[n][-self.mainw.Hist:]
+            
+            self.mainw.setData(data)
 
 class ser_rcvServer4bytes(threading.Thread):
     def __init__(self, mainw):
@@ -103,27 +87,10 @@ class ser_rcvServer4bytes(threading.Thread):
         L = 4*self.N
         
         while self.mainw.ServerActive==1:
-            self.mainw.timebase.append(T);
-            T+=1
-            
-            if len(self.mainw.timebase) > self.mainw.Hist:
-                self.mainw.timebase = self.mainw.timebase[-self.mainw.Hist:]
-                
             val = self.port.read(L)
             data = self.st.unpack(val)
             
-            if self.mainw.ckSaveData.isChecked():
-                self.mainw.saveData(data)
-            
-            for n in range(0,self.N):
-                try:
-                    val = float(data[n])
-                except:
-                    val = 0.0
-                self.mainw.x[n].append(val)
-                if len(self.mainw.x[n]) > self.mainw.Hist:
-                    self.mainw.x[n] = self.mainw.x[n][-self.mainw.Hist:]
-
+            self.mainw.setData(data)
 class tcp_rcvServer(threading.Thread):
     def __init__(self, mainw):
         threading.Thread.__init__(self)
@@ -163,27 +130,10 @@ class tcp_rcvServer(threading.Thread):
                 if len(buf) < L:
                     continue
 
-                self.mainw.timebase.append(T)
-                T+=1
-
-                if len(self.mainw.timebase) > self.mainw.Hist:
-                    self.mainw.timebase = self.mainw.timebase[-self.mainw.Hist:]
-
                 data = self.st.unpack(buf)
                 buf = bytearray()
+                self.mainw.setData(data)
             
-                if self.mainw.ckSaveData.isChecked():
-                    self.mainw.saveData(data)
-            
-                for n in range(0,self.N):
-                    try:
-                        val = float(data[n])
-                    except:
-                        val = 0.0
-                    self.mainw.x[n].append(val)
-                    if len(self.mainw.x[n]) > self.mainw.Hist:
-                        self.mainw.x[n] = self.mainw.x[n][-self.mainw.Hist:]
-
 class udp_rcvServer(threading.Thread):
     def __init__(self, mainw):
         threading.Thread.__init__(self)
@@ -210,32 +160,14 @@ class udp_rcvServer(threading.Thread):
         
         while self.mainw.ServerActive==1:
             while True:
-                self.mainw.timebase.append(T)
-                T+=1
-
-                if len(self.mainw.timebase) > self.mainw.Hist:
-                    self.mainw.timebase = self.mainw.timebase[-self.mainw.Hist:]
-
-                buf, addr = self.port.recvfrom(L)
-                
+                buf, addr = self.port.recvfrom(L)                
                 if (len(buf) == 0):
                     conn.close()
                     break
 
                 data = self.st.unpack(buf)
+                self.mainw.setData(data)
             
-                if self.mainw.ckSaveData.isChecked():
-                    self.mainw.saveData(data)
-            
-                for n in range(0,self.N):
-                    try:
-                        val = float(data[n])
-                    except:
-                        val = 0.0
-                    self.mainw.x[n].append(val)
-                    if len(self.mainw.x[n]) > self.mainw.Hist:
-                        self.mainw.x[n] = self.mainw.x[n][-self.mainw.Hist:]
-
 class dataPlot(QwtPlot):
     def __init__(self, N):
         QwtPlot.__init__(self)
@@ -290,6 +222,31 @@ class MainWindow(QMainWindow, form_class):
             self.edYmin.setEnabled(True)
             self.edYmax.setEnabled(True)
  
+    def setData(self, data):
+        if self.ckSaveData.isChecked():
+            self.mainw.saveData(data)
+            
+        if self.ckTimeEnabled.isChecked():
+            initN = 1
+            self.x = np.roll(self.x,-1)
+            self.x[-1] = data[0]
+        else:
+            initN = 0
+            Xe = self.x[-1]+1
+            self.x = np.roll(self.x, -1)
+            self.x[-1] = Xe
+        
+        for n in range(initN,self.N):
+            try:
+                val = float(data[n])
+            except:
+                val = 0.0
+            
+            nS = n-initN
+            self.y[nS] = np.roll(self.y[nS],-1)
+            self.y[nS][-1] = data[n]
+            self.c[nS].setSamples(self.x,self.y[nS])
+        
     def setSaveData(self):
         if self.ckSaveData.isChecked():
             filename = QFileDialog.getSaveFileName(self, 'Save',
@@ -329,7 +286,16 @@ class MainWindow(QMainWindow, form_class):
     def pbServerClicked(self, porttype):
         if self.ServerActive == 0:
             self.N = self.sbNsig.value()
+            self.NSig = self.N
             self.Hist = int(self.edHist.text().__str__())
+            self.plot = dataPlot(self.N)
+            if self.ckTimeEnabled.isChecked():
+                self.x = np.arange(-self.Hist,0)*0.01
+                self.N +=1
+            else:
+                self.x = np.arange(-self.Hist,0)
+            
+            self.y = np.zeros((self.NSig, self.Hist))
             
             if porttype == SER:
                 self.pbStart_ser.setText('Stop Server')
@@ -341,20 +307,17 @@ class MainWindow(QMainWindow, form_class):
                 self.pbStart_udp.setText('Stop Server')
             self.ServerActive = 1
             
-            self.plot = dataPlot(self.N)
+            self.plot = dataPlot(self.NSig)
             self.plot.resize(800, 500)
             self.plot.show()
             
-            self.timebase = []
-            self.x = []
             self.c = []
-            for n in range(0, self.N):
-                self.x.append([])
+            for n in range(0, self.NSig):
                 cv = QwtPlotCurve()
                 pen = QPen(QColor(self.colors[n % 8]))
                 pen.setWidth(WIDTH)
                 cv.setPen(pen)
-                cv.setSamples([],[])
+                cv.setSamples(self.x,self.y[n])
                 self.c.append(cv)
                 self.c[n].attach(self.plot)
                 
@@ -372,7 +335,7 @@ class MainWindow(QMainWindow, form_class):
             else:
                  self.th = udp_rcvServer(self)
                
-            self.th.start()
+            self.th.start()  
         else:
             if porttype == SER:
                 self.pbStart_ser.setText('Start Server')
@@ -387,19 +350,7 @@ class MainWindow(QMainWindow, form_class):
         self.timer.stop()
 
     def pltRefresh(self):
-        if len(self.x[0]) > self.Hist:
-            for n in range(0,self.N):
-                self.x[n] = self.x[n][-self.Hist:]
-            self.timebase = self.timebase[-self.Hist:]
-        if(len(self.timebase)>2):
-            self.plot.setAxisScale(QwtPlot.xBottom,self.timebase[0],self.timebase[-1])
-        
-        for n in range(0,self.N):
-            try:
-                t = self.timebase[0:len(self.x[n])]
-                self.c[n].setSamples(t,self.x[n])
-            except:
-                pass
+        self.plot.setAxisScale(QwtPlot.xBottom, self.x[0], self.x[-1]);
         if self.autoAxis:
             self.plot.setAxisAutoScale(QwtPlot.yLeft)
             self.plot.replot()
