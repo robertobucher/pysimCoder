@@ -5,10 +5,10 @@ import os
 
 try:
     from PyQt5.Qwt import QwtPlot, QwtPlotCurve, QwtPlotGrid
+    
 except:
     print("Warning: PyQt5.Qwt not found, trying qwt")
     from qwt import QwtPlot, QwtPlotCurve, QwtPlotGrid
-    pass
 
 try:
     from PyQt5 import QtGui, QtCore, uic
@@ -25,7 +25,6 @@ except:
 
 import time
 import threading
-import os
 import numpy as np
 import struct
 import serial as ser
@@ -155,19 +154,21 @@ class udp_rcvServer(threading.Thread):
             ret = QMessageBox.warning(self.mainw, '', 'Port already in use, please close it',
                                       QMessageBox.Ok, QMessageBox.Ok)
             return
-        T = 0.0
         L = 8*self.N
-        
         while self.mainw.ServerActive==1:
             while True:
-                buf, addr = self.port.recvfrom(L)                
+                try:
+                    buf, addr = self.port.recvfrom(L)
+#                     info = 'recvfrom ' + len(buf).__str__()
+                except:
+                    pass
+                                    
                 if (len(buf) == 0):
                     conn.close()
                     break
-
                 data = self.st.unpack(buf)
                 self.mainw.setData(data)
-            
+           
 class dataPlot(QwtPlot):
     def __init__(self, N):
         QwtPlot.__init__(self)
@@ -182,7 +183,8 @@ class MainWindow(QMainWindow, form_class):
     def __init__(self):
         QMainWindow.__init__(self)
         self.setupUi(self)
-          
+        self.setFixedSize(675, 369)
+        
         self.connect_widget()
         self.port = None
   
@@ -224,28 +226,27 @@ class MainWindow(QMainWindow, form_class):
  
     def setData(self, data):
         if self.ckSaveData.isChecked():
-            self.mainw.saveData(data)
-            
+            self.saveData(data)
+        
         if self.ckTimeEnabled.isChecked():
-            initN = 1
             self.x = np.roll(self.x,-1)
             self.x[-1] = data[0]
+            dN = 1
+            
         else:
-            initN = 0
             Xe = self.x[-1]+1
             self.x = np.roll(self.x, -1)
             self.x[-1] = Xe
-        
-        for n in range(initN,self.N):
+            dN = 0
+            
+        for n in range(0, self.NSig):
             try:
                 val = float(data[n])
             except:
                 val = 0.0
-            
-            nS = n-initN
-            self.y[nS] = np.roll(self.y[nS],-1)
-            self.y[nS][-1] = data[n]
-            self.c[nS].setSamples(self.x,self.y[nS])
+                
+            self.y[n] = np.roll(self.y[n],-1)
+            self.y[n][-1] = data[n+dN]
         
     def setSaveData(self):
         if self.ckSaveData.isChecked():
@@ -287,7 +288,7 @@ class MainWindow(QMainWindow, form_class):
         if self.ServerActive == 0:
             self.N = self.sbNsig.value()
             self.NSig = self.N
-            self.Hist = int(self.edHist.text().__str__())
+            self.Hist = int(self.edHist.text())
             self.plot = dataPlot(self.N)
             if self.ckTimeEnabled.isChecked():
                 self.x = np.arange(-self.Hist,0)*0.01
@@ -350,13 +351,14 @@ class MainWindow(QMainWindow, form_class):
         self.timer.stop()
 
     def pltRefresh(self):
-        self.plot.setAxisScale(QwtPlot.xBottom, self.x[0], self.x[-1]);
+        self.plot.setAxisScale(QwtPlot.xBottom, self.x[0], self.x[-1]);            
         if self.autoAxis:
             self.plot.setAxisAutoScale(QwtPlot.yLeft)
-            self.plot.replot()
-        else:
-            self.plot.setAxisScale(QwtPlot.yLeft, self.ymin, self.ymax)
-            self.plot.replot()
+            
+        for n in range(0, self.NSig):
+            self.c[n].setSamples(self.x,self.y[n])            
+            
+        self.plot.replot()
 
     def closeEvent(self,event):          
         try:
