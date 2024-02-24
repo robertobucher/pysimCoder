@@ -159,7 +159,6 @@ class udp_rcvServer(threading.Thread):
             while True:
                 try:
                     buf, addr = self.port.recvfrom(L)
-#                     info = 'recvfrom ' + len(buf).__str__()
                 except:
                     pass
                                     
@@ -295,6 +294,7 @@ class MainWindow(QMainWindow, form_class):
                 self.N +=1
             else:
                 self.x = np.arange(-self.Hist,0)
+            self.ckTimeEnabled.setEnabled(False)  
             
             self.y = np.zeros((self.NSig, self.Hist))
             
@@ -354,6 +354,8 @@ class MainWindow(QMainWindow, form_class):
         self.plot.setAxisScale(QwtPlot.xBottom, self.x[0], self.x[-1]);            
         if self.autoAxis:
             self.plot.setAxisAutoScale(QwtPlot.yLeft)
+        else:
+             self.plot.setAxisScale(QwtPlot.yLeft, self.ymin, self.ymax)
             
         for n in range(0, self.NSig):
             self.c[n].setSamples(self.x,self.y[n])            
