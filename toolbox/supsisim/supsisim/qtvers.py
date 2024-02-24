@@ -1,4 +1,5 @@
 try:
+    from PyQt6 import uic
     from PyQt6.QtWidgets import (
         QApplication,
         QCheckBox,
@@ -40,6 +41,7 @@ try:
     
     from PyQt6.QtCore import (
         QEvent,
+        QTimer,
         QFileInfo,
         QMimeData,
         QObject,
@@ -58,6 +60,7 @@ try:
     )
     
 except:
+    from PyQt5 import uic
     from PyQt5.QtWidgets import (
         QAction,
         QApplication,
@@ -99,6 +102,7 @@ except:
     
     from PyQt5.QtCore import (
         QEvent,
+        QTimer,
         QFileInfo,
         QMimeData,
         QObject,
