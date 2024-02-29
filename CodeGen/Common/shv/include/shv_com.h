@@ -1,7 +1,7 @@
 #ifndef SHV_FUNCTIONS_H
 #define SHV_FUNCTIONS_H
 
-#include <cchainpack.h>
+#include <shv/chainpack/cchainpack.h>
 
 #define SHV_BUF_LEN  1024
 #define SHV_MET_LEN  16

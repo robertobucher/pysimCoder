@@ -3,7 +3,7 @@
 
 #include <ulut/ul_gavlcust.h>
 #include <ulut/ul_gsacust.h>
-#include <cchainpack.h>
+#include <shv/chainpack/cchainpack.h>
 #include <string.h>
 
 extern const shv_dmap_t shv_blk_dmap;
