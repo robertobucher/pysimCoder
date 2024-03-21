@@ -1,0 +1,11 @@
+{
+  "lib": "linux_mz_apo",
+  "name": "Phase3Motor_mz_apo_3pmdrv1",
+  "ip": 6,
+  "op": 7,
+  "stin": 0,
+  "stout": 0,
+  "icon": "MOT",
+  "params": "mz_apo_3pmdrv1",
+  "help": "Block for controlling 3-Phase PMSM Motor on MZ Apo\n\n Inputs:\nu[0] to u[2] are PWM values, u[3] to u[5] are PWM enable signals \n\n  Outputs:\ny[0] to y[2] are currents from ADC (12 bit, zero in the middle, uncalibrated)\nu[3] is IRC position, u[4] is IRC idx and u[5] is IRC index occur\nu[6] is HAL sector."
+}
