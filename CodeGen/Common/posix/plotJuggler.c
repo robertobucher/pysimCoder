@@ -23,6 +23,7 @@
 #include<arpa/inet.h>
 #include <netdb.h>
 #include<sys/socket.h>
+#include <string.h>
 
 double get_run_time(void);
 
@@ -77,17 +78,21 @@ static void inout(python_block *block)
 
   int s = intPar[1];
   double t = get_run_time();
+  char strVal[12];
   
   for(i=0;i<block->nin;i++){
     u = block->u[i];
     data[i] = u[0];
   }
+
   sprintf(databuffer, "{\"ts\":%.3lf, \"y\":[", t);
   for(i=0;i<block->nin-1;i++){
-    sprintf(databuffer, "%s %.3lf, ", databuffer, data[i]);
+    sprintf(strVal,"%.3lf, ", data[i]);
+    strcat(databuffer, strVal);
   }
-  sprintf(databuffer, "%s %.3lf]}", databuffer, data[i]);
-  /* printf("%d %s\n",  sizeof(databuffer), databuffer); */
+  sprintf(strVal,"%.3lf]}", data[i]);
+  strcat(databuffer, strVal);
+  /* printf("%s\n", databuffer); */
   
   sendto(s, databuffer, sizeof(databuffer) , 0 , (struct sockaddr *) block->ptrPar, sizeof(struct sockaddr_in));
 }
