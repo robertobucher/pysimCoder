@@ -1,6 +1,6 @@
 
 from supsisim.RCPblk import RCPblk
-from scipy import size
+from numpy import size
 
 def help_HeatShield_temperature(pin, pout, ADCREF, AREF, REF_TEMP, NTC_RES, VD_RES, VD_REF, NTC_BETA, ABSZERO):
     """

@@ -1,6 +1,6 @@
 import numpy as np
 from supsisim.RCPblk import RCPblk
-from scipy import size
+from numpy import size
 
 def nuttx_PWMBlk(pin, port, ch, freq, umin, umax):
     """

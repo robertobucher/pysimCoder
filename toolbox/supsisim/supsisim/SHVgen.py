@@ -11,7 +11,7 @@ The following commands are provided:
   genSHVend      - Provide call for tree destruction
 """
 
-from scipy import size
+from numpy import size
 from os import environ
 import copy
 

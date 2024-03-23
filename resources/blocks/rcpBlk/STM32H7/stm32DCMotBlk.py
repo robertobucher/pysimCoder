@@ -1,6 +1,6 @@
 
 from supsisim.RCPblk import RCPblk
-from scipy import size
+from numpy import size
 
 def stm32DCMotBlk(pin, pwmCh, dir1Port, dir1Ch, dir2Port, dir2Ch, umin, umax):
     """

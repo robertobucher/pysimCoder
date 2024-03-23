@@ -110,7 +110,7 @@ class MainWindow(QMainWindow, form_class):
             callingFun += self.gridLayout.itemAtPosition(n,2).widget().text() + ', '
         callingFun = callingFun.rstrip(', ') + ')'
         fun   = 'from supsisim.RCPblk import RCPblk\n'
-        fun += 'from scipy import size\n\n'
+        fun += 'from numpy import size\n\n'
         
         fun += 'def ' + callingFun + ':\n'
             

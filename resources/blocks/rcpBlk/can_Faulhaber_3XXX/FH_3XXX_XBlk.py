@@ -1,5 +1,5 @@
 from supsisim.RCPblk import RCPblk
-from scipy import size
+from numpy import size
 
 def FH_3XXX_XBlk(pin, candev, ID):
     """

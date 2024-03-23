@@ -15,8 +15,7 @@ The following commands are provided:
   sch2blks       - Generate block list fron schematic
   
 """
-from scipy import mat, size, array, zeros
-from numpy import  nonzero, ones
+from numpy import  nonzero, ones, mat, size, array, zeros
 from os import environ
 import copy
 import sys

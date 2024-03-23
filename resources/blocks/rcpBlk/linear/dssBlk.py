@@ -1,7 +1,6 @@
 from supsisim.RCPblk import RCPblk
 from control import tf2ss, TransferFunction
-from scipy import mat, shape, size, zeros
-from numpy import reshape, hstack
+from numpy import reshape, hstack, mat, shape, size, zeros
 
 def dssBlk(pin,pout,sys,X0=[]):
     """

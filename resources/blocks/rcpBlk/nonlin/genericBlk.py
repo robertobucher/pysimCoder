@@ -1,5 +1,5 @@
 from supsisim.RCPblk import RCPblk
-from scipy import size
+from numpy import size
 
 def genericBlk(pin, pout, nx, uy, rP, iP, strP, fname):
     """

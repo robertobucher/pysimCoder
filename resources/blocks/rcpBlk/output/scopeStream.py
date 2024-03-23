@@ -1,5 +1,5 @@
 from supsisim.RCPblk import RCPblk
-from scipy import size
+from numpy import size
 
 def scopeStream(pin, timed=1, decim=1):
     """Create an interactive scope."""

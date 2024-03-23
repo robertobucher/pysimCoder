@@ -1,5 +1,5 @@
 from supsisim.RCPblk import RCPblk
-from scipy import size
+from numpy import size
 
 def loggerBlk(pin, log_file):
     """Wrtie pin to log_file."""
