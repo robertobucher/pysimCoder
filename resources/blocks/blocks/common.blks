@@ -2,6 +2,7 @@ linear/Gain.xblk
 linear/LTI_continous.xblk
 linear/LTI_discrete.xblk
 output/Plot.xblk
+output/PlotJuggler.xblk
 output/streamPlot.xblk
 output/streamLed.xblk
 input/Step.xblk
