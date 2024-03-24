@@ -1,6 +1,6 @@
 
 from supsisim.RCPblk import RCPblk
-from scipy import size
+from numpy import size
 
 def pi_ADBlk(pout, dev, ch, vref):
     """

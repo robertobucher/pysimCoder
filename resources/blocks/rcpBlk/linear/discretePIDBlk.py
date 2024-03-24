@@ -1,5 +1,5 @@
 from supsisim.RCPblk import RCPblk
-from scipy import size
+from numpy import size
 
 def discretePIDBlk(pin, pout, Kp, Ki, Kd, min_val, max_val):
     """

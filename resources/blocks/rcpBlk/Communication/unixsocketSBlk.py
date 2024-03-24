@@ -1,5 +1,5 @@
 from supsisim.RCPblk import RCPblk
-from scipy import size, zeros
+from numpy import size, zeros
 
 def unixsocketSBlk(pout, sockname, defvals):
     """

@@ -1,5 +1,5 @@
 from supsisim.RCPblk import RCPblk
-from scipy import size
+from numpy import size
 
 def can_sdo_recvBlk(pout, candev, ID, index, subindex, K):
     """

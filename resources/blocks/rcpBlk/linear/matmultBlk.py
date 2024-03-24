@@ -1,7 +1,6 @@
 from supsisim.RCPblk import RCPblk
 from control import tf2ss, TransferFunction
-from scipy import shape, size, mat
-from numpy import reshape
+from numpy import reshape, shape, size, mat
 
 def matmultBlk(pin, pout, Gains):
     """

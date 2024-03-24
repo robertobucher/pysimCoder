@@ -1,5 +1,5 @@
 from supsisim.RCPblk import RCPblk
-from scipy import size
+from numpy import size
 
 def maxon_MotBlk(pin, candev, ID, propGain, intGain):
     """

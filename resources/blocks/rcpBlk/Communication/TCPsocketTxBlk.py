@@ -1,6 +1,6 @@
 
 from supsisim.RCPblk import RCPblk
-from scipy import size
+from numpy import size
 
 # def TCPsocketTxRxBlk(pin, pout, IP, port):
 def TCPsocketTxRxBlk(*args):

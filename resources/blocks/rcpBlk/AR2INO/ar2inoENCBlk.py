@@ -1,6 +1,6 @@
 
 from supsisim.RCPblk import RCPblk
-from scipy import size
+from numpy import size
 
 def ar2inoENCBlk(pout, channel, res, reset):
     """

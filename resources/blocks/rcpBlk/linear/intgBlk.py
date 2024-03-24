@@ -1,5 +1,5 @@
 from supsisim.RCPblk import RCPblk
-from scipy import size
+from numpy import size
 
 def intgBlk(pin,pout,X0=0.0):
     """ 

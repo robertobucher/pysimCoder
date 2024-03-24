@@ -1,6 +1,6 @@
 
 from supsisim.RCPblk import RCPblk
-from scipy import size
+from numpy import size
 
 def mz_apo_ENCBlk(pout, channel, init_val):
     """
