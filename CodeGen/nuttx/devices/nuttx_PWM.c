@@ -20,6 +20,7 @@
 #include <commonFun.h>
 #include <nuttx/config.h>
 
+#include <string.h>
 #include <sys/ioctl.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -133,6 +134,7 @@ static void inout(python_block *block)
   double *val;
   int ret;
 
+  memset(&info, 0, sizeof(info));
   info.frequency = realPar[0];
 
 #ifdef CONFIG_PWM_MULTICHAN
@@ -142,6 +144,9 @@ static void inout(python_block *block)
     {
       info.channels[i].channel = 0;
       info.channels[i].duty = 0;
+    #ifdef PWM_CPOL_HIGH
+      info.channels[i].cpol = PWM_CPOL_HIGH;
+    #endif
     }
 
   if (block->nin < CONFIG_PWM_NCHANNELS)
