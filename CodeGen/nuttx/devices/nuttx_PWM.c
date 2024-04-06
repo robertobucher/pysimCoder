@@ -144,8 +144,9 @@ static void inout(python_block *block)
     {
       info.channels[i].channel = 0;
       info.channels[i].duty = 0;
-    #ifdef PWM_CPOL_HIGH
+    #if defined(PWM_CPOL_HIGH) && defined(PWM_DCPOL_LOW)
       info.channels[i].cpol = PWM_CPOL_HIGH;
+      info.channels[i].dcpol = PWM_DCPOL_LOW;
     #endif
     }
 
