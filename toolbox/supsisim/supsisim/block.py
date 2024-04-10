@@ -3,6 +3,7 @@ from supsisim.qtvers import *
 from supsisim.port import Port, InPort, OutPort
 from supsisim.connection import Connection
 from supsisim.const import GRID, PW, LW, BWmin, BHmin, PD, respath
+from PyQt5 import QtSvg
 
 class Block(QGraphicsPathItem):
     """A block holds ports that can be connected to."""
@@ -109,11 +110,18 @@ class Block(QGraphicsPathItem):
         else:
             painter.drawPath(self.path())
             
-        img = QImage(respath + 'blocks/Icons/' + self.icon + '.svg')
-        if self.flip:
-            img = img.mirrored(True, False)
-        rect = img.rect()
-        painter.drawImage(int(-rect.width()/2),int(-rect.height()/2),img)
+        # the path
+        str_path = respath + 'blocks/Icons/' + self.icon + '.svg'
+        # construct the renderer and get the size of the svg
+        renderer = QtSvg.QSvgRenderer(str_path)
+        svg_size = renderer.defaultSize()
+
+        # the middle of the boundingRect is actually (0,0)
+        # so shift only by the svg's width and height
+        new_left: float = -svg_size.width()/2
+        new_top: float = -svg_size.height()/2
+        where_to: QRectF = QRectF(new_left, new_top, svg_size.width(), svg_size.height())
+        renderer.render(painter, where_to)
 
     def itemChange(self, change, value):
         return value
