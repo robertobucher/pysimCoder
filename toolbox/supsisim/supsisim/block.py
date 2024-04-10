@@ -3,7 +3,6 @@ from supsisim.qtvers import *
 from supsisim.port import Port, InPort, OutPort
 from supsisim.connection import Connection
 from supsisim.const import GRID, PW, LW, BWmin, BHmin, PD, respath
-from PyQt5 import QtSvg
 
 class Block(QGraphicsPathItem):
     """A block holds ports that can be connected to."""

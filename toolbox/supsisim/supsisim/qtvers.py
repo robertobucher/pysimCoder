@@ -1,5 +1,5 @@
 try:
-    from PyQt6 import uic
+    from PyQt6 import uic, QtSvg
     from PyQt6.QtWidgets import (
         QApplication,
         QCheckBox,
@@ -60,7 +60,7 @@ try:
     )
     
 except:
-    from PyQt5 import uic
+    from PyQt5 import uic, QtSvg
     from PyQt5.QtWidgets import (
         QAction,
         QApplication,
