@@ -1,0 +1,11 @@
+{
+  "lib": "math",
+  "name": "modulo",
+  "ip": 2,
+  "op": 1,
+  "stin": 0,
+  "stout": 0,
+  "icon": "MOD",
+  "params": "moduloBlk",
+  "help": "This block computes the floating-point remainder of dividing x by y. The remainder is truncuated.\n"
+}
