@@ -48,6 +48,7 @@ class Editor(QObject):
         cloneBlkAction = self.menuIOBlk.addAction('Clone Block')
         copyBlkAction = self.menuIOBlk.addAction('Copy Block')
         deleteBlkAction = self.menuIOBlk.addAction('Delete Block')
+        shvBlkAction = self.menuIOBlk.addAction('Tune parameters')
         
         self.menuSubsBlk = QMenu()
         opensubsBlkAction = self.menuSubsBlk.addAction('Open subsystem')
@@ -63,6 +64,7 @@ class Editor(QObject):
         cloneBlkAction.triggered.connect(self.cloneBlock)
         copyBlkAction.triggered.connect(self.copyBlock)
         deleteBlkAction.triggered.connect(self.deleteBlock)
+        shvBlkAction.triggered.connect(self.shvAction)
         opensubsBlkAction.triggered.connect(self.openSubsystem)
         flpsubBlkAction.triggered.connect(self.flipBlock)
         copysubBlkAction.triggered.connect(self.copyBlock)
@@ -212,6 +214,9 @@ class Editor(QObject):
         item.remove()
         self.removeNodes()
         self.redrawNodes()
+
+    def shvAction(self):
+        print("My SHV action button!!!")
                 
     # Subsystems
 
