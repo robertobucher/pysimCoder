@@ -6,6 +6,6 @@
   "stin": 0,
   "stout": 1,
   "icon": "AD",
-  "params": "nuttx_ADCBlk|Port:'/dev/adc0'|Channel: [0]|Resolution: 4095:double|Umin [V]:0.0:double|Umax [V]:3.3:double",
-  "help": "Parameters\nChannel: [0, 1,..]     Target depending\nPort : device name (ex. '/dev/adc0')\nResolution of ADC\nUmin [V]: minimal value (0 volt read -> umin)\nUmax [V] : maximal value (3.3V read -> umax)\n"
+  "params": "nuttx_ADCBlk|Port:'/dev/adc0'|Channel: [0]|SW Trigger needed: 0:int|Resolution: 4095:double|Umin [V]:0.0:double|Umax [V]:3.3:double",
+  "help": "Parameters\nChannel: [0, 1,..]     Target depending\nPort : device name (ex. '/dev/adc0')\nSW Trigger On/Off: 1/0 - some ADCs need to be SW triggered first to measure\nResolution of ADC\nUmin [V]: minimal value (0 volt read -> umin)\nUmax [V] : maximal value (3.3V read -> umax)\n"
 }
