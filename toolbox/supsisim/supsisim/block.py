@@ -4,6 +4,8 @@ from supsisim.port import Port, InPort, OutPort
 from supsisim.connection import Connection
 from supsisim.const import GRID, PW, LW, BWmin, BHmin, PD, respath
 
+import os
+
 class Block(QGraphicsPathItem):
     """A block holds ports that can be connected to."""
     def __init__(self, *args):
@@ -112,7 +114,14 @@ class Block(QGraphicsPathItem):
         # the path
         str_path = respath + 'blocks/Icons/' + self.icon + '.svg'
         # construct the renderer and get the size of the svg
-        renderer = QtSvg.QSvgRenderer(str_path)
+        if self.flip:
+            mirr_path = '/tmp/' + self.icon + '.svg'
+            if not os.path.exists(mirr_path):
+                cmd = 'inkscape --actions="select-all;object-flip-horizontal" -o ' + mirr_path + ' ' + str_path
+                os.system(cmd)
+            renderer = QtSvg.QSvgRenderer(mirr_path)
+        else:
+            renderer = QtSvg.QSvgRenderer(str_path)
         svg_size = renderer.defaultSize()
 
         # the middle of the boundingRect is actually (0,0)
