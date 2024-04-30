@@ -10,6 +10,7 @@ from supsisim.const import GRID, DB, DP
 from supsisim.node import Node
 import numpy as np
 import json
+from supsisim.client import run_client
 
 # States
 IDLE = 0
@@ -216,7 +217,35 @@ class Editor(QObject):
         self.redrawNodes()
 
     def shvAction(self):
-        print("My SHV action button!!!")
+        item = self.scene.item
+        params = item.params.split('|')
+        blk = params[0]
+        name =  item.name.replace(' ','_') + '_' + str(item.ident)
+        items = item.params.split('|')
+        for i in range(1,len(items)):
+            par = items[i].split(':')
+            par[1] = str(run_client(self.scene.SHV.ip, self.scene.SHV.passw, par[0], name))
+            print(par[1])
+            items[i] = ':'.join(par)
+
+        
+        print(self.scene.SHV.ip)
+
+        blk = blk.replace('Blk','Dlg')
+
+        streV = 'import dialogs.' + blk +  ' as dlg'
+
+        self.scene.DgmToUndo()
+        pars = pDlg.parsDialog(item.params, item.helpTxt)
+        print(item.params.split('|')[1].split(':')[0])
+        name =  item.name.replace(' ','_') + '_' + str(item.ident)
+        print('|'.join(items))
+        pars = '|'.join(items)
+
+        if pars != item.params:
+            item.params = pars
+        else:
+            self.scene.clearLastUndo()
                 
     # Subsystems
 
