@@ -149,6 +149,8 @@ class Block(QGraphicsPathItem):
     def setFlip(self, flip=None):
         if flip: 
             self.flip = flip
+            
+        str_path = respath + 'blocks/Icons/' + self.icon + '.svg'
         if self.flip:
             self.setTransform(QTransform.fromScale(-1, 1))
             # the path
@@ -159,7 +161,6 @@ class Block(QGraphicsPathItem):
             self.renderer = QtSvg.QSvgRenderer(mirr_path)
         else:
             self.setTransform(QTransform.fromScale(1, 1))
-            str_path = respath + 'blocks/Icons/' + self.icon + '.svg'
             self.renderer = QtSvg.QSvgRenderer(str_path)
         self.flipLabel()
 
