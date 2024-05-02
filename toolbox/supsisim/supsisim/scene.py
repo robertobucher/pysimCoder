@@ -6,11 +6,13 @@ from supsisim.port import Port, InPort, OutPort
 from supsisim.connection import Connection
 from supsisim.dialg import RTgenDlg, SHVDlg
 from supsisim.const import VERSION, pyrun, TEMP, respath, BWmin
+from supsisim.client import BrokerConnection
 from lxml import etree
 import os
 import subprocess
 import time
 import json
+
 
 IDLE = 0
 
@@ -56,6 +58,8 @@ class Scene(QGraphicsScene):
         self.prio = ''
 
         self.SHV = SHVInstance(self.mainw.filename)
+
+        self.brokerConnection = BrokerConnection()
 
         self.undoList = []
 
@@ -739,3 +743,10 @@ class Scene(QGraphicsScene):
         print('\nConnections:')
         for item in dgmConnections:
             print(item)
+
+    def getBrokerConnection(self) -> BrokerConnection:
+        
+        shv = self.SHV
+        self.brokerConnection.update_parameters_and_connect(shv.ip, shv.port, shv.user, shv.passw, shv.devid, shv.mount)
+
+        return self.brokerConnection
