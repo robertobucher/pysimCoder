@@ -248,11 +248,8 @@ class NewEditorMainWindow(QMainWindow):
 
     def copyAct(self):
         self.scene.selection = []
-        p = self.scene.selectionArea()
-        self.scene.selection = self.scene.items(p)
-        if self.scene.selection == []:
-            self.scene.selection = self.scene.selectedItems()
-            
+        self.scene.selection = self.scene.selectedItems()
+        
         dgmBlocks = []
         dgmConnections = []
         dgmSubsystems = []                

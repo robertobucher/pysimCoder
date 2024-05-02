@@ -17,6 +17,7 @@ class Connection(QGraphicsPathItem):
 
         self.port1 = None
         self.port2 = None
+        self.params = None
 
         self.connPoints = []
         self.draw_color =Qt.GlobalColor.black
@@ -44,6 +45,7 @@ class Connection(QGraphicsPathItem):
         pen = QPen(self.draw_color)
         pen.setWidth(LW)
         self.setPen(pen)
+        self.setFlag(QGraphicsItem.GraphicsItemFlag.ItemIsSelectable)
 
     def addPoint(self, pos):
         if len(self.connPoints) == 0:
@@ -383,7 +385,7 @@ class Connection(QGraphicsPathItem):
         pen = QPen(self.draw_color)
         pen.setWidth(LW)
         if self.isSelected():
-            pen.setStyle(Qt.DotLine)
+            pen.setStyle(Qt.PenStyle.DotLine)
         painter.setPen(pen)
         painter.drawPath(self.path())
 

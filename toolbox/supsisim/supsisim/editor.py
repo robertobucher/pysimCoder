@@ -203,6 +203,7 @@ class Editor(QObject):
             DPx = gr * ((DPx + gr /2) // gr)
             DPy = gr * ((DPy + gr /2) // gr)            
             self.scene.DictToDgm(data, DPx, DPy)
+            self.deselect_all()
         except:
             pass
        
@@ -684,6 +685,7 @@ class Editor(QObject):
         else:      
             self.scene.evpos = event.scenePos()
             self.subMenuEditor.exec(event.screenPos())
+        self.deselect_all()
             
     def P03(self, obj, event):                                     
         # IDLE, ITEMSELECTED + MOUSEDOUBLECLICK
