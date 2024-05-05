@@ -739,3 +739,22 @@ class Scene(QGraphicsScene):
         print('\nConnections:')
         for item in dgmConnections:
             print(item)
+
+    def mousePressEvent(self, event):
+        self.pos1 = event.scenePos()
+        super(Scene,self).mousePressEvent(event)
+
+    def mouseReleaseEvent(self, event):
+        items = self.selectedItems()
+        try:
+            rect = QRectF(self.pos1, event.scenePos())
+            for el in items:
+                if isinstance(el, Connection):
+                    if el.connInSelection(rect):
+                        el.setSelected(True)
+                    else:
+                        el.setSelected(False)
+        except:
+            pass
+
+        super(Scene,self).mouseReleaseEvent(event)

@@ -22,6 +22,8 @@ class Connection(QGraphicsPathItem):
         self.connPoints = []
         self.draw_color =Qt.GlobalColor.black
         self.setup()
+        
+        self.selected = False
 
     def __str__(self):
         txt  = 'Connection\n'
@@ -444,4 +446,41 @@ class Connection(QGraphicsPathItem):
          x = gr * ((pt.x() + gr /2) // gr)
          y = gr * ((pt.y() + gr /2) // gr)
          return QPointF(x,y)
-
+         
+    def connSelected(self, pos):
+        points = [self.pos1]
+        for el in self.connPoints:
+            points.append(el)
+        points.append(self.pos2)
+        N = len(points)
+        for n in range(0,N-1):
+            p1 = points[n]
+            p2 = points[n+1]
+            rect = QRectF(p1 - QPointF(DB,DB) ,p2 + QPointF(DB,DB))
+            if rect.contains(pos):
+                return True
+        return False
+    
+    def connInSelection(self, rect):
+        if self.selected:
+            self.selected = False
+            return True
+        else:
+            points = [self.pos1]
+            for el in self.connPoints:
+                points.append(el)
+            points.append(self.pos2)
+            for pt in points:
+                if not rect.contains(pt):
+                    return False
+            return True
+            
+        
+    def mousePressEvent(self, event):
+        if self.connSelected(event.scenePos()):
+            self.setSelected(True)
+            self.selected = True
+            event.accept()
+        else:
+            event.ignore()
+                    
