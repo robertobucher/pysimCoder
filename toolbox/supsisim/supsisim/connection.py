@@ -202,7 +202,6 @@ class Connection(QGraphicsPathItem):
         self.update_path()
 
     def update_path(self):
-        self.cleanPts()
         p = QPainterPath()
         p.moveTo(self.pos1)
         for el in self.connPoints:
@@ -423,12 +422,15 @@ class Connection(QGraphicsPathItem):
                 self.connPoints[n-1].y() == self.connPoints[n].y() == self.connPoints[n+1].y():
                     errPos.append(self.connPoints[n])
             if len(errPos)==0:
-                x = self.connPoints[-2].x()
-                y = self.pos2.y()
-                self.connPoints[-1] = QPointF(x,y)
-                x = self.connPoints[1].x()
-                y = self.pos1.y()
-                self.connPoints[0] = QPointF(x,y)
+                try:
+                    x = self.connPoints[-2].x()
+                    y = self.pos2.y()
+                    self.connPoints[-1] = QPointF(x,y)
+                    x = self.connPoints[1].x()
+                    y = self.pos1.y()
+                    self.connPoints[0] = QPointF(x,y)
+                except:
+                    pass
                 return
             else:
                 self.connPoints.remove(errPos[0])

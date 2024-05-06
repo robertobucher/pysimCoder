@@ -250,6 +250,7 @@ class Editor(QObject):
                 pos1 = QPointF(pt.x(), self.conn.pos2.y())
                 self.conn.connPoints.append(self.gridPos(pos1))
         self.conn.clean()
+        self.conn.cleanPts()
         self.conn.update_path()
         self.conn = None
  
@@ -270,6 +271,7 @@ class Editor(QObject):
             self.conn.connPoints.insert(0,self.gridPos(pos1))
                 
         self.conn.clean()
+        self.conn.cleanPts()
         self.conn.update_path()
         self.conn = None
  
