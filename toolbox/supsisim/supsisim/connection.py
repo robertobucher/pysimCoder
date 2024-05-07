@@ -171,13 +171,14 @@ class Connection(QGraphicsPathItem):
         else:          
             return False
 
-    def update_pos_from_ports(self):
+    def update_pos_from_ports(self, moveFlag = False):
         pos = self.port1.scenePos()
         delta = pos - self.pos1
         self.pos1 = pos
-#        N = len(self.connPoints)
-#        for n in range(0,N):
-#            self.connPoints[n] = self.connPoints[n]+delta
+        if moveFlag:
+            N = len(self.connPoints)
+            for n in range(0,N):
+                self.connPoints[n] = self.connPoints[n]+delta
         self.pos2 = self.port2.scenePos()
         if len(self.connPoints)!=0:
             self.connPoints[0].setY(self.pos1.y())

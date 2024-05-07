@@ -356,6 +356,11 @@ class Editor(QObject):
     # Functions on diagram items
     
     def redrawSelectedItems(self):
+        if len(self.scene.selectedItems())==1:
+            mvFlag = False
+        else:
+            mvFlag = True
+        
         for item in self.scene.selectedItems():
             if isinstance(item, Block):
                 item.setPos(item.scenePos())
@@ -363,7 +368,7 @@ class Editor(QObject):
                     try:
                         for conn in el.connections:
                             conn.clean()
-                            conn.update_pos_from_ports()
+                            conn.update_pos_from_ports(mvFlag)
                     except:
                         pass
 
