@@ -175,9 +175,9 @@ class Connection(QGraphicsPathItem):
         pos = self.port1.scenePos()
         delta = pos - self.pos1
         self.pos1 = pos
-        N = len(self.connPoints)
-        for n in range(0,N):
-            self.connPoints[n] = self.connPoints[n]+delta
+#        N = len(self.connPoints)
+#        for n in range(0,N):
+#            self.connPoints[n] = self.connPoints[n]+delta
         self.pos2 = self.port2.scenePos()
         if len(self.connPoints)!=0:
             self.connPoints[0].setY(self.pos1.y())
@@ -436,6 +436,7 @@ class Connection(QGraphicsPathItem):
                 self.connPoints.remove(errPos[0])
         
     def save(self):
+        self.cleanPts()
         try:
             pos1 = (self.pos1.x(), self.pos1.y())
             pos2 = (self.pos2.x(), self.pos2.y())
@@ -461,6 +462,7 @@ class Connection(QGraphicsPathItem):
             for el in item['points']:
                 pt = QPointF(el[0], el[1])+dpt
                 self.connPoints.append(pt)
+            self.cleanPts()
             self.update_ports_from_pos()
         except:
             pass
