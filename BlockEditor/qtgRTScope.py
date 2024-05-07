@@ -186,6 +186,12 @@ class MainWindow(QMainWindow, form_class):
         self.ckSaveData.stateChanged.connect(self.setSaveData)
         self.edYmax.editingFinished.connect(self.YAxes)
         self.edYmin.editingFinished.connect(self.YAxes)
+        self.sbNsig.valueChanged.connect(self.sbNsigValue)
+        self.tableSig.setColumnWidth(0, 150)
+
+    def sbNsigValue(self):
+        self.tableSig.setRowCount(self.sbNsig.value())
+        self.tableSig.setColumnWidth(0, 150)
 
     def edHistEdited(self, val):
         self.Hist = int(val.__str__())
@@ -301,11 +307,17 @@ class MainWindow(QMainWindow, form_class):
             self.plotWidget = pg.plot(title="Scopes")            
             self.plotWidget.resize(PLOT_WINDOM_SIZE[0], PLOT_WINDOM_SIZE[1])
             self.plotWidget.showGrid(x=True, y=True)
+            self.plotWidget.addLegend()
             self.plots = []
             
             for n in range(self.NSig):
+                sigName = self.tableSig.item(n, 0)
+                if sigName is None:
+                    sigName = "Signal " + str(n)
+                else:
+                    sigName = sigName.text()
                 c = PLOT_LINE_COLORS[n % len(PLOT_LINE_COLORS)]
-                self.plots.append(self.plotWidget.plot(self.x, self.y[n], pen={'color':c, 'width' : PENWIDTH}))
+                self.plots.append(self.plotWidget.plot(self.x, self.y[n], pen={'color':c, 'width' : PENWIDTH}, name=sigName))
             
             self.timer = QTimer()
             self.timer.timeout.connect(self.pltRefresh)
