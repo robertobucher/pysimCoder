@@ -82,7 +82,7 @@ static void inout(python_block *block)
     }
   else if (action < min_val)
     {
-      integral_sum = integral_sum - (action + min_val);
+      integral_sum = integral_sum - (action - min_val);
       action = min_val;
     }
 
