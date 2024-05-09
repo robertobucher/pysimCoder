@@ -226,6 +226,7 @@ class Editor(QObject):
         blk = params[0]
         name =  item.name.replace(' ','_') + '_' + str(item.ident)
         items = item.params.split('|')
+        parr = ""
         try:
             for i in range(1,len(items)):
                 par = items[i].split(':')
@@ -234,8 +235,9 @@ class Editor(QObject):
                     par[1] = str(float(res))
                     items[i] = ':'.join(par)
             name =  item.name.replace(' ','_') + '_' + str(item.ident)
-            pars = '|'.join(items)
-            item.params = pars
+            parr = '|'.join(items)
+            if parr != item.params:
+                item.params = parr
         except:
             print("Error connecting to the brocker!")
 
@@ -254,7 +256,7 @@ class Editor(QObject):
             pars = exec(cmd)
 
         except:
-            items = item.params.split('|')
+            items = parr.split('|')
             show = items[0]
             for i in range(1,len(items)):
                 par = items[i].split(':')
@@ -263,7 +265,7 @@ class Editor(QObject):
 
             pars = pDlg.parsDialog(show, item.helpTxt)
 
-            if pars != item.params:
+            if pars != item.params and pars != "":
                 item.params = pars
                 items = item.params.split('|')
 
