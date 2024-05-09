@@ -8,10 +8,11 @@ from supsisim.dialg import BlockName_Dialog
 import supsisim.RCPDlg as pDlg
 from supsisim.const import GRID, DB, DP
 from supsisim.node import Node
-from supsisim.client import BrokerConnection
+from supsisim.client import *
 import numpy as np
 import json
-from supsisim.client import run_client
+from shv import SHVDecimal, SHVFloat
+from decimal import Decimal, ROUND_DOWN
 
 
 # States
@@ -51,7 +52,6 @@ class Editor(QObject):
         cloneBlkAction = self.menuIOBlk.addAction('Clone Block')
         copyBlkAction = self.menuIOBlk.addAction('Copy Block')
         deleteBlkAction = self.menuIOBlk.addAction('Delete Block')
-        shvBlkAction = self.menuIOBlk.addAction('Tune parameters')
         
         self.menuSubsBlk = QMenu()
         opensubsBlkAction = self.menuSubsBlk.addAction('Open subsystem')
@@ -59,6 +59,7 @@ class Editor(QObject):
         namesubBlkAction = self.menuSubsBlk.addAction('Change Name')
         copysubBlkAction = self.menuSubsBlk.addAction('Copy Block')
         deletesubBlkAction = self.menuSubsBlk.addAction('Delete Block')
+        shvBlkAction = self.menuIOBlk.addAction('Tune parameters')
           
         parBlkAction.triggered.connect(self.parBlock)
         flpBlkAction.triggered.connect(self.flipBlock)
@@ -67,12 +68,12 @@ class Editor(QObject):
         cloneBlkAction.triggered.connect(self.cloneBlock)
         copyBlkAction.triggered.connect(self.copyBlock)
         deleteBlkAction.triggered.connect(self.deleteBlock)
-        shvBlkAction.triggered.connect(self.shvAction)
         opensubsBlkAction.triggered.connect(self.openSubsystem)
         flpsubBlkAction.triggered.connect(self.flipBlock)
         copysubBlkAction.triggered.connect(self.copyBlock)
         namesubBlkAction.triggered.connect(self.nameBlock)
         deletesubBlkAction.triggered.connect(self.deleteBlock)
+        shvBlkAction.triggered.connect(self.shvAction)
         
         self.subMenuConn = QMenu()
         connAddAction = self.subMenuConn.addAction('Add connection')
@@ -225,32 +226,59 @@ class Editor(QObject):
         blk = params[0]
         name =  item.name.replace(' ','_') + '_' + str(item.ident)
         items = item.params.split('|')
-        for i in range(1,len(items)):
-            par = items[i].split(':')
-            # par[1] = str(run_client(self.scene.SHV.ip, self.scene.SHV.passw, par[0], name))
-            connection.doExampleStuff(par[0], name)
-            print(par[1])
-            items[i] = ':'.join(par)
+        try:
+            for i in range(1,len(items)):
+                par = items[i].split(':')
+                if par[2].replace(" ", "") == "double":
+                    res = connection.getParameterValue(par[0], name)
+                    par[1] = str(float(res))
+                    items[i] = ':'.join(par)
+            name =  item.name.replace(' ','_') + '_' + str(item.ident)
+            pars = '|'.join(items)
+            item.params = pars
+        except:
+            print("Error connecting to the brocker!")
 
-        
-        print(self.scene.SHV.ip)
+
+        params = item.params.split('|')
+        blk = params[0]
 
         blk = blk.replace('Blk','Dlg')
 
         streV = 'import dialogs.' + blk +  ' as dlg'
+        try:
+            exec(streV)
+            name =  item.name.replace(' ','_') + '_' + str(item.ident)
+            cmd = 'dlg.' + blk + '(' + str(item.inp) + ',' + str(item.outp) + \
+                ',  "' + item.params + '"' +  ',"' +  name + '")'
+            pars = exec(cmd)
 
-        self.scene.DgmToUndo()
-        pars = pDlg.parsDialog(item.params, item.helpTxt)
-        print(item.params.split('|')[1].split(':')[0])
-        name =  item.name.replace(' ','_') + '_' + str(item.ident)
-        print('|'.join(items))
-        pars = '|'.join(items)
+        except:
+            items = item.params.split('|')
+            show = items[0]
+            for i in range(1,len(items)):
+                par = items[i].split(':')
+                if par[2].replace(" ", "") == "double":
+                    show += '|' + items[i]
 
-        if pars != item.params:
-            item.params = pars
-        else:
-            self.scene.clearLastUndo()
-                
+            pars = pDlg.parsDialog(show, item.helpTxt)
+
+            if pars != item.params:
+                item.params = pars
+                items = item.params.split('|')
+
+                for i in range(1,len(items)):
+                    par = items[i].split(':')
+                    parameter = None
+                    if par[2].replace(" ", "") == "double":
+                        # parameter = SHVFloat(par[1])
+                        parameter = SHVDecimal(par[1]).quantize(Decimal('1.000000000'), rounding=ROUND_DOWN)
+                    else:
+                        continue
+                    connection.setPrameterValue(par[0], name, parameter)
+            else:
+                self.scene.clearLastUndo()
+    
     # Subsystems
 
     def createSubsystem(self):
@@ -403,7 +431,7 @@ class Editor(QObject):
                         pass
 
     def getNumOfItems(self):
-        tot = 0;
+        tot = 0
         for item in self.scene.selectedItems():
             if isinstance(item, Block):
                 tot += 1
