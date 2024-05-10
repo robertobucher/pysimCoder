@@ -23,6 +23,8 @@ try:
         QPushButton,
         QSpinBox,
         QTabWidget,
+        QTableWidget,
+        QTableWidgetItem,
         QTextEdit,
         QVBoxLayout,
         QWidget
@@ -38,7 +40,7 @@ try:
         QPen,
         QTransform
     )
-    
+
     from PyQt6.QtCore import (
         QEvent,
         QTimer,
@@ -53,12 +55,12 @@ try:
         QVariant,
         Qt
     )
-    
+
     from PyQt6.QtPrintSupport import (
         QPrinter,
         QPrintDialog
     )
-    
+
 except:
     from PyQt5 import uic, QtSvg
     from PyQt5.QtWidgets import (
@@ -85,6 +87,8 @@ except:
         QPushButton,
         QSpinBox,
         QTabWidget,
+        QTableWidget,
+        QTableWidgetItem,
         QTextEdit,
         QVBoxLayout,
         QWidget
@@ -99,7 +103,7 @@ except:
         QPen,
         QTransform
     )
-    
+
     from PyQt5.QtCore import (
         QEvent,
         QTimer,
@@ -114,10 +118,10 @@ except:
         QVariant,
         Qt
     )
-    
+
     from PyQt5.QtPrintSupport import (
         QPrinter,
         QPrintDialog
     )
-    
+
 print(QT_VERSION_STR)

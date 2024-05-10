@@ -29,6 +29,7 @@ import numpy as np
 import struct
 import serial as ser
 import socket
+import json
 
 COL = 220
 WIDTH = 2
@@ -50,8 +51,7 @@ class ser_rcvServer(threading.Thread):
         self.daemon = True
        
     def run(self):
-        portN =  self.mainw.serCbBox.currentIndex()
-        portName = self.mainw.serCbBox.itemText(portN)
+        portName =  self.mainw.edSerPort.text()
         baudN = self.mainw.serBaudRate.currentIndex()
         baudRate = self.mainw.serBaudRate.itemText(baudN)
 
@@ -75,8 +75,7 @@ class ser_rcvServer4bytes(threading.Thread):
         self.daemon = True
        
     def run(self):
-        portN =  self.mainw.ser4CbBox.currentIndex()
-        portName = self.mainw.ser4CbBox.itemText(portN)
+        portName = self.mainw.ed4SerPort.text()
         baudN = self.mainw.ser4BaudRate.currentIndex()
         baudRate = self.mainw.ser4BaudRate.itemText(baudN)
 
@@ -99,8 +98,7 @@ class tcp_rcvServer(threading.Thread):
         self.daemon = True
 
     def run(self):
-        portN =  self.mainw.tcpCbBox.currentIndex()
-        portNum = int(self.mainw.tcpCbBox.itemText(portN))
+        portNum = int(self.mainw.edTcpPort.text())
 
         self.port = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.mainw.port = self.port
@@ -114,7 +112,7 @@ class tcp_rcvServer(threading.Thread):
             self.port.listen(5)
         except:
             ret = QMessageBox.warning(self.mainw, '', 'Port already in use, please close it',
-                                      QMessageBox.Ok, QMessageBox.Ok)
+                                      QMessageBox.StandardButton.Ok, QMessageBox.StandardButton.Ok)
             return
 
         while self.mainw.ServerActive==1:
@@ -142,8 +140,7 @@ class udp_rcvServer(threading.Thread):
         self.daemon = True
 
     def run(self):
-        portN =  self.mainw.udpCbBox.currentIndex()
-        portNum = int(self.mainw.udpCbBox.itemText(portN))
+        portNum = int(self.mainw.edUdpPort.text())
 
         self.port = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.mainw.port = self.port
@@ -152,7 +149,7 @@ class udp_rcvServer(threading.Thread):
            self.port.bind(('0.0.0.0', portNum))
         except:
             ret = QMessageBox.warning(self.mainw, '', 'Port already in use, please close it',
-                                      QMessageBox.Ok, QMessageBox.Ok)
+                                      QMessageBox.StandardButton.Ok, QMessageBox.StandardButton.Ok)
             return
         L = 8*self.N
         while self.mainw.ServerActive==1:
@@ -182,7 +179,7 @@ class MainWindow(QMainWindow, form_class):
     def __init__(self):
         QMainWindow.__init__(self)
         self.setupUi(self)
-        self.setFixedSize(675, 369)
+        self.setFixedSize(690, 415)
         
         self.connect_widget()
         self.port = None
@@ -193,7 +190,8 @@ class MainWindow(QMainWindow, form_class):
         self.ymax = 1
         self.autoAxis = True
         self.filename = 'data.txt'
- 
+        self.fname = ''
+
     def connect_widget(self):
         self.pbStart_ser.clicked.connect(lambda: self.pbServerClicked(SER))
         self.pbStart_ser4.clicked.connect(lambda: self.pbServerClicked(SER4))
@@ -205,6 +203,112 @@ class MainWindow(QMainWindow, form_class):
         self.ckSaveData.stateChanged.connect(self.setSaveData)
         self.edYmax.editingFinished.connect(self.YAxes)
         self.edYmin.editingFinished.connect(self.YAxes)
+        self.sbNsig.valueChanged.connect(self.sbNsigValue)
+        self.tableSig.setColumnWidth(0, 150)
+
+        self.actionOpen.triggered.connect(self.openFile)
+        self.actionSave.triggered.connect(self.saveFile)
+        self.actionSave_As.triggered.connect(self.saveAsFile)
+
+    def setFields(self, fname):
+        f = open(fname,'r')
+        msg = f.read()
+        f.close()
+        dataUI = json.loads(msg)
+        
+        self.sbNsig.setValue(int(dataUI['nSig']))
+        N = self.sbNsig.value()
+        
+        self.edHist.setText(dataUI['Hist'])
+        self.edRefT.setText(dataUI['RefT'])
+        if dataUI['Autoscale'] == '1':
+            self.ckAutoscale.setEnabled(True)
+        else:
+            self.ckAutoscale.setEnabled(False)
+        
+        self.edYmin.setText(dataUI['Ymin'])
+        self.edYmax.setText(dataUI['Ymax'])
+        
+        self.tableSig.setRowCount(N)
+        self.tableSig.setColumnCount(1)
+        
+        names = dataUI['sigTable']
+        for n in range(0,N):
+            item = QTableWidgetItem(names[n])
+            self.tableSig.setItem(n,0, item)
+        
+        self.edSerPort.setText(dataUI['serPort'])
+        self.serBaudRate.setCurrentIndex(int(dataUI['baudRate']))
+        self.ed4SerPort.setText(dataUI['ser4Port'])
+        self.ser4BaudRate.setCurrentIndex(int(dataUI['baud4Rate']))
+        self.edTcpPort.setText(dataUI['tcpPort'])
+        self.edUdpPort.setText(dataUI['udpPort'])
+        
+    def getFields(self, fname):
+        dataUI = {'nSig' : self.sbNsig.text()}       
+        dataUI['Hist'] = self.edHist.text()
+        dataUI['RefT'] =self.edRefT.text()
+        if self.ckAutoscale:
+            dataUI['Autoscale'] = '1'
+        else:
+            dataUI['Autoscale'] = '0'
+        dataUI['Ymin'] = self.edYmin.text()
+        dataUI['Ymax'] = self.edYmax. text()        
+        
+        N = self.sbNsig.value()
+        names = []
+        for n in range(0,N):
+            sigName = self.tableSig.item(n, 0)
+            if sigName is None:
+                sigName = "Signal " + str(n)
+            else:
+                sigName = sigName.text()
+            names.append(sigName)
+
+        dataUI['sigTable'] = names
+        dataUI['serPort'] = self.edSerPort.text()
+        dataUI['baudRate'] = self.serBaudRate.currentIndex()
+        dataUI['ser4Port'] = self.ed4SerPort.text()
+        dataUI['baud4Rate'] = self.ser4BaudRate.currentIndex()
+        dataUI['tcpPort'] = self.edTcpPort.text()
+        dataUI['udpPort'] = self.edUdpPort.text()
+        
+        f = open(fname,'w')
+        js = json.dumps(dataUI)
+        f.write(js)
+        f.close()
+        
+    def openFile(self):
+        filename, _ = QFileDialog.getOpenFileName(self, 'Open','.' , filter='*.json')
+
+        if filename != '':
+            self.fname = filename
+            self.setFields(filename)
+            
+    def saveFile(self):
+        if self.fname == '':
+            filename, _ = QFileDialog.getSaveFileName(self,'Save', self.fname,  filter='*.json')
+            if filename.find('.json') == -1:
+                 self.fname =  filename + '.json'
+            else:
+                self.fname = filename
+                
+        if self.fname != '':
+            d = self.getFields(self.fname)
+
+    def saveAsFile(self):
+        filename, _ = QFileDialog.getSaveFileName(self,'Save As ...', self.fname,  filter='*.json')
+        if filename.find('.xblk') == -1:
+            self.fname =  filename + '.json'
+        else:
+            self.fname = filename
+                
+        if self.fname != '':
+            d = self.getFields(self.fname)
+
+    def sbNsigValue(self):
+        self.tableSig.setRowCount(self.sbNsig.value())
+        self.tableSig.setColumnWidth(0, 150)
 
     def edHistEdited(self, val):
         self.Hist = int(val.__str__())
@@ -324,7 +428,7 @@ class MainWindow(QMainWindow, form_class):
                 
             self.timer = QtCore.QTimer()
             self.timer.timeout.connect(self.pltRefresh)
-            refTimer = self.sbRefT.value()
+            refTimer = int(self.edRefT.text())
             self.timer.start(refTimer)
             
             if porttype == SER:

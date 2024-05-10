@@ -30,8 +30,7 @@ class ser_rcvServer(threading.Thread):
         self.daemon = True
        
     def run(self):
-        portN =  self.mainw.serCbBox.currentIndex()
-        portName = self.mainw.serCbBox.itemText(portN)
+        portName =  self.mainw.edSerPort.text()
         baudN = self.mainw.serBaudRate.currentIndex()
         baudRate = self.mainw.serBaudRate.itemText(baudN)
 
@@ -55,8 +54,7 @@ class ser_rcvServer4bytes(threading.Thread):
         self.daemon = True
        
     def run(self):
-        portN =  self.mainw.ser4CbBox.currentIndex()
-        portName = self.mainw.ser4CbBox.itemText(portN)
+        portName = self.mainw.ed4SerPort.text()
         baudN = self.mainw.ser4BaudRate.currentIndex()
         baudRate = self.mainw.ser4BaudRate.itemText(baudN)
 
@@ -79,8 +77,7 @@ class tcp_rcvServer(threading.Thread):
         self.daemon = True
 
     def run(self):
-        portN =  self.mainw.tcpCbBox.currentIndex()
-        portNum = int(self.mainw.tcpCbBox.itemText(portN))
+        portNum = int(self.mainw.edTcpPort.text())
 
         self.port = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.mainw.port = self.port
@@ -122,8 +119,7 @@ class udp_rcvServer(threading.Thread):
         self.daemon = True
 
     def run(self):
-        portN =  self.mainw.udpCbBox.currentIndex()
-        portNum = int(self.mainw.udpCbBox.itemText(portN))
+        portNum = int(self.mainw.edUdpPort.text())
 
         self.port = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.mainw.port = self.port
@@ -154,10 +150,11 @@ class MainWindow(QMainWindow, form_class):
     def __init__(self):
         QMainWindow.__init__(self)
         self.setupUi(self)
-        self.setFixedSize(690, 325)
+        self.setFixedSize(686, 400)
           
         self.connect_widget()        
         self.ServerActive = 0
+        self.fname = ''
  
     def connectJuggler(self):
         self._sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -168,16 +165,113 @@ class MainWindow(QMainWindow, form_class):
         self.pbStart_tcp.clicked.connect(lambda: self.pbServerClicked(TCP))
         self.pbStart_udp.clicked.connect(lambda: self.pbServerClicked(UDP))
         self.ckTimeEnabled.stateChanged.connect(self.ckTimeEnabled_stateChanged)
+        self.actionOpen.triggered.connect(self.openFile)
+        self.actionSave.triggered.connect(self.saveFile)
+        self.actionSave_As.triggered.connect(self.saveAsFile)
+        self.sbNsig.valueChanged.connect(self.sbNsigValue)
+        self.tableSig.setColumnWidth(0, 150)
+
+    def setFields(self, fname):
+        f = open(fname,'r')
+        msg = f.read()
+        f.close()
+        dataUI = json.loads(msg)
         
+        self.sbNsig.setValue(int(dataUI['nSig']))
+        if dataUI['ckTime'] == '1':
+            self.ckTimeEnabled.setEnabled(True)
+        else:
+            self.ckTimeEnabled.setEnabled(False)
+        
+        self.ed_timeName.setText(dataUI['timeName'])
+        self.ed_PJ_IP.setText(dataUI['PJIP'])
+        self.ed_PJ_Port.setText(dataUI['PJPort'])
+        N = self.sbNsig.value()
+        self.tableSig.setRowCount(N)
+        self.tableSig.setColumnCount(1)
+        
+        names = dataUI['sigTable']
+        for n in range(0,N):
+            item = QTableWidgetItem(names[n])
+            self.tableSig.setItem(n,0, item)
+        
+        self.edSerPort.setText(dataUI['serPort'])
+        self.serBaudRate.setCurrentIndex(int(dataUI['baudRate']))
+        self.ed4SerPort.setText(dataUI['ser4Port'])
+        self.ser4BaudRate.setCurrentIndex(int(dataUI['baud4Rate']))
+        self.edTcpPort.setText(dataUI['tcpPort'])
+        self.edUdpPort.setText(dataUI['udpPort'])
+        
+    def getFields(self, fname):
+        dataUI = {'nSig' : self.sbNsig.text()}
+        if self.ckTimeEnabled:
+           dataUI['ckTime'] = '1'
+        else:
+           dataUI['ckTime'] = '0'
+        dataUI['timeName'] = self.ed_timeName.text()
+        dataUI['PJIP'] = self.ed_PJ_IP.text()
+        dataUI['PJPort'] = self.ed_PJ_Port.text()
+        
+        N = self.sbNsig.value()
+        names = []
+        for n in range(0,N):
+            sigName = self.tableSig.item(n, 0)
+            if sigName is None:
+                sigName = "Signal " + str(n)
+            else:
+                sigName = sigName.text()
+            names.append(sigName)
+
+        dataUI['sigTable'] = names
+        dataUI['serPort'] = self.edSerPort.text()
+        dataUI['baudRate'] = self.serBaudRate.currentIndex()
+        dataUI['ser4Port'] = self.ed4SerPort.text()
+        dataUI['baud4Rate'] = self.ser4BaudRate.currentIndex()
+        dataUI['tcpPort'] = self.edTcpPort.text()
+        dataUI['udpPort'] = self.edUdpPort.text()
+        
+        f = open(fname,'w')
+        js = json.dumps(dataUI)
+        f.write(js)
+        f.close()
+        
+    def openFile(self):
+        filename, _ = QFileDialog.getOpenFileName(self, 'Open','.' , filter='*.json')
+
+        if filename != '':
+            self.fname = filename
+            self.setFields(filename)
+            
+    def saveFile(self):
+        if self.fname == '':
+            filename, _ = QFileDialog.getSaveFileName(self,'Save', self.fname,  filter='*.json')
+            if filename.find('.json') == -1:
+                 self.fname =  filename + '.json'
+            else:
+                self.fname = filename
+                
+        if self.fname != '':
+            d = self.getFields(self.fname)
+
+    def saveAsFile(self):
+        filename, _ = QFileDialog.getSaveFileName(self,'Save As ...', self.fname,  filter='*.json')
+        if filename.find('.xblk') == -1:
+            self.fname =  filename + '.json'
+        else:
+            self.fname = filename
+                
+        if self.fname != '':
+            d = self.getFields(self.fname)
+
+    def sbNsigValue(self):
+        self.tableSig.setRowCount(self.sbNsig.value())
+        self.tableSig.setColumnWidth(0, 150)
+
     def setData(self, data):
         vals = np.round(data, 3)
         try:
-            if self.ckTimeEnabled.isChecked():
-                self.sendData[self.pjTs]=vals[0]
-                self.sendData['y'] = list(vals[1:])
-            else:
-                self.sendData['y'] = list(vals)
-                
+            self.sendData = dict(zip(self.keys, vals))
+            print(self.sendData)
             datas = json.dumps(self.sendData)
             datab = datas.encode('utf-8')
             self._sock.sendto(datab, (self._host, self._port))
@@ -187,18 +281,31 @@ class MainWindow(QMainWindow, form_class):
     def pbServerClicked(self, porttype):
         if self.ServerActive == 0:    
             self.N = self.sbNsig.value()
-            self.pjTs = self.ed_timeName.text()
+            self.NSig = self.N
+            if self.ckTimeEnabled.isChecked():
+                self.N += 1
+                self.pjTs = self.ed_timeName.text()
+                
             self._host = self.ed_PJ_IP.text()
             self._port = int(self.ed_PJ_Port.text())
         
             self.connectJuggler()        
             
             if self.ckTimeEnabled.isChecked():
-                self.N += 1
-                self.sendData = {self.pjTs: '0', 'y' : np.zeros(self.N)}
-            else:
-                self.sendData = {'y' : list(np.zeros(self.N))}        
-
+                self.keys = ['ts']
+            else: 
+                self.keys = []
+            for n in range(0,self.NSig):
+                sigName = self.tableSig.item(n, 0)
+                if sigName is None:
+                    sigName = "Signal " + str(n)
+                else:
+                    sigName = sigName.text()
+                self.keys.append(sigName)
+                 
+            vals = np.zeros(self.N)
+            self.sendData = dict(zip(self.keys, vals))
+            
             if porttype == SER:
                 self.pbStart_ser.setText('Stop Server')
             elif porttype == SER4:
