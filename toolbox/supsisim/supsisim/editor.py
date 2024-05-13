@@ -282,8 +282,8 @@ class Editor(QObject):
             self.removeNodes()
             self.redrawNodes()
         except:
-            print('Error by deleteConn...')
-    
+            pass
+        
     def addConn(self):
         self.scene.DgmToUndo()
         c = self.scene.item
