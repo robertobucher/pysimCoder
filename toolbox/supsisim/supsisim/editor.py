@@ -276,10 +276,13 @@ class Editor(QObject):
         self.conn = None
  
     def deleteConn(self):
-        self.scene.DgmToUndo()
-        self.scene.item.remove()
-        self.removeNodes()
-        self.redrawNodes()
+        try:
+            self.scene.DgmToUndo()
+            self.scene.item.remove()
+            self.removeNodes()
+            self.redrawNodes()
+        except:
+            print('Error by deleteConn...')
     
     def addConn(self):
         self.scene.DgmToUndo()
@@ -461,6 +464,9 @@ class Editor(QObject):
                 dgmSubsystems.append(item)
             elif isinstance(item, Block):
                 dgmBlocks.append(item)
+            elif isinstance(item, Connection):
+                self.scene.item = item
+                self.deleteConn()
             else:
                 pass
         for item in dgmBlocks:
