@@ -14,3 +14,5 @@ The folder contains also some utilities that allow to connect the generated code
 PlotJuggler can be simly installed using "snap".
 
 The plot applications allow to save and reload custom configurations (saved as json files).
+
+![image](https://github.com/robertobucher/pysimCoder/assets/8348158/b6fa7074-6e21-451f-bb85-3fac43064f64)
