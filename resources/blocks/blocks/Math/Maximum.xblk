@@ -1,0 +1,11 @@
+{
+  "lib": "math",
+  "name": "Maximum",
+  "ip": 1,
+  "op": 1,
+  "stin": 1,
+  "stout": 0,
+  "icon": "MAXIMUM",
+  "params": "maxFromNInputs",
+  "help": "Find the maximum from all inputs and output it."
+}
