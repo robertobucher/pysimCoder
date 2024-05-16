@@ -52,6 +52,7 @@ class Editor(QObject):
         cloneBlkAction = self.menuIOBlk.addAction('Clone Block')
         copyBlkAction = self.menuIOBlk.addAction('Copy Block')
         deleteBlkAction = self.menuIOBlk.addAction('Delete Block')
+        shvBlkAction = self.menuIOBlk.addAction('Tune parameters')
         
         self.menuSubsBlk = QMenu()
         opensubsBlkAction = self.menuSubsBlk.addAction('Open subsystem')
@@ -59,7 +60,7 @@ class Editor(QObject):
         namesubBlkAction = self.menuSubsBlk.addAction('Change Name')
         copysubBlkAction = self.menuSubsBlk.addAction('Copy Block')
         deletesubBlkAction = self.menuSubsBlk.addAction('Delete Block')
-        shvBlkAction = self.menuIOBlk.addAction('Tune parameters')
+        # shvBlkAction = self.menuSubsBlk.addAction('Tune parameters')
           
         parBlkAction.triggered.connect(self.parBlock)
         flpBlkAction.triggered.connect(self.flipBlock)
@@ -220,6 +221,15 @@ class Editor(QObject):
         self.redrawNodes()
 
     def shvAction(self):
+        if not self.scene.SHV.tuned:
+            dlg = QMessageBox()
+            dlg.setWindowTitle("Warning!")
+            dlg.setText("Enable tuning option")
+            dlg.setStandardButtons(QMessageBox.Ok)
+            dlg.setIcon(QMessageBox.Warning)
+            dlg.exec()
+            return
+
         connection = self.scene.getBrokerConnection()
         item = self.scene.item
         params = item.params.split('|')

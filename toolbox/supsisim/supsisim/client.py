@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import asyncio
+from pydoc import locate
 from threading import Thread
-from os import environ
 
 from shv import RpcUrl, SimpleClient, RpcError, SHVType
 
@@ -24,10 +24,10 @@ async def _connect_client(user: str, addr: str, port: str, password: str) -> Sim
 
 async def _get_parameter_value(client: SimpleClient, mount_point:str, device_id: str, item: str, paramName: str) -> SHVType|None:
     callUrl = "{}/{}/blocks/{}/parameters/{}".format(mount_point, device_id, paramName, item)
-    print("Get param url: ", callUrl)
+    # print("Get param url: ", callUrl)
     try:
         result = await client.call(callUrl, "get") 
-        print("Read result: ", result)
+        # print("Read result: ", result)
         return result
     except RpcError as e:
         print("Can't read parameter ", paramName)
@@ -36,7 +36,7 @@ async def _get_parameter_value(client: SimpleClient, mount_point:str, device_id:
 
 async def _set_parameter_value(client: SimpleClient, mount_point:str, device_id: str, item: str, paramName: str, paramVal: SHVType):
     callUrl = "{}/{}/blocks/{}/parameters/{}".format(mount_point, device_id, paramName, item)
-    print("Set param url: ", callUrl)
+    # print("Set param url: ", callUrl)
     try:
         return await client.call(callUrl, "set", paramVal) 
     except RpcError as e:
@@ -49,34 +49,43 @@ class BrokerConnection:
         self.asyncio_loop = asyncio.new_event_loop()
         self.iothread = loop = asyncio.new_event_loop()
         self.connection: SimpleClient | None = None
+        self.client: SimpleClient | None = None
         self.addr: str | None = None
         self.port: str | None = None
         self.user: str | None = None
         self.password: str | None = None
         self.device_id: str | None = None
         self.mount_point: str | None = None
+        self.connected: bool | False = False
 
         t = Thread(target=_start_background_loop, args=(self.asyncio_loop,), daemon=True)
         t.start()
         
     
     def _connect(self):
+        if (self.addr is None):
+            return
         print("Connecting to broker...")
         connection = asyncio.run_coroutine_threadsafe(_connect_client(self.user, self.addr, self.port, self.password), self.asyncio_loop).result()
 
         if connection is None:
+            self.connected = False
             raise RuntimeError("Error while connecting to broker.")
         
 
         self.connection = connection
+        self.connected = True
 
         print("Connected to broker.")
 
     def _disconnect(self):
+        if self.connection is None:
+            return
         print("Disconnecting from broker...")
         asyncio.run_coroutine_threadsafe(_disconnect_client(self.client), self.asyncio_loop).result()
 
         self.connection = None
+        self.connected = False
         
         print("Disconnected from broker.")
 
@@ -113,21 +122,22 @@ class BrokerConnection:
             self._connect()
 
     def getParameterValue(self, item: str, paramName: str) -> SHVType|None:
+        if self.connection is None:
+            return
         print("GetParam get connection")
-        client = self._get_connection()
+        self.client = self._get_connection()
         print("GetParam call getParam async..")
         return asyncio.run_coroutine_threadsafe(
-            _get_parameter_value(client, self.mount_point, self.device_id, item, paramName), 
+            _get_parameter_value(self.client, self.mount_point, self.device_id, item, paramName), 
             self.asyncio_loop
             ).result()
 
     def setPrameterValue(self, item: str, paramName: str, paramVal: SHVType):
-        client = self._get_connection()
+        if self.connection is None:
+            return
+        self.client = self._get_connection()
         asyncio.run_coroutine_threadsafe(
-            _set_parameter_value(client, self.mount_point, self.device_id, item, paramName, paramVal), 
+            _set_parameter_value(self.client, self.mount_point, self.device_id, item, paramName, paramVal), 
             self.asyncio_loop
             ).result()
 
-    def doExampleStuff(self, item, name):
-        print("Do example stuff")  
-        self.getParameterValue(item, name)

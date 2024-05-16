@@ -39,6 +39,8 @@ class SHVInstance:
         self.devid = filename
         self.mount = 'test'
 
+        self.tuned = False
+
         self.tree = 'GAVL'
 
 class Scene(QGraphicsScene):
@@ -58,7 +60,7 @@ class Scene(QGraphicsScene):
         self.prio = ''
 
         self.SHV = SHVInstance(self.mainw.filename)
-
+    
         self.brokerConnection = BrokerConnection()
 
         self.undoList = []
@@ -395,6 +397,7 @@ class Scene(QGraphicsScene):
     def SHVSetDlg(self):
         dialog = SHVDlg(self)
         dialog.SHVused.setChecked(self.SHV.used)
+        dialog.SHVtune.setChecked(self.SHV.tuned)
         dialog.SHVip.setText(self.SHV.ip)
         dialog.SHVport.setText(self.SHV.port)
         dialog.SHVuser.setText(self.SHV.user)
@@ -407,6 +410,7 @@ class Scene(QGraphicsScene):
             return
 
         self.SHV.used = dialog.SHVused.isChecked()
+        self.SHV.tuned = dialog.SHVtune.isChecked()
         self.SHV.ip = str(dialog.SHVip.text())
         self.SHV.port = str(dialog.SHVport.text())
         self.SHV.user = str(dialog.SHVuser.text())
@@ -414,6 +418,9 @@ class Scene(QGraphicsScene):
         self.SHV.devid = str(dialog.SHVdevid.text())
         self.SHV.mount = str(dialog.SHVmount.text())
         self.SHV.tree = str(dialog.SHVtree.currentText())
+
+        if not self.SHV.tuned and self.brokerConnection.connected:
+            self.brokerConnection._disconnect()
 
     def findAllItems(self, scene):
         items = []
