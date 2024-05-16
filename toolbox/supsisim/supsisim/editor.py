@@ -257,12 +257,12 @@ class Editor(QObject):
             name =  item.name.replace(' ','_') + '_' + str(item.ident)
             parr = '|'.join(items)
             if parr != item.params:
-                item.params = parr
+                params = parr
         except:
             print("Error connecting to the brocker!")
 
 
-        params = item.params.split('|')
+        # params = it.em.params.split('|')
         blk = params[0]
 
         blk = blk.replace('Blk','Dlg')
@@ -272,7 +272,7 @@ class Editor(QObject):
             exec(streV)
             name =  item.name.replace(' ','_') + '_' + str(item.ident)
             cmd = 'dlg.' + blk + '(' + str(item.inp) + ',' + str(item.outp) + \
-                ',  "' + item.params + '"' +  ',"' +  name + '")'
+                ',  "' + params + '"' +  ',"' +  name + '")'
             pars = exec(cmd)
 
         except:
@@ -285,16 +285,19 @@ class Editor(QObject):
 
             pars = pDlg.parsDialog(show, item.helpTxt)
 
-            if pars != item.params and pars != "":
-                item.params = pars
-                items = item.params.split('|')
+            if pars != params and pars != "":
+                params = pars
+                items = params.split('|')
 
                 for i in range(1,len(items)):
                     par = items[i].split(':')
-                    parameter = None
+                    parameter = par[1]
                     if par[2].replace(" ", "") == "double":
                         # parameter = SHVFloat(par[1])
-                        parameter = SHVDecimal(par[1]).quantize(Decimal('1.000000000'), rounding=ROUND_DOWN)
+                        try:
+                            parameter = SHVDecimal(par[1]).quantize(Decimal('1.000000000'), rounding=ROUND_DOWN)
+                        except:
+                            print("Wrong data type")
                     else:
                         continue
                     connection.setPrameterValue(par[0], name, parameter)
