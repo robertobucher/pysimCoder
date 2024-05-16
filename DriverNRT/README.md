@@ -1,3 +1,5 @@
+# Driver nrt.ko
+
 The driver nrt.ko allows the normal user to lauch some
 speciali commands for changing scheduling policy and priority and
 other operations usually only permitted to superusers.
@@ -11,7 +13,7 @@ insmod /lib/modules/`uname -r`/misc/nrt.ko
 In programs simply put this lines or similar in your source before using
 the threads
 
-....
+```
   uid = geteuid();
   if (uid!=0){
     fd=open("/dev/nrt",O_RDWR);
@@ -21,6 +23,6 @@ the threads
     }
     close(fd);
   }
-....
+```
 
 to set the new permissions.

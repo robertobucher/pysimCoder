@@ -5,8 +5,6 @@ import os
 
 from supsisim.qtvers import *
 
-import pyqtgraph as pg
-
 import time
 import threading
 import numpy as np
@@ -20,16 +18,8 @@ SER4 = 2
 TCP = 3
 UDP = 4
 
-COL = 170
-PENWIDTH = 2.0
-PLOT_WINDOM_SIZE = (1000, 600)
-PLOT_LINE_COLORS = ['y', 'g', 'r', 'b', 'c', 'm', 'k', 'w']
-
-pg.setConfigOption('background', pg.mkColor((COL, COL, COL)))
-pg.setConfigOption('foreground', 'k')
-
 path = os.environ.get('PYSUPSICTRL') + '/BlockEditor'
-form_class = uic.loadUiType(path + '/pyplt.ui')[0]
+form_class = uic.loadUiType(path + '/PlotJugglerIntf.ui')[0]
 
 class ser_rcvServer(threading.Thread):
     def __init__(self, mainw):
@@ -75,9 +65,9 @@ class ser_rcvServer4bytes(threading.Thread):
         
         while self.mainw.ServerActive==1:
             val = self.port.read(L)
-            data = self.st.unpack(val)
-            
+            data = self.st.unpack(val)            
             self.mainw.setData(data)
+            
 class tcp_rcvServer(threading.Thread):
     def __init__(self, mainw):
         threading.Thread.__init__(self)
@@ -160,37 +150,27 @@ class MainWindow(QMainWindow, form_class):
     def __init__(self):
         QMainWindow.__init__(self)
         self.setupUi(self)
-        self.setFixedSize(690, 415)  
-
-        self.connect_widget()
-        self.port = None
-  
+        self.setFixedSize(686, 400)
+          
+        self.connect_widget()        
         self.ServerActive = 0
-        self.colors = ["r", "g", "b","y", "c", "m", "w"]
-        self.ymin = -1
-        self.ymax = 1
-        self.autoAxis = True
-        self.filename = 'data.txt'
         self.fname = ''
-
+ 
+    def connectJuggler(self):
+        self._sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        
     def connect_widget(self):
         self.pbStart_ser.clicked.connect(lambda: self.pbServerClicked(SER))
         self.pbStart_ser4.clicked.connect(lambda: self.pbServerClicked(SER4))
         self.pbStart_tcp.clicked.connect(lambda: self.pbServerClicked(TCP))
         self.pbStart_udp.clicked.connect(lambda: self.pbServerClicked(UDP))
-
-        self.edHist.textEdited.connect(self.edHistEdited)
-        self.ckAutoscale.stateChanged.connect(self.setAutoscale)
-        self.ckSaveData.stateChanged.connect(self.setSaveData)
-        self.edYmax.editingFinished.connect(self.YAxes)
-        self.edYmin.editingFinished.connect(self.YAxes)
-        self.sbNsig.valueChanged.connect(self.sbNsigValue)
-        self.tableSig.setColumnWidth(0, 150)
-
+        self.ckTimeEnabled.stateChanged.connect(self.ckTimeEnabled_stateChanged)
         self.actionOpen.triggered.connect(self.openFile)
         self.actionSave.triggered.connect(self.saveFile)
         self.actionSave_As.triggered.connect(self.saveAsFile)
-        
+        self.sbNsig.valueChanged.connect(self.sbNsigValue)
+        self.tableSig.setColumnWidth(0, 150)
+
     def setFields(self, fname):
         f = open(fname,'r')
         msg = f.read()
@@ -198,18 +178,15 @@ class MainWindow(QMainWindow, form_class):
         dataUI = json.loads(msg)
         
         self.sbNsig.setValue(int(dataUI['nSig']))
-        N = self.sbNsig.value()
-        
-        self.edHist.setText(dataUI['Hist'])
-        self.edRefT.setText(dataUI['RefT'])
-        if dataUI['Autoscale'] == '1':
-            self.ckAutoscale.setEnabled(True)
+        if dataUI['ckTime'] == '1':
+            self.ckTimeEnabled.setEnabled(True)
         else:
-            self.ckAutoscale.setEnabled(False)
+            self.ckTimeEnabled.setEnabled(False)
         
-        self.edYmin.setText(dataUI['Ymin'])
-        self.edYmax.setText(dataUI['Ymax'])
-        
+        self.ed_timeName.setText(dataUI['timeName'])
+        self.ed_PJ_IP.setText(dataUI['PJIP'])
+        self.ed_PJ_Port.setText(dataUI['PJPort'])
+        N = self.sbNsig.value()
         self.tableSig.setRowCount(N)
         self.tableSig.setColumnCount(1)
         
@@ -226,15 +203,14 @@ class MainWindow(QMainWindow, form_class):
         self.edUdpPort.setText(dataUI['udpPort'])
         
     def getFields(self, fname):
-        dataUI = {'nSig' : self.sbNsig.text()}       
-        dataUI['Hist'] = self.edHist.text()
-        dataUI['RefT'] =self.edRefT.text()
-        if self.ckAutoscale:
-            dataUI['Autoscale'] = '1'
+        dataUI = {'nSig' : self.sbNsig.text()}
+        if self.ckTimeEnabled:
+           dataUI['ckTime'] = '1'
         else:
-            dataUI['Autoscale'] = '0'
-        dataUI['Ymin'] = self.edYmin.text()
-        dataUI['Ymax'] = self.edYmax. text()        
+           dataUI['ckTime'] = '0'
+        dataUI['timeName'] = self.ed_timeName.text()
+        dataUI['PJIP'] = self.ed_PJ_IP.text()
+        dataUI['PJPort'] = self.ed_PJ_Port.text()
         
         N = self.sbNsig.value()
         names = []
@@ -258,7 +234,7 @@ class MainWindow(QMainWindow, form_class):
         js = json.dumps(dataUI)
         f.write(js)
         f.close()
-                
+        
     def openFile(self):
         filename, _ = QFileDialog.getOpenFileName(self, 'Open','.' , filter='*.json')
 
@@ -291,96 +267,44 @@ class MainWindow(QMainWindow, form_class):
         self.tableSig.setRowCount(self.sbNsig.value())
         self.tableSig.setColumnWidth(0, 150)
 
-    def edHistEdited(self, val):
-        self.Hist = int(val.__str__())
-
-    def setAutoscale(self):
-        if self.ckAutoscale.isChecked():
-            self.autoAxis = True
-            self.label_5.setEnabled(False)
-            self.label_6.setEnabled(False)
-            self.edYmin.setEnabled(False)
-            self.edYmax.setEnabled(False)
-        else:
-            self.autoAxis = False
-            self.label_5.setEnabled(True)
-            self.label_6.setEnabled(True)
-            self.edYmin.setEnabled(True)
-            self.edYmax.setEnabled(True)
- 
     def setData(self, data):
-        if self.ckSaveData.isChecked():
-            self.saveData(data)
-        
-        if self.ckTimeEnabled.isChecked():
-            self.x = np.roll(self.x,-1)
-            self.x[-1] = data[0]
-            dN = 1
-            
-        else:
-            Xe = self.x[-1]+1
-            self.x = np.roll(self.x, -1)
-            self.x[-1] = Xe
-            dN = 0
-            
-        for n in range(0, self.NSig):
-            try:
-                val = float(data[n])
-            except:
-                val = 0.0
-                
-            self.y[n] = np.roll(self.y[n],-1)
-            self.y[n][-1] = data[n+dN]
-        
-    def setSaveData(self):
-        if self.ckSaveData.isChecked():
-            filename = QFileDialog.getSaveFileName(self, 'Save',
-                                                   self.filename, filter='*.txt')
-            filename = filename[0]
-            if filename != '':
-                self.f = open(filename, 'w')
-                self.filename = filename
-                self.lnFilename.setText(filename)
-                self.N = self.sbNsig.value()
-                self.T0 = 0
-            else:
-                self.ckSaveData.setCheckState(False)
-        else:
-            try:
-                self.f.close()
-            except:
-                pass
-        
-    def saveData(self, data):
-        strData = self.T0.__str__() +'\t'
-        for n in range(0,self.N):
-            try:
-                val = float(data[n])
-                strData += val.__str__() + '\t'
-            except:
-                strData += '0.0\t'
-                
-        strData += '\n'
-        self.f.write(strData)
-        self.T0 += 1
- 
-    def YAxes(self):
-        self.ymax = float(self.edYmax.text())
-        self.ymin = float(self.edYmin.text())
+        vals = np.round(data, 3)
+        try:
+            self.sendData = dict(zip(self.keys, vals))
+            print(self.sendData)
+            datas = json.dumps(self.sendData)
+            datab = datas.encode('utf-8')
+            self._sock.sendto(datab, (self._host, self._port))
+        except:
+            pass
         
     def pbServerClicked(self, porttype):
-        if self.ServerActive == 0:            
+        if self.ServerActive == 0:    
             self.N = self.sbNsig.value()
             self.NSig = self.N
-            self.Hist = int(self.edHist.text())
+            if self.ckTimeEnabled.isChecked():
+                self.N += 1
+                self.pjTs = self.ed_timeName.text()
+                
+            self._host = self.ed_PJ_IP.text()
+            self._port = int(self.ed_PJ_Port.text())
+        
+            self.connectJuggler()        
             
             if self.ckTimeEnabled.isChecked():
-                self.x = np.arange(-self.Hist,0)*0.001
-                self.N +=1
-            else:
-                self.x = np.arange(-self.Hist,0)
-            
-            self.y = np.zeros((self.NSig, self.Hist))
+                self.keys = ['ts']
+            else: 
+                self.keys = []
+            for n in range(0,self.NSig):
+                sigName = self.tableSig.item(n, 0)
+                if sigName is None:
+                    sigName = "Signal " + str(n)
+                else:
+                    sigName = sigName.text()
+                self.keys.append(sigName)
+                 
+            vals = np.zeros(self.N)
+            self.sendData = dict(zip(self.keys, vals))
             
             if porttype == SER:
                 self.pbStart_ser.setText('Stop Server')
@@ -402,26 +326,6 @@ class MainWindow(QMainWindow, form_class):
                  self.th = udp_rcvServer(self)               
             self.th.start()
             
-            self.plotWidget = pg.plot(title="Scopes")            
-            self.plotWidget.resize(PLOT_WINDOM_SIZE[0], PLOT_WINDOM_SIZE[1])
-            self.plotWidget.showGrid(x=True, y=True)
-            self.plotWidget.addLegend()
-            self.plots = []
-            
-            for n in range(self.NSig):
-                sigName = self.tableSig.item(n, 0)
-                if sigName is None:
-                    sigName = "Signal " + str(n)
-                else:
-                    sigName = sigName.text()
-                c = PLOT_LINE_COLORS[n % len(PLOT_LINE_COLORS)]
-                self.plots.append(self.plotWidget.plot(self.x, self.y[n], pen={'color':c, 'width' : PENWIDTH}, name=sigName))
-            
-            self.timer = QTimer()
-            self.timer.timeout.connect(self.pltRefresh)
-            refTimer = int(self.edRefT.text())
-            self.timer.start(refTimer)
-
         else:
             if porttype == SER:
                 self.pbStart_ser.setText('Start Server')
@@ -430,36 +334,24 @@ class MainWindow(QMainWindow, form_class):
             else:
                 self.pbStart_udp.setText('Start Server')
             self.ServerActive = 0
-            self.stopServer()
 
-    def stopServer(self):
-        self.timer.stop()
-
-    def pltRefresh(self):        
-        self.plotWidget.setXRange(self.x[0], self.x[-1])
-        
-        if self.autoAxis:
-            self.plotWidget.enableAutoRange(axis='y')
+    def ckTimeEnabled_stateChanged(self):
+        if self.ckTimeEnabled.isChecked():
+            self.ed_timeName.setEnabled(True)
         else:
-            self.plotWidget.setYRange(self.ymin, self.ymax)
-                
-        for n in range(self.NSig):
-            self.plots[n].setData(self.x, self.y[n])
-                           
+            self.ed_timeName.setEnabled(False)
+           
     def closeEvent(self,event):          
         try:
             self.port.shutdown()
         except:
-            print('Shutdown failed')
+            pass
             
         try:
             self.port.close()
         except:
             print('Port close failed')
        
-        if self.ckSaveData.isChecked():
-            self.f.close()
-
         event.accept()
                     
 app = QApplication(sys.argv)

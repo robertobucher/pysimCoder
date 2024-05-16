@@ -17,10 +17,13 @@ class Connection(QGraphicsPathItem):
 
         self.port1 = None
         self.port2 = None
+        self.params = None
 
         self.connPoints = []
         self.draw_color =Qt.GlobalColor.black
         self.setup()
+        
+        self.selected = False
 
     def __str__(self):
         txt  = 'Connection\n'
@@ -44,6 +47,7 @@ class Connection(QGraphicsPathItem):
         pen = QPen(self.draw_color)
         pen.setWidth(LW)
         self.setPen(pen)
+        self.setFlag(QGraphicsItem.GraphicsItemFlag.ItemIsSelectable)
 
     def addPoint(self, pos):
         if len(self.connPoints) == 0:
@@ -167,13 +171,14 @@ class Connection(QGraphicsPathItem):
         else:          
             return False
 
-    def update_pos_from_ports(self):
+    def update_pos_from_ports(self, moveFlag = False):
         pos = self.port1.scenePos()
         delta = pos - self.pos1
         self.pos1 = pos
-        N = len(self.connPoints)
-        for n in range(0,N):
-            self.connPoints[n] = self.connPoints[n]+delta
+        if moveFlag:
+            N = len(self.connPoints)
+            for n in range(0,N):
+                self.connPoints[n] = self.connPoints[n]+delta
         self.pos2 = self.port2.scenePos()
         if len(self.connPoints)!=0:
             self.connPoints[0].setY(self.pos1.y())
@@ -383,7 +388,7 @@ class Connection(QGraphicsPathItem):
         pen = QPen(self.draw_color)
         pen.setWidth(LW)
         if self.isSelected():
-            pen.setStyle(Qt.DotLine)
+            pen.setStyle(Qt.PenStyle.DotLine)
         painter.setPen(pen)
         painter.drawPath(self.path())
 
@@ -406,8 +411,33 @@ class Connection(QGraphicsPathItem):
         except:
             pass
         self.scene.removeItem(self)
-
+    
+    def cleanPts(self):        
+        while True:
+            N = len(self.connPoints)
+            if N==2:
+                return
+            errPos = []
+            for n in range(1, N-1):
+                if self.connPoints[n-1].x() == self.connPoints[n].x() == self.connPoints[n+1].x() or \
+                self.connPoints[n-1].y() == self.connPoints[n].y() == self.connPoints[n+1].y():
+                    errPos.append(self.connPoints[n])
+            if len(errPos)==0:
+                try:
+                    x = self.connPoints[-2].x()
+                    y = self.pos2.y()
+                    self.connPoints[-1] = QPointF(x,y)
+                    x = self.connPoints[1].x()
+                    y = self.pos1.y()
+                    self.connPoints[0] = QPointF(x,y)
+                except:
+                    pass
+                return
+            else:
+                self.connPoints.remove(errPos[0])
+        
     def save(self):
+        self.cleanPts()
         try:
             pos1 = (self.pos1.x(), self.pos1.y())
             pos2 = (self.pos2.x(), self.pos2.y())
@@ -433,6 +463,7 @@ class Connection(QGraphicsPathItem):
             for el in item['points']:
                 pt = QPointF(el[0], el[1])+dpt
                 self.connPoints.append(pt)
+            self.cleanPts()
             self.update_ports_from_pos()
         except:
             pass
@@ -442,4 +473,41 @@ class Connection(QGraphicsPathItem):
          x = gr * ((pt.x() + gr /2) // gr)
          y = gr * ((pt.y() + gr /2) // gr)
          return QPointF(x,y)
-
+         
+    def connSelected(self, pos):
+        points = [self.pos1]
+        for el in self.connPoints:
+            points.append(el)
+        points.append(self.pos2)
+        N = len(points)
+        for n in range(0,N-1):
+            p1 = points[n]
+            p2 = points[n+1]
+            rect = QRectF(p1 - QPointF(DB,DB) ,p2 + QPointF(DB,DB))
+            if rect.contains(pos):
+                return True
+        return False
+    
+    def connInSelection(self, rect):
+        if self.selected:
+            self.selected = False
+            return True
+        else:
+            points = [self.pos1]
+            for el in self.connPoints:
+                points.append(el)
+            points.append(self.pos2)
+            for pt in points:
+                if not rect.contains(pt):
+                    return False
+            return True
+            
+        
+    def mousePressEvent(self, event):
+        if self.connSelected(event.scenePos()):
+            self.setSelected(True)
+            self.selected = True
+            event.accept()
+        else:
+            event.ignore()
+                    

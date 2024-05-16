@@ -596,7 +596,11 @@ int shv_unpack_data(ccpcp_unpack_context * ctx, int * v, double * d)
                     {
                       if (d) *d = (ctx->item.as.Decimal.mantisa * pow(10, ctx->item.as.Decimal.exponent));
                     }
-	              }
+                  else if (ctx->item.type == CCPCP_ITEM_DOUBLE)
+                    {
+                      if (d) *d = ctx->item.as.Double;
+                    }
+                }
             }
         }
     } while (ctx->err_no == CCPCP_RC_OK);

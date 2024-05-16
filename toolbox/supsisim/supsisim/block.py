@@ -4,6 +4,8 @@ from supsisim.port import Port, InPort, OutPort
 from supsisim.connection import Connection
 from supsisim.const import GRID, PW, LW, BWmin, BHmin, PD, respath
 
+import os
+
 class Block(QGraphicsPathItem):
     """A block holds ports that can be connected to."""
     def __init__(self, *args):
@@ -109,18 +111,14 @@ class Block(QGraphicsPathItem):
         else:
             painter.drawPath(self.path())
             
-        # the path
-        str_path = respath + 'blocks/Icons/' + self.icon + '.svg'
-        # construct the renderer and get the size of the svg
-        renderer = QtSvg.QSvgRenderer(str_path)
-        svg_size = renderer.defaultSize()
+        svg_size = self.renderer.defaultSize()
 
         # the middle of the boundingRect is actually (0,0)
         # so shift only by the svg's width and height
         new_left: float = -svg_size.width()/2
         new_top: float = -svg_size.height()/2
         where_to: QRectF = QRectF(new_left, new_top, svg_size.width(), svg_size.height())
-        renderer.render(painter, where_to)
+        self.renderer.render(painter, where_to)
 
     def itemChange(self, change, value):
         return value
@@ -151,10 +149,19 @@ class Block(QGraphicsPathItem):
     def setFlip(self, flip=None):
         if flip: 
             self.flip = flip
+            
+        str_path = respath + 'blocks/Icons/' + self.icon + '.svg'
         if self.flip:
             self.setTransform(QTransform.fromScale(-1, 1))
+            # the path
+            mirr_path = '/tmp/' + self.icon + '.svg'
+            if not os.path.exists(mirr_path):
+                cmd = 'inkscape --actions="select-all;object-flip-horizontal" -o ' + mirr_path + ' ' + str_path
+                os.system(cmd)
+            self.renderer = QtSvg.QSvgRenderer(mirr_path)
         else:
             self.setTransform(QTransform.fromScale(1, 1))
+            self.renderer = QtSvg.QSvgRenderer(str_path)
         self.flipLabel()
 
     def setLabel(self, p):

@@ -757,3 +757,22 @@ class Scene(QGraphicsScene):
         self.brokerConnection.update_parameters_and_connect(shv.ip, shv.port, shv.user, shv.passw, shv.devid, shv.mount)
 
         return self.brokerConnection
+
+    def mousePressEvent(self, event):
+        self.pos1 = event.scenePos()
+        super(Scene,self).mousePressEvent(event)
+
+    def mouseReleaseEvent(self, event):
+        items = self.selectedItems()
+        try:
+            rect = QRectF(self.pos1, event.scenePos())
+            for el in items:
+                if isinstance(el, Connection):
+                    if el.connInSelection(rect):
+                        el.setSelected(True)
+                    else:
+                        el.setSelected(False)
+        except:
+            pass
+
+        super(Scene,self).mouseReleaseEvent(event)
