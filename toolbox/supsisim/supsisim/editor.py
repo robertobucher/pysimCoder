@@ -8,8 +8,12 @@ from supsisim.dialg import BlockName_Dialog
 import supsisim.RCPDlg as pDlg
 from supsisim.const import GRID, DB, DP
 from supsisim.node import Node
+from supsisim.client import *
 import numpy as np
 import json
+from shv import SHVDecimal, SHVFloat
+from decimal import Decimal, ROUND_DOWN
+
 
 # States
 IDLE = 0
@@ -48,6 +52,7 @@ class Editor(QObject):
         cloneBlkAction = self.menuIOBlk.addAction('Clone Block')
         copyBlkAction = self.menuIOBlk.addAction('Copy Block')
         deleteBlkAction = self.menuIOBlk.addAction('Delete Block')
+        shvBlkAction = self.menuIOBlk.addAction('Tune parameters')
         
         self.menuSubsBlk = QMenu()
         opensubsBlkAction = self.menuSubsBlk.addAction('Open subsystem')
@@ -55,6 +60,7 @@ class Editor(QObject):
         namesubBlkAction = self.menuSubsBlk.addAction('Change Name')
         copysubBlkAction = self.menuSubsBlk.addAction('Copy Block')
         deletesubBlkAction = self.menuSubsBlk.addAction('Delete Block')
+        # shvBlkAction = self.menuSubsBlk.addAction('Tune parameters')
           
         parBlkAction.triggered.connect(self.parBlock)
         flpBlkAction.triggered.connect(self.flipBlock)
@@ -68,6 +74,7 @@ class Editor(QObject):
         copysubBlkAction.triggered.connect(self.copyBlock)
         namesubBlkAction.triggered.connect(self.nameBlock)
         deletesubBlkAction.triggered.connect(self.deleteBlock)
+        shvBlkAction.triggered.connect(self.shvAction)
         
         self.subMenuConn = QMenu()
         connAddAction = self.subMenuConn.addAction('Add connection')
@@ -213,7 +220,91 @@ class Editor(QObject):
         item.remove()
         self.removeNodes()
         self.redrawNodes()
-                
+
+    def shvAction(self):
+        if not self.scene.SHV.tuned:
+            dlg = QMessageBox()
+            dlg.setWindowTitle("Warning!")
+            dlg.setText("Enable tuning option")
+            dlg.setStandardButtons(QMessageBox.Ok)
+            dlg.setIcon(QMessageBox.Warning)
+            dlg.exec()
+            return
+
+        connection = self.scene.getBrokerConnection()
+
+        if not connection.isConnected():
+            dlg = QMessageBox()
+            dlg.setWindowTitle("Warning!")
+            dlg.setText("No connection to broker")
+            dlg.setStandardButtons(QMessageBox.Ok)
+            dlg.setIcon(QMessageBox.Warning)
+            dlg.exec()
+            return
+    
+        item = self.scene.item
+        params = item.params.split('|')
+        blk = params[0]
+        name =  item.name.replace(' ','_') + '_' + str(item.ident)
+        items = item.params.split('|')
+        parr = ""
+        try:
+            for i in range(1,len(items)):
+                par = items[i].split(':')
+                if par[2].replace(" ", "") == "double":
+                    res = connection.getParameterValue(par[0], name)
+                    par[1] = str(float(res))
+                    items[i] = ':'.join(par)
+            name =  item.name.replace(' ','_') + '_' + str(item.ident)
+            parr = '|'.join(items)
+            if parr != item.params:
+                params = parr
+        except:
+            print("Error connecting to the broker!")
+
+
+        # params = it.em.params.split('|')
+        blk = params[0]
+
+        blk = blk.replace('Blk','Dlg')
+
+        streV = 'import dialogs.' + blk +  ' as dlg'
+        try:
+            exec(streV)
+            name =  item.name.replace(' ','_') + '_' + str(item.ident)
+            cmd = 'dlg.' + blk + '(' + str(item.inp) + ',' + str(item.outp) + \
+                ',  "' + params + '"' +  ',"' +  name + '")'
+            pars = exec(cmd)
+
+        except:
+            items = parr.split('|')
+            show = items[0]
+            for i in range(1,len(items)):
+                par = items[i].split(':')
+                if par[2].replace(" ", "") == "double":
+                    show += '|' + items[i]
+
+            pars = pDlg.parsDialog(show, item.helpTxt)
+
+            if pars != params and pars != "":
+                params = pars
+                items = params.split('|')
+
+                for i in range(1,len(items)):
+                    par = items[i].split(':')
+                    parameter = par[1]
+                    if par[2].replace(" ", "") == "double":
+                        # parameter = SHVFloat(par[1])
+                        try:
+                            parameter = SHVDecimal(par[1]).quantize(Decimal('1.000000000'), rounding=ROUND_DOWN)
+                        except:
+                            print("Wrong data type")
+                    else:
+                        continue
+                    connection.setPrameterValue(par[0], name, parameter)
+            else:
+                self.scene.clearLastUndo()
+    
     # Subsystems
 
     def createSubsystem(self):
@@ -376,7 +467,7 @@ class Editor(QObject):
                         pass
 
     def getNumOfItems(self):
-        tot = 0;
+        tot = 0
         for item in self.scene.selectedItems():
             if isinstance(item, Block):
                 tot += 1
