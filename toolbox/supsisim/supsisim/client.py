@@ -11,13 +11,17 @@ def _start_background_loop(loop: asyncio.AbstractEventLoop) -> None:
     try:
         loop.run_forever()
     finally:
+        print("Ending connection loop...")
         for task in asyncio.all_tasks():
             task.cancel()
         
+        print("Remaining tasks canceled...")
     loop.close()
+    print("Ending connection loop, all Done")
 
 async def _disconnect_client(client: SimpleClient):
-    await client.disconnect()
+    if await _is_connected(client):
+        await client.disconnect()
 
 async def _connect_client(user: str, addr: str, port: str, password: str) -> SimpleClient | None:
     url: RpcUrl = RpcUrl.parse("tcp://{}@{}:{}?password={}".format(user, addr, port, password))
@@ -28,7 +32,6 @@ async def _connect_client(user: str, addr: str, port: str, password: str) -> Sim
 
 async def _get_parameter_value(client: SimpleClient, mount_point:str, device_id: str, item: str, paramName: str) -> SHVType|None:
     callUrl = "{}/{}/blocks/{}/parameters/{}".format(mount_point, device_id, paramName, item)
-    # print("Get param url: ", callUrl)
     try:
         result = await client.call(callUrl, "get") 
         return result
@@ -46,12 +49,14 @@ async def _set_parameter_value(client: SimpleClient, mount_point:str, device_id:
         print("Can't set parameter ", paramName)
         print(e)
 
+async def _is_connected(client: SimpleClient) -> bool:
+    return client.client.connected()
+
 
 class BrokerConnection:
     def __init__(self):
         self.asyncio_loop = asyncio.new_event_loop()
         self.asyncio_thread = Thread(target=_start_background_loop, args=(self.asyncio_loop,), daemon=True)
-        self.connection: SimpleClient | None = None
         self.client: SimpleClient | None = None
         self.addr: str | None = None
         self.port: str | None = None
@@ -63,48 +68,40 @@ class BrokerConnection:
         self.asyncio_thread.start()
 
     def __del__(self):
-        if self.connection is not None:
-            self._disconnect()
-            self.connection = None
-
         self.asyncio_loop.stop()
         
     
     def _connect(self):
-        if (self.addr is None):
-            return
         print("Connecting to broker...")
         try:
-            connection = asyncio.run_coroutine_threadsafe(_connect_client(self.user, self.addr, self.port, self.password), self.asyncio_loop).result()
+            client = asyncio.run_coroutine_threadsafe(_connect_client(self.user, self.addr, self.port, self.password), self.asyncio_loop).result()
         except:
             print("No connection to brocker")
             return
 
-        if connection is None:
+        if client is None:
             print("No connection to brocker")
         
 
-        self.connection = connection
-        self.connected = True
+        self.client = client
 
         print("Connected to broker.")
 
     def _disconnect(self):
-        if self.connection is None:
+        if self.client is None:
             return
         print("Disconnecting from broker...")
         asyncio.run_coroutine_threadsafe(_disconnect_client(self.client), self.asyncio_loop).result()
 
-        self.connection = None
-        self.connected = False
+        self.client = None
         
         print("Disconnected from broker.")
 
     def _get_connection(self):
-        if self.connection is None:
-            self._connect()
+        if self.client is None or not asyncio.run_coroutine_threadsafe(_is_connected(self.client), self.asyncio_loop).result():
+            self._connect()            
 
-        return self.connection
+        return self.client
 
     def update_parameters_and_connect(self, addr: str, port: str, user: str, password: str, device_id: str, mount_point: str):
 
@@ -123,25 +120,32 @@ class BrokerConnection:
         self.device_id = device_id
         self.mount_point = mount_point
 
-        if are_values_updated and self.connection is not None:
+        if are_values_updated:
             self._disconnect()
 
-        if self.connection is None:
+        if self.client is None:
             self._connect()
+    
+    def isConnected(self)-> bool:
+        if self.client is None:
+            return False
+        
+        return asyncio.run_coroutine_threadsafe(_is_connected(self.client), self.asyncio_loop).result()
+
 
     def getParameterValue(self, item: str, paramName: str) -> SHVType|None:
         client = self._get_connection()
         return asyncio.run_coroutine_threadsafe(
-            _get_parameter_value(self.client, self.mount_point, self.device_id, item, paramName), 
+            _get_parameter_value(client, self.mount_point, self.device_id, item, paramName), 
             self.asyncio_loop
             ).result()
 
     def setPrameterValue(self, item: str, paramName: str, paramVal: SHVType):
-        if self.connection is None:
-            return
-        self.client = self._get_connection()
+        client = self._get_connection()
         asyncio.run_coroutine_threadsafe(
-            _set_parameter_value(self.client, self.mount_point, self.device_id, item, paramName, paramVal), 
+            _set_parameter_value(client, self.mount_point, self.device_id, item, paramName, paramVal), 
             self.asyncio_loop
             ).result()
-
+        
+    def disconnect(self):
+        self._disconnect()

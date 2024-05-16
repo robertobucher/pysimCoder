@@ -232,7 +232,7 @@ class Editor(QObject):
 
         connection = self.scene.getBrokerConnection()
 
-        if not connection.connected:
+        if not connection.isConnected():
             dlg = QMessageBox()
             dlg.setWindowTitle("Warning!")
             dlg.setText("No connection to brocker")

@@ -419,8 +419,8 @@ class Scene(QGraphicsScene):
         self.SHV.mount = str(dialog.SHVmount.text())
         self.SHV.tree = str(dialog.SHVtree.currentText())
 
-        if not self.SHV.tuned and self.brokerConnection.connected:
-            self.brokerConnection._disconnect()
+        if not self.SHV.tuned and self.brokerConnection is not None:
+            self.brokerConnection.disconnect()
 
     def findAllItems(self, scene):
         items = []
