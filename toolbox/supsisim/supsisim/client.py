@@ -27,7 +27,6 @@ async def _get_parameter_value(client: SimpleClient, mount_point:str, device_id:
     # print("Get param url: ", callUrl)
     try:
         result = await client.call(callUrl, "get") 
-        # print("Read result: ", result)
         return result
     except RpcError as e:
         print("Can't read parameter ", paramName)
@@ -66,11 +65,14 @@ class BrokerConnection:
         if (self.addr is None):
             return
         print("Connecting to broker...")
-        connection = asyncio.run_coroutine_threadsafe(_connect_client(self.user, self.addr, self.port, self.password), self.asyncio_loop).result()
+        try:
+            connection = asyncio.run_coroutine_threadsafe(_connect_client(self.user, self.addr, self.port, self.password), self.asyncio_loop).result()
+        except:
+            print("No connection to brocker")
+            return
 
         if connection is None:
-            self.connected = False
-            raise RuntimeError("Error while connecting to broker.")
+            print("No connection to brocker")
         
 
         self.connection = connection

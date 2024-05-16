@@ -231,6 +231,16 @@ class Editor(QObject):
             return
 
         connection = self.scene.getBrokerConnection()
+
+        if not connection.connected:
+            dlg = QMessageBox()
+            dlg.setWindowTitle("Warning!")
+            dlg.setText("No connection to brocker")
+            dlg.setStandardButtons(QMessageBox.Ok)
+            dlg.setIcon(QMessageBox.Warning)
+            dlg.exec()
+            return
+    
         item = self.scene.item
         params = item.params.split('|')
         blk = params[0]
