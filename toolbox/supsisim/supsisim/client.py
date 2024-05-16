@@ -76,11 +76,11 @@ class BrokerConnection:
         try:
             client = asyncio.run_coroutine_threadsafe(_connect_client(self.user, self.addr, self.port, self.password), self.asyncio_loop).result()
         except:
-            print("No connection to brocker")
+            print("No connection to broker")
             return
 
         if client is None:
-            print("No connection to brocker")
+            print("No connection to broker")
         
 
         self.client = client

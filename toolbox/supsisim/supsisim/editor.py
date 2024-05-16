@@ -235,7 +235,7 @@ class Editor(QObject):
         if not connection.isConnected():
             dlg = QMessageBox()
             dlg.setWindowTitle("Warning!")
-            dlg.setText("No connection to brocker")
+            dlg.setText("No connection to broker")
             dlg.setStandardButtons(QMessageBox.Ok)
             dlg.setIcon(QMessageBox.Warning)
             dlg.exec()
@@ -259,7 +259,7 @@ class Editor(QObject):
             if parr != item.params:
                 params = parr
         except:
-            print("Error connecting to the brocker!")
+            print("Error connecting to the broker!")
 
 
         # params = it.em.params.split('|')
