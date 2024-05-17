@@ -226,8 +226,8 @@ class Editor(QObject):
             dlg = QMessageBox()
             dlg.setWindowTitle("Warning!")
             dlg.setText("Enable tuning option")
-            dlg.setStandardButtons(QMessageBox.Ok)
-            dlg.setIcon(QMessageBox.Warning)
+            dlg.setStandardButtons(QMessageBox.StandardButton.Ok)
+            dlg.setIcon(QMessageBox.Icon.Warning)
             dlg.exec()
             return
 
@@ -237,8 +237,8 @@ class Editor(QObject):
             dlg = QMessageBox()
             dlg.setWindowTitle("Warning!")
             dlg.setText("No connection to broker")
-            dlg.setStandardButtons(QMessageBox.Ok)
-            dlg.setIcon(QMessageBox.Warning)
+            dlg.setStandardButtons(QMessageBox.StandardButton.Ok)
+            dlg.setIcon(QMessageBox.Icon.Warning)
             dlg.exec()
             return
     
