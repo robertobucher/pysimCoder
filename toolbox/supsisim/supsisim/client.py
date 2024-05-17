@@ -50,7 +50,7 @@ async def _set_parameter_value(client: SimpleClient, mount_point:str, device_id:
         print(e)
 
 async def _is_connected(client: SimpleClient) -> bool:
-    return client.client.connected()
+    return client.client.connected
 
 
 class BrokerConnection:
