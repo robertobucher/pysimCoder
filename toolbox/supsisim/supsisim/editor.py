@@ -241,7 +241,10 @@ class Editor(QObject):
             dlg.setIcon(QMessageBox.Icon.Warning)
             dlg.exec()
             return
-    
+
+        # get corret name.ident values for the SHV paths to blocks
+        self.scene.findAllItems(self.scene)
+
         item = self.scene.item
         params = item.params.split('|')
         blk = params[0]
