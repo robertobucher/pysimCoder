@@ -442,6 +442,7 @@ class Scene(QGraphicsScene):
             
             count = count + 1
 
+        items.sort(key=lambda p: p.name)
         return items
 
     def cleanBlkList(self, items):
