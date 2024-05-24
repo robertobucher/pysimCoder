@@ -402,7 +402,7 @@ class Editor(QObject):
             npt = npos
        
         for n in range(0, npt):
-            self.conn.connPoints.append(c.connPoints[n])
+            self.conn.connPoints.append(QPointF(c.connPoints[n]))
         self.conn.connPoints.append(pos)
         self.state = DRAWFROMCONNECTION
         self.firstTime = True
