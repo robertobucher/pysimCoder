@@ -210,6 +210,21 @@ class Connection(QGraphicsPathItem):
         p.lineTo(self.pos2)
         self.setPath(p)
 
+    def setRect(self, p1, p2):
+        if p1.x()<=p2.x():
+            pt1X = p1.x()-DB
+            pt2X = p2.x()+DB
+        else:
+            pt1X = p1.x()+DB
+            pt2X = p2.x()-DB
+        if p1.y()<=p2.y():
+            pt1Y = p1.y()-DB
+            pt2Y = p2.y()+DB
+        else:
+            pt1Y = p1.y()+DB
+            pt2Y = p2.y()-DB
+        return QRectF(QPointF(pt1X, pt1Y), QPointF(pt2X, pt2Y))
+        
     def find_exact_pos(self, pos):
         # Find exact point "pos" on the connection
         points = [self.pos1]
@@ -220,7 +235,7 @@ class Connection(QGraphicsPathItem):
         for n in range(0,N-1):
             p1 = points[n]
             p2 = points[n+1]
-            rect = QRectF(p1 - QPointF(DB, DB) ,p2 + QPointF(DB, DB))
+            rect = self.setRect(p1, p2)
             if rect.contains(pos):
                 if p1.x() == p2.x():
                     pos.setX(p1.x())
@@ -483,7 +498,7 @@ class Connection(QGraphicsPathItem):
         for n in range(0,N-1):
             p1 = points[n]
             p2 = points[n+1]
-            rect = QRectF(p1 - QPointF(DB,DB) ,p2 + QPointF(DB,DB))
+            rect = self.setRect(p1, p2)
             if rect.contains(pos):
                 return True
         return False

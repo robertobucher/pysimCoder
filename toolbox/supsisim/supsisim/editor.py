@@ -511,7 +511,22 @@ class Editor(QObject):
             if isinstance(el, Block):
                 return el
         return None
-
+        
+    def setRect(self, p1, p2, delta):
+        if p1.x()<=p2.x():
+            pt1X = p1.x()-delta
+            pt2X = p2.x()+delta
+        else:
+            pt1X = p1.x()+delta
+            pt2X = p2.x()-delta
+        if p1.y()<=p2.y():
+            pt1Y = p1.y()-delta
+            pt2Y = p2.y()+delta
+        else:
+            pt1Y = p1.y()+delta
+            pt2Y = p2.y()-delta
+        return QRectF(QPointF(pt1X,pt1Y), QPointF(pt2X, pt2Y))
+            
     def findConnectionAt(self, pos):
         items =  self.scene.items(QRectF(pos-QPointF(DB,DB), QSizeF(2*DB,2*DB)))
         for c in items:
@@ -524,7 +539,7 @@ class Editor(QObject):
                 for n in range(0,N-1):
                     p1 = points[n]
                     p2 = points[n+1]
-                    rect = QRectF(p1 - QPointF(DB,DB) ,p2 + QPointF(DB,DB))
+                    rect = self.setRect(p1, p2, DB)
                     if rect.contains(pos):
                         return c
         return None
@@ -541,7 +556,7 @@ class Editor(QObject):
                 for n in range(0,N-1):
                     p1 = points[n]
                     p2 = points[n+1]
-                    rect = QRectF(p1 - QPointF(DB,DB) ,p2 + QPointF(DB,DB))
+                    rect = self.setRect(p1, p2, DB)
                     if rect.contains(pos):
                         return c               
         return None
@@ -592,7 +607,7 @@ class Editor(QObject):
         return pts
         
     def ptInLine(self, pt, p1, p2):
-        rect = QRectF(p1-QPointF(0.5,0.5), p2+QPointF(0.5,0.5))
+        rect = self.setRect(p1, p2, 0.5)
         if rect.contains(pt):
             return True
         else:
@@ -667,8 +682,7 @@ class Editor(QObject):
          x = gr * ((pt.x() + gr /2) // gr)
          y = gr * ((pt.y() + gr /2) // gr)
          return QPointF(x,y)
-                
-                
+                                
     # Mouse icons
                 
     def setMouseInitDraw(self, pos):
@@ -781,13 +795,13 @@ class Editor(QObject):
                 self.menuIOBlk.exec(event.screenPos())
                 
         elif conn:                
-#                 self.scene.item = conn[0]
-                self.scene.item = self.findConnectionAt(event.scenePos())  # New
-                self.scene.evpos = event.scenePos()
-                try:
-                    self.subMenuConn.exec(event.screenPos())
-                except:
-                    pass
+#             self.scene.item = conn[0]
+            self.scene.item = self.findConnectionAt(event.scenePos())  # New
+            self.scene.evpos = event.scenePos()
+            try:
+                self.subMenuConn.exec(event.screenPos())
+            except:
+                pass
                     
         else:      
             self.scene.evpos = event.scenePos()
