@@ -42,12 +42,18 @@ static void init(python_block *block)
 {
   int * intPar = block->intPar;
   int fd = intPar[block->nout + 1];
+  int sw_trig = intPar[block->nout + 3];
 
   /* Open the device */
 
   if (fd == 0)
     {
-      fd = open(block->str, O_RDONLY);
+      int oflag = O_RDONLY;
+      if (sw_trig == 0)
+        {
+          oflag |= O_NONBLOCK;
+        }
+      fd = open(block->str, oflag);
       if (fd < 0)
         {
           fprintf(stderr,"Error opening device: %s\n", block->str);
@@ -82,10 +88,15 @@ static void init(python_block *block)
       exit(1);
     }
 
+  /* Reset the ADC's FIFO */
+
+  ioctl(fd, ANIOC_RESET_FIFO, 0);
+
   /* Save fd and number of configured channels to block parameters */
 
   intPar[block->nout + 1] = fd;
   intPar[block->nout + 2] = ret;
+
 }
 
 /****************************************************************************
@@ -102,42 +113,55 @@ static void inout(python_block *block)
   int * intPar = block->intPar;
   double *y = block->y[0];
   int i, j, ret;
-  int res = intPar[block->nout];
-  int fd = intPar[block->nout + 1];
+  int res     = intPar[block->nout];
+  int fd      = intPar[block->nout + 1];
   int conf_ch = intPar[block->nout + 2];
+  int sw_trig = intPar[block->nout + 3];
   int readsize = conf_ch*sizeof(struct adc_msg_s);
   int nbytes;
 
+  /* Buffers for reading */
+
   struct adc_msg_s sample[conf_ch];
 
-#ifdef CONFIG_EXAMPLES_ADC_SWTRIG
-  ret = ioctl(fd, ANIOC_TRIGGER, 0);
-  if (ret < 0)
+  /* Check if we need to SW trigger the ADC */
+
+  if (sw_trig != 0)
     {
-      int errcode = errno;
-      fprintf(stderr,"adc_main: ANIOC_TRIGGER ioctl failed: %d\n", errcode);
-      close(fd);
-      exit(1);
-    }
-#endif
-
-  /* Read the data from all configured channels */
-
-  nbytes = read(fd, sample, readsize);
-
-  if (nbytes <= 0)
-    {
-      int errval = errno;
-      if (errval != EINTR)
+      ret = ioctl(fd, ANIOC_TRIGGER, 0);
+      if (ret < 0)
         {
-	        fprintf(stderr,"adc_main: read %s failed: %d\n",
-	                block->str, errval);
-	        close(fd);
-	        exit(1);
+          int errcode = errno;
+          fprintf(stderr,"adc_main: ANIOC_TRIGGER ioctl failed: %d\n", errcode);
+          close(fd);
+          exit(1);
         }
     }
 
-  /* Assing the outputs to only those channels set in block parameters by the user */
+  /* Read the data from all configured channels. */
+
+  nbytes = read(fd, sample, readsize);
+  if (nbytes <= 0)
+    {
+      int errval = errno;
+      if (errval == EAGAIN)
+        {
+          return;
+        }
+      if (errval != EINTR)
+        {
+          fprintf(stderr,"adc_main: read %s failed: %d\n",
+                  block->str, errval);
+          close(fd);
+          exit(1);
+        }
+    }
+
+  /* Flush all remaining data from the fifo. We need newer data afterwards. */
+
+  ioctl(fd, ANIOC_RESET_FIFO, 0);
+
+  /* Passing the outputs to only those channels set in block parameters by the user */
 
   for (i = 0; i < block->nout; i++)
     {
