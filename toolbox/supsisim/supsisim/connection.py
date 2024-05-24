@@ -211,18 +211,10 @@ class Connection(QGraphicsPathItem):
         self.setPath(p)
 
     def setRect(self, p1, p2):
-        if p1.x()<=p2.x():
-            pt1X = p1.x()-DB
-            pt2X = p2.x()+DB
-        else:
-            pt1X = p1.x()+DB
-            pt2X = p2.x()-DB
-        if p1.y()<=p2.y():
-            pt1Y = p1.y()-DB
-            pt2Y = p2.y()+DB
-        else:
-            pt1Y = p1.y()+DB
-            pt2Y = p2.y()-DB
+        pt1X = min(p1.x(), p2.x())-DB
+        pt2X = max(p1.x(), p2.x())+DB
+        pt1Y = min(p1.y(), p2.y())-DB
+        pt2Y = max(p1.y(), p2.y())+DB
         return QRectF(QPointF(pt1X, pt1Y), QPointF(pt2X, pt2Y))
         
     def find_exact_pos(self, pos):

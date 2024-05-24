@@ -513,18 +513,10 @@ class Editor(QObject):
         return None
         
     def setRect(self, p1, p2, delta):
-        if p1.x()<=p2.x():
-            pt1X = p1.x()-delta
-            pt2X = p2.x()+delta
-        else:
-            pt1X = p1.x()+delta
-            pt2X = p2.x()-delta
-        if p1.y()<=p2.y():
-            pt1Y = p1.y()-delta
-            pt2Y = p2.y()+delta
-        else:
-            pt1Y = p1.y()+delta
-            pt2Y = p2.y()-delta
+        pt1X = min(p1.x(), p2.x())-delta
+        pt2X = max(p1.x(), p2.x())+delta
+        pt1Y = min(p1.y(), p2.y())-delta
+        pt2Y = max(p1.y(), p2.y())+delta
         return QRectF(QPointF(pt1X,pt1Y), QPointF(pt2X, pt2Y))
             
     def findConnectionAt(self, pos):
