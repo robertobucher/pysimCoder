@@ -1,0 +1,11 @@
+{
+  "lib": "linux_mz_apo",
+  "name": "mzapoLED",
+  "ip": 1,
+  "op": 0,
+  "stin": 0,
+  "stout": 0,
+  "icon": "LED",
+  "params": "mz_apo_LEDBlk|offset:0:int|len:32:int|min_val:0:double|max_val:1:double",
+  "help": "Progressbar of made of LED strip.\noffset: Index of first LED for which this block is repsonsible. [-32, 32]\nlen: Number of LEDs for which this block is repsonsible. Negative value will be interpreted as abs(len) length, but progress grows from right instead. [-32, 32]\nmin_val: Value of input corresponding to 0 lit LED's.\nmax_val: Value of input corresponding to 'len' LED's lit.\n\n\n"
+}
