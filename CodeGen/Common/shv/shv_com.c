@@ -27,6 +27,7 @@
 #include <poll.h>
 #include <unistd.h>
 #include <stdio.h>
+#include <stdatomic.h>
 #include <pthread.h>
 #include <math.h>
 #include <errno.h>
@@ -39,8 +40,8 @@
 #include "shv_com.h"
 #include "shv_tree.h"
 
-int shv_write_err = 0;
-int shv_init_done = 0;
+static int shv_write_err = 0;
+static atomic_flag shv_init_done = ATOMIC_FLAG_INIT;
 
 int get_priority_for_com(void);
 
@@ -93,7 +94,7 @@ int tcp_init(void)
   struct sockaddr_in servaddr;
   uint16_t port;
   char *shv_broker_ip;
-  char* shv_broker_port;
+  char *shv_broker_port;
 
   /* Socket creation */
 
@@ -101,11 +102,7 @@ int tcp_init(void)
   if (sockfd == -1)
     {
       printf("ERROR: Socket creation failed.\n");
-      exit(0);
-    }
-  else
-    {
-      printf("Socket successfully created.\n");
+      return -2;
     }
 
   memset(&servaddr, 0, sizeof(servaddr));
@@ -116,14 +113,16 @@ int tcp_init(void)
   if (!shv_broker_ip)
     {
       printf("Unable to get SHV_BROKER_IP env variable.");
-      return -1;
+      close(sockfd);
+      return -2;
     }
 
   shv_broker_port = getenv("SHV_BROKER_PORT");
   if (!shv_broker_port)
     {
       printf("Unable to get SHV_BROKER_PORT env variable.");
-      return -1;
+      close(sockfd);
+      return -2;
     }
   else
     {
@@ -140,13 +139,11 @@ int tcp_init(void)
 
   if (connect(sockfd, (struct sockaddr*)&servaddr, sizeof(servaddr)) != 0)
     {
-      printf("ERROR: Connection with the server failed.\n");
+      close(sockfd);
       return -1;
     }
-  else
-    {
-      printf("Connected to the server.\n");
-    }
+
+  printf("Connected to the server %s:%d.\n", shv_broker_ip, port);
 
   return sockfd;
 }
@@ -1178,8 +1175,10 @@ int shv_login(shv_con_ctx_t *shv_ctx)
 void shv_com_end(shv_con_ctx_t *ctx)
 {
   int fd = ctx->stream_fd;
-
-  tcp_terminate(fd);
+  if (fd > 0)
+    {
+      tcp_terminate(fd);
+    }
 }
 
 /****************************************************************************
@@ -1195,41 +1194,44 @@ void shv_con_ctx_init(shv_con_ctx_t *shv_ctx, struct shv_node *root)
   memset(shv_ctx, 0, sizeof(shv_con_ctx_t));
 
   shv_ctx->root = root;
-  shv_ctx->stream_fd = tcp_init();
   shv_ctx->timeout = 360;
   shv_ctx->rid = 3;
 }
 
 /****************************************************************************
- * Name: shv_com_init
+ * Name: shv_con_handler
  *
  * Description:
- *   The functions connects TCP to the server and calls shv_login() that
- *   performs login to the broker.
+ *   Handle SHV connection. This is a separate thread that tries to connect
+ *   to the broker every 30 seconds.
  *
  ****************************************************************************/
 
-shv_con_ctx_t *shv_com_init(struct shv_node *root)
+void *shv_con_handler(void * p)
 {
-  int ret;
+  shv_con_ctx_t *shv_ctx = (shv_con_ctx_t *)p;
   pthread_t thrd;
   pthread_attr_t attr;
   struct sched_param schparam;
   int priority_com;
+  int ret;
 
-  if (shv_init_done)
+  const struct timespec ts = {30, 0};
+
+  shv_ctx->stream_fd = tcp_init();
+  if (shv_ctx->stream_fd == -2)
     {
       return NULL;
     }
-
-  shv_con_ctx_t *shv_ctx = (shv_con_ctx_t *)malloc(sizeof(shv_con_ctx_t));
-  if (shv_ctx == NULL)
+  else if (shv_ctx->stream_fd == -1)
     {
-      printf("ERROR: Failed to allocate memory for shv_ctx\n");
-      return NULL;
+      printf("ERROR: could not connect to the server! Will try reconnect \
+             every 30 seconds.\n");
+      while ((shv_ctx->stream_fd = tcp_init()) <= 0)
+        {
+          clock_nanosleep(CLOCK_MONOTONIC, 0, &ts, NULL);
+        }
     }
-
-  shv_con_ctx_init(shv_ctx, root);
 
   ret = shv_login(shv_ctx);
   if (ret < 0)
@@ -1266,10 +1268,50 @@ shv_con_ctx_t *shv_com_init(struct shv_node *root)
 
       pthread_create(&thrd, NULL, shv_process, shv_ctx);
     }
+}
 
-  /* Already initialized */
+/****************************************************************************
+ * Name: shv_com_init
+ *
+ * Description:
+ *   The functions connects TCP to the server and calls shv_login() that
+ *   performs login to the broker.
+ *
+ ****************************************************************************/
 
-  shv_init_done = 1;
+shv_con_ctx_t *shv_com_init(struct shv_node *root)
+{
+  pthread_t thrd;
+  pthread_attr_t attr;
+  struct sched_param schparam;
+  int policy;
+  int ret;
+
+  if (atomic_flag_test_and_set(&shv_init_done))
+    {
+      return NULL;
+    }
+
+  shv_con_ctx_t *shv_ctx = (shv_con_ctx_t *)malloc(sizeof(shv_con_ctx_t));
+  if (shv_ctx == NULL)
+    {
+      printf("ERROR: Failed to allocate memory for shv_ctx\n");
+      return NULL;
+    }
+
+  shv_con_ctx_init(shv_ctx, root);
+
+  /* Handle the connection in separate thread. This allows future
+   * connection is server is not available during at the moment.
+   */
+
+  pthread_attr_init(&attr);
+  pthread_attr_setinheritsched(&attr, PTHREAD_EXPLICIT_SCHED);
+  pthread_attr_setschedpolicy(&attr, SCHED_FIFO);
+  pthread_getschedparam(pthread_self(), &policy, &schparam);
+  schparam.sched_priority += 1;
+  pthread_attr_setschedparam(&attr, &schparam);
+  pthread_create(&thrd, NULL, shv_con_handler, shv_ctx);
 
   return shv_ctx;
 }
