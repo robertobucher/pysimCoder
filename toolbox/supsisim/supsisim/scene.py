@@ -424,25 +424,27 @@ class Scene(QGraphicsScene):
 
     def findAllItems(self, scene):
         items = []
-        count = 0
         for item in scene.items():
             if isinstance(item, subsBlock):
                 blk = item.getInternalBlocks()
                 for el in blk:
                     el.setSysPath(f'/{item.name}')
-                    el.ident = count
                     items.append(el)
             elif isinstance(item, Block):
                 item.setSysPath('')
-                item.ident = count
                 items.append(item)
 
             else:
                 pass
-            
-            count = count + 1
 
         items.sort(key=lambda p: p.name)
+        count = 0
+        for el in items:
+            if el.params != 'IOBlk':
+                if el.ident == -1:
+                    el.ident = count
+                    count = count + 1
+
         return items
 
     def cleanBlkList(self, items):
