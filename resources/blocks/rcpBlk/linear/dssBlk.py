@@ -1,6 +1,6 @@
 from supsisim.RCPblk import RCPblk
 from control import tf2ss, TransferFunction
-from numpy import reshape, hstack, mat, shape, size, zeros
+from numpy import reshape, hstack, asmatrix, shape, size, zeros
 
 def dssBlk(pin,pout,sys,X0=[]):
     """
@@ -44,7 +44,7 @@ def dssBlk(pin,pout,sys,X0=[]):
     if(size(X0) == nx):
         X0 = reshape(X0,(1,size(X0)),'C')
     else:
-        X0 = mat(zeros((1,nx)))
+        X0 = asmatrix(zeros((1,nx)))
 
     indA = 0
     indB = nx*nx

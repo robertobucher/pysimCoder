@@ -1,6 +1,6 @@
 from supsisim.RCPblk import RCPblk
 from control import tf2ss, TransferFunction
-from numpy import reshape, hstack, mat, shape, size, zeros
+from numpy import reshape, hstack, asmatrix, shape, size, zeros
 
 def cssBlk(pin,pout,sys,X0=[]):
     """ 
@@ -43,7 +43,7 @@ def cssBlk(pin,pout,sys,X0=[]):
     if(size(X0) == nx):
         X0 = reshape(X0,(1,size(X0)),'C')
     else:
-        X0 = mat(zeros((1,nx)))
+        X0 = asmatrix(zeros((1,nx)))
 
     indA = 1
     indB = indA + nx*nx
@@ -51,7 +51,7 @@ def cssBlk(pin,pout,sys,X0=[]):
     indD = indC + nx*no
     indX = indD + ni*no
     intPar = [nx,ni,no, indA, indB, indC, indD, indX]
-    realPar = hstack((mat([0.0]),a,b,c,d,X0))
+    realPar = hstack((asmatrix([0.0]),a,b,c,d,X0))
 
     if d.any() == True:
         uy = 1

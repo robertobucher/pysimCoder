@@ -1,6 +1,6 @@
 from supsisim.RCPblk import RCPblk
 from control import tf2ss, TransferFunction
-from numpy import reshape, shape, size, mat
+from numpy import reshape, shape, size, asmatrix
 
 def matmultBlk(pin, pout, Gains):
     """
@@ -21,7 +21,7 @@ def matmultBlk(pin, pout, Gains):
 
     """
     
-    Gains = mat(Gains)
+    Gains = asmatrix(Gains)
     n,m = shape(Gains)
     if(size(pin) != m):
         raise ValueError("Block should have %i input port; received %i." % (m,size(pin)))

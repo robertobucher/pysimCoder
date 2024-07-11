@@ -15,7 +15,7 @@ The following commands are provided:
   sch2blks       - Generate block list fron schematic
   
 """
-from numpy import  nonzero, ones, mat, size, array, zeros
+from numpy import  nonzero, ones, asmatrix, size, array, zeros
 from os import environ
 import copy
 import sys
@@ -99,7 +99,7 @@ def genCode(model, Tsamp, blocks, rkstep = 10):
         blk = Blocks[n]
         if (size(blk.realPar) != 0):
             strLn = "static double realPar_" + str(n) +"[] = {"
-            strLn += str(mat(blk.realPar).tolist())[2:-2] + "};\n"
+            strLn += str(asmatrix(blk.realPar).tolist())[2:-2] + "};\n"
             strLn += "static char *realParNames_" + str(n) + "[] = {"
             tmp = 0
             if (size(blk.realPar) != size(blk.realParNames)):
@@ -118,7 +118,7 @@ def genCode(model, Tsamp, blocks, rkstep = 10):
             f.write(strLn)
         if (size(blk.intPar) != 0):
             strLn = "static int intPar_" + str(n) +"[] = {"
-            strLn += str(mat(blk.intPar).tolist())[2:-2] + "};\n"
+            strLn += str(asmatrix(blk.intPar).tolist())[2:-2] + "};\n"
             strLn += "static char *intParNames_" + str(n) + "[] = {"
             tmp = 0
             for i in range(0, size(blk.intPar)):
@@ -129,7 +129,7 @@ def genCode(model, Tsamp, blocks, rkstep = 10):
             strLn += "};\n"
             f.write(strLn)
         strLn = "static int nx_" + str(n) +"[] = {"
-        strLn += str(mat(blk.nx).tolist())[2:-2] + "};\n"
+        strLn += str(asmatrix(blk.nx).tolist())[2:-2] + "};\n"
         f.write(strLn)
     f.write("\n")
 

@@ -262,9 +262,9 @@ def set_aw(sys,poles):
     """
     sys = ct.ss(sys)
     Ts = sys.dt
-    den_old = sp.poly(la.eigvals(sys.A))
+    den_old = np.poly(la.eigvals(sys.A))
     sys = ct.tf(sys)
-    den = sp.poly(poles)
+    den = np.poly(poles)
     tmp =  ct.tf(den_old,den,sys.dt)
     sys_in = tmp*sys
     sys_in = sys_in.minreal()
