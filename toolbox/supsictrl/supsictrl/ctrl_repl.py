@@ -69,30 +69,30 @@ def d2c(sys,method='zoh'):
             C = c
             D = d
     elif method=='foh':
-        a = np.mat(a)
-        b = np.mat(b)
-        c = np.mat(c)
-        d = np.mat(d)
-        Id = np.mat(np.eye(n))
+        a = np.asmatrix(a)
+        b = np.asmatrix(b)
+        c = np.asmatrix(c)
+        d = np.asmatrix(d)
+        Id = np.asmatrix(np.eye(n))
         A = la.logm(a)/Ts
         A = np.real(np.around(A,12))
-        Amat = np.mat(A)
+        Amat = np.asmatrix(A)
         B = (a-Id)**(-2)*Amat**2*b*Ts
         B = np.real(np.around(B,12))
-        Bmat = np.mat(B)
+        Bmat = np.asmatrix(B)
         C = c
         D = d - C*(Amat**(-2)/Ts*(a-Id)-Amat**(-1))*Bmat
         D = np.real(np.around(D,12))
     elif method=='tustin':
-        a = np.mat(a)
-        b = np.mat(b)
-        c = np.mat(c)
-        d = np.mat(d)
+        a = np.asmatrix(a)
+        b = np.asmatrix(b)
+        c = np.asmatrix(c)
+        d = np.asmatrix(d)
         poles = la.eigvals(a)
         if any(abs(poles-1)<200*sp.finfo(float).eps):
             print('d2c: some poles very close to one. May get bad results.')
         
-        I = np.mat(np.eye(n,n))
+        I = np.asmatrix(np.eye(n,n))
         tk = 2 / np.sqrt (Ts)
         A = (2/Ts)*(a-I)*la.inv(a+I)
         iab = la.inv(I+a)*b
