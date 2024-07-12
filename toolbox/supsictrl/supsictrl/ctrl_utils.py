@@ -50,12 +50,12 @@ def full_obs(sys,poles):
     if isinstance(sys, ct.TransferFunction):
         "System must be in state space form"
         return
-    a = np.mat(sys.A)
-    b = np.mat(sys.B)
-    c = np.mat(sys.C)
-    d = np.mat(sys.D)
+    a = np.asmatrix(sys.A)
+    b = np.asmatrix(sys.B)
+    c = np.asmatrix(sys.C)
+    d = np.asmatrix(sys.D)
     L = ct.place(a.T,c.T,poles)
-    L = np.mat(L).T
+    L = np.asmatrix(L).T
     Ao = a-L*c
     Bo = np.hstack((b-L*d,L))
     n = np.shape(Ao)
@@ -87,12 +87,12 @@ def red_obs(sys,T,poles):
     if isinstance(sys, ct.TransferFunction):
         "System must be in state space form"
         return
-    a = np.mat(sys.A)
-    b = np.mat(sys.B)
-    c = np.mat(sys.C)
-    d = np.mat(sys.D)
-    T = np.mat(T)
-    P = np.mat(np.vstack((c,T)))
+    a = np.asmatrix(sys.A)
+    b = np.asmatrix(sys.B)
+    c = np.asmatrix(sys.C)
+    d = np.asmatrix(sys.D)
+    T = np.asmatrix(T)
+    P = np.asmatrix(np.vstack((c,T)))
     invP = la.inv(P)
     AA = P*a*invP
     ny = np.shape(c)[0]
@@ -105,19 +105,19 @@ def red_obs(sys,T,poles):
     A22 = AA[ny:nx,ny:nx]
 
     L1 = ct.place(A22.T,A12.T,poles)
-    L1 = np.mat(L1).T
+    L1 = np.asmatrix(L1).T
 
     nn = nx-ny
 
-    tmp1 = np.mat(np.hstack((-L1,np.eye(nn,nn))))
-    tmp2 = np.mat(np.vstack((np.zeros((ny,nn)),np.eye(nn,nn))))
+    tmp1 = np.asmatrix(np.hstack((-L1,np.eye(nn,nn))))
+    tmp2 = np.asmatrix(np.vstack((np.zeros((ny,nn)),np.eye(nn,nn))))
     Ar = tmp1*P*a*invP*tmp2
  
     tmp3 = np.vstack((np.eye(ny,ny),L1))
-    tmp3 = np.mat(np.hstack((P*b,P*a*invP*tmp3)))
+    tmp3 = np.asmatrix(np.hstack((P*b,P*a*invP*tmp3)))
     tmp4 = np.hstack((np.eye(nu,nu),np.zeros((nu,ny))))
     tmp5 = np.hstack((-d,np.eye(ny,ny)))
-    tmp4 = np.mat(np.vstack((tmp4,tmp5)))
+    tmp4 = np.asmatrix(np.vstack((tmp4,tmp5)))
 
     Br = tmp1*tmp3*tmp4
 
@@ -125,7 +125,7 @@ def red_obs(sys,T,poles):
 
     tmp5 = np.hstack((np.zeros((ny,nu)),np.eye(ny,ny)))
     tmp6 = np.hstack((np.zeros((nn,nu)),L1))
-    tmp5 = np.mat(np.vstack((tmp5,tmp6)))
+    tmp5 = np.asmatrix(np.vstack((tmp5,tmp6)))
     Dr = invP*tmp5*tmp4
     
     obs = ct.StateSpace(Ar,Br,Cr,Dr,sys.dt)
@@ -155,16 +155,16 @@ def comp_form(sys,obs,K):
     nu = np.shape(sys.B)[1]
     no = np.shape(obs.A)[0]
 
-    Bu = np.mat(obs.B[:,0:nu])
-    By = np.mat(obs.B[:,nu:])
-    Du = np.mat(obs.D[:,0:nu])
-    Dy = np.mat(obs.D[:,nu:])
+    Bu = np.asmatrix(obs.B[:,0:nu])
+    By = np.asmatrix(obs.B[:,nu:])
+    Du = np.asmatrix(obs.D[:,0:nu])
+    Dy = np.asmatrix(obs.D[:,nu:])
 
     X = la.inv(np.eye(nu,nu)+K*Du)
 
-    Ac = np.mat(obs.A)-Bu*X*K*np.mat(obs.C);
+    Ac = np.asmatrix(obs.A)-Bu*X*K*np.asmatrix(obs.C);
     Bc = np.hstack((Bu*X,By-Bu*X*K*Dy))
-    Cc  =  -X*K*np.mat(obs.C);
+    Cc  =  -X*K*np.asmatrix(obs.C);
     Dc  =  np.hstack((X,-X*K*Dy))
     contr  =  ct.StateSpace(Ac,Bc,Cc,Dc,sys.dt)
     return contr
@@ -199,22 +199,22 @@ def comp_form_i(sys,obs,K,Cy = [[1]]):
     nu = np.shape(sys.B)[1]
     nx = np.shape(sys.A)[0]
     no = np.shape(obs.A)[0]
-    ni = np.shape(np.mat(Cy))[0]
+    ni = np.shape(np.asmatrix(Cy))[0]
 
-    B_obsu = np.mat(obs.B[:,0:nu])
-    B_obsy = np.mat(obs.B[:,nu:nu+ny])
-    D_obsu = np.mat(obs.D[:,0:nu])
-    D_obsy = np.mat(obs.D[:,nu:nu+ny])
+    B_obsu = np.asmatrix(obs.B[:,0:nu])
+    B_obsy = np.asmatrix(obs.B[:,nu:nu+ny])
+    D_obsu = np.asmatrix(obs.D[:,0:nu])
+    D_obsy = np.asmatrix(obs.D[:,nu:nu+ny])
 
-    k = np.mat(K)
+    k = np.asmatrix(K)
     nk = np.shape(k)[1]
     Ke = k[:,nk-ni:]
     K = k[:,0:nk-ni]
     X  =  la.inv(np.eye(nu,nu)+K*D_obsu);
 
-    a = np.mat(obs.A)
-    c = np.mat(obs.C)
-    Cy = np.mat(Cy)
+    a = np.asmatrix(obs.A)
+    c = np.asmatrix(obs.C)
+    Cy = np.asmatrix(Cy)
 
     tmp1 = np.hstack((a-B_obsu*X*K*c,-B_obsu*X*Ke))
 
