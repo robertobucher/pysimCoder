@@ -9,9 +9,9 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "supsictrl"
 description = "Python SUPSI Control Systems Library"
-authors = [{name = "Roberto Bucher et al.", email = "roberto.bucher@supsi.ch"}]
+authors = [{name = "Roberto Bucher et al.", email = "roberto.bucher@sunrise.ch"}]
 license = {text = "GPL-2.0"}
-version = "0.3"
+version = "0.9"
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Science/Research",
