@@ -29,13 +29,6 @@ pprint.pprint(fileDict)
 
 ![Screenshot_2021-10-31_07-16-53](https://user-images.githubusercontent.com/8348158/139570719-132cbe3c-190f-401b-b754-003959d08f5a.png)
 
-A Virtual Machine (Virtual Box) is available. Please write to me to get the address and password to download it.
-
-It is also possible to get a docker image with pysimCoder using
-
-```
-docker pull robertobucher/pysimcoder
-```
 More info at the end of this file.
 
 http://robertobucher.dti.supsi.ch/pysimcoder/
@@ -44,48 +37,17 @@ http://robertobucher.dti.supsi.ch/pysimcoder/
 
 # Installation
 
-Project requires Python 3.9 runtime to be present on the system. Installation instructions 
-and scripts expect Debian derived distibution and may require adjustements on other systems.
+A complete Makefile to install pysimCoder under Ubuntu or Debian can be found at this link
 
-Superuser privileges are necessary for installation of the compiled drivers.
-
-In cases when environment doesn't fulfill the aforementioned conditions,
-a containerized deployment with one of the provided images is preferrable.
-
-Install system dependencies and python libraries
+```
+https://github.com/robertobucher/LinuxLabo
 ```
 
-sudo apt install gcc gfortran git cmake binutils emacs python3.9 python3-numpy \
-    python3-scipy python3-sympy python3-matplotlib python3-pip jupyter-qtconsole \
-    python3-lxml python3-pyqtgraph libopenblas-dev liblapack-dev libxml2-dev \
-    libcomedi-dev python3-pyqt5
-
-sudo pip install -r requirements.txt
-```
-
-Alternatively the dependencies can be installed with provided scripts:
-```
-sudo python3 ubuntu_dependency_installer.py
-sudo python3 python_libs_install.py
-```
-
-Build and install the code as a superuser with:
-```
-sudo make
-```
-
-Set environment variables in user `.bashrc`
-```
-make user
-```
-
-You may also install modules for different targets as a normal user with:
-```
-make <target>
-```
+Other distirbution can be installed in similar ways.
 
 Finally you launch the application from the command line.
 The `.bashrc` may have to be reloaded beforehand.
+
 ```
 pysimCoder
 ```
@@ -115,53 +77,22 @@ More info and the Dockerfile can be found at https://github.com/robertobucher/py
 
 # pysimCoder in Windows
 
-pysimCoder can run in Windows under WSL.
+pysimCoder can run in Windows using the only decent MS Windows application -> WSL2.
 
 Simply install some additional packages download pysimCoder and istall it.
+
 ```
     sudo apt-get update
     sudo apt-det dist-upgrade
 ```
-and
+
+The required packages are the same as in this link
 
 ```
-sudo apt-get install \
-	gcc \
-	gfortran \
-	git \
-	cmake \
-	binutils \
-	emacs \
-	python3 \
-	python3-numpy \
-	python3-scipy \
-	python3-sympy \
-	python3-matplotlib \
-	python3-pip \
-	jupyter-qtconsole \
-	python3-lxml \
-	python3-pyqtgraph \
-	libopenblas-dev \
-	liblapack-dev \
-	libxml2-dev \
-	libcomedi-dev \
-	python3-pyqt5 \
-	python3-qwt \
-	python3-serial
+https://github.com/robertobucher/LinuxLabo
 ```
-In **Debian** the following package should be installed for pyQt6
 
-```
-sudo apt-get install qt6-svg-dev
-
-```
-In **Ubuntu** the following packages should be installed for pyQt6
-```
-sudo apt-get install \
-    qt6-base-dev \
-    libqt6svg6-dev
-```
-Then move to a directory where to install pysimCoder and do
+The installation of pysimCoder is a little different under Windows because of the impossibility to install the nrt driver.
 
 ```
 git clone https://github.com/robertobucher/pysimCoder
@@ -174,7 +105,6 @@ make user
 make alias
 make full_lib
 ```
-
 
 
 
