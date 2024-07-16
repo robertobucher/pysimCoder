@@ -2,7 +2,7 @@
 
 This folder contains some utilities related to pysimCoder,
 
-  * defBlocs.py is an application thar can be used to create new blocks for the editor
+  * defBlocks.py is an application thar can be used to create new blocks for the editor
   * xblk2Blk.py transforms the new block into an element of the class "Block", included the skeleton of the C code for the "devices" folder
 
 The folder contains also some utilities that allow to connect the generated code to external plot applications

@@ -162,3 +162,7 @@ load. Options to load executables over ETHERNET and TFTP are included as well.
     CONFIG_SYSTEM_PING=y
     CONFIG_SYSTEM_TEE=y
     CONFIG_USER_ENTRYPOINT="nsh_main"
+
+## TimerHook
+
+The TimerHook folder contains examples of modifications required in order to use the **nuttx_timerhook.tmf** template in NuttX.
