@@ -2,501 +2,45 @@
 
 \section{Install the packages}
 
-\section{The simplest way}
-A docker image is available and can be intalled using
+The best way to install the control package, including the GUI pysimCoder, is to follow the metod that can be found at this address(\cite{LINUXLABO})
 
 \begin{verbatim}
-docker pull robertobucher/pysimcoder:latest
+https://github.com/robertobucher/LinuxLabo
 \end{verbatim}
 
-\section{Linux}
+Here it is possible to find a Makefile that can install all the required files in Ubuntu and Debian.
 
-\subsection{Required packages}
+% It is also possible to run the system in a Docker container by getting the docker image using:
+%
+% \begin{verbatim}
+% docker pull robertobucher/pysimcoder:latest
+% \end{verbatim}
 
-The required modules can be simply installed using the usual package manager 
-of the Linux distribution.
-It is also possible to install the Anaconda distribution~\cite{ANACONDA} for 
-Linux to get the basic Python modules.
-
-It is important to check the versions of the Python modules, in particular 
-numpy, scipy and sympy. Old versions of these packages don't allows to perform 
-all the tasks described in this document.
-In case of old versions, it is possible to download the last versions of these 
-packages 
-from the SciPy download page~\cite{SCIPYDOWNLOAD}, and install them from a 
-Linux 
-shell.
-
-Under Debian we can use the apt manager to install the 
-following packages:
-\begin{itemize}
-\item python-numpy
-\item python-scipy
-\item python-matplotlib 
-\item python-sympy
-\item python-setuptools
-\item python-psutils
-\item jupyter
-\item jupyter-qtconsole
-\end{itemize}
-
-Other recommended modules:
-
-\begin{itemize}
-\item libcomedi-dev (for COMEDI blocks)
-\item libxml2-dev (for the FMU block)
-\end{itemize}
-
-Under Debian and Ubuntu it is possible to check if all the required development packages are correctly installed using the shell command
+More info are available at the github page of the pysimCoder project(\cite{SUPSICTRL}):
 
 \begin{verbatim}
-sudo apt-get build-dep python-scipy
+https://github.com/robertobucher/pysimCoder
 \end{verbatim}
 
-The following packages are not available as distribution packages and should be 
-installed separately.
+\section{Video}
 
-\begin{itemize}
-\item The Python Control toolbox \cite{PYCONTROL}
-\item The Slycot libraries \cite{SLYCOT}
-\item The pysimCoder package \cite{SUPSICTRL}
-\end{itemize}
+Felipe Depine (\cite{ROBOT5}) is registering some videos about installation and use of the pysimCoder tool.
 
-For the second part of the project (code generation etc.) the following 
-packages 
-are required
-
-\begin{itemize}
-\item python(3)-pyqt5
-\item  python(3)-qwt
-\end{itemize}
-
-This features presented in the second part of this document are at present only 
-interesting under the Linux OS, because the real-time code is generated for a 
-Linux PREEMPT-RT machine.
-
-\subsection{Install the pysimCoder package}
-The package can be downloaded from the githib page (as zip or using ``git clone''.
-
-The installation is quite simple. Launch as superuser the command
-
-\begin{verbatim}
-make
-\end{verbatim}
-
-or
-
-\begin{verbatim}
-make reduced
-\end{verbatim}
-
-if you don't want to have COMEDI installed.
-
-The installation download the control package, the slycot package 
-and install the full software.
-
-As last step it is important to update the ``.bashrc'' file as normal user with the command
-
-\begin{verbatim}
-make user
-make alias
-\end{verbatim}
-
-The system has been tested under ``Debian stable'', ``Debian testing'' with 
-python-2.7, python-3.5, python-3.6 and python-3.7.
-
-\section{Windows}
-
-Under Windows it is sufficient to install the ``Anaconda'' 
-package~\cite{ANACONDA}, to have all the python and jupyter modules installed.
-
-The Slycot libraries for Windows can be downloaded from here~\cite{SLYCOT2}.
-
-At present it is not possible to perform hybrid simulation and code generation under the Windows OS.
-
-As alternative, it is possible to install pysimCoder under WSL 2, or to work using the docker version of the software.
-
-\section{Mac OSX}
-
-The Anaconda package~\cite{ANACONDA} is available for Mac OSX. The Slycot 
-libraries can be downloaded from here~\cite{SLYCOT2}.
-
-At present it is not possible to perform hybrid simulation and code generation under the Mac OS.
-
-As alternative, it is possible to work using the docker version of the software.
-
-\chapter{Python - Some hints for Matlab users}
-
-\section{Basics}
-There are important differences between Matlab and Python.
-In particular, the Python approach to matrices and to indexed objects is 
-quite different compared to Matlab.
-
-More information about a comparison between Python and Matlab is available 
-online at~\cite{PYTHONVSMATLAB}.
-
-The web contains a lot of documentation about Python and its packages.
-In particular, the book of David Pine~\cite{PYMAN} gives a good introduction 
-about the features of Python for scientific applications.
-
-Other links present tutorials for \textbf{numpy}~\cite{NUMPY},
-\textbf{scipy}~\cite{SCIPY}, \textbf{matplotlib}~\cite{MATPLOTLIB} and 
-\textbf{sympy}~\cite{SYMPY}.
-
-\section{The python shell}
-A Python script can run within a Python shell, but can also be launched as
-executable.
-
-The basic python shell is similar to the Matlab shell without the java 
-improvements (\textbf{matlab -nojvm}).
-
-A better shell is for example \textbf{jupyter}. In this interactive form, when 
-started as \textbf{jupyter-qtconsole}, jupyter already loads at startup 
-a set of functions and modules. 
-
-Another interesting environment, more similar to the Matlab shell, is 
-represented by the \textbf{Spyder or Pyzo} application. In this application it is
-possible to debug scripts and functions like in the Matlab environment.
-
-In this document we are mostly working with \textbf{jupyter} launched with the 
-shell commands
-
-\begin{verbatim}
-jupyter-qtconsole
-\end{verbatim}
-
-Sometimes not all the functions and modules are explicitly loaded at the 
-beginning of the examples. In addition, \textbf{jupyter} implements some useful 
-commands like for example \textbf{whos} and \textbf{run} (for launching 
-scripts).
-
-In the jupyter shell it is possible to start single commands, paste a set of 
-commands or launch a ``.py'' program using \textbf{run}.
-
-\begin{code}
-In [1]: # single command
-
-In [2]: a = 5
-
-In [3]: # paste a set of commands
-
-In [4]: a=5
-   ...: b=7
-   ...: c=a*b
-   ...: print c
-   ...: 
-35
-
-In [5]: # run a .py file
-
-In [6]: run DCmotorKane.py
-Matrix([[-Dm*w(t) + kt*I(t)]])
-Matrix([[-J*Derivative(w(t), t)]])
-[[0 1]
- [0 -Dm/J]]
-[[0]
- [kt/J]]
-\end{code}
-
-\section{Python vs. Matlab}
-
-Differently from Matlab, Python implements more types of variables
-
-\begin{code}
-In [1]: a=5
-
-In [2]: b=2.7
-
-In [3]: c=[[1,2,3],[4,5,6]]
-
-In [4]: d='Ciao'
-
-In [5]: whos
-Variable   Type     Data/Info
------------------------------
-a          int      5
-b          float    2.7
-c          list     n=2
-d          str      Ciao
-\end{code}
-
-
-\section{List, array and matrix}
-Python implements three kind of multidimensional objects: \textbf{list}, 
-\textbf{array} and \textbf{matrix}. 
-These objects are handled differently than in Matlab.
-
-\section{List}
-A Python \textbf{list} implements the Matlab \textbf{cell}. It represents 
-the simplest and default indexed object. 
-
-\begin{code}
-In [1]: a=[[[1,2],[3,4]],'abcd',2]
-
-In [2]: b=[[1,2,3],[4,5,6],[7,8,9]]
-
-In [3]: whos
-Variable   Type    Data/Info
-----------------------------
-a          list    n=3
-b          list    n=3
-\end{code}
-
-
-\section{Arrays}
-In Python the \textbf{array} is a multidimensional variable that implements 
-sets of values of the same type. Usually the elements of an array are numbers, 
-but can also be booleans, strings, or other objects. An array is the basic 
-instance for most scientific applications.
-
-Operations like \textbf{*}, \textbf{/}, \textbf{**} 
-etc. implement the \textbf{dot} operations of the Matlab environment 
-(\textbf{.*}, \textbf{./} and \textbf{.\^}).
-For example, the multiplication of two arrays $a*a$ represents the 
-value-by-value multiplication implemented in Matlab with the operation $a.*a$.
-
-\begin{code}
-In [1]: from numpy import mat, matrix, array
-
-In [2]: a=array([[1,2,3],[4,5,6]])
-
-In [3]: b=array([[1],[2]])
-
-In [4]: print a*a
-[[ 1  4  9]
- [16 25 36]]
-
-In [5]: print a*b
-[[ 1  2  3]
- [ 8 10 12]]
-\end{code}
-
-\section{Matrices}
-The \textbf{matrix} object is useful in case of linear algebra operations.
-In this case the variables are instanced using the \textbf{mat} or the
-\textbf{matrix} function.
-
-\begin{code}
-In [1]: from numpy import mat, matrix, array
-
-In [2]: a=mat(a)
-
-In [3]: b=array([[1],[2],[3]])
-
-In [4]: a*b
-Out[5]: 
-matrix([[14],
-        [32]])
-
-In [6]: a=array(a)
-\end{code}
-
-\begin{code}
-In [7]: a*b
-----------------------------------------------
-ValueError			Traceback (most recent call last)
-<ipython-input-9-8201c27d19b7> in <module>()
-----> 1 a*b
-
-ValueError: operands could not be broadcast together with shapes (2,3) (3,1) 
-
-In [8]: b=mat(b)
-
-In [9]: a*b
-Out[10]: 
-matrix([[14],
-        [32]])
-\end{code}
-
-\section{Indexing}
-Indexing in Python is quite different compared with the syntax used in Matlab.
-Indices start from \textbf{0} (and not \textbf{1} as in Matlab).
-In addition, the syntax is different for lists, arrays and matrices.
-
-\section{Lists}
-1-dimension lists can be accessed using one index (ex. $a[2]$). Multidimensional
-lists require multiple indices in the form $[i][j]$\ldots
-
-\begin{code}
-In [1]: a=[1,2,3,4,5]
-
-In [2]: %whos
-Variable   Type    Data/Info
-----------------------------
-a          list    n=5
-
-In [3]: a[3]
-Out[3]: 4
-
-In [4]: b=[[1,2,3],[4,5,6]]
-
-In [5]: %whos
-Variable   Type    Data/Info
-----------------------------
-a          list    n=5
-b          list    n=2
-
-In [6]: b[1][2]
-Out[6]: 6
-
-In [7]: b[0]
-Out[7]: [1, 2, 3]
-\end{code}
-
-\section{Arrays}
-Multidimensional arrays allow the use of indices in the forms $[i,j]$ and 
-$[i][j]$.
-
-\begin{code}
-In [1]: from numpy import array
-
-In [2]: a=array([1,2,3,4,5])
-
-In [3]: b=array([[1,2,3],[4,5,6]])
-
-In [4]: %whos
-Variable   Type       Data/Info
--------------------------------
-a          ndarray    5: 5 elems, type `int64`, 40 bytes
-b          ndarray    2x3: 6 elems, type `int64`, 48 bytes
-\end{code}
-
-\begin{code}
-In [5]: a.shape
-Out[5]: (5,)
-
-In [6]: b.shape
-Out[6]: (2, 3)
-
-In [7]: a[3]
-Out[7]: 4
-
-In [8]: b[0,2]
-Out[8]: 3
-
-In [9]: b[0][2]
-Out[9]: 3
-
-In [10]: b[:,0]
-Out[10]: array([1, 4])
-
-In [11]: b[0,:]
-Out[11]: array([1, 2, 3])
-
-In [12]: b[0]
-Out[12]: array([1, 2, 3])
-\end{code}
-
-\section{Matrices}
-Matrices can be only indexed using the $[i,j]$ syntax. A matrix has always a 
-minimum of 2 dimensions.
-
-\begin{code}
-In [1]: from numpy import mat
-
-In [2]: a=array([1,2,3,4,5])
-
-In [3]: b=array([[1,2,3],[4,5,6]])
-
-In [4]: %whos
-Variable   Type      Data/Info
-------------------------------
-a          matrix    [[1 2 3 4 5]]
-b          matrix    [[1 2 3]\n [4 5 6]]
-
-In [5]: a.shape
-Out[5]: (1, 5)
-
-In [6]: b.shape
-Out[6]: (2, 3)
-\end{code}
-
-\begin{code}
-In [7]: a[0,2]
-Out[7]: 3
-
-In [8]: b[1,1]
-Out[8]: 5
-
-In [9]: b[:,0]
-Out[9]: 
-matrix([[1],
-        [4]])
-
-In [10]: b[0,:]
-Out[10]: matrix([[1, 2, 3]])
-\end{code}
-
-\section{Multidimensional arrays and matrices}
-Matrices and arrays can be defined with more than 2 dimensions.
-
-\begin{code}
-In [1]: from numpy import array, mat
-
-In [2]: a=zeros((3,3,3),int8)
-
-In [3]: a.shape
-Out[3]: (3, 3, 3)
-
-In [4]: %whos
-Variable   Type       Data/Info
--------------------------------
-a          ndarray    3x3x3: 27 elems, type `int8`, 27 bytes
-
-In [5]: a[1,1,1]
-Out[5]: 0
-In [6]: a[1,1,1]=5
-
-In [7]: a
-Out[7]: 
-array([[[0, 0, 0],
-        [0, 0, 0],
-        [0, 0, 0]],
-
-       [[0, 0, 0],
-        [0, 5, 0],
-        [0, 0, 0]],
-
-       [[0, 0, 0],
-        [0, 0, 0],
-        [0, 0, 0]]], dtype=int8)
-
-\end{code}
-
-% \section{Other differences between lists, arrays and matrices}
-% 
-% In the next example we can see another difference between the 3 objects.
-% 
-% \begin{code}
-% In [1]: a=[1,2,3]
-% 
-% In [2]: whos
-% Variable   Type    Data/Info
-% ----------------------------
-% a          list    n=3
-% 
-% In [3]: 2*a	# list
-% Out[3]: [1, 2, 3, 1, 2, 3]
-% 
-% In [4]: 2*array(a)	# array
-% Out[4]: array([2, 4, 6])
-% 
-% In [5]: 2*mat(a)	# matrix
-% Out[5]: matrix([[2, 4, 6]])
-% \end{code}
-
-\newpage
+The video are available at the Robots5 Youtube channel(\cite{ROBOT5YT}).
 
 \chapter{The Python Control System toolbox}
 \section{Basics}
 
-The Python Control Systems Library, is a package initially developed by 
-Richard Murray at Caltech. This toolbox  contains a set of python classes 
-and functions that implement common operations for the analysis and design of 
-feedback control systems. 
-In addition, a MATLAB compatibility package (control.matlab) has been 
-integrated in order to provide functions equivalent to the commands available 
-in the MATLAB Control Systems Toolbox.
+The Python Control Systems Library, is a package initially developed by Richard Murray at Caltech. This toolbox  contains a set of python classes and functions that implements common operations for the analysis and design of feedback control systems(\cite{MANUALTBX}).
+
+
+In addition, a MATLAB compatibility package (control.matlab) has been integrated in order to provide functions equivalent to the commands available in the MATLAB Control Systems Toolbox.
+
+A complete description of the python control toolbox is available here:
+
+\begin{verbatim}
+https://python-control.readthedocs.io/en/latest/
+\end{verbatim}
 
 In this chapter I introduce some basics of the Control system toolbox for Python. This tool is still in development. A more complete description of the toolbox is available here (\cite{MANUALTBX})
 
@@ -519,7 +63,7 @@ In [5]: d=0
 
 In [6]: sys = ss(a,b,c,d)
 
-In [7]: print sys
+In [7]: print(sys)
 A = [[ 0  1]
  [-1 -1]]
 
@@ -539,7 +83,7 @@ D = [[0]]
 
 In [2]: g=tf(1,[1,1,1])
 
-In [3]: print g
+In [3]: print(g)
 
      1
 -----------
@@ -569,7 +113,7 @@ In [7]: d=0
 
 In [8]: sysd = ss(a,b,c,d,0.01)
 
-In [9]: print sysd
+In [9]: print(sysd)
 A = [[ 0  1]
  [-1  1]]
 
@@ -590,7 +134,7 @@ In [1]: from control import *
 
 In [2]: g=tf([1,-1],[1,-1,1],0.01)
 
-In [3]: print g
+In [3]: print(g)
 
    z - 1
 -----------
@@ -622,14 +166,14 @@ In [6]  # control toolbox
 
 In [7]: gd2 = sample_system(g,0.01)  
 
-In [8]: print g
+In [8]: print(g)
 
      1
 -----------
 s^2 + s + 1
 
 
-In [9]: print gd
+In [9]: print(gd)
 
 4.983e-05 z + 4.967e-05
 -----------------------
@@ -649,14 +193,14 @@ In [4]: gd =c2d(g,0.01)
 
 In [5]: g2=d2c(gd)
 
-In [6]: print g
+In [6]: print(g)
 
      1
 -----------
 s^2 + s + 1
 
 
-In [7]: print g2
+In [7]: print(g2)
 
 1.729e-14 s + 1
 ---------------
@@ -671,7 +215,7 @@ systems to a transfer function (\textbf{tf}) or to a state-space form
 \begin{code}
 In [8]: g = tf(sys)
 
-In [9]: print g
+In [9]: print(g)
 
      1
 -----------
@@ -684,7 +228,7 @@ and transfer functions into one of the  state-space representation
 \begin{code}
 In [10]: sys = ss(g)
 
-In [11]: print sys
+In [11]: print(sys)
 A = [[ 0. -1.]
  [ 1. -1.]]
 
@@ -710,14 +254,14 @@ In [2]: g1=tf(1,[1,1])
 
 In [3]: g2=tf(1,[1,2])
 
-In [4]: print parallel(g1,g2)
+In [4]: print(parallel(g1,g2))
 
    2 s + 3
 -------------
 s^2 + 3 s + 2
 
 
-In [5]: print g1+g2
+In [5]: print(g1+g2)
 
    2 s + 3
 -------------
@@ -725,14 +269,14 @@ s^2 + 3 s + 2
 \end{code}
 
 \begin{code}
-In [6]: print series(g1,g2)
+In [6]: print(series(g1,g2))
 
       1
 -------------
 s^2 + 3 s + 2
 
 
-In [7]: print g1*g2
+In [7]: print(g1*g2)
 
       1
 -------------
@@ -740,7 +284,7 @@ s^2 + 3 s + 2
 \end{code}
 
 \begin{code}
-In [8]: print feedback(g1,g2)
+In [8]: print(feedback(g1,g2))
 
     s + 2
 -------------
@@ -800,7 +344,7 @@ In [6]: plt.plot(t,y)
 \begin{minipage}[t]{0.45\textwidth}
   \centering
   \vspace{0.2cm}
-  \includegraphics[width=\textwidth]{eps/stepresp.eps}
+  \includegraphics[width=\textwidth]{stepresp}
 \end{minipage}
 \caption{Step response for continuous-time systems}
 \label{F1}
@@ -855,7 +399,7 @@ In [8]: plt.step(t,y)
 \end{minipage}%
 \begin{minipage}[t]{0.5\textwidth}
   \vspace{0pt} \centering
-  \includegraphics[width=\textwidth]{eps/dstepresp.eps}
+  \includegraphics[width=\textwidth]{dstepresp}
 \end{minipage}
 \caption{Step response for discrete-time systems}
 \label{F2}
@@ -917,7 +461,7 @@ In [10]: plt.plot(t,y)
 \end{minipage}%
 \begin{minipage}[t]{0.5\textwidth}
   \vspace{0pt} \centering
-  \includegraphics[width=\textwidth]{eps/initial.eps}
+  \includegraphics[width=\textwidth]{initial}
 \end{minipage}
 \caption{Continuous time systems - Initial condition response}
 \label{F3}
@@ -962,7 +506,7 @@ In [6]: plt.plot(t,y)
 \end{minipage}%
 \begin{minipage}[t]{0.5\textwidth}
   \vspace{0pt} \centering
-  \includegraphics[width=\textwidth]{eps/impulse.eps}
+  \includegraphics[width=\textwidth]{impulse}
 \end{minipage}
 \caption{Continuous time systems - Impulse response}
 \label{F4}
@@ -1015,7 +559,7 @@ In [8]: plt.plot(t,y)
 \end{minipage}%
 \begin{minipage}[t]{0.5\textwidth}
   \vspace{0pt} \centering
-  \includegraphics[width=\textwidth]{eps/lsim.eps}
+  \includegraphics[width=\textwidth]{lsim}
 \end{minipage}
 \caption{Continuous time systems - Generic input}
 \label{F5}
@@ -1054,7 +598,7 @@ In [4]: bode(g, dB=True);
 \end{minipage}%
 \begin{minipage}[t]{0.5\textwidth}
   \vspace{0pt} \centering
-  \includegraphics[width=\textwidth]{eps/bode.eps}
+  \includegraphics[width=\textwidth]{bode}
 \end{minipage}
 \caption{Bode plot}
 \label{F6}
@@ -1090,7 +634,7 @@ In [5]: nyquist(g), plt.grid()
 \end{minipage}%
 \begin{minipage}[t]{0.5\textwidth}
   \vspace{0pt} \centering
-  \includegraphics[width=\textwidth]{eps/nyquist.eps}
+  \includegraphics[width=\textwidth]{nyquist}
 \end{minipage}
 \caption{Nyquist plot}
 \label{F7}
@@ -1120,7 +664,7 @@ In [3]: nichols(g)
 \end{minipage}%
 \begin{minipage}[t]{0.5\textwidth}
   \vspace{0pt} \centering
-  \includegraphics[width=\textwidth]{eps/nichols.eps}
+  \includegraphics[width=\textwidth]{nichols}
 \end{minipage}
 \caption{Nichols plot}
 \label{F8}
@@ -1218,7 +762,7 @@ Out[8]: array([-1.])
 \end{minipage}%
 \begin{minipage}[t]{0.5\textwidth}
   \vspace{0pt} \centering
-  \includegraphics[width=0.9\textwidth]{eps/pzmap.eps}
+  \includegraphics[width=0.9\textwidth]{pzmap}
 \end{minipage}
 \caption{Poles and zeros}
 \label{F8a}
@@ -1257,7 +801,7 @@ In [4]: root_locus(g,k);
 \end{minipage}%
 \begin{minipage}[t]{0.5\textwidth}
   \vspace{0pt} \centering
-  \includegraphics[width=\textwidth]{eps/rlocus.eps}
+  \includegraphics[width=\textwidth]{rlocus}
 \end{minipage}
 \caption{Root locus plot}
 \label{F9}
@@ -1467,8 +1011,8 @@ In [5]: # Model
    ...: KM = KanesMethod(N,q_ind=[ph],u_ind=[w],kd_eqs=kindiffs)
    ...: fr, frstar = KM.kanes_equations(forces,bodies)
    ...: 
-   ...: print fr
-   ...: print frstar
+   ...: print(fr)
+   ...: print(frstar)
    ...: 
 Matrix([[-Dm*w(t) + kt*I(t)]])
 Matrix([[-J*Derivative(w(t), t)]])
@@ -1497,8 +1041,8 @@ KM.linearize(new_method=True)
 \end{code}
 
 \begin{code}
-In [6]: print A
-   ...: print B
+In [6]: print(A)
+   ...: print(B)
    ...: 
 [[0 1]
  [0 -Dm/J]]
@@ -1515,7 +1059,7 @@ in figure~\ref{F9a}.
 \begin{figure}[htbp]	% Step
 \centering
 \vspace{8mm}
-\includegraphics[width=0.55\textwidth]{pendolo.eps}
+\includegraphics[width=0.55\textwidth]{pendolo}
 \caption{Inverted pendulum}
 \label{F9a}
 \vspace{8mm}
@@ -1524,7 +1068,7 @@ in figure~\ref{F9a}.
 \begin{figure}[htbp]	% Step
 \centering
 \vspace{8mm}
-\includegraphics[width=0.55\textwidth]{pendinv.eps}
+\includegraphics[width=0.55\textwidth]{pendinv}
 \caption{Inverted pendulum - Real plant}
 \label{F9_a}
 \vspace{8mm}
@@ -1792,7 +1336,7 @@ point on the top of a bike wheel.
 % \psfrag{ph2}{$\varphi_2$} 
 % \psfrag{w1}{$\omega_1$} 
 % \psfrag{w2}{$\omega_2$} 
-\includegraphics[width=0.5\textwidth]{BallOnWheel.eps}
+\includegraphics[width=0.5\textwidth]{BallOnWheel}
 \caption{Ball-On-Wheel plant}
 \label{F9b}
 \end{figure}
@@ -2183,7 +1727,7 @@ Figure~\ref{F10} shows the bode diagram of the plant.
 
 \begin{figure}[htbp]	% Step
 \centering
-\includegraphics[width=0.6\textwidth]{eps/bodeplant.eps}
+\includegraphics[width=0.6\textwidth]{bodeplant}
 \caption{Bode diagram of the plant}
 \label{F10}
 \end{figure}
@@ -2204,7 +1748,7 @@ In [15]: Ti=0.15
 
 In [16]: Gpi=tf([Ti,1],[Ti,0])
 
-In [17]: print "PI part is: ", Gpi
+In [17]: print("PI part is: ", Gpi)
 PI part is:  
 0.15 s + 1
 ----------
@@ -2229,7 +1773,7 @@ controller part.
 
 \begin{figure}[htbp]	% Step
 \centering
-\includegraphics[width=0.7\textwidth]{eps/bodeplantpi.eps}
+\includegraphics[width=0.7\textwidth]{bodeplantpi}
 \caption{Bode diagram: G (dashed) and Gpi*G}
 \label{F11}
 \end{figure}
@@ -2252,7 +1796,7 @@ In [2]: Phase = -180+desiredPM
 
 In [26]: dPM = Phase-ph
 
-In [27]: print "Additional phase from Lead part: ", dPM
+In [27]: print("Additional phase from Lead part: ", dPM)
 Additional phase from Lead part:  61.4144232114
 \end{code}
 
@@ -2266,14 +1810,14 @@ In [29]: dPMrad = dPM/180*pi
 
 In [30]: alfa = (1+sin(dPMrad))/(1-sin(dPMrad));
 
-In [31]: print "Alpha is: ", alfa
+In [31]: print("Alpha is: ", alfa)
 Alpha is:  15.4073552425
 
 In [32]: TD = 1/(sqrt(alfa)*wgc);
 
 In [33]: Glead = tf([alfa*TD,1],[TD,1])
 
-In [34]: print "Lead part is: ", Glead
+In [34]: print("Lead part is: ", Glead)
 Lead part is:  
  0.3925 s + 1
 -------------
@@ -2299,7 +1843,7 @@ part and the plant with PI and Lead part
 
 \begin{figure}[htbp]	% Step
 \centering
-\includegraphics[width=0.6\textwidth]{eps/bodeplantpilead.eps}
+\includegraphics[width=0.6\textwidth]{bodeplantpilead}
 \caption{Bode diagram - G (dashed), Gpi*G (dotted) and Gpi*GLead*G}
 \label{F12}
 \end{figure}
@@ -2313,12 +1857,12 @@ $\omega_{gc}$.
 \begin{code}
 In [39]: mag,phase,omega = bode(Gpi*Glead*g,[wgc],Plot=False)
 
-In [40]: print "Phase at wgc is: ", phase[0]
+In [40]: print("Phase at wgc is: ", phase[0])
 Phase at wgc is:  -120.0
 
 In [41]: K=1/mag[0]
 
-In [42]: print "Gain to have MAG at gwc 0dB: ", K
+In [42]: print("Gain to have MAG at gwc 0dB: ", K)
 Gain to have MAG at gwc 0dB:  23.8177769548
 
 In [43]: figure()
@@ -2343,7 +1887,7 @@ get $0dB$ at the gain crossover frequency $\omega_{gc}$.
 
 \begin{figure}[htbp]	% Step
 \centering
-\includegraphics[width=0.6\textwidth]{eps/bodeplantpileadK.eps}
+\includegraphics[width=0.6\textwidth]{bodeplantpileadK}
 \caption{Bode diagram - G (dashed), Gpi*G (dotted), Gpi*GLead*G (dot-dashed) 
 and K*Gpi*GLead*G}
 \label{F13}
@@ -2356,7 +1900,7 @@ Now it is possible to simulate the controlled system after closing the loop.
 \begin{code}
 In [48]: Contr = K*Gpi*Glead
 
-In [49]: print "Full controller: ", Contr
+In [49]: print("Full controller: ", Contr)
 Full controller:  
 1.402 s^2 + 12.92 s + 23.82
 ---------------------------
@@ -2364,8 +1908,8 @@ Full controller:
 
 In [50]: mag,phase,omega = bode(K*Gpi*Glead*g,[wgc],Plot=False)
 
-In [51]: print "Data at wgc - wgc: ", omega[0], "Magnitude: ",mag[0], "Phase: 
-",phase[0]
+In [51]: print("Data at wgc - wgc: ", omega[0], "Magnitude:",mag[0], "Phase:
+",phase[0])
 Data at wgc - wgc:  10 Magnitude:  1.0 Phase:  -120.0
 
 In [52]: gt=feedback(K*Gpi*Glead*g,1)
@@ -2390,7 +1934,7 @@ figure~\ref{F14}.
 
 \begin{figure}[htbp]	% Step
 \centering
-\includegraphics[width=0.7\textwidth]{eps/pidexastep.eps}
+\includegraphics[width=0.7\textwidth]{pidexastep}
 \caption{Step response of the controlled plant}
 \label{F14}
 \end{figure}
@@ -2514,7 +2058,7 @@ Out[23]:
 
 \begin{figure}[htbp]	% Step
 \centering
-\includegraphics[width=0.8\textwidth]{eps/motid.eps}
+\includegraphics[width=0.8\textwidth]{motid}
 \caption{Step response and collected data}
 \label{F15}
 \end{figure}
@@ -2549,7 +2093,7 @@ $\xi=\sqrt{2}/2$.
 
 In [32]: # Control system design
 
-In [33]: print rank(ctrb(sys.A,sys.B))==2    # Controllability check
+In [33]: print(rank(ctrb(sys.A,sys.B))==2)    # Controllability check
 True
 
 In [34]: # State feedback with integral part
@@ -2596,7 +2140,7 @@ it.
 \begin{code}
 In [47]: #Reduced order observer
 
-In [48]: print rank(obsv(sys.A,sys.C))==2     # Observability check
+In [48]: print(rank(obsv(sys.A,sys.C))==2)     # Observability check
 True
 
 In [49]: p_oc=-10*max(abs(cl_poles))
@@ -2792,7 +2336,7 @@ output of the simulation (see figure~\ref{Fig:exaplot}).
 
 \begin{figure}[htbp]	% Step
 \centering
-\includegraphics[width=0.4\textwidth]{exa_plot.eps}
+\includegraphics[width=0.4\textwidth]{exa_plot}
 \caption{Result (plot) of the simulation}
 \label{Fig:exaplot}
 \end{figure}
@@ -2962,7 +2506,17 @@ The file is defined as a Python dictionary:
 
 \scriptsize
 \begin{verbatim}
-{"lib": "math", "name": "Sum", "ip": 2, "op": 1, "stin": 1, "stout": 0, "icon": "SUM", "params": "sumBlk|Gains: [1,-1]"}
+{
+  "lib": "math",
+  "name": "Sum",
+  "ip": 2,
+  "op": 1,
+  "stin": 1,
+  "stout": 0,
+  "icon": "SUM",
+  "params": "sumBlk|Gains: [1,1]",
+  "help": "This block get the weighted sum of the input signals.\n\nIt can have more than 2 inputs.\n"
+}
 \end{verbatim}
 \normalsize
 
@@ -2988,7 +2542,7 @@ in figure~\ref{Fig:app1}
 
  \begin{figure}[htbp]	% Step
  \centering
- \includegraphics[width=0.9\textwidth]{libs.eps}
+ \includegraphics[width=0.9\textwidth]{libs.png}
  \caption{Window with the block libraries}
  \label{Fig:app1}
  \end{figure}
@@ -3067,13 +2621,19 @@ The ``Pulse generator'' input block is stored in the ``PulseGenerator.xblk''
 file with 
 the following infos
 
-\tiny
 \begin{verbatim}
-{"lib": "input", "name": "PulseGenerator", "ip": 0, "op": 1, "stin": 0, "stout"; 0, "icon": 
-"SQUARE", "params": "squareBlk|Amplitude: 1|Period: 4|Width: 2|Bias: 0|Delay: 
-0"}
+{
+  "lib": "input",
+  "name": "PulseGenerator",
+  "ip": 0,
+  "op": 1,
+  "stin": 0,
+  "stout": 0,
+  "icon": "SQUARE",
+  "params": "squareBlk|Amplitude: 1: double|Period: 4: double|Width: 2: double|Bias: 0: double|Delay: 0: double",
+  "help": "This block implements a Pulse input signal\n\nParameters:\nAmplitude\nPeriod (in sec)\nWidth of the High signal\nBias\nDelay\n"
+}
 \end{verbatim}
-\normalsize
 
 The block has no inputs, 1 ouput, the I/O are not modifiable (settable=0).
 
@@ -3083,7 +2643,7 @@ into the the dialog box shown in figure~\ref{Fig:squareblk}.
 
  \begin{figure}[htbp]	
  \centering
- \includegraphics[width=0.6\textwidth]{squareblk.eps}
+ \includegraphics[width=0.6\textwidth]{squareblk.png}
  \caption{Dialog box for the Pulse generator block}
  \label{Fig:squareblk}
  \end{figure}
@@ -3109,12 +2669,12 @@ called with the following parameters:
  The function translate the block into the following object of the RCPblk class
  
  \begin{verbatim}
- Function           : square
+Function           : square
 Input ports        : []
 Output ports      : [2]
 Nr. of states      : [0 0]
 Relation u->y      : 0
-Real parameters    : [ 4  8  3  0 12]
+Real parameters    : [ 1  4  2  0 0]
 Integer parameters : []
 \end{verbatim}
 
@@ -3124,7 +2684,7 @@ Before clicking on the ``code generation'' tool on the toolbar, the user should 
 
  \begin{figure}[htbp]	% Step
  \centering
- \includegraphics[width=0.4\textwidth]{gendialog.eps}
+ \includegraphics[width=0.4\textwidth]{gendialog.png}
  \caption{Dialog for code generation}
  \label{codedlg}
  \end{figure}
@@ -3159,24 +2719,34 @@ For example, the diagram in figure~\ref{F18} is translated into the following
 code
 
 \begin{code}
-from supsisim.RCPblk import *
+from supsisim.RCPgen import *
+from control import *
 
-STEP = stepBlk([1],  1,  1)
-PM = sumBlk([1,3],[2],  [1,-1])
-CSS = cssBlk([2],[3],  sys,  0)
-PRINT = printBlk([1,3])
+LTI_continous_0 = cssBlk([3],[1], tf(1,[1,1]),  0)
+Print_1 = printBlk([2,1])
+Step_2 = stepBlk([2],  1,  0,  1)
+Sub_3 = sumBlk([2,1],[3],  [1,-1])
 
-blks = [STEP,PM,CSS,PRINT,]
+# [...]
+
+blks = [LTI_continous_0,Print_1,Step_2,Sub_3,]
+
 fname = 'step'
+os.chdir("./step_gen")
 genCode(fname, 0.01, blks)
 genMake(fname, 'sim.tmf', addObj = '')
+
+# [...]
+
+import os
+os.system("make clean")
+os.system("make")
+os.chdir("..")
 \end{code}
-
-
 
 \begin{figure}[htbp]	% Step
 \centering
-\includegraphics[width=0.8\textwidth]{eps/step1.eps}
+\includegraphics[width=0.8\textwidth]{step1.png}
 \caption{Simple block diagram}
 \label{F18}
 \end{figure}
@@ -3202,57 +2772,106 @@ In linear blocks for examples, the $uy$ flag is set if the $D$ matrix is not
 null.
 
 In the blockdiagram of figure~\ref{F18}, the \textbf{PM} and the 
-\textbf{PRINT} blocks require to know their inputs before update their 
-outputs.
+\textbf{PRINT} blocks require to know their inputs before update their outputs.
+
+If the block diagram contains algebraic loops it is not possible to find a solution for the \textbf{detBlkSeq} function and an error is raised.
+
+The next code paragrapg shows the right sequence of block execution, after the ordering algorithm. This is probably the only difficult task in code generation!
+
+This is the list before ordering:
 
 \begin{code}
-In [5]: NrOfNodes = 3
+In [3]: for el in blks:
+   ...:     print(el.name)
+   ...:
+LTI_continous_0
+Print_1
+Step_2
+Sub_3
+\end{code}
 
-In [6]: ordered_list = detBlkSeq(NrOfNodes,blks)
+and this is the ordered list
 
-In [7]: for n in ordered_list:
-   ...:     print n
-   ...:     
+\begin{code}
+In [4]: for el in ordered_list:
+   ...:     print(el.name)
+   ...:
+LTI_continous_0
+Step_2
+Print_1
+Sub_3
+\end{code}
+
+The complete list of the ordered block is consequently:
+
+\begin{code}
+NrOfNodes = 3
+
+ordered_list = detBlkSeq(NrOfNodes,blks)
+
+for el in ordered_list:
+    print(el)
+
+Block Name         : LTI_continous_0
 Function           : css
-Input ports        : [2]
-Outputs ports      : [3]
-Nr. of states      : [2 0]
+System path        : /LTI_continous
+Input ports        : [3]
+Output ports      : [1]
+Input dimensions : [1.]
+Output dimensions : [1.]
+Nr. of states      : [1 0]
 Relation u->y      : 0
-Real parameters    : [[ 0.  0. -1.  1. -1. -1.  
-                        0.  0. -1.  0.  0.  0.]]
-Integer parameters : [ 2  1  1  1  5  7  9 10]
-String Parameter   : 
+Real parameters    : [[ 0. -1.  1.  1.  0.  0.]]
+Names of real parameters : []
+Integer parameters : [1 1 1 1 2 3 4 5]
+Names of integer parameters : []
+String Parameter   :
 
+Block Name         : Step_2
 Function           : step
+System path        : /Step
 Input ports        : []
-Outputs ports      : [1]
+Output ports      : [2]
+Input dimensions : []
+Output dimensions : [1.]
 Nr. of states      : [0 0]
 Relation u->y      : 0
-Real parameters    : [1 1]
+Real parameters    : [1 0 1]
+Names of real parameters : ['Step Time', 'Initial Value', 'Final Value']
 Integer parameters : []
-String Parameter   : 
+Names of integer parameters : []
+String Parameter   :
 
+Block Name         : Print_1
 Function           : print
-Input ports        : [1 3]
-Outputs ports      : []
+System path        : /Print
+Input ports        : [2 1]
+Output ports      : []
+Input dimensions : [1. 1.]
+Output dimensions : []
 Nr. of states      : [0 0]
 Relation u->y      : 1
 Real parameters    : []
+Names of real parameters : []
 Integer parameters : []
-String Parameter   : 
+Names of integer parameters : []
+String Parameter   :
 
+Block Name         : Sub_3
 Function           : sum
-Input ports        : [1 3]
-Outputs ports      : [2]
+System path        : /Sub
+Input ports        : [2 1]
+Output ports      : [3]
+Input dimensions : [1. 1.]
+Output dimensions : [1.]
 Nr. of states      : [0 0]
 Relation u->y      : 1
 Real parameters    : [ 1 -1]
+Names of real parameters : []
 Integer parameters : []
-String Parameter   : 
+Names of integer parameters : []
+String Parameter   :
 \end{code}
-
-If the block diagram contains algebraic loops it is not possible to find a 
-solution for the \textbf{detBlkSeq} function and an error is raised.
 
 \subsection{Generating the C-code}
 Starting from the ordered list of blocks, it is possible to generate 
@@ -3268,21 +2887,26 @@ The code contains 3 functions:
 
 \subsection{The init function}
 
-In this function each block is translated into a python\_block structure 
-defined as follows:
+In this function each block is translated into a python\_block structure defined as follows:
 
 \begin{code}
 typedef struct {
   int nin;             /* Number of inputs */
   int nout;            /* Number of outputs */
+  int * dimIn;         /* Port signal dimension */
+  int * dimOut;        /* Port signal dimension */
   int *nx;             /* Cont. and Discr states */
   void **u;            /* inputs */
   void **y;            /* outputs */
   double *realPar;     /* Real parameters */
+  int realParNum;      /* Number of real parameters */
   int *intPar;         /* Int parameters */
+  int intParNum;       /* Number of int parameters */
   char * str;          /* String */
   void * ptrPar;       /* Generic pointer */
-}python_block;
+  char **realParNames; /* Names of real parameters */
+  char **intParNames;  /* Names of integer parameter */
+} python_block;
 \end{code}
 
 The nodes of the block diagram are defined as ``double'' variables and the 
@@ -3296,21 +2920,18 @@ static double Node_2[] = {0.0};
 static double Node_3[] = {0.0};
 
 /* Input and outputs */
-static void *inptr_0[]  = {0};
-static void *outptr_0[] = {0};
-static void *outptr_1[] = {0};
-static void *inptr_2[]  = {0,0};
-static void *inptr_3[]  = {0,0};
-static void *outptr_3[] = {0};
+static void *inptr_0[]  = {&Node_3};
+static void *outptr_0[] = {&Node_1};
+static void *outptr_1[] = {&Node_2};
+static void *inptr_2[]  = {&Node_2,&Node_1};
+static void *inptr_3[]  = {&Node_2,&Node_1};
+static void *outptr_3[] = {&Node_3};
 ...
-  inptr_0[0]  = (void *) Node_2;
-  outptr_0[0] = (void *) Node_3;
-..
-  block_test[0].nin  = 1;
-  block_test[0].nout = 1;
-  block_test[0].nx   = nx_0;
-  block_test[0].u    = inptr_0;
-  block_test[0].y    = outptr_0;
+  block_step[0].nin  = 1;
+  block_step[0].nout = 1;
+  block_step[0].nx   = nx_0;
+  block_step[0].u    = inptr_0;
+  block_step[0].y    = outptr_0;
 ...
 \end{code}
 
@@ -3319,10 +2940,12 @@ called with the
 flag \textbf{INIT}.
 
 \begin{code}
-  css(INIT, &block_test[0]);
-  step(INIT, &block_test[1]);
-  print(INIT, &block_test[2]);
-  sum(INIT, &block_test[3]);
+/* Set initial outputs */
+
+  css(CG_INIT, &block_step[0]);
+  step(CG_INIT, &block_step[1]);
+  print(CG_INIT, &block_step[2]);
+  sum(CG_INIT, &block_step[3]);
 \end{code}
 
 \subsection{The termination function}
@@ -3338,13 +2961,19 @@ the flag \textbf{STUPD} (state update).
 
 \begin{code}
   ...
-  css(OUT, &block_test[0]);
-  step(OUT, &block_test[1]);
-  print(OUT, &block_test[2]);
-  sum(OUT, &block_test[3]);
-  ...
-  css(OUT, &block_test[0]);
-  css(STUPD, &block_test[0]);
+  css(CG_OUT, &block_step[0]);
+  step(CG_OUT, &block_step[1]);
+  print(CG_OUT, &block_step[2]);
+  sum(CG_OUT, &block_step[3]);
+
+
+  h = step_get_tsamp()/10;
+
+  block_step[0].realPar[0] = h;
+  for(i=0;i<10;i++){
+    css(CG_OUT, &block_step[0]);
+    css(CG_STUPD, &block_step[0]);
+  }
   ...
 \end{code}
 
@@ -3395,7 +3024,7 @@ shown in figure~\ref{F20}. This example is located in to the
 
 \begin{figure}[htbp]	% Step
 \centering
-\includegraphics[width=0.6\textwidth]{eps/disks.eps}
+\includegraphics[width=0.6\textwidth]{disks}
 \caption{The disks and spring plant}
 \label{F20}
 \end{figure}
@@ -3518,18 +3147,18 @@ state-space system, implementing the anti-windup mechanism. The vector
 (see figure~\ref{F20a}).
 
 $$
-sys_{in}(s) = \frac{N(s)}{D_{new}(s)} 
+sys\_{in}(s) = \frac{N(s)}{D_{new}(s)}
 $$
 
 $$
-sys_{fbk}(s) = 1-\frac{D(s)}{D_{new}(s)}
+sys\_{fbk}(s) = 1-\frac{D(s)}{D_{new}(s)}
 $$
 
 \end{itemize}
 
 \begin{figure}[htbp]	% Step
 \centering
-\includegraphics[width=0.8\textwidth]{eps/aw.eps}
+\includegraphics[width=0.8\textwidth]{aw.png}
 \caption{Anti windup}
 \label{F20a}
 \end{figure}
@@ -3598,7 +3227,7 @@ figure~\ref{F21}
 
 \begin{figure}[htbp]	% Step
 \centering
-\includegraphics[width=0.9\textwidth]{eps/diskssim.eps}
+\includegraphics[width=0.9\textwidth]{diskssim.png}
 \caption{Block diagram for the simulation}
 \label{F21}
 \end{figure}
@@ -3619,7 +3248,7 @@ figure~\ref{F22})
 
 \begin{figure}[htbp]	% Step
 \centering
-\includegraphics[width=0.8\textwidth]{eps/simout.eps}
+\includegraphics[width=0.8\textwidth]{simout}
 \caption{Simulation of the plant}
 \label{F22}
 \end{figure}
@@ -3637,7 +3266,7 @@ figure~\ref{F23}.
 
 \begin{figure}[htbp]	% Step
 \centering
-\includegraphics[width=0.9\textwidth]{eps/disksrt.eps}
+\includegraphics[width=0.8\textwidth]{disksrt.png}
 \caption{Block diagram for the RT implementation}
 \label{F23}
 \end{figure}
@@ -3647,7 +3276,7 @@ figure~\ref{F24}).
 
 \begin{figure}[htbp]	% Step
 \centering
-\includegraphics[width=0.7\textwidth]{eps/rtout.eps}
+\includegraphics[width=0.7\textwidth]{rtout}
 \caption{RT execution}
 \label{F24}
 \end{figure}

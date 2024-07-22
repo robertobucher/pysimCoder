@@ -4,11 +4,12 @@ The driver nrt.ko allows the normal user to lauch some
 speciali commands for changing scheduling policy and priority and
 other operations usually only permitted to superusers.
 
+```
 make
 sudo make install
 sudo make dev
 insmod /lib/modules/`uname -r`/misc/nrt.ko
-
+```
 
 In programs simply put this lines or similar in your source before using
 the threads
