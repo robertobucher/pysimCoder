@@ -62,7 +62,7 @@ LDFLAGS  += --entry=__start
 
 ELF_FILE_LDSCRIPT ?= $(wildcard $(NUTTX_EXPORT)/scripts/gnu-elf.ld)
 
-MAIN = nuttx_main_sem
+MAIN = nuttx_main_timehook
 ADD_FILES = $$ADD_FILES$$
 
 OBJSSTAN = $(MAIN).o $(MODEL).o $(ADD_FILES)
