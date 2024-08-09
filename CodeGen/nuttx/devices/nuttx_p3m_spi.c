@@ -54,7 +54,7 @@ static void init(python_block *block)
       fprintf(stderr, "malloc spimcst failed");
       return;
   }
-  memset(spimcst, sizeof(*spimcst), 0);
+  memset(spimcst, 0, sizeof(*spimcst));
 
   spimcst->spi_dev = "/dev/spi2";
 
@@ -174,8 +174,8 @@ static void inout(python_block *block)
   }
  #endif
 
-  irc_pos[0] = (double)(spimcst->act_pos + spimcst->pos_offset);
-  irc_idx[0] = (double)(spimcst->index_pos + spimcst->pos_offset);
+  irc_pos[0] = (double)(int32_t)(spimcst->act_pos + spimcst->pos_offset);
+  irc_idx[0] = (double)(int32_t)(spimcst->index_pos + spimcst->pos_offset);
   irc_idx_occ[0] = (double)spimcst->index_occur;
   hal_sec[0] = (double)pxmc_lpc_bdc_hal_pos_table[spimcst->hal_sensors];
 
