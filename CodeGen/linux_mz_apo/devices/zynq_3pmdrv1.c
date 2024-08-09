@@ -54,7 +54,7 @@ static void init(python_block *block)
       fprintf(stderr, "malloc mcst failed");
       return;
   }
-  memset(mcst, sizeof(*mcst), 0);
+  memset(mcst, 0, sizeof(*mcst));
 
   if (z3pmdrv1_init(mcst) < 0) {
       fprintf(stderr, "z3pmdrv1_init mcst failed");
@@ -172,12 +172,10 @@ static void inout(python_block *block)
   }
  #endif
 
-  irc_pos[0] = (double)(mcst->act_pos + mcst->pos_offset);
-  irc_idx[0] = (double)(mcst->index_pos + mcst->pos_offset);
+  irc_pos[0] = (double)(int32_t)(mcst->act_pos + mcst->pos_offset);
+  irc_idx[0] = (double)(int32_t)(mcst->index_pos + mcst->pos_offset);
   irc_idx_occ[0] = (double)mcst->index_occur;
   hal_sec[0] = (double)pxmc_lpc_bdc_hal_pos_table[mcst->hal_sensors];
-
-
 }
 
 /*  TERMINATION FUNCTION  */
