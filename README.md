@@ -1,6 +1,7 @@
-# pysimCoder
 
-![Screenshot_2021-10-31_08-15-46](https://user-images.githubusercontent.com/8348158/139572654-7fc549da-5530-410e-b092-64104a037606.png)
+![pysimCoder](https://github.com/user-attachments/assets/11b48b40-5c70-4f6d-af4e-facab24c5563)
+
+![image](https://github.com/user-attachments/assets/f72914c9-0979-4b80-89d5-070eb1e56c60)
 
 pysimCoder is a Rapid Prototyping application, that can be used to generate realtime code for different targets.
 
@@ -26,8 +27,8 @@ f.close()
 fileDict = json.loads(msg)
 pprint.pprint(fileDict)
 ```
+![image](https://github.com/user-attachments/assets/e1c292ff-5377-45ca-8cb5-c65f5b3968ba)
 
-![Screenshot_2021-10-31_07-16-53](https://user-images.githubusercontent.com/8348158/139570719-132cbe3c-190f-401b-b754-003959d08f5a.png)
 
 More info at the end of this file.
 
