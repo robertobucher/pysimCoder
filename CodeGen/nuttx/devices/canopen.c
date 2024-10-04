@@ -189,7 +189,7 @@ void sendMsg(uint16_t ID, uint8_t DATA[], int len)
 #ifdef CONFIG_CAN_EXTID
   txmsg.cm_hdr.ch_extid  = extended;
 #endif
-  txmsg.cm_hdr.ch_unused = 0;
+  /* txmsg.cm_hdr.ch_unused = 0; */
   
   memcpy(txmsg.cm_data, DATA, len);
 #endif
