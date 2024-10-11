@@ -1,5 +1,5 @@
 MODEL = $$MODEL$$
-all:  ../$(MODEL).elf ../$(MODEL)
+all:  ../$(MODEL).elf ../$(MODEL).bin ../$(MODEL)
 
 # Enable or define during make invocation to embed content of the specified
 # directory into ROM filesystem mounted into /etc on the target
@@ -178,6 +178,10 @@ $(MAIN).c: $(MAINDIR)/$(MAIN).c $(MODEL).c
 
 ../$(MODEL).hex : ../$(MODEL)
 	$(OBJCOPY) $(OBJCOPYARGS) -O ihex $< $@
+
+../$(MODEL).bin : ../$(MODEL)
+	$(OBJCOPY) $(OBJCOPYARGS) -O binary $< $@
+	@echo "### Created raw binary: $(MODEL).bin"
 
 clean:
 	@$(RM) $(FILES_TO_CLEAN)
