@@ -6,8 +6,6 @@ roberto.bucher@supsi.ch
 The following commands are provided:
 
 Design and plot commands
-  place       - Pole placement (replacement for place)
-  dlqr        - Discrete linear quadratic regulator
   d2c         - discrete to continous time conversion  
 """
 import numpy as np
