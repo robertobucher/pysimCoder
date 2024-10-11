@@ -5,18 +5,19 @@ roberto.bucher@supsi.ch
 
 The following commands are provided:
 
-Design and plot commands
-  full_obs    - full order observer
-  red_obs     - reduced order observer
-  comp_form   - state feedback controller+observer in compact form
-  comp_form_i - state feedback controller+observer+integ in compact form
-  set_aw      - introduce anti-windup into controller
-  step_plot   - graphical step response
-  init_par    - get xi and wn fron os and Ts
-  xi2os       - get os from xi
-  os2xi       - get xi from os
-  ts2wn       - get wn from xi and ts
-  wn2ts       - get ts from xi and wn
+Design commands
+
+  full_obs     - full order observer
+  red_obs      - reduced order observer
+  comp_form    - state feedback controller+observer in compact form
+  comp_form_i  - state feedback controller+observer+integ in compact form
+  set_aw       - introduce anti-windup into controller
+  matext       - Create extended matrices for state feedback with integral part
+  init_par     - get xi and wn fron os and Ts
+  xi2os        - get os from xi
+  os2xi        - get xi from os
+  ts2wn        - get wn from xi and ts
+  wn2ts        - get ts from xi and wn
 """
 
 import numpy as np
@@ -302,47 +303,7 @@ def matext(syst):
     Bext=np.vstack((syst.B, -syst.D))
     return Aext, Bext
         
-def step_plot(sys, T = None):
-    """
-    Graphical step response
-
-    Usage
-    =====
-    step_plot(sys)
-
-    Inputs
-    ------
-
-    sys: system
-    """
-    if T is None:
-         T = 10;
-         
-    if np.isscalar(T):
-        if sys.isctime():
-            T = np.linspace(0,T)
-        else:
-            T = np.arange(0,T,sys.dt)
-        t, y = ct.step_response(sys, T)
-    else:
-        t, y = ct.step_response(sys, T)        
-
-    if len(y.shape)==3:
-        N = y.shape[0]
-        for n in range(0,N):
-            if sys.isctime():
-                plt.plot(t,y[n,0])
-            else:
-                plt.step(t,y[n,0], where='post')
-    else:
-        if sys.isctime():
-            plt.plot(t,y)
-        else:
-            plt.step(t,y, where='post')
-    plt.grid()
-    plt.show()
-        
-def init_par(os,ts):
+def init_par(os, ts):
     """
     Find xi and wn for given os and ts
 
