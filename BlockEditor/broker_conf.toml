@@ -1,0 +1,11 @@
+name = "pysimCoderBroker"
+listen = ["tcp://[::]:3755", "unix:shvbroker.sock"]
+
+[user.admin]
+password = "admin!123"
+role = "admin"
+
+[role.admin]
+access.ssrv = "**"
+mountPoints = "**" # can mount itself anywhere
+access.dev = "**:*" # can access everything with DEV level
