@@ -11,4 +11,4 @@ pyqtgraph>=0.11.0 # MIT
 lxml>=4.6.3 # BSD License
 tornado>=6.1 #  Apache Software License 2.0
 scikit-build>=0.15.0 # MIT
-pyshv>=0.6.1 #MIT
+pyshv>=0.7.2 #MIT
