@@ -84,6 +84,57 @@ Simply install some additional packages download pysimCoder and istall it.
 ```
     sudo apt-get update
     sudo apt-det dist-upgrade
+
+    sudo usermod -aG sudo <your_username>
+    touch /home/<your_username>/.bash_aliases
+
+    sudo apt-get update && sudo apt-get upgrade -y
+```
+
+## Otherway pip inside Makefile will not work
+```
+    export PIP_BREAK_SYSTEM_PACKAGES=1
+
+```
+## python and pip
+```
+    sudo apt install make python3 python3-venv pip python3-pyqt5 python3-pyqt6
+```
+
+## required to run uic
+```
+    sudo apt install pyqt6-dev pyqt6-dev-tools 
+    sudo apt-get install python3-pyqt5.qtsvg
+```
+
+## headers
+```
+    sudo apt install linux-headers-rt-amd64 linux-image-rt-amd64
+```
+
+## compilers
+```
+    sudo apt install build-essential gdb gcc gfortran cmake
+```
+
+## required to build `fmu`
+```
+    sudo apt install libxml2-dev libxslt1-dev
+```
+
+## required to build `slycot`
+```
+    sudo apt install -y libopenblas-dev
+```
+
+## required to build `full_lib`
+```
+    sudo apt install libcomedi-dev 
+```
+
+## double check if everything installed
+```
+    pip install -r requirements.txt
 ```
 
 The required packages are the same as in this link

@@ -175,6 +175,11 @@ class NewEditorMainWindow(QMainWindow):
                                              'Debugging',self,
                                              statusTip = 'Debug infos',
                                              triggered = self.debugAct)
+                                             
+        self.aboutAction = QAction(QIcon(mypath+'help-about.png'),
+                                             'About pysimCoder',self,
+                                             statusTip = 'About pysimCoder',
+                                             triggered = self.aboutAct)
 
     def addToolbars(self):
         toolbarL = self.addToolBar('Library')
@@ -245,6 +250,9 @@ class NewEditorMainWindow(QMainWindow):
 
         shvMenu = menubar.addMenu('&Communication')
         shvMenu.addAction(self.setSHVAction)
+        
+        helpMenu = menubar.addMenu('&Help')
+        helpMenu.addAction(self.aboutAction)
 
     def copyAct(self):
         self.scene.selection = []
@@ -387,7 +395,19 @@ class NewEditorMainWindow(QMainWindow):
     def clearDirAct(self):
         self.actFolders.clear()
         self.actFolders.addItem(os.getcwd())
-
+        
+    def aboutAct(self):
+        msg = QMessageBox(self)
+        msg.setWindowTitle('About pysimCoder')
+        text = 'https://github.com/robertobucher/pysimCoder\n\n'
+        text += 'roberto.bucher.2812@gmail.com'
+        msg.setText(text)
+        pix = QPixmap(respath+'/icons/application-x-pysimcoder.svg')
+        pix = pix.scaledToHeight(128)
+        msg.setIconPixmap(pix)
+        msg.setStandardButtons(QMessageBox.StandardButton.Close)
+        ret = msg.exec()
+        
     def changeDir(self, index):
         try:
             os.chdir(self.actFolders.itemText(index))
