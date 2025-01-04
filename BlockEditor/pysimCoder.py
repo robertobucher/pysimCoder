@@ -32,8 +32,8 @@ if __name__ == "__main__":
     
     library = Library()
     library.setGeometry(0, 0, 400, h)
-    library.setMaximumSize(400,h)
-    library.setMinimumSize(400,h)
+    library.setMaximumWidth(400)
+    library.setMinimumWidth(400)
     library.show()
     library.setWindowState(Qt.WindowState.WindowMaximized)
        
