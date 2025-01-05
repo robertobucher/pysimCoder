@@ -8,10 +8,8 @@ from supsisim.dialg import BlockName_Dialog
 import supsisim.RCPDlg as pDlg
 from supsisim.const import GRID, DB, DP
 from supsisim.node import Node
-from supsisim.client import *
-import numpy as np
 import json
-from shv import SHVDecimal, SHVFloat
+from shv import SHVDecimal
 from decimal import Decimal, ROUND_DOWN
 
 
@@ -233,7 +231,7 @@ class Editor(QObject):
 
         connection = self.scene.getBrokerConnection()
 
-        if not connection.isConnected():
+        if not connection.is_connected():
             dlg = QMessageBox()
             dlg.setWindowTitle("Warning!")
             dlg.setText("No connection to broker")
@@ -255,7 +253,7 @@ class Editor(QObject):
             for i in range(1,len(items)):
                 par = items[i].split(':')
                 if par[2].replace(" ", "") == "double":
-                    res = connection.getParameterValue(par[0], name)
+                    res = connection.get_parameter_value(par[0], name)
                     par[1] = str(float(res))
                     items[i] = ':'.join(par)
             name =  item.name.replace(' ','_') + '_' + str(item.ident)
@@ -304,7 +302,7 @@ class Editor(QObject):
                             print("Wrong data type")
                     else:
                         continue
-                    connection.setPrameterValue(par[0], name, parameter)
+                    connection.set_parameter_value(par[0], name, parameter)
             else:
                 self.scene.clearLastUndo()
     
