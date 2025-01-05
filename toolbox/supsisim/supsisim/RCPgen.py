@@ -20,7 +20,7 @@ from os import environ
 import copy
 import sys
 from supsisim.RCPblk import RCPblk
-from supsisim.SHVgen import genSHVtree, genSHVcode, genSHVheader, genSHVend
+from .shv import ShvTreeGenerator
 
 def genCode(model, Tsamp, blocks, rkstep = 10):
     """Generate C-Code
@@ -68,7 +68,8 @@ def genCode(model, Tsamp, blocks, rkstep = 10):
 
     N = size(Blocks)
 
-    genSHVheader(f, model, N)
+    shv_generator = ShvTreeGenerator(f, model, Blocks)
+    shv_generator.generate_header()
 
     totContBlk = 0
     for blk in Blocks:
@@ -160,15 +161,8 @@ def genCode(model, Tsamp, blocks, rkstep = 10):
 
     f.write("\n\n")
 
-    Blks = []
-    for n in range(0,N):
-        Blks.append(Blocks[n].name)
-
-    BlksOrigin = copy.deepcopy(Blks)
-    Blks.sort()
-
     if (environ["SHV_TREE_TYPE"] == "GSA_STATIC") and (environ["SHV_USED"] == "True"):
-        genSHVtree(f, Blocks, Blks)
+        shv_generator.generate_tree()
 
     f.write("/* Initialization function */\n\n")
     strLn = "void " + model + "_init(void)\n"
@@ -227,7 +221,7 @@ def genCode(model, Tsamp, blocks, rkstep = 10):
     f.write("\n")
 
     if environ["SHV_USED"] == "True":
-        genSHVcode(f, model, Blocks, Blks)
+        shv_generator.generate_code()
 
     f.write("/* Set initial outputs */\n\n")
 
@@ -294,7 +288,7 @@ def genCode(model, Tsamp, blocks, rkstep = 10):
     f.write(strLn)
 
     if environ["SHV_USED"] == "True":
-        genSHVend(f, model)
+        shv_generator.generate_end()
 
     for n in range(0,N):
         blk = Blocks[n]
