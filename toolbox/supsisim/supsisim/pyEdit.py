@@ -401,6 +401,8 @@ class NewEditorMainWindow(QMainWindow):
         msg.setWindowTitle('About pysimCoder')
         text = 'https://github.com/robertobucher/pysimCoder\n\n'
         text += 'roberto.bucher.2812@gmail.com'
+        text += '\n\n built on PyQt '
+        text += QT_VERSION_STR
         msg.setText(text)
         pix = QPixmap(respath+'/icons/application-x-pysimcoder.svg')
         pix = pix.scaledToHeight(128)

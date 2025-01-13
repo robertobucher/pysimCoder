@@ -125,5 +125,3 @@ except:
         QPrinter,
         QPrintDialog
     )
-
-print(QT_VERSION_STR)
