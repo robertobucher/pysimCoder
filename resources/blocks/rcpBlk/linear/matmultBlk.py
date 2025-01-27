@@ -28,6 +28,6 @@ def matmultBlk(pin, pout, Gains):
     if(size(pout) != n):
         raise ValueError("Block should have %i output port; received %i." % (n,size(pout)))
     realPar  = reshape(Gains,(1,size(Gains)),'C')
-    blk = RCPblk('mxmult',pin,pout,[0,0],1,realPar,[n,m])
+    blk = RCPblk('mxmult',pin,pout,[0,0],1,realPar,[])
     return blk
 
