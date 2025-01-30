@@ -1,10 +1,12 @@
 #!/bin/sh
 
+export PYSUPSICTRL="$( cd "$(dirname "$0")" ; pwd )"
+
 if [ $# -eq 0 ]; then
     appname="pysimCoder"
 else
     # find all .py applications
-    applications=$(find BlockEditor -name "*.py" -execdir basename {} \; | sed s/.py//)
+    applications=$(find $PYSUPSICTRL/BlockEditor -name "*.py" -execdir basename {} \; | sed s/.py//)
     appname="$1"
 
     # match whole words only
@@ -19,8 +21,6 @@ else
     # only APP arguments
     shift
 fi
-
-export PYSUPSICTRL="$( cd "$(dirname "$0")" ; pwd )"
 
 if [ -n "$PYTHONPATH" ] ; then
   PYTHONPATH=":$PYTHONPATH"
