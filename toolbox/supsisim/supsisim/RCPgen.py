@@ -22,7 +22,7 @@ import sys
 from supsisim.RCPblk import RCPblk
 from .shv import ShvTreeGenerator
 
-def genCode(model, Tsamp, blocks, rkMethod='standard_RK4', rkstep = 10):
+def genCode(model, Tsamp, blocks, rkMethod='standard_RK4', epsAbs = 1e-6, epsRel = 1e-6, rkstep = 10):
     """Generate C-Code
 
     Call: genCode(model, Tsamp, Blocks, rkstep)
@@ -273,7 +273,7 @@ def genCode(model, Tsamp, blocks, rkMethod='standard_RK4', rkstep = 10):
                     strLn = '  gsl_odeiv2_system sys' + str(n) + ' = {' + blk.fcn +'Func, NULL, ' + \
                     str(nStates) + ', &block_' + model + '[' + str(n) + ']};\n'
                     strLn += '  driver = gsl_odeiv2_driver_alloc_y_new(&sys' + str(n) + ', ' + rkMethod + \
-                    ', 1e-6, 1e-6, 0.0);\n'
+                    ', ' + str(epsAbs) + ', ' + str(epsRel) + ', 0.0);\n'
                     strLn += '  block_' + model + '[' + str(n) + '].ptrPar = (void *) driver;\n'
                     f.write(strLn)
 

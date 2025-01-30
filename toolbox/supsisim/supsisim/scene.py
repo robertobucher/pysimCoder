@@ -55,6 +55,8 @@ class Scene(QGraphicsScene):
 
         self.template = 'sim.tmf'
         self.intgMethod = 'standard RK4'
+        self.epsAbs = '1e-6'
+        self.epsRel = '1e-6'
         self.addObjs = ''
         self.Ts = '0.01'
         self.script = ''
@@ -92,8 +94,8 @@ class Scene(QGraphicsScene):
             }
         dataDict['init'] = init
 
-        keys = ['template', 'Ts', 'AddObj', 'script', 'intgMethod', 'Tf', 'prio']
-        vals = [self.template, self.Ts, self.addObjs, self.script, self.intgMethod, self.Tf, self.prio]
+        keys = ['template', 'Ts', 'AddObj', 'script', 'intgMethod', 'epsAbs', 'epsRel', 'relTf', 'prio']
+        vals = [self.template, self.Ts, self.addObjs, self.script, self.intgMethod, self.epsAbs, self.epsRel, self.Tf, self.prio]
         dataDict['simulate'] = dict(zip(keys, vals))
 
         keys = ['used', 'ip', 'port', 'user', 'passwd', 'devid', 'mount', 'tree']
@@ -153,8 +155,8 @@ class Scene(QGraphicsScene):
         vals = [item.findtext('name'), int(item.findtext('inp')), int(item.findtext('outp')),
                 item.findtext('inset')=='1', item.findtext('outset')=='1', item.findtext('icon'),
                 item.findtext('params'), item.findtext('help'),
-                int(item.findtext('width')), item.findtext('flip')=='1', pos]
-        keys = ['name', 'inp', 'outp', 'inset', 'outset', 'icon', 'params', 'help', 'width', 'flip', 'pos']
+                int(item.findtext('width')), int(item.findtext('height')),item.findtext('flip')=='1', pos]
+        keys = ['name', 'inp', 'outp', 'inset', 'outset', 'icon', 'params', 'help', 'width', height, 'flip', 'pos']
         return dict(zip(keys, vals))
 
     def getConnection(self, item):
@@ -178,6 +180,12 @@ class Scene(QGraphicsScene):
                 self.intgMethod = dataDict['simulate']['intgMethod']
             except:
                 self.intgMethod = 'standard RK4'
+            try:
+                self.epsAbs = dataDict['simulate']['epsAbs']
+                self.epsRel = dataDict['simulate']['epsRel']
+            except:
+                self.epsAbs = '1.e-6'
+                self.epdrel = '1e-6'
             self.Ts = dataDict['simulate']['Ts']
             self.addObjs = dataDict['simulate']['AddObj']
             self.script = dataDict['simulate']['script']
@@ -226,9 +234,14 @@ class Scene(QGraphicsScene):
             pass
 
     def loadBlock(self, item, dx = 0, dy = 0):
-        b = Block(None, self, item['name'], item['inp'], item['outp'],
-                  item['inset'], item['outset'], item['icon'],
-                  item['params'], item['help'], item['width'], item['flip'] )
+        try:
+            b = Block(None, self, item['name'], item['inp'], item['outp'],
+                    item['inset'], item['outset'], item['icon'],
+                    item['params'], item['help'], item['width'], item['height'], item['flip'] )
+        except:
+            b = Block(None, self, item['name'], item['inp'], item['outp'],
+                    item['inset'], item['outset'], item['icon'],
+                    item['params'], item['help'], item['width'], item['flip'] )
 
         b.setPos(item['pos'][0]+dx, item['pos'][1]+dy)
 
@@ -311,6 +324,8 @@ class Scene(QGraphicsScene):
         dialog.intgMethod.addItems(dictTemplates[template])
         ind = dialog.intgMethod.findText(self.intgMethod)
         dialog.intgMethod.setCurrentIndex(ind)
+        dialog.epsAbs.setText(self.epsAbs)
+        dialog.epsRel.setText(self.epsRel)
         dialog.addObjs.setText(self.addObjs)
         dialog.Ts.setText(self.Ts)
         dialog.parscript.setText(self.script)
@@ -322,6 +337,8 @@ class Scene(QGraphicsScene):
 
         self.template = str(dialog.template.currentText())
         self.intgMethod = str(dialog.intgMethod.currentText())
+        self.epsAbs = str(dialog.epsAbs.text())
+        self.epsRel = str(dialog.epsRel.text())
         self.addObjs = str(dialog.addObjs.text())
         self.Ts = str(dialog.Ts.text())
         self.script = str(dialog.parscript.text())
@@ -636,7 +653,8 @@ class Scene(QGraphicsScene):
 
         fn.write('fname = ' + "'" + fname + "'\n")
         fn.write('os.chdir("'+ fnm +'")\n')
-        fn.write('genCode(fname, ' + self.Ts + ', blks, ' + "'" + self.intgMethod + "'" + ')\n')
+        fn.write('genCode(fname, ' + self.Ts + ', blks, ' + "'" + self.intgMethod + "', " + \
+                 self.epsAbs + ', ' + self.epsRel +')\n')
         fn.write("genMake(fname, '" + self.template + "', addObj = '" + self.addObjs + "')\n")
         fn.write('\nimport os\n')
         fn.write('os.system("make clean")\n')
