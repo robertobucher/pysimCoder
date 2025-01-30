@@ -1,5 +1,4 @@
 from scipy.optimize import leastsq
-from scipy.signal import step2
 import numpy as np
 from control import *
 from control.matlab import *
