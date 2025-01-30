@@ -320,6 +320,9 @@ def genCode(model, Tsamp, blocks, rkMethod='standard_RK4', rkstep = 10):
                     strLn = '    memcpy(&(block_' + model + '[' + str(n) + '].realPar[' +\
                     str(pos) + ']), y_' + str(n) + ', ' + str(nStates) + '*sizeof(double));\n'
                     f.write(strLn)
+                else:
+                    strLn = '    ' + blk.fcn + '(CG_STUPD, &block_' + model + '[' + str(n) + ']);\n'
+                    f.write(strLn)
 
         strLn = '  }\n'
         f.write(strLn)
