@@ -6,6 +6,7 @@ from supsisim.port import Port, InPort, OutPort
 from supsisim.connection import Connection
 from supsisim.dialg import RTgenDlg, SHVDlg
 from supsisim.const import VERSION, pyrun, TEMP, respath, BWmin
+from supsisim.getTemplates import dictTemplates
 from .shv import ShvClient
 from lxml import etree
 import os
@@ -53,6 +54,7 @@ class Scene(QGraphicsScene):
         self.blocks = set()
 
         self.template = 'sim.tmf'
+        self.intgMethod = 'standard RK4'
         self.addObjs = ''
         self.Ts = '0.01'
         self.script = ''
@@ -60,7 +62,7 @@ class Scene(QGraphicsScene):
         self.prio = ''
 
         self.SHV = SHVInstance(self.mainw.filename)
-    
+
         self.brokerConnection = ShvClient()
 
         self.undoList = []
@@ -90,8 +92,8 @@ class Scene(QGraphicsScene):
             }
         dataDict['init'] = init
 
-        keys = ['template', 'Ts', 'AddObj', 'script', 'Tf', 'prio']
-        vals = [self.template, self.Ts, self.addObjs, self.script, self.Tf, self.prio]
+        keys = ['template', 'Ts', 'AddObj', 'script', 'intgMethod', 'Tf', 'prio']
+        vals = [self.template, self.Ts, self.addObjs, self.script, self.intgMethod, self.Tf, self.prio]
         dataDict['simulate'] = dict(zip(keys, vals))
 
         keys = ['used', 'ip', 'port', 'user', 'passwd', 'devid', 'mount', 'tree']
@@ -146,79 +148,6 @@ class Scene(QGraphicsScene):
             self.removeItem(item)
         self.blocks.clear()
 
-    def old_MsgToDgm(self, msg, dataDict):
-    # Required for loading files saved with previous format
-        QMessageBox.warning(self.mainw,'Old file format',
-        'This file is in an old format that will\n  \
-        no more supported in the future!\n \
-        Please save it to transform in the new format!')
-        root = etree.fromstring(msg)
-
-        init = {'code': 'pysimCoder',
-                'ver' : '0.91',
-                'date' : time.strftime("%d.%m.%Y - %H:%M:%S"),
-            }
-        dataDict['init'] = init
-
-        sim = root.findall('Simulation')[0]
-
-        addObjs = sim.findtext('AddObj')
-        if addObjs==None or addObjs=='':
-            addObjs=''
-        script = sim.findtext('ParScript')
-        if script==None or script=='':
-            script=''
-        Tf = sim.findtext('Tf')
-        if Tf==None:
-            Tf=''
-        prio = sim.findtext('Priority')
-        if prio==None:
-            prio=''
-        simulate= {
-                'template' : sim.findtext('Template'),
-                'Ts' : sim.findtext('Ts'),
-                'AddObj' : addObjs,
-                'script' : script,
-                'Tf' : Tf,
-                'prio' : prio,
-                }
-        dataDict['simulate'] = simulate
-        """
-        We need to acess SHV field with try/except to keep support
-        for older pysimCoder diagrams.
-        """
-
-        try:
-            shv = root.findall('SHV')[0]
-            used = (shv.findtext('SHVused') == "True")
-            ip = shv.findtext('SHVip')
-            port = shv.findtext('SHVport')
-            user = shv.findtext('SHVuser')
-            passw = shv.findtext('SHVpassw')
-            devid = shv.findtext('SHVdevid')
-            mount = shv.findtext('SHVmount')
-            tree = shv.findtext('SHVtree')
-            keys = ['used', 'ip', 'port', 'user', 'passwd', 'devid', 'mount', 'tree']
-            vals = [used, ip, port, user, passw, devid, mount, tree]
-            shv = dict(zip(keys, vals))
-            dataDict['SHV'] = shv
-        except:
-            None
-
-        blocks = root.findall('block')
-        blk = []
-        for item in blocks:
-            b = self.getBlock(item)
-            blk.append(b)
-        dataDict['blocks'] = blk
-
-        connections = root.findall('connection')
-        conn = []
-        for item in connections:
-            c = self.getConnection(item)
-            conn.append(c)
-        dataDict['connections'] = conn
-
     def getBlock(self, item):
         pos = (float(item.findtext('posX')), float(item.findtext('posY')))
         vals = [item.findtext('name'), int(item.findtext('inp')), int(item.findtext('outp')),
@@ -245,6 +174,10 @@ class Scene(QGraphicsScene):
         # Transform the file dict into a block diagram
         try:
             self.template = dataDict['simulate']['template']
+            try:
+                self.intgMethod = dataDict['simulate']['intgMethod']
+            except:
+                self.intgMethod = 'standard RK4'
             self.Ts = dataDict['simulate']['Ts']
             self.addObjs = dataDict['simulate']['AddObj']
             self.script = dataDict['simulate']['script']
@@ -353,14 +286,8 @@ class Scene(QGraphicsScene):
         f = open(fname,'r')
         msg = f.read()
         f.close()
-        try:
-            root = etree.fromstring(msg)
-            fileDict = {}
-            self.clearDgm()
-            self.old_MsgToDgm(msg, fileDict)
-        except:
-            fileDict = json.loads(msg)
-            self.clearDgm()
+        fileDict = json.loads(msg)
+        self.clearDgm()
 
         self.DictToDgm(fileDict)
         self.undoList = [fileDict]
@@ -377,7 +304,13 @@ class Scene(QGraphicsScene):
 
     def codegenDlg(self):
         dialog = RTgenDlg(self)
-        dialog.template.setText(self.template)
+        ind = dialog.template.findText(self.template)
+        dialog.template.setCurrentIndex(ind)
+        template = str(dialog.template.currentText())
+        dialog.intgMethod.clear()
+        dialog.intgMethod.addItems(dictTemplates[template])
+        ind = dialog.intgMethod.findText(self.intgMethod)
+        dialog.intgMethod.setCurrentIndex(ind)
         dialog.addObjs.setText(self.addObjs)
         dialog.Ts.setText(self.Ts)
         dialog.parscript.setText(self.script)
@@ -387,7 +320,8 @@ class Scene(QGraphicsScene):
         if res != 1:
             return
 
-        self.template = str(dialog.template.text())
+        self.template = str(dialog.template.currentText())
+        self.intgMethod = str(dialog.intgMethod.currentText())
         self.addObjs = str(dialog.addObjs.text())
         self.Ts = str(dialog.Ts.text())
         self.script = str(dialog.parscript.text())
@@ -685,7 +619,7 @@ class Scene(QGraphicsScene):
         txt += 'tmp = 0\n'
         txt += 'for item in sysPath:\n'
         txt += '  blks[tmp].sysPath = item\n'
-        txt += '  tmp += 1\n\n'  
+        txt += '  tmp += 1\n\n'
         fn.write(txt)
 
         txt =  'os.environ["SHV_USED"] = \"' + str(self.SHV.used) + '\"\n'
@@ -702,7 +636,7 @@ class Scene(QGraphicsScene):
 
         fn.write('fname = ' + "'" + fname + "'\n")
         fn.write('os.chdir("'+ fnm +'")\n')
-        fn.write('genCode(fname, ' + self.Ts + ', blks)\n')
+        fn.write('genCode(fname, ' + self.Ts + ', blks, ' + "'" + self.intgMethod + "'" + ')\n')
         fn.write("genMake(fname, '" + self.template + "', addObj = '" + self.addObjs + "')\n")
         fn.write('\nimport os\n')
         fn.write('os.system("make clean")\n')
@@ -755,7 +689,7 @@ class Scene(QGraphicsScene):
             print(item)
 
     def getBrokerConnection(self) -> ShvClient:
-        
+
         shv = self.SHV
         self.brokerConnection.update_parameters_and_connect(shv.ip, shv.port, shv.user, shv.passw, shv.devid, shv.mount)
 

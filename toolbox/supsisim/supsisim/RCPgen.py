@@ -22,7 +22,7 @@ import sys
 from supsisim.RCPblk import RCPblk
 from .shv import ShvTreeGenerator
 
-def genCode(model, Tsamp, blocks, rkstep = 10):
+def genCode(model, Tsamp, blocks, rkMethod='standard_RK4', rkstep = 10):
     """Generate C-Code
 
     Call: genCode(model, Tsamp, Blocks, rkstep)
@@ -32,13 +32,13 @@ def genCode(model, Tsamp, blocks, rkstep = 10):
     model     : Model name
     Tsamp     : Sampling Time
     Blocks    : Block list
-    rkstep    : step division pro sample time for fixed step solver
+    rkMethod  : Numerical integration algoritm
+    rkstep    : step division pro sample time for fixed step solverM
 
     Returns
     -------
     -
 """
-
     maxNode = 0
     for blk in blocks:
         for n in range(0,size(blk.pin)):
@@ -61,240 +61,304 @@ def genCode(model, Tsamp, blocks, rkstep = 10):
     if size(Blocks) == 0:
         raise ValueError('No possible to determine the block sequence')
 
+    gslFlag = (rkMethod != 'standard RK4')
     fn = model + '.c'
     f=open(fn,'w')
-    strLn = "#include <pyblock.h>\n#include <stdio.h>\n#include <stdlib.h>\n\n"
+    strLn = '#include <pyblock.h>\n#include <stdio.h>\n#include <stdlib.h>\n'
     f.write(strLn)
+    if gslFlag:
+        f.write('#include <string.h>\n#include <gsl/gsl_odeiv2.h>\n#include <matop.h>\n\n')
+    else:
+        f.write('\n')
 
     N = size(Blocks)
 
     shv_generator = ShvTreeGenerator(f, model, Blocks)
     shv_generator.generate_header()
 
-    totContBlk = 0
-    for blk in Blocks:
-        totContBlk += blk.nx[0]
-
-    f.write("/* Function prototypes */\n\n")
+    f.write('/* Function prototypes */\n\n')
 
     prototypes = []
-    
+
     for blk in Blocks:
-        prototypes.append("void " + blk.fcn + "(int Flag, python_block *block);\n")
+        prototypes.append('void ' + blk.fcn + '(int Flag, python_block *block);\n')
     setProto = set(prototypes)
     for el in setProto:
         f.write(el)
 
-    f.write("\n")
+    f.write('\n')
 
-    strLn = "double " + model + "_get_tsamp(void)\n"
-    strLn += "{\n"
-    strLn += "  return (" + str(Tsamp) + ");\n"
-    strLn += "}\n\n"
+    strLn = 'double ' + model + '_get_tsamp(void)\n'
+    strLn += '{\n'
+    strLn += '  return (' + str(Tsamp) + ');\n'
+    strLn += '}\n\n'
     f.write(strLn)
 
-    strLn = "python_block block_" + model + "[" + str(N) + "];\n\n"
+    strLn = 'python_block block_' + model + '[' + str(N) + '];\n\n'
     f.write(strLn)
 
     for n in range(0,N):
         blk = Blocks[n]
         if (size(blk.realPar) != 0):
-            strLn = "static double realPar_" + str(n) +"[] = {"
-            strLn += str(asmatrix(blk.realPar).tolist())[2:-2] + "};\n"
-            strLn += "static char *realParNames_" + str(n) + "[] = {"
+            strLn = 'static double realPar_' + str(n) +'[] = {'
+            strLn += str(asmatrix(blk.realPar).tolist())[2:-2] + '};\n'
+            strLn += 'static char *realParNames_' + str(n) + '[] = {'
             tmp = 0
             if (size(blk.realPar) != size(blk.realParNames)):
                 for i in range(0, size(blk.realPar)):
                     strLn += "\"double" + str(i) + "\""
                     if ((tmp + 1) != size(blk.realPar)):
-                        strLn += ", "
+                        strLn += ', '
                     tmp += 1
             else:
                 for i in range(0, size(blk.realPar)):
                     strLn += "\"" + str(blk.realParNames[i]) + "\""
                     if ((tmp + 1) != size(blk.realPar)):
-                        strLn += ", "
+                        strLn += ', '
                     tmp += 1
-            strLn += "};\n"
+            strLn += '};\n'
             f.write(strLn)
         if (size(blk.intPar) != 0):
-            strLn = "static int intPar_" + str(n) +"[] = {"
-            strLn += str(asmatrix(blk.intPar).tolist())[2:-2] + "};\n"
-            strLn += "static char *intParNames_" + str(n) + "[] = {"
+            strLn = 'static int intPar_' + str(n) +'[] = {'
+            strLn += str(asmatrix(blk.intPar).tolist())[2:-2] + '};\n'
+            strLn += 'static char *intParNames_' + str(n) + '[] = {'
             tmp = 0
             for i in range(0, size(blk.intPar)):
                 strLn += "\"int" + str(i) + "\""
                 if ((tmp + 1) != size(blk.intPar)):
-                    strLn += ", "
+                    strLn += ', '
                 tmp += 1
-            strLn += "};\n"
+            strLn += '};\n'
             f.write(strLn)
-        strLn = "static int nx_" + str(n) +"[] = {"
-        strLn += str(asmatrix(blk.nx).tolist())[2:-2] + "};\n"
+        strLn = 'static int nx_' + str(n) +'[] = {'
+        strLn += str(asmatrix(blk.nx).tolist())[2:-2] + '};\n'
         f.write(strLn)
-    f.write("\n")
+    f.write('\n')
 
-    f.write("/* Nodes */\n")
+    f.write('/* Nodes */\n')
     for n in range(1,maxNode+1):
-        strLn = "static double Node_" + str(n) + "[] = {0.0};\n"
+        strLn = 'static double Node_' + str(n) + '[] = {0.0};\n'
         f.write(strLn)
 
-    f.write("\n")
+    f.write('\n')
 
-    f.write("/* Input and outputs */\n")
+    f.write('/* Input and outputs */\n')
     for n in range(0,N):
         blk = Blocks[n]
         nin = size(blk.pin)
         nout = size(blk.pout)
         if (nin!=0):
-            strLn = "static void *inptr_" + str(n) + "[]  = {"
+            strLn = 'static void *inptr_' + str(n) + '[]  = {'
             for m in range(0,nin):
-                strLn += "&Node_" + str(blk.pin[m]) + ","
-            strLn = strLn[0:-1] + "};\n"
+                strLn += '&Node_' + str(blk.pin[m]) + ','
+            strLn = strLn[0:-1] + '};\n'
             f.write(strLn)
         if (nout!=0):
-            strLn = "static void *outptr_" + str(n) + "[] = {"
+            strLn = 'static void *outptr_' + str(n) + '[] = {'
             for m in range(0,nout):
-                strLn += "&Node_" + str(blk.pout[m]) + ","
-            strLn = strLn[0:-1] + "};\n"
+                strLn += '&Node_' + str(blk.pout[m]) + ','
+            strLn = strLn[0:-1] + '};\n'
             f.write(strLn)
 
-    f.write("\n\n")
+    f.write('\n\n')
 
-    if (environ["SHV_TREE_TYPE"] == "GSA_STATIC") and (environ["SHV_USED"] == "True"):
+    if (environ['SHV_TREE_TYPE'] == 'GSA_STATIC') and (environ['SHV_USED'] == 'True'):
         shv_generator.generate_tree()
 
-    f.write("/* Initialization function */\n\n")
-    strLn = "void " + model + "_init(void)\n"
-    strLn += "{\n\n"
+    f.write('/* Initialization function */\n\n')
+    strLn = 'void ' + model + '_init(void)\n'
+    strLn += '{\n'
     f.write(strLn)
 
-    f.write("/* Block definition */\n\n")
+    f.write('/* Block definition */\n\n')
     for n in range(0,N):
         blk = Blocks[n]
         nin = size(blk.pin)
         nout = size(blk.pout)
         num = 0
 
-        strLn =  "  block_" + model + "[" + str(n) + "].nin  = " + str(nin) + ";\n"
-        strLn += "  block_" + model + "[" + str(n) + "].nout = " + str(nout) + ";\n"
+        strLn =  '  block_' + model + '[' + str(n) + '].nin  = ' + str(nin) + ';\n'
+        strLn += '  block_' + model + '[' + str(n) + '].nout = ' + str(nout) + ';\n'
 
-        port = "nx_" + str(n)
-        strLn += "  block_" + model + "[" + str(n) + "].nx   = " + port + ";\n"
+        port = 'nx_' + str(n)
+        strLn += '  block_' + model + '[' + str(n) + '].nx   = ' + port + ';\n'
 
         if (nin == 0):
-            port = "NULL"
+            port = 'NULL'
         else:
-            port = "inptr_" + str(n)
-        strLn += "  block_" + model + "[" + str(n) + "].u    = " + port + ";\n"
+            port = 'inptr_' + str(n)
+        strLn += '  block_' + model + '[' + str(n) + '].u    = ' + port + ';\n'
         if (nout == 0):
-            port = "NULL"
+            port = 'NULL'
         else:
-            port = "outptr_" + str(n)
-        strLn += "  block_" + model + "[" + str(n) + "].y    = " + port + ";\n"
+            port = 'outptr_' + str(n)
+        strLn += '  block_' + model + '[' + str(n) + '].y    = ' + port + ';\n'
         if (size(blk.realPar) != 0):
-            par = "realPar_" + str(n)
-            parNames = "realParNames_" + str(n)
+            par = 'realPar_' + str(n)
+            parNames = 'realParNames_' + str(n)
             num = size(blk.realPar)
         else:
-            par = "NULL"
-            parNames = "NULL"
+            par = 'NULL'
+            parNames = 'NULL'
             num = 0
-        strLn += "  block_" + model + "[" + str(n) + "].realPar = " + par + ";\n"
-        strLn += "  block_" + model + "[" + str(n) + "].realParNum = " + str(num) + ";\n"
-        strLn += "  block_" + model + "[" + str(n) + "].realParNames = " + parNames + ";\n"
+        strLn += '  block_' + model + '[' + str(n) + '].realPar = ' + par + ';\n'
+        strLn += '  block_' + model + '[' + str(n) + '].realParNum = ' + str(num) + ';\n'
+        strLn += '  block_' + model + '[' + str(n) + '].realParNames = ' + parNames + ';\n'
         if (size(blk.intPar) != 0):
-            par = "intPar_" + str(n)
-            parNames = "intParNames_" + str(n)
+            par = 'intPar_' + str(n)
+            parNames = 'intParNames_' + str(n)
             num = size(blk.intPar)
         else:
-            par = "NULL"
-            parNames = "NULL"
+            par = 'NULL'
+            parNames = 'NULL'
             num = 0
-        strLn += "  block_" + model + "[" + str(n) + "].intPar = " + par + ";\n"
-        strLn += "  block_" + model + "[" + str(n) + "].intParNum = " + str(num) + ";\n"
-        strLn += "  block_" + model + "[" + str(n) + "].intParNames = " + parNames + ";\n"
-        strLn += "  block_" + model + "[" + str(n) + "].str = " +'"' + blk.str + '"' + ";\n"
-        strLn += "  block_" + model + "[" + str(n) + "].ptrPar = NULL;\n"
+        strLn += '  block_' + model + '[' + str(n) + '].intPar = ' + par + ';\n'
+        strLn += '  block_' + model + '[' + str(n) + '].intParNum = ' + str(num) + ';\n'
+        strLn += '  block_' + model + '[' + str(n) + '].intParNames = ' + parNames + ';\n'
+        strLn += '  block_' + model + '[' + str(n) + '].str = ' + '"' + blk.str + '"' + ';\n'
+        strLn += '  block_' + model + '[' + str(n) + '].ptrPar = NULL;\n'
         f.write(strLn)
-        f.write("\n")
-    f.write("\n")
+        f.write('\n')
+    f.write('\n')
 
-    if environ["SHV_USED"] == "True":
+    if environ['SHV_USED'] == 'True':
         shv_generator.generate_code()
 
-    f.write("/* Set initial outputs */\n\n")
+    f.write('/* Set initial outputs */\n\n')
 
     for n in range(0,N):
         blk = Blocks[n]
-        strLn = "  " + blk.fcn + "(CG_INIT, &block_" + model + "[" + str(n) + "]);\n"
+        strLn = '  ' + blk.fcn + '(CG_INIT, &block_' + model + '[' + str(n) + ']);\n'
         f.write(strLn)
-    f.write("}\n\n")
+    f.write('}\n\n')
 
-    f.write("/* ISR function */\n\n")
-    strLn = "void " + model + "_isr(double t)\n"
-    strLn += "{\n"
+    f.write('/* ISR function */\n\n')
+    strLn = 'void ' + model + '_isr(double t)\n'
+    strLn += '{\n'
     f.write(strLn)
 
-    if (totContBlk != 0):
-        f.write("int i;\n")
-        f.write("double h;\n\n")
+    contIntg = False
+    for n in range(0,N):
+        blk = Blocks[n]
+        if blk.fcn in ['css', 'integral']:
+            contIntg = True
+
+    if contIntg:
+        f.write('int i;\n')
+        f.write('double h;\n')
+
+    if gslFlag:
+        f.write('double t0;\n')
+        f.write('gsl_odeiv2_driver *driver;\n')
+        f.write('int status;\n')
+
+    f.write('\n')
 
     for n in range(0,N):
         blk = Blocks[n]
-        strLn = "  " + blk.fcn + "(CG_OUT, &block_" + model + "[" + str(n) + "]);\n"
-        f.write(strLn)
-    f.write("\n")
-
-    for n in range(0,N):
-        blk = Blocks[n]
-        if (blk.nx[1] != 0):
-            strLn = "  " + blk.fcn + "(CG_STUPD, &block_" + model + "[" + str(n) + "]);\n"
+        if blk.nx[0] == 0:
+            strLn = '  ' + blk.fcn + '(CG_OUT, &block_' + model + '[' + str(n) + ']);\n'
             f.write(strLn)
-    f.write("\n")
+    f.write('\n')
 
-    if (totContBlk != 0):
-        strLn = "  h = " + model + "_get_tsamp()/" + str(rkstep) + ";\n\n"
+    if contIntg:
+        strLn = '  h = ' + model + '_get_tsamp()/' + str(rkstep) + ';\n\n'
         f.write(strLn)
 
         for n in range(0,N):
             blk = Blocks[n]
-            if (blk.nx[0] != 0):
-                strLn = "  block_" + model + "[" + str(n) + "].realPar[0] = h;\n"
-                f.write(strLn)
+            if blk.fcn in ['css', 'integral']:
+                if gslFlag:
+                    nStates = blk.nx[0]
+                    strLn = '  gsl_odeiv2_system sys' + str(n) + ' = {' + blk.fcn +'Func, NULL, ' + \
+                    str(nStates) + ', &block_' + model + '[' + str(n) + ']};\n'
+                    strLn += '  driver = gsl_odeiv2_driver_alloc_y_new(&sys' + str(n) + ', ' + rkMethod + \
+                    ', 1e-6, 1e-6, 0.0);\n'
+                    strLn += '  block_' + model + '[' + str(n) + '].ptrPar = (void *) driver;\n'
+                    f.write(strLn)
 
-        strLn = "  for(i=0;i<" + str(rkstep) + ";i++){\n"
+                    try:
+                        nrp = len(blk.realPar[0])
+                        pos = nrp - nStates
+                        strLn = '  double y_' + str(n) + '[' + str(nStates) + '];\n'
+                        f.write(strLn)
+
+                    except:
+                        nrp = len(blk.realPar)
+                        pos = nrp - nStates
+                        strLn = '  double y_' + str(n) + '[' + str(nStates) + '];\n'
+                        f.write(strLn)
+
+                    strLn = '  memcpy(y_' + str(n) + ', &(block_' + model + '[' + str(n) + '].realPar[' +\
+                    str(pos) + ']),' + str(nStates) + '*sizeof(double));\n'
+                    f.write(strLn)
+                else:
+                    strLn = '  block_' + model + '[' + str(n) + '].realPar[0] = h;\n'
+                    f.write(strLn)
+
+        strLn = '  for(i=0;i<' + str(rkstep) + ';i++){\n'
         f.write(strLn)
         for n in range(0,N):
             blk = Blocks[n]
-            if (blk.nx[0] != 0):
-                strLn = "    " + blk.fcn + "(CG_OUT, &block_" + model + "[" + str(n) + "]);\n"
+            if blk.fcn in ['css', 'integral'] or (len(blk.pout) != 0 and blk.uy == 1):
+                strLn = '    ' + blk.fcn + '(CG_OUT, &block_' + model + '[' + str(n) + ']);\n'
                 f.write(strLn)
 
         for n in range(0,N):
             blk = Blocks[n]
-            if (blk.nx[0] != 0):
-                strLn = "    " + blk.fcn + "(CG_STUPD, &block_" + model + "[" + str(n) + "]);\n"
-                f.write(strLn)
+            if blk.fcn in ['css', 'integral']:
+                if gslFlag:
+                    strLn = '    t0 = 0.0;\n'
+                    strLn += '    driver = (gsl_odeiv2_driver *) block_' + model + '[' + str(n) + '].ptrPar;\n'
+                    strLn += '    status = gsl_odeiv2_driver_apply(driver, &t0, t0+h, y_' + str(n) + ');\n'
+                    f.write(strLn)
+                    try:
+                        nrp = len(blk.realPar[0])
+                    except:
+                        nrp = len(blk.realPar)
+                    pos = nrp-nStates
+                    strLn = '    memcpy(&(block_' + model + '[' + str(n) + '].realPar[' +\
+                    str(pos) + ']), y_' + str(n) + ', ' + str(nStates) + '*sizeof(double));\n'
+                    f.write(strLn)
 
-        f.write("  }\n")
+        strLn = '  }\n'
+        f.write(strLn)
 
-    f.write("}\n")
+    for n in range(0,N):
+        blk = Blocks[n]
+        if blk.nx[1] != 0:
+            strLn = '  ' + blk.fcn + '(CG_STUPD, &block_' + model + '[' + str(n) + ']);\n'
+            f.write(strLn)
 
-    f.write("/* Termination function */\n\n")
 
-    strLn = "void " + model + "_end(void)\n"
-    strLn += "{\n"
+    f.write('}\n\n')
+
+    f.write('/* Termination function */\n\n')
+
+    strLn = 'void ' + model + '_end(void)\n'
+    strLn += '{\n'
     f.write(strLn)
 
-    if environ["SHV_USED"] == "True":
+    if gslFlag:
+        f.write('gsl_odeiv2_driver *driver;\n')
+
+    if environ['SHV_USED'] == 'True':
         shv_generator.generate_end()
 
     for n in range(0,N):
         blk = Blocks[n]
-        strLn = "  " + blk.fcn + "(CG_END, &block_" + model + "[" + str(n) + "]);\n"
-        f.write(strLn)
-    f.write("}\n\n")
+        if blk.fcn in ['css', 'integral']:
+            if gslFlag:
+                strLn = '  driver = (gsl_odeiv2_driver *) block_' + model + '[' + str(n) + '].ptrPar;\n'
+                strLn += '  gsl_odeiv2_driver_free(driver);\n'
+            else:
+                strLn = '  ' + blk.fcn + '(CG_END, &block_' + model + '[' + str(n) + ']);\n'
+            f.write(strLn)
+        else:
+            strLn = '  ' + blk.fcn + '(CG_END, &block_' + model + '[' + str(n) + ']);\n'
+            f.write(strLn)
+
+    f.write('}\n\n')
     f.close()
 
 def genMake(model, template, addObj = ''):
@@ -347,7 +411,7 @@ def detBlkSeq(Nodes, blocks):
                 for node in block.pin:
                     if nodeL[node].block_in[0].uy == 1:
                         self.block_in.append(nodeL[node].block_in[0])
-  
+
 
         def __str__(self):
             txt  = 'Block: ' + self.block.fcn.__str__() + '\n'
@@ -435,6 +499,6 @@ def detBlkSeq(Nodes, blocks):
     if len(blks2order) != 0:
         for item in blks2order:
             print(item.block)
-        raise ValueError("Algeabric loop!")
+        raise ValueError('Algeabric loop!')
 
     return blks

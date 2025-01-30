@@ -1,6 +1,8 @@
 from supsisim.qtvers import *
 
 from supsisim.const import path
+from supsisim.getTemplates import dictTemplates
+from os import listdir
 
 class IO_Dialog(QDialog):
     def __init__(self,parent=None):
@@ -53,8 +55,10 @@ class RTgenDlg(QDialog):
         self.resize(600, 100)
 
         lab1 = QLabel('Template Makefile')
-        self.template = QLineEdit('')
-        btn_template = QPushButton('BROWSE...')
+        self.template = QComboBox()
+        self.template.addItems(listdir(path+'CodeGen/templates'))
+        self.template.setEditable(False)
+
         lab2 = QLabel('Parameter script')
         self.parscript = QLineEdit('')
         btn_script = QPushButton('BROWSE...')
@@ -67,6 +71,11 @@ class RTgenDlg(QDialog):
         self.Tf = QLineEdit('')
         lab6 = QLabel('Priority')
         self.prio = QLineEdit('')
+        lab7 = QLabel('Integration method')
+        self.intgMethod = QComboBox()
+#         template = str(self.template.currentText())
+#         self.intgMethod.addItems(dictTemplates[template])
+#         self.intgMethod.addItems(['standard RK4', 'gsl_odeiv2_step_rkf45'])
 
         pbOK = QPushButton('OK')
         pbCANCEL = QPushButton('CANCEL')
@@ -74,7 +83,6 @@ class RTgenDlg(QDialog):
 
         grid.addWidget(lab1, 0, 0)
         grid.addWidget(self.template, 0, 1)
-        grid.addWidget(btn_template, 0, 2)
         grid.addWidget(lab2, 1, 0)
         grid.addWidget(self.parscript, 1, 1)
         grid.addWidget(btn_script, 1, 2)
@@ -83,17 +91,19 @@ class RTgenDlg(QDialog):
         grid.addWidget(btn_addObjs, 2, 2)
         grid.addWidget(lab6, 3, 0)
         grid.addWidget(self.prio, 3, 1)
-        grid.addWidget(lab4, 4, 0)
-        grid.addWidget(self.Ts, 4, 1)
-        grid.addWidget(lab5, 5, 0)
-        grid.addWidget(self.Tf, 5, 1)
-        grid.addWidget(pbOK, 6, 0)
-        grid.addWidget(pbCANCEL, 6, 1)
+        grid.addWidget(lab7, 4, 0)
+        grid.addWidget(self.intgMethod, 4, 1)
+        grid.addWidget(lab4, 5, 0)
+        grid.addWidget(self.Ts, 5, 1)
+        grid.addWidget(lab5, 6, 0)
+        grid.addWidget(self.Tf, 6, 1)
+        grid.addWidget(pbOK, 7, 0)
+        grid.addWidget(pbCANCEL, 7, 1)
         pbOK.clicked.connect(self.accept)
         pbCANCEL.clicked.connect(self.reject)
-        btn_template.clicked.connect(self.getTemplate)
         btn_addObjs.clicked.connect(self.getObjs)
         btn_script.clicked.connect(self.getScript)
+        self.template.currentIndexChanged.connect(self.templateChanged)
         self.setLayout(grid)
 
     def getTemplate(self):
@@ -120,6 +130,11 @@ class RTgenDlg(QDialog):
         fname = fname[0]
         if len(fname) != 0:
             self.parscript.setText(fname)
+
+    def templateChanged(self, ind):
+        template = str(self.template.currentText())
+        self.intgMethod.clear()
+        self.intgMethod.addItems(dictTemplates[template])
 
 class SHVDlg(QDialog):
     def __init__(self, parent=None):

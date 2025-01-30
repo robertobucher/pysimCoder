@@ -31,7 +31,7 @@ $(MAIN).c: $(MAINDIR)/$(MAIN).c $(MODEL).c
 	$(CC) -c -o $@ $(CFLAGS) $<
 
 ../$(MODEL): $(OBJSSTAN) $(LIB)
-	$(CXX) -o $@  $(OBJSSTAN) $(LIB) -lrt -lpthread -lm
+	$(CXX) -o $@  $(OBJSSTAN) $(LIB) -lrt -lpthread -lgsl -lgslcblas -lm
 	@echo "### Created executable: $(MODEL)"
 
 clean::

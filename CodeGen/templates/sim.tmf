@@ -44,7 +44,7 @@ $(MAIN).c: $(MAINDIR)/$(MAIN).c $(MODEL).c
 	$(CC) -c -o $@ $(CFLAGS) $<
 
 ../$(MODEL): $(OBJSSTAN) $(LIB)
-	$(CC) -static -o $@  $(OBJSSTAN) $(LIB) -lrt -lpthread -lm
+	$(CC) -static -o $@  $(OBJSSTAN) $(LIB) -lrt -lpthread -lgsl -lgslcblas -lm
 	@echo "### Created executable: $(MODEL)"
 
 clean::
