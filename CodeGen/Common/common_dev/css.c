@@ -42,10 +42,10 @@ static void inout(python_block *block)
   double tmpY[no];
 
   double tmpU[ni];
-  double *U;
+  double *u;
   for (i=0;i<ni;i++) {
-    U = (double *) block->u[i];
-    tmpU[i] = U[0];
+    u = (double *) block->u[i];
+    tmpU[i] = u[0];
   }
   iC = intPar[5];
   iD = intPar[6];
@@ -88,10 +88,10 @@ static void update(python_block *block)
   double tmpX4[nx];
 
   double tmpU[ni];
-  double *U;
+  double *u;
   for (i=0;i<ni;i++) {
-    U = (double *) block->u[i];
-    tmpU[i] = U[0];
+    u = (double *) block->u[i];
+    tmpU[i] = u[0];
   }
   iA = intPar[3];
   iB = intPar[4];

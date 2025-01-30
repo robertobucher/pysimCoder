@@ -35,10 +35,10 @@ static void update(python_block *block)
 {
   double * realPar = block->realPar;
   double h = realPar[0];
-  double *U = block->u[0];
+  double *u = block->u[0];
   
   /* Runga Kutta */
-  realPar[1] = realPar[1] + U[0]*h;
+  realPar[1] = realPar[1] + u[0]*h;
 }
 
 static void end(python_block *block)
