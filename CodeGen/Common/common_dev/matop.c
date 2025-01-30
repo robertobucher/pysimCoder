@@ -17,7 +17,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
 #include <stdio.h>
-#include <gsl/gsl_errno.h>
 #include <pyblock.h>
 
 int matmult(double *a, int na, int ma, double *b, int nb, int mb, double* c)
@@ -62,7 +61,7 @@ int integralFunc(double t, const double y[], double f[], void *params)
   f[0] = u[0];
   realPar[1] = y[0];
 
-  return GSL_SUCCESS;
+  return 0;
 }
 
 int cssFunc(double t, const double y[], double f[], void *params)
@@ -110,5 +109,5 @@ int cssFunc(double t, const double y[], double f[], void *params)
     realPar[iX+ i] = y[i];
   }
 
-  return GSL_SUCCESS;
+  return 0;
 }
