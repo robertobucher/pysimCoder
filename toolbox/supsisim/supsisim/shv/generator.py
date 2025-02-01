@@ -96,10 +96,10 @@ class ShvTreeGenerator:
                     real_par_names = []
 
                     if size(self.blocks[index].realPar) == size(
-                        self.blocks[index].real_par_names
+                        self.blocks[index].realParNames
                     ):
                         for i in range(0, size(self.blocks[index].realPar)):
-                            real_par_names.append(self.blocks[index].real_par_names[i])
+                            real_par_names.append(self.blocks[index].realParNames[i])
                     else:
                         for i in range(0, size(self.blocks[index].realPar)):
                             real_par_names.append("double" + str(i))
