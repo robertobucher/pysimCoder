@@ -56,11 +56,13 @@ SRCALL += nuttxENC.c
 endif
 
 ifeq ($(CONFIG_SPI),y)
+ifeq ($(CONFIG_SPI_EXCHANGE),y)
 SRCALL += heater.c
 SRCALL += RLC.c
 SRCALL += DCMOT.c
 SRCALL += nuttx_p3m_spi.c
 SRCALL += pm_mc1_spi.c
+endif
 endif
 
 ifeq ($(CONFIG_SENSORS_DHTXX),y)
