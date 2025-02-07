@@ -166,6 +166,10 @@ void sendMsg(uint16_t ID, uint8_t DATA[], int len)
 {
   /* Procedure to send a CAN message */
 
+#ifdef CONFIG_CAN_EXTID
+  uint8_t extended = 0;
+#endif
+
 #ifdef CONFIG_NET_CAN
   struct can_frame txmsg;
 #else
