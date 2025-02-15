@@ -1,0 +1,11 @@
+{
+  "lib": "linear",
+  "name": "derivative",
+  "ip": 1,
+  "op": 1,
+  "stin": 0,
+  "stout": 0,
+  "icon": "DER",
+  "params": "derBlk",
+  "help": "This block implements a continous derivate block\n"
+}
