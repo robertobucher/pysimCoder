@@ -307,6 +307,7 @@ def genCode(model, Tsamp, blocks, rkMethod='standard_RK4', epsAbs = 1e-6, epsRel
             blk = Blocks[n]
             if blk.fcn in ['css', 'integral']:
                 if gslFlag:
+                    nStates = blk.nx[0]
                     strLn = '    t0 = 0.0;\n'
                     strLn += '    driver = (gsl_odeiv2_driver *) block_' + model + '[' + str(n) + '].ptrPar;\n'
                     strLn += '    status = gsl_odeiv2_driver_apply(driver, &t0, t0+h, y_' + str(n) + ');\n'
