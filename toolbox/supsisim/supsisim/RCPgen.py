@@ -256,9 +256,8 @@ def genCode(model, Tsamp, blocks, rkMethod='standard_RK4', epsAbs = 1e-6, epsRel
 
     for n in range(0,N):
         blk = Blocks[n]
-        if blk.nx[0] == 0:
-            strLn = '  ' + blk.fcn + '(CG_OUT, &block_' + model + '[' + str(n) + ']);\n'
-            f.write(strLn)
+        strLn = '  ' + blk.fcn + '(CG_OUT, &block_' + model + '[' + str(n) + ']);\n'
+        f.write(strLn)
     f.write('\n')
 
     if contIntg:
