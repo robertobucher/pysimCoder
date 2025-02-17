@@ -301,6 +301,14 @@ static void inout(python_block *block)
   int i;    
   tcp_txrx_state_t *txrxst = (tcp_txrx_state_t *)block->ptrPar;
 
+  /* Downsampling */
+
+  if (++block->intPar[4] < block->intPar[3])
+    {
+      return;
+    }
+  block->intPar[4] = 0;
+
   if (block->nin > 0)
     {
       if (tcp_dqf_free(txrxst) < block->nin)
