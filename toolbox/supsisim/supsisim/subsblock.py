@@ -13,10 +13,10 @@ class subsBlock(Block):
 
         if len(args)==12:
             self.parent, self.scene, name, inp, outp, insetble, outsetble, \
-            icon, params, helpTxt, width, flip = args
+            icon, params, helpTxt, dim, flip = args
             super(subsBlock, self).__init__(self.parent, self.scene, name,
                         inp, outp, insetble, outsetble, icon,
-                        params, helpTxt, width, flip)
+                        params, helpTxt, dim, flip)
 
         elif len(args)==3:
             self.parent = args[0]
@@ -33,14 +33,14 @@ class subsBlock(Block):
             icon = 'SUBSYSTEM'
             params = 'SubsystemBlk'
             helpTxt = 'Superblock'
-            width = BWmin
+            dim = [BWmin, BHmin]
             flip = False
             insetble = False
             outsetble = False
 
             super(subsBlock, self).__init__(self.parent, self.scene, name,
                         inp, outp, insetble, outsetble, icon,
-                        params, helpTxt, width, flip)
+                        params, helpTxt, dim, flip)
 
             self.blksNames = []
             for el in self.blksList:
@@ -283,9 +283,9 @@ class subsBlock(Block):
         subs = {}
         pos = (self.pos().x(), self.pos().y())
         vals = [self.name, self.inp, self.outp, self.insetble, self.outsetble,
-                self.icon, self.params, self.helpTxt, self.width, self.flip, pos]
+                self.icon, self.params, self.helpTxt, self.dim, self.flip, pos]
         keys = ['name', 'inp', 'outp', 'inset', 'outset', 'icon', 'params',
-        'help', 'width', 'flip', 'pos']
+        'help', 'dims', 'flip', 'pos']
         subs['block'] = dict(zip(keys, vals))
         subitems = {}
         self.sceneSubs.saveItems(subitems)

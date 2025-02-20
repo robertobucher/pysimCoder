@@ -19,7 +19,7 @@ class Block(QGraphicsPathItem):
         self.roundedBlocks = True
         
         if len(args) == 12:
-            parent, self.scene, self.name, self.inp, self.outp, self.insetble, self.outsetble, self.icon, self.params, self.helpTxt, self.width, self.flip = args
+            parent, self.scene, self.name, self.inp, self.outp, self.insetble, self.outsetble, self.icon, self.params, self.helpTxt, self.dim, self.flip = args
         elif len(args) == 3:
             parent, self.scene, strBlk = args
             ln = strBlk.split('@')
@@ -29,7 +29,7 @@ class Block(QGraphicsPathItem):
             self.icon = ln[5]
             self.params = ln[6]
             self.helpTxt = ln[7]
-            self.width = int(ln[8])
+            self.dim = int(ln[8])
             self.flip = False
             stbin = int(ln[3])
             stbout = int(ln[4])
@@ -40,12 +40,18 @@ class Block(QGraphicsPathItem):
 
         self.line_color = Qt.GlobalColor.black
         self.fill_color = Qt.GlobalColor.black
+        
+        tl = type(self.dim) is list
+        if not tl:
+            w = self.dim
+            self.dim = [w, BHmin]
+        
         self.setup()
         try:
             self.scene.blocks.add(self)
         except:
             pass
-        
+            
     def __str__(self):
         txt  = 'Name         :' + self.name.__str__() +'\n'
         txt += 'Input ports  :' + self.inp.__str__() + '\n'
@@ -56,8 +62,8 @@ class Block(QGraphicsPathItem):
         
     def setup(self):
         Nports = max(self.inp, self.outp)
-        self.w = self.width
-        self.h = BHmin+PD*(max(Nports-1,0))
+        self.w = self.dim[0]
+        self.h = max(BHmin+PD*(max(Nports-1,0)), self.dim[1])
 
         p = QPainterPath()
         self.setLabel(p)
@@ -114,7 +120,7 @@ class Block(QGraphicsPathItem):
         svg_size = self.renderer.defaultSize()
 
         # the middle of the boundingRect is actually (0,0)
-        # so shift only by the svg's width and height
+        # so shift only by the svg's dim and height
         new_left: float = -svg_size.width()/2
         new_top: float = -svg_size.height()/2
         where_to: QRectF = QRectF(new_left, new_top, svg_size.width(), svg_size.height())
@@ -143,7 +149,7 @@ class Block(QGraphicsPathItem):
         
     def clone(self, pt):
         b = Block(None, self.scene, self.name, self.inp, self.outp, 
-                      self.insetble, self.outsetble, self.icon, self.params, self.helpTxt, self.width, self.flip)
+                      self.insetble, self.outsetble, self.icon, self.params, self.helpTxt, self.dim, self.flip)
         b.setPos(self.scenePos().__add__(pt))
 
     def setFlip(self, flip=None):
@@ -186,7 +192,7 @@ class Block(QGraphicsPathItem):
         except:
             self.label = QGraphicsTextItem(self)
             self.label.setPlainText(self.name)           
-         
+        
         p.addRect(-self.w/2, -self.h/2, self.w, self.h)
         w = self.label.boundingRect().width()
         self.label.setPos(-w/2, self.h/2+5)
@@ -201,8 +207,8 @@ class Block(QGraphicsPathItem):
     def save(self):
         pos = (self.pos().x(), self.pos().y())
         vals = [self.name, self.inp, self.outp, self.insetble, self.outsetble, 
-                self.icon, self.params, self.helpTxt, self.width, self.flip, pos]
-        keys = ['name', 'inp', 'outp', 'inset', 'outset', 'icon', 'params', 'help', 'width', 'flip', 'pos']
+                self.icon, self.params, self.helpTxt, self.dim, self.flip, pos]
+        keys = ['name', 'inp', 'outp', 'inset', 'outset', 'icon', 'params', 'help', 'dims', 'flip', 'pos']
         return dict(zip(keys, vals))
 
     def getPorts(self):
@@ -224,7 +230,7 @@ class Block(QGraphicsPathItem):
         # create a perfect copy of a block
         b = Block(None, self.scene, self.name, self.inp, self.outp,
                       self.insetble, self.outsetble, self.icon, self.params,
-                      self.helpTxt, self.width, self.flip)
+                      self.helpTxt, self.dim, self.flip)
         b.name = self.name
 
         inp1, outp1 = self.getPorts()

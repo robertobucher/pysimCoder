@@ -94,7 +94,7 @@ class Scene(QGraphicsScene):
             }
         dataDict['init'] = init
 
-        keys = ['template', 'Ts', 'AddObj', 'script', 'intgMethod', 'epsAbs', 'epsRel', 'relTf', 'prio']
+        keys = ['template', 'Ts', 'AddObj', 'script', 'intgMethod', 'epsAbs', 'epsRel', 'Tf', 'prio']
         vals = [self.template, self.Ts, self.addObjs, self.script, self.intgMethod, self.epsAbs, self.epsRel, self.Tf, self.prio]
         dataDict['simulate'] = dict(zip(keys, vals))
 
@@ -155,8 +155,8 @@ class Scene(QGraphicsScene):
         vals = [item.findtext('name'), int(item.findtext('inp')), int(item.findtext('outp')),
                 item.findtext('inset')=='1', item.findtext('outset')=='1', item.findtext('icon'),
                 item.findtext('params'), item.findtext('help'),
-                int(item.findtext('width')), int(item.findtext('height')),item.findtext('flip')=='1', pos]
-        keys = ['name', 'inp', 'outp', 'inset', 'outset', 'icon', 'params', 'help', 'width', height, 'flip', 'pos']
+                int(item.findtext('dims')), int(item.findtext('height')),item.findtext('flip')=='1', pos]
+        keys = ['name', 'inp', 'outp', 'inset', 'outset', 'icon', 'params', 'help', 'dims', height, 'flip', 'pos']
         return dict(zip(keys, vals))
 
     def getConnection(self, item):
@@ -234,14 +234,9 @@ class Scene(QGraphicsScene):
             pass
 
     def loadBlock(self, item, dx = 0, dy = 0):
-        try:
-            b = Block(None, self, item['name'], item['inp'], item['outp'],
-                    item['inset'], item['outset'], item['icon'],
-                    item['params'], item['help'], item['width'], item['height'], item['flip'] )
-        except:
-            b = Block(None, self, item['name'], item['inp'], item['outp'],
-                    item['inset'], item['outset'], item['icon'],
-                    item['params'], item['help'], item['width'], item['flip'] )
+        b = Block(None, self, item['name'], item['inp'], item['outp'],
+                item['inset'], item['outset'], item['icon'],
+                item['params'], item['help'], item['dims'], item['flip'] )
 
         b.setPos(item['pos'][0]+dx, item['pos'][1]+dy)
 
@@ -252,8 +247,8 @@ class Scene(QGraphicsScene):
     def loadSubsystem(self, subs, dx = 0, dy = 0):
         item = subs['block']
         b = subsBlock(None, self, item['name'], item['inp'], item['outp'],
-                  item['inset'], item['outset'], item['icon'],
-                  item['params'], item['help'], item['width'], item['flip'] )
+                item['inset'], item['outset'], item['icon'],
+                item['params'], item['help'], item['dims'], item['flip'] )
 
         b.setPos(item['pos'][0]+dx, item['pos'][1]+dy)
         b.load(subs)
@@ -299,6 +294,11 @@ class Scene(QGraphicsScene):
         f = open(fname,'r')
         msg = f.read()
         f.close()
+
+        # ============================================================
+        msg = msg.replace('width', 'dims')  # backward compatibility!
+        # ============================================================
+
         fileDict = json.loads(msg)
         self.clearDgm()
 
