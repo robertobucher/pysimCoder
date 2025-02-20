@@ -120,7 +120,7 @@ class Block(QGraphicsPathItem):
         svg_size = self.renderer.defaultSize()
 
         # the middle of the boundingRect is actually (0,0)
-        # so shift only by the svg's dim and height
+        # so shift only by the svg's width and height
         new_left: float = -svg_size.width()/2
         new_top: float = -svg_size.height()/2
         where_to: QRectF = QRectF(new_left, new_top, svg_size.width(), svg_size.height())
