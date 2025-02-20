@@ -5,6 +5,8 @@ PW = 6
 
 BWmin = 80
 BHmin = 60
+BHstep = 20
+
 PD = 40
 NW = 4
 LW =2

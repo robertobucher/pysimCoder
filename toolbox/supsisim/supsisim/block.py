@@ -19,7 +19,7 @@ class Block(QGraphicsPathItem):
         self.roundedBlocks = True
         
         if len(args) == 12:
-            parent, self.scene, self.name, self.inp, self.outp, self.insetble, self.outsetble, self.icon, self.params, self.helpTxt, self.dim, self.flip = args
+            parent, self.scene, self.name, self.inp, self.outp, self.insetble, self.outsetble, self.icon, self.params, self.helpTxt, self.dims, self.flip = args
         elif len(args) == 3:
             parent, self.scene, strBlk = args
             ln = strBlk.split('@')
@@ -29,7 +29,7 @@ class Block(QGraphicsPathItem):
             self.icon = ln[5]
             self.params = ln[6]
             self.helpTxt = ln[7]
-            self.dim = int(ln[8])
+            self.dims = int(ln[8])
             self.flip = False
             stbin = int(ln[3])
             stbout = int(ln[4])
@@ -41,10 +41,10 @@ class Block(QGraphicsPathItem):
         self.line_color = Qt.GlobalColor.black
         self.fill_color = Qt.GlobalColor.black
         
-        tl = type(self.dim) is list
+        tl = type(self.dims) is list
         if not tl:
-            w = self.dim
-            self.dim = [w, BHmin]
+            w = self.dims
+            self.dims = [w, BHmin]
         
         self.setup()
         try:
@@ -62,8 +62,8 @@ class Block(QGraphicsPathItem):
         
     def setup(self):
         Nports = max(self.inp, self.outp)
-        self.w = self.dim[0]
-        self.h = max(BHmin+PD*(max(Nports-1,0)), self.dim[1])
+        self.w = self.dims[0]
+        self.h = max(BHmin+PD*(max(Nports-1,0)), self.dims[1])
 
         p = QPainterPath()
         self.setLabel(p)
@@ -149,7 +149,7 @@ class Block(QGraphicsPathItem):
         
     def clone(self, pt):
         b = Block(None, self.scene, self.name, self.inp, self.outp, 
-                      self.insetble, self.outsetble, self.icon, self.params, self.helpTxt, self.dim, self.flip)
+                      self.insetble, self.outsetble, self.icon, self.params, self.helpTxt, self.dims, self.flip)
         b.setPos(self.scenePos().__add__(pt))
 
     def setFlip(self, flip=None):
@@ -207,7 +207,7 @@ class Block(QGraphicsPathItem):
     def save(self):
         pos = (self.pos().x(), self.pos().y())
         vals = [self.name, self.inp, self.outp, self.insetble, self.outsetble, 
-                self.icon, self.params, self.helpTxt, self.dim, self.flip, pos]
+                self.icon, self.params, self.helpTxt, self.dims, self.flip, pos]
         keys = ['name', 'inp', 'outp', 'inset', 'outset', 'icon', 'params', 'help', 'dims', 'flip', 'pos']
         return dict(zip(keys, vals))
 
@@ -230,7 +230,7 @@ class Block(QGraphicsPathItem):
         # create a perfect copy of a block
         b = Block(None, self.scene, self.name, self.inp, self.outp,
                       self.insetble, self.outsetble, self.icon, self.params,
-                      self.helpTxt, self.dim, self.flip)
+                      self.helpTxt, self.dims, self.flip)
         b.name = self.name
 
         inp1, outp1 = self.getPorts()
