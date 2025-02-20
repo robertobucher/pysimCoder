@@ -1,0 +1,11 @@
+{
+  "lib": "nonlin",
+  "name": "Anti Deadzone",
+  "ip": 1,
+  "op": 1,
+  "stin": 0,
+  "stout": 0,
+  "icon": "ANTIDEAD",
+  "params": "antideadzoneBlk|Upper:0.0:double|Lower:0.0:double",
+  "help": "This block implements an anti-deadzone compensator.\nThe upper field must be greater or equal to zero.\nThe lower field must be lower or equal to zero."
+}
