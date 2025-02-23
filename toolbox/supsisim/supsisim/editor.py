@@ -787,12 +787,16 @@ class Editor(QObject):
         elif conn:                
 #             self.scene.item = conn[0]
             self.scene.item = self.findConnectionAt(event.scenePos())  # New
-            self.scene.evpos = event.scenePos()
-            try:
-                self.subMenuConn.exec(event.screenPos())
-            except:
-                pass
-                    
+            if self.scene.item in conn:
+                self.scene.evpos = event.scenePos()
+                try:
+                    self.subMenuConn.exec(event.screenPos())
+                except:
+                    pass
+            else:
+                self.scene.evpos = event.scenePos()
+                self.subMenuEditor.exec(event.screenPos())
+                
         else:      
             self.scene.evpos = event.scenePos()
             self.subMenuEditor.exec(event.screenPos())

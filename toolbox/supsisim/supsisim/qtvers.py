@@ -9,6 +9,7 @@ try:
         QFileDialog,
         QGraphicsItem,
         QGraphicsPathItem,
+        QGraphicsRectItem,
         QGraphicsScene,
         QGraphicsTextItem,
         QGraphicsView,
@@ -38,6 +39,7 @@ try:
         QImage,
         QPainter,
         QPainterPath,
+        QBrush,
         QPen,
         QTransform
     )
@@ -74,6 +76,7 @@ except:
         QFileDialog,
         QGraphicsItem,
         QGraphicsPathItem,
+        QGraphicsRectItem,
         QGraphicsScene,
         QGraphicsTextItem,
         QGraphicsView,
@@ -102,6 +105,7 @@ except:
         QImage,
         QPainter,
         QPainterPath,
+        QBrush,
         QPen,
         QTransform
     )
