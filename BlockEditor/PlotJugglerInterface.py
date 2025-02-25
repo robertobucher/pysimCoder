@@ -45,6 +45,8 @@ class ser_rcvServer(threading.Thread):
             
             self.mainw.setData(data)
 
+        self.readThreadCleanup(SER)
+
 class ser_rcvServer4bytes(threading.Thread):
     def __init__(self, mainw):
         threading.Thread.__init__(self)
@@ -68,6 +70,8 @@ class ser_rcvServer4bytes(threading.Thread):
             data = self.st.unpack(val)            
             self.mainw.setData(data)
             
+        self.readThreadCleanup(SER4)
+
 class tcp_rcvServer(threading.Thread):
     def __init__(self, mainw):
         threading.Thread.__init__(self)
@@ -83,6 +87,7 @@ class tcp_rcvServer(threading.Thread):
         self.mainw.port = self.port
         
         self.port.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        self.port.settimeout(0.5)
        
         T = 0.0
         L = 8*self.N
@@ -95,20 +100,33 @@ class tcp_rcvServer(threading.Thread):
             return
 
         while self.mainw.ServerActive==1:
-            conn, addr = self.port.accept()
-            buf = bytearray()
-            while True:
-                chunk = bytearray(conn.recv(L - len(buf)))
-                if (len(chunk) == 0):
-                    conn.close()
-                    break
-                buf.extend(chunk)
-                if len(buf) < L:
-                    continue
-
-                data = self.st.unpack(buf)
+            try:
+                conn, addr = self.port.accept()
+                conn.settimeout(0.5)
                 buf = bytearray()
-                self.mainw.setData(data)
+                while self.mainw.ServerActive == 1:
+                    try:
+                        chunk = bytearray(conn.recv(L - len(buf)))
+                        if (len(chunk) == 0):
+                            conn.close()
+                            break
+                        buf.extend(chunk)
+                        if len(buf) < L:
+                            continue
+                        data = self.st.unpack(buf)
+                        buf = bytearray()
+                        self.mainw.setData(data)
+                    except socket.timeout:
+                        if self.mainw.ServerActive == 0:
+                            conn.close()
+                            break
+            except socket.timeout:
+                # timeout accept: catch the exception only
+                pass
+
+        print("End TCP")
+        self.port.close()
+        self.mainw.readThreadCleanup(TCP)
             
 class udp_rcvServer(threading.Thread):
     def __init__(self, mainw):
@@ -123,6 +141,7 @@ class udp_rcvServer(threading.Thread):
 
         self.port = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.mainw.port = self.port
+        self.port.settimeout(0.5)
         
         try:
            self.port.bind(('0.0.0.0', portNum))
@@ -131,20 +150,22 @@ class udp_rcvServer(threading.Thread):
                                       QMessageBox.StandardButton.Ok, QMessageBox.StandardButton.Ok)
             return
         L = 8*self.N
-        while self.mainw.ServerActive==1:
-            while True:
-                try:
-                    buf, addr = self.port.recvfrom(L)
-                    info = 'recvfrom ' + len(buf).__str__()
-                except:
-                    pass
-                                    
+        while self.mainw.ServerActive == 1:
+            try:
+                buf, addr = self.port.recvfrom(L)
+                info = 'recvfrom ' + len(buf).__str__()
                 if (len(buf) == 0):
-                    conn.close()
                     break
-                    
+
                 data = self.st.unpack(buf)
                 self.mainw.setData(data)        
+            except socket.timeout:
+                if self.mainw.ServerActive == 0:
+                    break
+
+        print("End UDP")
+        self.port.close()
+        self.mainw.readThreadCleanup(UDP)
 
 class MainWindow(QMainWindow, form_class):
     def __init__(self):
@@ -271,7 +292,6 @@ class MainWindow(QMainWindow, form_class):
         vals = np.round(data, 3)
         try:
             self.sendData = dict(zip(self.keys, vals))
-            print(self.sendData)
             datas = json.dumps(self.sendData)
             datab = datas.encode('utf-8')
             self._sock.sendto(datab, (self._host, self._port))
@@ -329,11 +349,27 @@ class MainWindow(QMainWindow, form_class):
         else:
             if porttype == SER:
                 self.pbStart_ser.setText('Start Server')
+                self.pbStart_ser.setEnabled(False)
+            elif porttype == SER4:
+                self.pbStart_ser4.setText('Start Server')
+                self.pbStart_ser4.setEnabled(False)
             elif porttype == TCP:
                 self.pbStart_tcp.setText('Start Server')
-            else:
+                self.pbStart_tcp.setEnabled(False)
+            elif porttype == UDP:
                 self.pbStart_udp.setText('Start Server')
+                self.pbStart_udp.setEnabled(False)
             self.ServerActive = 0
+
+    def readThreadCleanup(self, porttype):
+        if porttype == SER:
+            self.pbStart_ser.setEnabled(True)
+        if porttype == SER4:
+            self.pbStart_ser4.setEnabled(True)
+        elif porttype == TCP:
+            self.pbStart_tcp.setEnabled(True)
+        elif porttype == UDP:
+            self.pbStart_udp.setEnabled(True)
 
     def ckTimeEnabled_stateChanged(self):
         if self.ckTimeEnabled.isChecked():
