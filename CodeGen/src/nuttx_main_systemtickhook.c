@@ -26,7 +26,7 @@ int NAME(MODEL,_isr)(double);
 int NAME(MODEL,_end)(void);
 double NAME(MODEL,_get_tsamp)(void);
 
-#define NSEC_PER_SEC    1000000000
+#define NSEC_PER_SEC  1000000000
 #define USEC_PER_SEC	1000000
 
 static volatile int end = 0;
@@ -44,6 +44,16 @@ double FinalTime = 0.0;
 
 extern sem_t g_waitsem;
 
+#ifdef CLOCK_MEASURE
+static int timespecDiffUs(struct timespec t1, struct timespec t2)
+{
+	int diff;
+	diff = 1000000 * ((int) t1.tv_sec - (int) t2.tv_sec);
+	diff += ((int) t1.tv_nsec - (int) t2.tv_nsec) / 1000;
+	return diff;
+}
+#endif
+
 double get_run_time()
 {
   return(T);
@@ -52,6 +62,18 @@ double get_run_time()
 double get_Tsamp()
 {
   return(Tsamp);
+}
+
+int get_priority_for_com(void)
+{
+  if (prio < 0)
+    {
+      return -1;
+    }
+  else
+    {
+      return prio - 1;
+    }
 }
 
 static inline void tsnorm(struct timespec *ts)
@@ -73,8 +95,12 @@ static inline double calcdiff(struct timespec t1, struct timespec t2)
 static void *rt_task(void *p)
 {
   struct timespec t_next, t_current, t_isr, T0;
+#ifdef CLOCK_MEASURE
+  struct timespec measuretime;
+#endif
   struct sched_param param;
   static int nTick = 0;
+  static int cumulative = 0;
   int ret;
 
   param.sched_priority = prio;
@@ -107,40 +133,60 @@ static void *rt_task(void *p)
 
   /* get current time */
   clock_gettime(CLOCK_MONOTONIC,&t_current);
+#ifdef CLOCK_MEASURE
+  measuretime = t_current;
+#endif
   T0 = t_current;
   
-  while(!end){
-    while (sem_wait(&g_waitsem) >= 0) {
-	if(nTick==0){
-
-	  /* periodic task */
-	  T = calcdiff(t_current,T0);
-	  NAME(MODEL,_isr)(T);
+  while (!end)
+    {
+      while (sem_wait(&g_waitsem) >= 0) 
+        {
+          cumulative += 1;
+          if (nTick == 0)
+            {
+              /* periodic task */
+              T = calcdiff(t_current,T0);
+              NAME(MODEL,_isr)(T);
 
 #ifdef CANOPEN
-	  canopen_synch();
+              canopen_synch();
 #endif
 
-	  if((FinalTime >0) && (T >= FinalTime)) break;
+              if ((FinalTime >0) && (T >= FinalTime)) 
+                {
+                  break;
+                }
 
-	  t_next.tv_sec = t_current.tv_sec + t_isr.tv_sec;
-	  t_next.tv_nsec = t_current.tv_nsec + t_isr.tv_nsec;
-	  tsnorm(&t_next);
+              t_next.tv_sec = t_current.tv_sec + t_isr.tv_sec;
+              t_next.tv_nsec = t_current.tv_nsec + t_isr.tv_nsec;
+              tsnorm(&t_next);
 
-	  /* Check if Overrun */
-	  clock_gettime(CLOCK_MONOTONIC,&t_current);
-	  if (t_current.tv_sec > t_next.tv_sec ||
-	      (t_current.tv_sec == t_next.tv_sec && t_current.tv_nsec > t_next.tv_nsec)) {
-	    int usec = (t_current.tv_sec - t_next.tv_sec) * 1000000 + (t_current.tv_nsec -
-								       t_next.tv_nsec)/1000;
-	    fprintf(stderr, "Base rate overrun by %d us\n", usec);
-	    t_next= t_current;
-	  }
-	  t_current = t_next;
-	}
-	nTick = (nTick+1) % nTick_per_Tsamp;
-      }
-  }
+              /* Check if Overrun */
+              clock_gettime(CLOCK_MONOTONIC,&t_current);
+              
+#ifdef CLOCK_MEASURE
+              if (timespecDiffUs(t_current, measuretime) > USEC_PER_SEC)
+                {
+                  fprintf(stderr, "%d\n", cumulative);
+                  cumulative = 0;
+                  measuretime = t_current;
+                }
+#endif
+
+              if (t_current.tv_sec > t_next.tv_sec ||
+                  (t_current.tv_sec == t_next.tv_sec && t_current.tv_nsec > t_next.tv_nsec))
+                {
+                  int usec = (t_current.tv_sec - t_next.tv_sec) * 1000000 + (t_current.tv_nsec -
+                                 t_next.tv_nsec)/1000;
+                  fprintf(stderr, "Base rate overrun by %d us\n", usec);
+                  t_next = t_current;
+                }
+              t_current = t_next;
+            }
+          nTick = (nTick + 1) % nTick_per_Tsamp;
+        }
+    }
   NAME(MODEL,_end)();
   pthread_exit(0);
 }

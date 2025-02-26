@@ -364,7 +364,7 @@ def genCode(model, Tsamp, blocks, rkMethod='standard_RK4', epsAbs = 1e-6, epsRel
     f.write('}\n\n')
     f.close()
 
-def genMake(model, template, addObj = ''):
+def genMake(model, template, addObj = '', addCDefs = ''):
     """Generate the Makefile
 
     Call: genMake(model, template)
@@ -386,6 +386,7 @@ def genMake(model, template, addObj = ''):
     f.close()
     mf = mf.replace('$$MODEL$$',model)
     mf = mf.replace('$$ADD_FILES$$',addObj)
+    mf = mf.replace('$$ADDITIONAL_DEFINES$$', addCDefs)
     f = open('Makefile','w')
     f.write(mf)
     f.close()

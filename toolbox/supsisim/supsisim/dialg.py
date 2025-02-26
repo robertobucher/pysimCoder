@@ -62,19 +62,31 @@ class RTgenDlg(QDialog):
         lab2 = QLabel('Parameter script')
         self.parscript = QLineEdit('')
         btn_script = QPushButton('BROWSE...')
+
         lab3 = QLabel('Additional Objs')
         self.addObjs = QLineEdit('')
         btn_addObjs = QPushButton('BROWSE...')
-        lab4 = QLabel('Sampling Time')
-        self.Ts = QLineEdit('')
-        lab5 = QLabel('Final Time')
-        self.Tf = QLineEdit('')
+
+        lab4 = QLabel('Additional C Defines')
+        self.addCDefs = QLineEdit('')
+
+        lab5 = QLabel('Additional Make Args')
+        self.addMakeArgs = QLineEdit('')
+
         lab6 = QLabel('Priority')
         self.prio = QLineEdit('')
+
         lab7 = QLabel('Integration method')
         self.intgMethod = QComboBox()
-        self.lab8 = QLabel('          eps abs')
-        self.lab9 = QLabel('          eps rel')
+
+        lab8 = QLabel('Sampling Time')
+        self.Ts = QLineEdit('')
+
+        lab9 = QLabel('Final Time')
+        self.Tf = QLineEdit('')
+
+        self.lab10 = QLabel('          eps abs')
+        self.lab11 = QLabel('          eps rel')
         self.epsAbs = QLineEdit('1e-6')
         self.epsRel = QLineEdit('1e-6')
 
@@ -84,26 +96,39 @@ class RTgenDlg(QDialog):
 
         grid.addWidget(lab1, 0, 0)
         grid.addWidget(self.template, 0, 1)
+
         grid.addWidget(lab2, 1, 0)
         grid.addWidget(self.parscript, 1, 1)
         grid.addWidget(btn_script, 1, 2)
+
         grid.addWidget(lab3, 2, 0)
         grid.addWidget(self.addObjs, 2, 1)
         grid.addWidget(btn_addObjs, 2, 2)
-        grid.addWidget(lab6, 3, 0)
-        grid.addWidget(self.prio, 3, 1)
-        grid.addWidget(lab7, 4, 0)
-        grid.addWidget(self.intgMethod, 4, 1)
-        grid.addWidget(self.lab8, 3, 2)
-        grid.addWidget(self.lab9, 3, 3)
-        grid.addWidget(self.epsAbs,4,2)
-        grid.addWidget(self.epsRel,4,3)
-        grid.addWidget(lab4, 5, 0)
-        grid.addWidget(self.Ts, 5, 1)
-        grid.addWidget(lab5, 6, 0)
-        grid.addWidget(self.Tf, 6, 1)
-        grid.addWidget(pbOK, 7, 0)
-        grid.addWidget(pbCANCEL, 7, 1)
+
+        grid.addWidget(lab4, 3, 0)
+        grid.addWidget(self.addCDefs, 3, 1)
+
+        grid.addWidget(lab5, 4, 0)
+        grid.addWidget(self.addMakeArgs, 4, 1)
+
+        grid.addWidget(lab6, 5, 0)
+        grid.addWidget(self.prio, 5, 1)
+
+        grid.addWidget(lab7, 6, 0)
+        grid.addWidget(self.intgMethod, 6, 1)
+        grid.addWidget(self.lab10, 5, 2)
+        grid.addWidget(self.lab11, 5, 3)
+        grid.addWidget(self.epsAbs, 6, 2)
+        grid.addWidget(self.epsRel, 6, 3)
+
+        grid.addWidget(lab8, 7, 0)
+        grid.addWidget(self.Ts, 7, 1)
+
+        grid.addWidget(lab9, 8, 0)
+        grid.addWidget(self.Tf, 8, 1)
+
+        grid.addWidget(pbOK, 9, 0)
+        grid.addWidget(pbCANCEL, 9, 1)
         pbOK.clicked.connect(self.accept)
         pbCANCEL.clicked.connect(self.reject)
         btn_addObjs.clicked.connect(self.getObjs)

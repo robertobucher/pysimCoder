@@ -13,6 +13,7 @@ import os
 import subprocess
 import time
 import json
+import re
 
 
 IDLE = 0
@@ -58,6 +59,8 @@ class Scene(QGraphicsScene):
         self.epsAbs = '1e-6'
         self.epsRel = '1e-6'
         self.addObjs = ''
+        self.addCDefs = ''
+        self.addMakeArgs = ''
         self.Ts = '0.01'
         self.script = ''
         self.Tf = '10'
@@ -94,8 +97,8 @@ class Scene(QGraphicsScene):
             }
         dataDict['init'] = init
 
-        keys = ['template', 'Ts', 'AddObj', 'script', 'intgMethod', 'epsAbs', 'epsRel', 'Tf', 'prio']
-        vals = [self.template, self.Ts, self.addObjs, self.script, self.intgMethod, self.epsAbs, self.epsRel, self.Tf, self.prio]
+        keys = ['template', 'Ts', 'AddObj', 'AddCDefs', 'AddMakeArgs', 'script', 'intgMethod', 'epsAbs', 'epsRel', 'Tf', 'prio']
+        vals = [self.template, self.Ts, self.addObjs, self.addCDefs, self.addMakeArgs, self.script, self.intgMethod, self.epsAbs, self.epsRel, self.Tf, self.prio]
         dataDict['simulate'] = dict(zip(keys, vals))
 
         keys = ['used', 'ip', 'port', 'user', 'passwd', 'devid', 'mount', 'tree']
@@ -188,6 +191,8 @@ class Scene(QGraphicsScene):
                 self.epdrel = '1e-6'
             self.Ts = dataDict['simulate']['Ts']
             self.addObjs = dataDict['simulate']['AddObj']
+            self.addCDefs = dataDict['simulate']['AddCDefs']
+            self.addMakeArgs = dataDict['simulate']['AddMakeArgs']
             self.script = dataDict['simulate']['script']
             self.Tf = dataDict['simulate']['Tf']
             self.prio = dataDict['simulate']['prio']
@@ -327,6 +332,8 @@ class Scene(QGraphicsScene):
         dialog.epsAbs.setText(self.epsAbs)
         dialog.epsRel.setText(self.epsRel)
         dialog.addObjs.setText(self.addObjs)
+        dialog.addCDefs.setText(self.addCDefs)
+        dialog.addMakeArgs.setText(self.addMakeArgs)
         dialog.Ts.setText(self.Ts)
         dialog.parscript.setText(self.script)
         dialog.Tf.setText(self.Tf)
@@ -340,6 +347,8 @@ class Scene(QGraphicsScene):
         self.epsAbs = str(dialog.epsAbs.text())
         self.epsRel = str(dialog.epsRel.text())
         self.addObjs = str(dialog.addObjs.text())
+        self.addCDefs = str(dialog.addCDefs.text())
+        self.addMakeArgs = str(dialog.addMakeArgs.text())
         self.Ts = str(dialog.Ts.text())
         self.script = str(dialog.parscript.text())
         self.prio =  str(dialog.prio.text())
@@ -461,6 +470,36 @@ class Scene(QGraphicsScene):
         return items
 
     def codegen(self, flag):
+        def _parseAddCDefs(addCDefs: str) -> str:
+            ret = ''
+            # the splitter is a comma, then check the syntax
+            addCDefs = addCDefs.strip()
+            if addCDefs == '':
+                # empty
+                return ret
+            args = list(addCDefs.split(','))
+            for a in args:
+                if a.count('=') != 1:
+                    raise ValueError("Bad format of additional build args!")
+                left, right = a.split('=')
+                # delete trailing whitespaces
+                left = left.strip()
+                right = right.strip()
+                if not re.fullmatch("[0-9a-zA-Z_]+", left):
+                    # the macro contains forbidden characters
+                    raise ValueError("Bad format of additional build args!")
+                ret += "\\\'-D" + str(left) + '=' + str(right) + "\\\' "
+            return ret
+
+        # REVISIT: might check all passed arguments in the dialog.
+
+        try:
+            self.parsedAddCDefs = _parseAddCDefs(self.addCDefs)
+        except ValueError as e:
+            print(e)
+            self.mainw.statusLabel.setText('Error by Code generation!')
+            return False
+
         dgmBlocks = self.findAllItems(self)
 
         # Clean Subsystems and reattach
@@ -655,10 +694,11 @@ class Scene(QGraphicsScene):
         fn.write('os.chdir("'+ fnm +'")\n')
         fn.write('genCode(fname, ' + self.Ts + ', blks, ' + "'" + self.intgMethod + "', " + \
                  self.epsAbs + ', ' + self.epsRel +')\n')
-        fn.write("genMake(fname, '" + self.template + "', addObj = '" + self.addObjs + "')\n")
+        fn.write("genMake(fname, '" + self.template + "', addObj = '" +
+                  self.addObjs + "', addCDefs = '" + self.parsedAddCDefs + "')\n")
         fn.write('\nimport os\n')
         fn.write('os.system("make clean")\n')
-        fn.write('os.system("make")\n')
+        fn.write('os.system("make ' + str(self.addMakeArgs) + '")\n')
         fn.write('os.chdir("..")\n')
         fn.close()
 
