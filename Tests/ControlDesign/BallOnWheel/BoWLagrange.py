@@ -116,8 +116,8 @@ def plot_Res(t, y, g):
     plt.plot(t,y)
     plt.grid()
     plt.show()
-        
-def residuals(p, y, t):  
+
+def residuals(p, y, t):
     [k,alpha] = p
     g = tf(k,[1,alpha,0])
     Y,T = mt.step(g,t)
@@ -133,7 +133,7 @@ Input = 500
 
 # Read the measure of the step response
 x = np.loadtxt('idWheel.txt');
-t = x[:,0] 
+t = x[:,0]
 y = x[:,1]
 
 t = t[100:]
@@ -163,13 +163,13 @@ if Ball == 1:
     Mb = 0.106712     # Mass
     Rb = 0.105/2         # Radius
     Jb = 2.3608e-04;   # Inertia
-    
+
 elif Ball == 2:
     # Green Ball
     Mb = 71.36e-3       # Mass
     Rb = 0.10/2            # Radius
     Jb = 2.0/3*M_b*R_b**2     # Inertia
-    
+
 Rw = 0.285       # Wheel radius
 
 # Parameters for Model identification
@@ -178,7 +178,7 @@ R2p = Rb
 M2p = Mb
 J1p = J       # Identified Wheel J from motor side
 d1p = 0     # not consider wheel friction in final model
-J2p = Jb    
+J2p = Jb
 
 pars = [R_w, R_b, M_b, J_w, J_b, d_w, g]
 par_vals =  [R1p, R2p, M2p, J1p, J2p, d1p, gp]
@@ -230,11 +230,11 @@ if Controller == 1:
 elif Controller == 2:
     # LQR Controller
     Q = np.diag([10, 1, 20, 1]);
-    R = [4];                    
-    k, S, E = rp.dlqr(Ad, Bd, Q, R)
+    R = [4];
+    k, S, E = dlqr(Ad, Bd, Q, R)
 
     # Observer design parameters
-    preg = np.log(E[0])/Ts
+    preg = np.log(E)/Ts
     w0 = max(abs(preg));       # process spectral radius
 
     # Modify poles for observer
@@ -269,6 +269,6 @@ Sat = 1300
 # Other system constants
 Kd = 6.1e-2                     #  Voltage to Ball position [m]
 D2PHI = Kd/(Rb+Rw)    # Voltage to Ball angle phi_b [rad]
-   
+
 enc_w = 4096*GearsRatio/2/np.pi   # Motor encoder resolution (reduced to motor)
 
