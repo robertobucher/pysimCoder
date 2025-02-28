@@ -2,10 +2,44 @@ from supsisim.qtvers import *
 
 from supsisim.port import Port, InPort, OutPort
 from supsisim.connection import Connection
-from supsisim.const import GRID, PW, LW, BWmin, BHmin, PD, respath
+from supsisim.const import GRID, PW, LW, BWmin, BHmin, BHstep, PD, respath
 
 import os
 
+class ResizeHandle(QGraphicsRectItem):   
+    def __init__(self, parent, position):
+        SIZE = 4
+        super().__init__(-SIZE/2, -SIZE/2, 2*SIZE, 2*SIZE, parent)
+        self.setPen(QPen(QBrush(Qt.GlobalColor.blue),1.0))
+        self.setFlag(QGraphicsItem.GraphicsItemFlag.ItemIsMovable)
+        self.position = position
+        self.block = self.parentItem()
+        
+    def mousePressEvent(self, event):
+        if self.block.isSelected():  
+            self.startPos = event.scenePos()
+            self.block.old_center = self.block.boundingRect().center()
+            
+    def mouseMoveEvent(self, event):
+        if self.block.isSelected():
+            delta = event.scenePos() - self.startPos  
+            self.startPos = event.scenePos()
+            if self.block.flip:
+                f_delta = -1
+            else:
+                f_delta = 1
+            
+            if self.position == "bottom_right":
+                self.block.dims[0] = max(self.block.minW, self.block.dims[0] + f_delta*delta.x())
+                self.block.dims[1] = max(self.block.minH, self.block.dims[1] + delta.y())
+                
+                self.block.updateShape(False)
+                        
+    def mouseReleaseEvent(self, event):
+        if self.block.isSelected():
+            self.block.updateShape(True)
+        self.block.updateShape(True)
+            
 class Block(QGraphicsPathItem):
     """A block holds ports that can be connected to."""
     def __init__(self, *args):
@@ -45,16 +79,21 @@ class Block(QGraphicsPathItem):
         if not tl:
             w = self.dims
             self.dims = [w, BHmin]
+                   
+        self.handles = []
         
         self.setup()
+                
         try:
             self.scene.blocks.add(self)
         except:
             pass
             
     def __str__(self):
-        txt  = 'Name         :' + self.name.__str__() +'\n'
-        txt += 'Input ports  :' + self.inp.__str__() + '\n'
+        txt  = 'Name         :' + self.name.__str__() + '\n'
+        txt += 'Sizes        :' + self.dims.__str__() + '\n'
+        txt += 'pos          :' + '[' + self.pos().x().__str__() + ', ' + self.pos().y().__str__() + ']\n'
+        txt += 'Input ports  :' + self.inp.__str__()  + '\n'
         txt += 'Output ports :' + self.outp.__str__() + '\n'
         txt += 'Icon         :' + self.icon.__str__() + '\n'
         txt += 'Params       :' + self.params.__str__() + '\n'
@@ -62,38 +101,61 @@ class Block(QGraphicsPathItem):
         
     def setup(self):
         Nports = max(self.inp, self.outp)
+        
+        self.minW = 60
+        self.minH = BHstep * (Nports+1)
+        
+        h = BHmin+PD*(max(Nports-1,0))
+     
         self.w = self.dims[0]
         self.h = max(BHmin+PD*(max(Nports-1,0)), self.dims[1])
-
+        
+        self.dims = [self.w, self.h]
+        
         p = QPainterPath()
         self.setLabel(p)
         self.setPath(p)
 
-        self.port_in = []
         for n in range(0,self.inp):
             self.add_inPort(n)
         for n in range(0,self.outp):
             self.add_outPort(n)
 
+        self.old_center = self.boundingRect().center()
+        
         self.setFlag(QGraphicsItem.GraphicsItemFlag.ItemIsMovable)
         self.setFlag(QGraphicsItem.GraphicsItemFlag.ItemIsSelectable)
         
+        self.addHandles()
         self.setFlip()
+
+    def getPPos(self, nP):
+        d = self.dims[1]/(nP+1)
+        dExt = (d // GRID) * GRID
+        if nP == 1:
+            dSpc = 0
+        else:
+            dSpc = (self.dims[1]-2*dExt)/(nP-1)
+        return dExt, dSpc
         
     def add_inPort(self, n):
-        pos = -PD*(self.inp-1)/2
+        L = self.inp
+        dExt, dSpc = self.getPPos(L)
+        pos = -self.h/2  + dExt + dSpc*n
         port = InPort(self, self.scene)
         port.block = self
         xpos = -(self.w)/2
-        port.setPos(xpos, pos+n*PD)
+        port.setPos(xpos, pos)
         return port
 
     def add_outPort(self, n):
-        pos = -PD*(self.outp-1)/2
+        L = self.outp
+        dExt, dSpc = self.getPPos(L)
+        pos = -self.h/2 + dExt + dSpc*n
         port = OutPort(self, self.scene)
         port.block = self
         xpos = (self.w)/2
-        port.setPos(xpos, pos+n*PD)
+        port.setPos(xpos, pos)
         return port
 
     def ports(self):
@@ -109,6 +171,9 @@ class Block(QGraphicsPathItem):
         pen.setWidth = LW
         if self.isSelected():
             pen.setStyle(Qt.PenStyle.DotLine)
+            self.showHandles()
+        else:
+            self.hideHandles()
         
         painter.setPen(pen)
 
@@ -118,11 +183,12 @@ class Block(QGraphicsPathItem):
             painter.drawPath(self.path())
             
         svg_size = self.renderer.defaultSize()
+        
+        r = self.boundingRect()
 
-        # the middle of the boundingRect is actually (0,0)
-        # so shift only by the svg's width and height
-        new_left: float = -svg_size.width()/2
-        new_top: float = -svg_size.height()/2
+        delta = r.center()    
+        new_left: float = -svg_size.width()/2 + delta.x()
+        new_top: float = -svg_size.height()/2 + delta.y()
         where_to: QRectF = QRectF(new_left, new_top, svg_size.width(), svg_size.height())
         self.renderer.render(painter, where_to)
 
@@ -155,7 +221,9 @@ class Block(QGraphicsPathItem):
     def setFlip(self, flip=None):
         if flip: 
             self.flip = flip
-            
+        
+        self.updateHandles()
+        
         str_path = respath + 'blocks/Icons/' + self.icon + '.svg'
         if self.flip:
             self.setTransform(QTransform.fromScale(-1, 1))
@@ -268,13 +336,118 @@ class Block(QGraphicsPathItem):
         return b
 
     def gridPos(self, pt):
-         gr = GRID
-         x = gr * ((pt.x() + gr /2) // gr)
-         y = gr * ((pt.y() + gr /2) // gr)
-         return QPointF(x,y)
+        gr = GRID
+        x = gr * ((pt.x() + gr /2) // gr)
+        y = gr * ((pt.y() + gr /2) // gr)
+        return QPointF(x,y)
+
+    def grid_2_Pos(self, pt):
+        gr = 2*GRID
+        x = gr * ((pt.x() + gr /2) // gr)
+        y = gr * ((pt.y() + gr /2) // gr)
+        return QPointF(x,y)
 
     def setSysPath(self,basepath):
         self.syspath = f"{basepath}/{self.name}"
 
     def getCodeName(self):
         return self.name + '_' + str(self.ident)
+
+    def addHandles(self):
+        rect = self.boundingRect()
+        
+        self.handles.append(ResizeHandle(self, "top_left"))
+        self.handles[-1].setPos(rect.topLeft())
+        self.handles[-1].setCursor(Qt.CursorShape.ForbiddenCursor)
+        
+        self.handles.append(ResizeHandle(self, "top_right"))
+        self.handles[-1].setPos(rect.topRight())
+        self.handles[-1].setCursor(Qt.CursorShape.ForbiddenCursor)
+        
+        self.handles.append(ResizeHandle(self, "bottom_left"))
+        self.handles[-1].setPos(rect.bottomLeft())
+        self.handles[-1].setCursor(Qt.CursorShape.ForbiddenCursor)
+        
+        self.handles.append(ResizeHandle(self, "bottom_right"))
+        self.handles[-1].setPos(rect.bottomRight())
+        self.handles[-1].setCursor(Qt.CursorShape.SizeFDiagCursor)
+                    
+    def hideHandles(self):
+        for handle in self.handles:
+            handle.hide()
+            
+    def showHandles(self):
+        for handle in self.handles:
+            handle.show()
+                            
+    def updateShape(self, flag):
+        self.prepareGeometryChange()  
+        p = QPainterPath()
+        p1 = QPointF(-self.w/2, -self.h/2)
+        if flag:
+            self.dims[0] = 2*GRID*((self.dims[0] + GRID) // (2*GRID))
+            self.dims[1] = 2*GRID*((self.dims[1] + GRID) // (2*GRID))
+            self.w = self.dims[0]
+            self.h = self.dims[1]
+        p2 = p1 + QPointF(self.dims[0], self.dims[1])
+        p.addRect(QRectF(p1, p2))
+        self.setPath(p)
+        self.updateCenterPos()
+        self.updateHandles()
+        self.updatePorts(p1, p2)
+        self.updateLabel(p1,p2)
+        
+    def updateCenterPos(self):
+        self.prepareGeometryChange()        
+        new_center = self.boundingRect().center()
+        delta = self.grid_2_Pos(new_center - self.old_center)
+        self.setPos(self.pos() - delta)
+        self.sceneTransform().map(QPointF(0, 0))
+        self.old_center = new_center        
+        
+    def updatePorts(self, p1, p2): 
+        inP, outP = self.getPorts()
+        # Input ports
+        L = len(inP)
+        dExt, dSpc = self.getPPos(L)
+        
+        px = p1.x()
+        for n in range(0,L):
+            p = inP[n]
+            py = p1.y() + dExt + dSpc*n
+            p.setPos(px, py)
+
+        # Output ports
+        L = len(outP)
+        d = self.dims[1]/(L+1)
+        dSpc = (d // GRID) * GRID
+        dExt = (self.dims[1] - dSpc*(L-1)) // 2
+        px = p2.x()
+        for n in range(0,L):
+            p = outP[n]
+            py = p1.y() + dExt + dSpc*n
+            p.setPos(px, py)
+        try:        
+            self.scene.mainw.editor.redrawSelectedItems()
+            self.scene.mainw.editor.redrawNodes()
+        except:
+            pass
+        
+    def updateLabel(self, p1, p2):
+        w = self.label.boundingRect().width()
+        cp = (p2.x()-p1.x())/2
+        self.label.setPos(p1.x()+cp-w/2, p2.y()+5)
+                    
+    def updateHandles(self):
+        try:
+            rect = self.boundingRect()
+            self.handles[0].setPos(rect.topLeft())
+            self.handles[1].setPos(rect.topRight())
+            self.handles[2].setPos(rect.bottomLeft())
+            self.handles[3].setPos(rect.bottomRight())
+            if self.flip:
+                self.handles[3].setCursor(Qt.CursorShape.SizeBDiagCursor)
+            else:
+                self.handles[3].setCursor(Qt.CursorShape.SizeFDiagCursor)
+        except:
+           pass
