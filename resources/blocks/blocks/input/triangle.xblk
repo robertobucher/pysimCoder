@@ -1,0 +1,11 @@
+{
+  "lib": "input",
+  "name": "triangle",
+  "ip": 0,
+  "op": 1,
+  "stin": 0,
+  "stout": 0,
+  "icon": "TRIANGLE",
+  "params": "triangleBlk|Amplitude: 1: double|Period [s]: 1: double|Bias: 0: double|Delay: 0: double",
+  "help": "This block implements a triangle wave input signal.\n\nParameters:\nAmplitude\nPeriod [s]\nBias\nDelay\n"
+}
