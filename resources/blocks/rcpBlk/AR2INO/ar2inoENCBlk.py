@@ -2,7 +2,7 @@
 from supsisim.RCPblk import RCPblk
 from numpy import size
 
-def ar2inoENCBlk(pout, channel, res, reset):
+def ar2inoENCBlk(pout, res, reset):
     """
 
     Call:   ar2inoENCBlk(pout, channel, res, reset)
@@ -20,5 +20,5 @@ def ar2inoENCBlk(pout, channel, res, reset):
 
     """
 
-    blk = RCPblk('ar2inoENC', [], pout, [0,0], 0, [], [channel, res, reset])
+    blk = RCPblk('ar2inoENC', [], pout, [0,0], 0, [], [4, res, reset])
     return blk

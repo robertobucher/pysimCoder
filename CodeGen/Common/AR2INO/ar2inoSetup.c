@@ -1,19 +1,19 @@
 /*
-COPYRIGHT (C) 2022  Roberto Bucher (roberto.bucher@supsi.ch)
+  COPYRIGHT (C) 2022  Roberto Bucher (roberto.bucher@supsi.ch)
 
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2 of the License, or (at your option) any later version.
+  This library is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Lesser General Public
+  License as published by the Free Software Foundation; either
+  version 2 of the License, or (at your option) any later version.
 
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
+  This library is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  Lesser General Public License for more details.
 
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+  You should have received a copy of the GNU Lesser General Public
+  License along with this library; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
 #include <pyblock.h>
@@ -43,18 +43,14 @@ static void * getData(void * p)
 
   while(1){
     recv_len = read(fdSerial, BuffIn, MAXLEN);
-    ch = BuffIn[1];
-    val = (int32_t *) &BuffIn[2];
-    switch(ch){
-    case 0: 
-     pins[2] = *val;
-     break;
-    case 1:
-      pins[4] = *val;
-      break;
-    default:
+    if(recv_len==MAXLEN){
+      ch = BuffIn[1];
+      val = (int32_t *) &BuffIn[2];
       pins[ch] = *val;
-      break;
+    }
+    else {
+      printf("Letti solo %d bytes\n", recv_len);
+      tcflush(fdSerial, TCIOFLUSH);
     }
   }
 }
@@ -145,28 +141,26 @@ static void init(python_block *block)
     return;
   }
   }
- 
+
   cfsetispeed(&ts, spd);
-  ts.c_cflag = (ts.c_cflag & ~CSIZE) | CS8;    
-  ts.c_iflag &= ~IGNBRK;        
-  ts.c_lflag = 0;                
+  cfsetospeed(&ts, spd);
   
+  ts.c_cflag &=  (ts.c_cflag & ~CSIZE) | CS8; 
+  ts.c_iflag &= ~IGNBRK;
+  ts.c_lflag = 0;                 
   ts.c_oflag = 0;                
-  ts.c_cc[VMIN]  = 1;            
-  ts.c_cc[VTIME] = 100;            
-
-  ts.c_iflag &= ~(IXON | IXOFF | IXANY); 
-
+  ts.c_cc[VMIN]  = 0;      
+  ts.c_cc[VTIME] = 6; 
+  ts.c_iflag &= ~(IXON | IXOFF | IXANY);
   ts.c_cflag |= (CLOCAL | CREAD);
-  
+
   ts.c_cflag &= ~(PARENB | PARODD);     
-  ts.c_cflag |= 0;
   ts.c_cflag &= ~CSTOPB;
   ts.c_cflag &= ~CRTSCTS;
-  tcsetattr(fdSerial, TCSANOW, &ts);
- 
-  pthread_create(&thrd, NULL, getData, NULL);  
 
+  tcsetattr(fdSerial, TCSANOW, &ts);
+  
+  pthread_create(&thrd, NULL, getData, NULL);
 }
 
 static void inout(python_block *block)

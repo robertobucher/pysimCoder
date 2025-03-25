@@ -37,7 +37,7 @@ static void init(python_block *block)
     BuffOut[0] = 0;
     BuffOut[1] = intPar[0];
     int16_t *value = (int16_t *) &BuffOut[2];
-    *value =  ENCRESET+intPar[2];
+    *value =  ENCRESET;
     write(fdSerial, BuffOut, MAXLEN);
     usleep(50000);
   }
@@ -46,17 +46,15 @@ static void init(python_block *block)
 static void inout(python_block *block)
 {
   int * intPar    = block->intPar;
-  int ch = 0;
   double *y = block->y[0];
+  uint8_t ch;
 
   BuffOut[0] = ENCODERIN;
   BuffOut[1] = intPar[0];
   int16_t *value = (int16_t *) &BuffOut[2];
   *value =  0;
-  
-  if(intPar[0]==0) ch = 2;
-  else                    ch = 4;
-  
+
+  ch = intPar[0];
   write(fdSerial, BuffOut, MAXLEN);
   y[0] = 1.0*pins[ch]/intPar[1];
 }
