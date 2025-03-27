@@ -1,5 +1,5 @@
 /*
-COPYRIGHT (C) 2022  Roberto Bucher (roberto.bucher@supsi.ch)
+COPYRIGHT (C) 2009  Roberto Bucher (roberto.bucher@supsi.ch)
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -28,7 +28,7 @@ extern int32_t pins[];
 extern unsigned char BuffOut[4];
 
 #define MAXLEN 4
-#define PWMOUT 2
+#define ANALOGOUT 6
 #define OUTPUT 1
 
 static void init(python_block *block)
@@ -50,7 +50,7 @@ static void inout(python_block *block)
   double *u = block->u[0];
   double val;
 
-  BuffOut[0] = PWMOUT;
+  BuffOut[0] = ANALOGOUT;
   BuffOut[1] = intPar[0];
 
   val = u[0];
@@ -58,7 +58,7 @@ static void inout(python_block *block)
   if (val<realPar[0]) val = realPar[0];
 
   int16_t *value = (int16_t *) &BuffOut[2];
-  *value = (int16_t) 255*mapD2wD(val, realPar[0], realPar[1]);
+  *value = (int16_t) 4095*mapD2wD(val, realPar[0], realPar[1]);
   
   if (*value!=pins[intPar[0]]){
       pins[intPar[0]] = *value;
@@ -69,16 +69,15 @@ static void inout(python_block *block)
 static void end(python_block *block)
 {
   int * intPar    = block->intPar;
-  BuffOut[0] = PWMOUT;
+  BuffOut[0] = ANALOGOUT;
   BuffOut[1] = intPar[0];
   int16_t *value = (int16_t *) &BuffOut[2];
   
   * value = 0;
   write(fdSerial, BuffOut, MAXLEN);
 }
- 
 
-void ar2inoPWM(int flag, python_block *block)
+void ar2inoAO(int flag, python_block *block)
 {
   if (flag==CG_OUT){          /* get input */
     inout(block);

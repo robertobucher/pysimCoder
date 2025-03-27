@@ -48,10 +48,10 @@ static void * getData(void * p)
       val = (int32_t *) &BuffIn[2];
       pins[ch] = *val;
     }
-    else {
-      printf("Letti solo %d bytes\n", recv_len);
-      tcflush(fdSerial, TCIOFLUSH);
-    }
+    /* else { */
+    /*   printf("Letti solo %d bytes\n", recv_len); */
+    /*   tcflush(fdSerial, TCIOFLUSH); */
+    /* } */
   }
 }
 
