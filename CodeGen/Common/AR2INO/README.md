@@ -9,14 +9,15 @@ It implements 5 I/O system:
   * PWM output
   * Digital input
   * Digital output
-  * 2 encoders
-
+  * 1 encoders
 Encoders are associated to fixed pins:
 
-  * Channel 0 ->  PIN 2 and 3
-  * Channel 1 ->  PIN 4 and 5
+Arduino Leonardo:  pin 2 and 3
+Arduino UNO R4 MINIMA: pin 4 and 5
 
 These pins can't be used for other I/O's!
 
 The "Setup" (INIT) block must be inserted into the pysimCoder Block Diagram in order to have the Arduino working!
+
+The program for arduino is available <a href="https://github.com/robertobucher/ar2ino" title="Title Text">here</a>.
 
