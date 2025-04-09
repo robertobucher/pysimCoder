@@ -25,17 +25,43 @@
 
 /* Method descriptors - general methods "ls" and "dir" */
 
-const shv_method_des_t shv_dmap_item_ls = {.name = "ls", .method = shv_ls};
-const shv_method_des_t shv_dmap_item_dir = {.name = "dir", .method = shv_dir};
+const shv_method_des_t shv_dmap_item_ls = {
+  .name = "ls",
+  .access = SHV_ACCESS_BROWSE,
+  .method = shv_ls
+};
+const shv_method_des_t shv_dmap_item_dir = {
+  .name = "dir",
+  .access = SHV_ACCESS_BROWSE,
+  .method = shv_dir
+};
 
 /* Method descriptors - methods for parameters */
 
-const shv_method_des_t shv_dmap_item_type = {.name = "typeName", .method = shv_type};
+const shv_method_des_t shv_dmap_item_type = {
+  .name = "typeName",
+  .flags = SHV_METHOD_GETTER,
+  .result = "s",
+  .access = SHV_ACCESS_READ,
+  .method = shv_type
+};
 
 /* Method descriptors - methods for double values: params and inputs/outputs */
 
-const shv_method_des_t shv_double_dmap_item_get = {.name = "get", .method = shv_double_get};
-const shv_method_des_t shv_double_dmap_item_set = {.name = "set", .method = shv_double_set};
+const shv_method_des_t shv_double_dmap_item_get = {
+  .name = "get",
+  .flags = SHV_METHOD_GETTER,
+  .result = "d",
+  .access = SHV_ACCESS_READ,
+  .method = shv_double_get
+};
+const shv_method_des_t shv_double_dmap_item_set = {
+  .name = "set",
+  .flags = SHV_METHOD_SETTER,
+  .param = "d|f",
+  .access = SHV_ACCESS_WRITE,
+  .method = shv_double_set
+};
 
 const shv_method_des_t * const shv_double_dmap_items[] = {
   &shv_dmap_item_dir,
@@ -128,17 +154,19 @@ int shv_dir(shv_con_ctx_t * shv_ctx, shv_node_t* item, int rid)
   /* Is the node a parameter? */
 
   met_num = item->dir->methods.count;
+  struct shv_dir_res responses[met_num];
+  memset(responses, 0, sizeof *responses * met_num);
 
+  for (i = 0; i < met_num; i++)
     {
-      const char * str[met_num];
-
-      for (i = 0; i < met_num; i++)
-        {
-          str[i] = shv_dmap_at(item->dir, i)->name;
-        }
-
-      shv_send_str_list(shv_ctx, rid, i, str);
+      responses[i].name = shv_dmap_at(item->dir, i)->name;
+      responses[i].flags = shv_dmap_at(item->dir, i)->flags;
+      responses[i].param = shv_dmap_at(item->dir, i)->param;
+      responses[i].result = shv_dmap_at(item->dir, i)->result;
+      responses[i].access = shv_dmap_at(item->dir, i)->access;
     }
+
+  shv_send_dir(shv_ctx, responses, met_num, rid);
 
   return 0;
 }

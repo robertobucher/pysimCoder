@@ -825,7 +825,6 @@ void shv_send_str(shv_con_ctx_t *shv_ctx, int rid, const char *str)
     }
 }
 
-
 /****************************************************************************
  * Name: shv_send_str_list
  *
@@ -921,6 +920,77 @@ void shv_send_str_list_it(shv_con_ctx_t *shv_ctx, int rid, int num_str,
 	      str = "";
 	    }
           cchainpack_pack_string(&shv_ctx->pack_ctx, str, strlen(str));
+        }
+
+      cchainpack_pack_container_end(&shv_ctx->pack_ctx);
+      cchainpack_pack_container_end(&shv_ctx->pack_ctx);
+      shv_overflow_handler(&shv_ctx->pack_ctx, 0);
+    }
+}
+
+/****************************************************************************
+ * Name: shv_send_dir
+ *
+ * Description:
+ *   Send response to dir call to the broker.
+ *
+ ****************************************************************************/
+
+void shv_send_dir(shv_con_ctx_t *shv_ctx, const struct shv_dir_res *results,
+                  int cnt, int rid)
+{
+  ccpcp_pack_context_init(&shv_ctx->pack_ctx,shv_ctx->shv_data, SHV_BUF_LEN,
+                          shv_overflow_handler);
+
+  for (shv_ctx->shv_send = 0; shv_ctx->shv_send < 2; shv_ctx->shv_send++)
+    {
+      if (shv_ctx->shv_send)
+        {
+          cchainpack_pack_uint_data(&shv_ctx->pack_ctx, shv_ctx->shv_len);
+        }
+
+      shv_ctx->shv_len = 0;
+      cchainpack_pack_uint_data(&shv_ctx->pack_ctx, 1);
+
+      shv_pack_head_reply(shv_ctx, rid);
+
+      cchainpack_pack_imap_begin(&shv_ctx->pack_ctx);
+      cchainpack_pack_int(&shv_ctx->pack_ctx, 2);
+      cchainpack_pack_list_begin(&shv_ctx->pack_ctx);
+      for (int i = 0; i < cnt; i++)
+        {
+          const struct shv_dir_res *result = results + i;
+          cchainpack_pack_imap_begin(&shv_ctx->pack_ctx);
+          cchainpack_pack_int(&shv_ctx->pack_ctx, 1);
+          cchainpack_pack_string(&shv_ctx->pack_ctx, result->name,
+            strlen(result->name));
+          if (result->flags != 0)
+            {
+              cchainpack_pack_int(&shv_ctx->pack_ctx, 2);
+              cchainpack_pack_int(&shv_ctx->pack_ctx, result->flags);
+            }
+
+          if (result->param)
+            {
+              cchainpack_pack_int(&shv_ctx->pack_ctx, 3);
+              cchainpack_pack_string(&shv_ctx->pack_ctx, result->param,
+                strlen(result->param));
+            }
+
+          if (result->result)
+            {
+              cchainpack_pack_int(&shv_ctx->pack_ctx, 4);
+              cchainpack_pack_string(&shv_ctx->pack_ctx, result->result,
+                strlen(result->result));
+            }
+
+          if (result->access != 0)
+            {
+              cchainpack_pack_int(&shv_ctx->pack_ctx, 5);
+              cchainpack_pack_int(&shv_ctx->pack_ctx, result->access);
+            }
+
+          cchainpack_pack_container_end(&shv_ctx->pack_ctx);
         }
 
       cchainpack_pack_container_end(&shv_ctx->pack_ctx);

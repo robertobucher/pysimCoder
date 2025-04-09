@@ -45,6 +45,10 @@ typedef int (* shv_method_t) (shv_con_ctx_t *ctx, shv_node_t * node, int rid);
 
 typedef struct shv_method_des {
   const char *name;       /* Method name */
+  const int flags;        /* Method flags */
+  const char *param;      /* Parameter type for request */
+  const char *result;     /* Result type for responses */
+  const int access;       /* Access level */
   shv_method_t method;    /* Pointer to the method functiom */
 } shv_method_des_t;
 

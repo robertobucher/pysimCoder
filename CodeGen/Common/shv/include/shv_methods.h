@@ -9,6 +9,13 @@
 #include "shv_com.h"
 #include "shv_tree.h"
 
+#define SHV_METHOD_GETTER (1 << 1)
+#define SHV_METHOD_SETTER (1 << 2)
+
+#define SHV_ACCESS_BROWSE (1)
+#define SHV_ACCESS_READ (8)
+#define SHV_ACCESS_WRITE (16)
+
 extern const shv_method_des_t shv_dmap_item_ls;
 extern const shv_method_des_t shv_dmap_item_dir;
 
