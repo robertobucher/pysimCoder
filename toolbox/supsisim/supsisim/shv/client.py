@@ -5,7 +5,17 @@ SHV client.
 import asyncio
 from threading import Thread
 
-from shv import RpcUrl, SimpleClient, RpcError, SHVType
+from shv import RpcUrl, RpcError, SHVType
+
+try:
+    from shv import SHVClient
+
+    SHV_CLIENT = SHVClient
+except:
+    print("Warning: It is suggested to use pyshv in version >=0.8.0")
+    from shv import SimpleClient
+
+    SHV_CLIENT = SimpleClient
 
 
 def _start_background_loop(loop: asyncio.AbstractEventLoop) -> None:
@@ -22,22 +32,22 @@ def _start_background_loop(loop: asyncio.AbstractEventLoop) -> None:
     print("Ending connection loop, all Done")
 
 
-async def _disconnect_client(client: SimpleClient):
+async def _disconnect_client(client: SHV_CLIENT):
     if await _is_connected(client):
         await client.disconnect()
 
 
 async def _connect_client(
     user: str, addr: str, port: str, password: str
-) -> SimpleClient | None:
+) -> SHV_CLIENT | None:
     url: RpcUrl = RpcUrl.parse(f"tcp://{user}@{addr}:{port}?password={password}")
 
     print("Connection to SHV broker: ", url.to_url())
-    return await SimpleClient.connect(url)
+    return await SHV_CLIENT.connect(url)
 
 
 async def _get_parameter_value(
-    client: SimpleClient, mount_point: str, device_id: str, item: str, param_name: str
+    client: SHV_CLIENT, mount_point: str, device_id: str, item: str, param_name: str
 ) -> SHVType | None:
     call_url = f"{mount_point}/{device_id}/blocks/{param_name}/parameters/{item}"
     try:
@@ -50,7 +60,7 @@ async def _get_parameter_value(
 
 
 async def _set_parameter_value(
-    client: SimpleClient,
+    client: SHV_CLIENT,
     mount_point: str,
     device_id: str,
     item: str,
@@ -65,7 +75,7 @@ async def _set_parameter_value(
         print(e)
 
 
-async def _is_connected(client: SimpleClient) -> bool:
+async def _is_connected(client: SHV_CLIENT) -> bool:
     return client.client.connected
 
 
@@ -77,7 +87,7 @@ class ShvClient:
         self.asyncio_thread = Thread(
             target=_start_background_loop, args=(self.asyncio_loop,), daemon=True
         )
-        self.client: SimpleClient | None = None
+        self.client: SHV_CLIENT | None = None
         self.addr: str | None = None
         self.port: str | None = None
         self.user: str | None = None
@@ -119,7 +129,7 @@ class ShvClient:
 
         print("Disconnected from broker.")
 
-    def _get_connection(self) -> SimpleClient:
+    def _get_connection(self) -> SHV_CLIENT:
         if (
             self.client is None
             or not asyncio.run_coroutine_threadsafe(
