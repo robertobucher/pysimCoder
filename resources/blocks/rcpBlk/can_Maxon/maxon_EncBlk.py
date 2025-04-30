@@ -1,26 +1,23 @@
-from supsisim.RCPblk import RCPblk
+from supsisim.RCPblk import RCPblk, RcpParam
 from numpy import size
 
-def maxon_EncBlk(pout, candev, ID, res):
-    """
 
-    Call:   maxon_EncBlk(pout, ID, res)
+def maxon_EncBlk(pout: list[int], params: RcpParam) -> RCPblk:
+    """
+    Call:   maxon_EncBlk(pout, params)
 
     Parameters
     ----------
        pout: connected output port(s)
-       ID : Device ID
-       res : Resolution
+       params: block's parameters
 
     Returns
     -------
-        blk  : RCPblk
-
+        Block's reprezentation RCPblk
     """
-    
-    if(size(pout) != 1):
+
+    if size(pout) != 1:
         raise ValueError("Block should have 1 output port; received %i." % size(pout))
 
-    blk = RCPblk('maxon_enc',[],pout,[0,0],0,[4*res],[ID], candev)
-    return blk
-
+    params[2].value = 4 * params[2].value
+    return RCPblk("maxon_enc", [], pout, [0, 0], 0, params)

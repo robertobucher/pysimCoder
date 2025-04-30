@@ -1,31 +1,26 @@
+from supsisim.RCPblk import RCPblk, RcpParam
 
-from supsisim.RCPblk import RCPblk
-from numpy import size, zeros
 
-def USB_OTG_InBlk(pout, defvals):
+def USB_OTG_InBlk(pout: list[int], params: RcpParam) -> RCPblk:
     """
-
-    Call:   USB_OTG_InBlk(pout)
+    Call:   USB_OTG_InBlk(pout, params)
 
     Parameters
     ----------
        pout: connected output port(s)
+       params: block's parameters
 
     Returns
     -------
-       blk: RCPblk
-
+      Block's reprezentation RCPblk
     """
 
     outputs = len(pout)
-    vals = zeros(outputs, float)
-    if len(defvals) > outputs:
-        N=outputs
+    if len(params[0].value) > outputs:
+        N = outputs
     else:
-        N = len(defvals)
+        N = len(params[0].value)
 
-    for n in range(N):
-        vals[n]=defvals[n]
+    params[0].value = params[0].value[:N]
 
-    blk = RCPblk('USB_OTG_In', [], pout, [0,0], 0, vals, [])
-    return blk
+    return RCPblk("USB_OTG_In", [], pout, [0, 0], 0, params)

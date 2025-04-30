@@ -1,10 +1,8 @@
-
 from supsisim.RCPblk import RCPblk
-from numpy import size
 
-def nullBlk(pin):
+
+def nullBlk(pin: list[int]) -> RCPblk:
     """
-
     Call:   nullBlk(pin)
 
     Parameters
@@ -13,9 +11,7 @@ def nullBlk(pin):
 
     Returns
     -------
-       blk: RCPblk
-
+      Block's reprezentation RCPblk
     """
 
-    blk = RCPblk('toNull', pin, [], [0,0], 1, [], [])
-    return blk
+    return RCPblk("toNull", pin, [], [0, 0], 1)

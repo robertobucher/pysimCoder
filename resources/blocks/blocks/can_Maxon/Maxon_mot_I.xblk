@@ -6,6 +6,6 @@
   "stin": 0,
   "stout": 0,
   "icon": "MOT_I",
-  "params": "maxon_MotBlk|Can dev: '/dev/pcan32'|Device ID: 0x01:int|Prop. gain: 2200:double|Integ. gain: 500:double",
+  "params": "maxon_MotBlk|Can dev: '/dev/pcan32':str|Device ID: 0x01:int|Prop. gain: 2200:double|Integ. gain: 500:double",
   "help": "This Block implements the functions related to a Maxon motion controller for Torque writing\n\nParameters:\nCan dev: device (ex. '/dev/can0'\nDevice ID\nController parameters\n\nMore info are available at the maxon homepage www.maxon.com.\n"
 }

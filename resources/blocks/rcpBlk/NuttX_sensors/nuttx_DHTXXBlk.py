@@ -1,7 +1,7 @@
-from supsisim.RCPblk import RCPblk
-from numpy import size
+from supsisim.RCPblk import RCPblk, RcpParam
 
-def nuttx_DHTXXBlk(pout, port):
+
+def nuttx_DHTXXBlk(pout: list[int], params: RcpParam) -> RCPblk:
     """
 
     Call:   nuttx_DHTXXBlk(pout, port)
@@ -9,13 +9,11 @@ def nuttx_DHTXXBlk(pout, port):
     Parameters
     ----------
        pout: connected output port(s)
-       port : Port
+       params: block's parameters
 
     Returns
     -------
-       blk: RCPblk
-
+      Block's reprezentation RCPblk
     """
 
-    blk = RCPblk('nuttx_DHTXX', [], pout, [0,0], 0, [], [], port)
-    return blk
+    return RCPblk("nuttx_DHTXX", [], pout, [0, 0], 0, params)

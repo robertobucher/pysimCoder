@@ -19,7 +19,7 @@ from numpy import  nonzero, ones, asmatrix, size, array, zeros
 from os import environ
 import copy
 import sys
-from supsisim.RCPblk import RCPblk
+from supsisim.RCPblk import RCPblk, RcpParam
 from .shv import ShvTreeGenerator
 
 def genCode(model, Tsamp, blocks, rkMethod='standard_RK4', epsAbs = 1e-6, epsRel = 1e-6, rkstep = 10):
@@ -97,38 +97,55 @@ def genCode(model, Tsamp, blocks, rkMethod='standard_RK4', epsAbs = 1e-6, epsRel
     strLn = 'python_block block_' + model + '[' + str(N) + '];\n\n'
     f.write(strLn)
 
-    for n in range(0,N):
-        blk = Blocks[n]
-        if (size(blk.realPar) != 0):
-            strLn = 'static double realPar_' + str(n) +'[] = {'
-            strLn += str(asmatrix(blk.realPar).tolist())[2:-2] + '};\n'
-            strLn += 'static char *realParNames_' + str(n) + '[] = {'
-            tmp = 0
-            if (size(blk.realPar) != size(blk.realParNames)):
-                for i in range(0, size(blk.realPar)):
-                    strLn += "\"double" + str(i) + "\""
-                    if ((tmp + 1) != size(blk.realPar)):
-                        strLn += ', '
-                    tmp += 1
-            else:
-                for i in range(0, size(blk.realPar)):
-                    strLn += "\"" + str(blk.realParNames[i]) + "\""
-                    if ((tmp + 1) != size(blk.realPar)):
-                        strLn += ', '
-                    tmp += 1
-            strLn += '};\n'
+    for n in range(N):
+        blk: RCPblk = Blocks[n]
+        if sum(param.type == RcpParam.Type.DOUBLE for param in blk.params_list) != 0:
+            values: str = ""
+            names: str = ""
+            values_num: int = 0
+            names_num: int = 0
+            for param in blk.params_list:
+                if param.type == RcpParam.Type.DOUBLE:
+                    if param.is_list:
+                        values += str(asmatrix(param.value).tolist())[2:-2] + ", "
+                        values_num += size(asmatrix(param.value).tolist())
+                    else:
+                        values += str(param.value) + ", "
+                        values_num += 1
+                    names += f'"{param.name}", '
+                    names_num += 1
+
+            if values_num != names_num:
+                names = ""
+                for i in range(values_num):
+                    names += f'"double{i}", '
+            strLn = "static double realPar_" + str(n) +"[] = {"
+            strLn += values + "};\n"
+            strLn += "static char *realParNames_" + str(n) + "[] = {"
+            strLn += names + "};\n"
             f.write(strLn)
-        if (size(blk.intPar) != 0):
-            strLn = 'static int intPar_' + str(n) +'[] = {'
-            strLn += str(asmatrix(blk.intPar).tolist())[2:-2] + '};\n'
-            strLn += 'static char *intParNames_' + str(n) + '[] = {'
-            tmp = 0
-            for i in range(0, size(blk.intPar)):
-                strLn += "\"int" + str(i) + "\""
-                if ((tmp + 1) != size(blk.intPar)):
-                    strLn += ', '
-                tmp += 1
-            strLn += '};\n'
+        if sum(param.type == RcpParam.Type.INT for param in blk.params_list) != 0:
+            values: str = ""
+            names: str = ""
+            values_num: int = 0
+            names_num: int = 0
+            for param in blk.params_list:
+                if param.type == RcpParam.Type.INT:
+                    if param.is_list:
+                        values += str(asmatrix(param.value).tolist())[2:-2] + ", "
+                        values_num += size(asmatrix(param.value).tolist())
+                    else:
+                        values += str(param.value) + ", "
+                        values_num += 1
+                    names += f'"{param.name}", '
+            if values_num != names_num:
+                names = ""
+                for i in range(values_num):
+                    names += f'"int{i}", '
+            strLn = "static int intPar_" + str(n) +"[] = {"
+            strLn += values + "};\n"
+            strLn += "static char *intParNames_" + str(n) + "[] = {"
+            strLn += names + "};\n"
             f.write(strLn)
         strLn = 'static int nx_' + str(n) +'[] = {'
         strLn += str(asmatrix(blk.nx).tolist())[2:-2] + '};\n'
@@ -193,10 +210,10 @@ def genCode(model, Tsamp, blocks, rkMethod='standard_RK4', epsAbs = 1e-6, epsRel
         else:
             port = 'outptr_' + str(n)
         strLn += '  block_' + model + '[' + str(n) + '].y    = ' + port + ';\n'
-        if (size(blk.realPar) != 0):
+        if sum(param.type == RcpParam.Type.DOUBLE for param in blk.params_list) != 0:
             par = 'realPar_' + str(n)
             parNames = 'realParNames_' + str(n)
-            num = size(blk.realPar)
+            num = sum(param.type == RcpParam.Type.DOUBLE for param in blk.params_list)
         else:
             par = 'NULL'
             parNames = 'NULL'
@@ -204,10 +221,10 @@ def genCode(model, Tsamp, blocks, rkMethod='standard_RK4', epsAbs = 1e-6, epsRel
         strLn += '  block_' + model + '[' + str(n) + '].realPar = ' + par + ';\n'
         strLn += '  block_' + model + '[' + str(n) + '].realParNum = ' + str(num) + ';\n'
         strLn += '  block_' + model + '[' + str(n) + '].realParNames = ' + parNames + ';\n'
-        if (size(blk.intPar) != 0):
+        if sum(param.type == RcpParam.Type.INT for param in blk.params_list) != 0:
             par = 'intPar_' + str(n)
             parNames = 'intParNames_' + str(n)
-            num = size(blk.intPar)
+            num = sum(param.type == RcpParam.Type.INT for param in blk.params_list)
         else:
             par = 'NULL'
             parNames = 'NULL'
@@ -215,7 +232,12 @@ def genCode(model, Tsamp, blocks, rkMethod='standard_RK4', epsAbs = 1e-6, epsRel
         strLn += '  block_' + model + '[' + str(n) + '].intPar = ' + par + ';\n'
         strLn += '  block_' + model + '[' + str(n) + '].intParNum = ' + str(num) + ';\n'
         strLn += '  block_' + model + '[' + str(n) + '].intParNames = ' + parNames + ';\n'
-        strLn += '  block_' + model + '[' + str(n) + '].str = ' + '"' + blk.str + '"' + ';\n'
+        str_param: str = ""
+        for param in blk.params_list:
+            if param.type == RcpParam.Type.STR:
+                str_param = param.value
+                break
+        strLn += '  block_' + model + '[' + str(n) + '].str = ' + '"' + str_param + '"' + ';\n'
         strLn += '  block_' + model + '[' + str(n) + '].ptrPar = NULL;\n'
         f.write(strLn)
         f.write('\n')
@@ -374,6 +396,7 @@ def genMake(model, template, addObj = '', addCDefs = ''):
     model     : Model name
     template  : Template makefile
     addObj    : Additional object files
+    addCDefs  : Additional C Defines
 
     Returns
     -------

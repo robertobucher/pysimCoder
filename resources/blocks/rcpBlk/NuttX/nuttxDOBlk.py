@@ -1,23 +1,19 @@
+from supsisim.RCPblk import RCPblk, RcpParam
 
-from supsisim.RCPblk import RCPblk
-from numpy import size
 
-def nuttxDOBlk(pin, port, th):
+def nuttxDOBlk(pin: list[int], params: RcpParam) -> RCPblk:
     """
-
-    Call:   nuttxDOBlk(pin, port, th)
+    Call:   nuttxDOBlk(pin, params)
 
     Parameters
     ----------
        pin: connected input port(s)
-       port : Port
-       th : Threshold
+       params: block's parameters
 
     Returns
     -------
-       blk: RCPblk
-
+      Block's reprezentation RCPblk
     """
 
-    blk = RCPblk('nuttxDO', pin, [], [0,0], 1, [th], [0], port)
-    return blk
+    params.append(RcpParam("File descriptor", 0, RcpParam.Type.INT))
+    return RCPblk("nuttxDO", pin, [], [0, 0], 1, params)

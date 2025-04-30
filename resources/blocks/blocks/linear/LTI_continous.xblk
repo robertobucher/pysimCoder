@@ -6,6 +6,6 @@
   "stin": 1,
   "stout": 1,
   "icon": "CSS",
-  "params": "cssBlk|System:tf(1,[1,1])|Initial conditions: 0",
+  "params": "cssBlk|System:tf(1,[1,1])|Initial conditions: 0:double",
   "help": "This block implements a linear continous dynamic system.\n\nIt can be defined as transfer function (control.tf) or as state space system (control.ss)\n\nParameters:\nLTI continous system\nInitial conditions of the state(s) as array, or \"0\" (all states have 0 initial conditions)\n"
 }

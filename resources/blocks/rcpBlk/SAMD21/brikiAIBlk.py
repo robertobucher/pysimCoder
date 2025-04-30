@@ -1,26 +1,25 @@
+from supsisim.RCPblk import RCPblk, RcpParam
 
-from supsisim.RCPblk import RCPblk
-from numpy import size
 
-def brikiAIBlk(pout, ch, umin, umax):
+def brikiAIBlk(pout: list[int], params: RcpParam) -> RCPblk:
     """
-
-    Call:   brikiAIBlk(pout, port)
+    Call:   brikiAIBlk(pout, params)
 
     Parameters
     ----------
        pout: connected output port(s)
-       port : Input
+       params: block's parameters
 
     Returns
     -------
-       blk: RCPblk
-
+      Block's reprezentation RCPblk
     """
-        
+
     ADlist = [26, 27, 28, 29, 30, 31, 20]
-    if ch not in ADlist:
-        raise ValueError("You pass a channel which is not in the ABC Board PIN list: %i" % (ch))
-    
-    blk = RCPblk('brikiAI', [], pout, [0,0], 0, [umin, umax], [ch])
-    return blk
+    if params[0].value not in ADlist:
+        raise ValueError(
+            "You pass a channel which is not in the ABC Board PIN list: %i"
+            % (params[0].value)
+        )
+
+    return RCPblk("brikiAI", [], pout, [0, 0], 0, params)

@@ -1,24 +1,19 @@
+from supsisim.RCPblk import RCPblk, RcpParam
 
-from supsisim.RCPblk import RCPblk
-from numpy import size
 
-def nuttxSerialOutBlk(pin, port, decim):
+def nuttxSerialOutBlk(pin: list[int], params: RcpParam) -> RCPblk:
     """
-
-    Call:   brikiSerialOut(pin, decim)
+    Call:   nuttxSerialOutBlk(pin, params)
 
     Parameters
     ----------
        pin: connected input port(s)
-       decim : decimation
+       params: block's parameters
 
     Returns
     -------
-       blk: RCPblk
-
+      Block's reprezentation RCPblk
     """
 
-    decim = int(decim)
-    
-    blk = RCPblk('serialOut', pin, [], [0,0], 1, [], [decim, 0], port)
-    return blk
+    params.append(RcpParam("File descriptor", 0, RcpParam.Type.INT))
+    return RCPblk("serialOut", pin, [], [0, 0], 1, params)

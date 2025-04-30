@@ -1,24 +1,18 @@
+from supsisim.RCPblk import RCPblk, RcpParam
 
-from supsisim.RCPblk import RCPblk
-from numpy import size
 
-def encoderRead_af(pout, encno, pinA, pinB):
+def encoderRead_af(pout: list[int], params: RcpParam) -> RCPblk:
     """
-
-    Call:   encoderRead_af(pout, encno, pinA, pinB)
+    Call:   encoderRead_af(pout, params)
 
     Parameters
     ----------
        pout: connected output port(s)
-       encno : Encode no
-       pinA : Pin A
-       pinB : Pin B
+       params: block's parameters
 
     Returns
     -------
-       blk: RCPblk
-
+        Block's reprezentation RCPblk
     """
 
-    blk = RCPblk('encoderRead_af', [], pout, [0,0], 0, [], [encno, pinA, pinB])
-    return blk
+    return RCPblk("encoderRead_af", [], pout, [0, 0], 0, params)

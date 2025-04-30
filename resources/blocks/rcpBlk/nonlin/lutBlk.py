@@ -1,29 +1,27 @@
-from supsisim.RCPblk import RCPblk
+from supsisim.RCPblk import RCPblk, RcpParam
 from numpy import size
 
-def lutBlk(pin, pout, coeff):
-    """
 
-    Call:   lutBlk(pin, pout, coeff)
+def lutBlk(pin: list[int], pout: list[int], params: RcpParam) -> RCPblk:
+    """
+    Call:   lutBlk(pin, pout, params)
 
     Parameters
     ----------
        pin: connected input port(s)
        pout: connected output port(s)
-       coeff : Coeff 
+       params: block's parameters
 
     Returns
     -------
-        blk  : RCPblk
-
+      Block's reprezentation RCPblk
     """
-    
-    if(size(pin) != 1):
-        raise ValueError("Block should 1 input port; received %i." % size(pin))
 
-    if(size(pout) != 1):
-        raise ValueError("Block should have 1 output port; received %i." % size(pout))
+    if (nin := size(pin)) != 1:
+        raise ValueError("Block should 1 input port; received %i." % nin)
 
-    blk = RCPblk('lut',pin,pout,[0,0],1,[coeff],[size(coeff)])
-    return blk
+    if (nout := size(pout)) != 1:
+        raise ValueError("Block should have 1 output port; received %i." % nout)
 
+    params.append(RcpParam("Array Size", size(params[0].value), RcpParam.Type.INT))
+    return RCPblk("lut", pin, pout, [0, 0], 1, params)

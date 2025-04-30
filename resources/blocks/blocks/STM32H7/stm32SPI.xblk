@@ -6,6 +6,6 @@
   "stin": 1,
   "stout": 1,
   "icon": "SPI",
-  "params": "stm32SPIBlk|CS Port:'NSS'|CS PIN:0:int|Outputs (max 5):[0]",
+  "params": "stm32SPIBlk|CS Port:'NSS':str|CS PIN:0:int|Outputs (max 5):[0]:int",
   "help": "This Block communicates using SPI with the target\n\nParameters\nCS Port:   use 'NSS' to use internal CS system in the SPI communication or 'PORTX'\nCS PIN:    PIN for CS\nOutputs:  array to extract the signals from the SPI message\n\n"
 }

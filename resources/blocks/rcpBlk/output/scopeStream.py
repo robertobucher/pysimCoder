@@ -1,11 +1,19 @@
-from supsisim.RCPblk import RCPblk
-from numpy import size
+from supsisim.RCPblk import RCPblk, RcpParam
 
-def scopeStream(pin, timed=1, decim=1):
-    """Create an interactive scope."""
 
-    decim = int(decim)
-    
-    blk = RCPblk("scope", pin, [], [0,0], 1, [], [timed, decim, 0])
-    return blk
+def scopeStream(pin: list[int], params: RcpParam) -> RCPblk:
+    """
+    Call:   scopeStream(pin, params)
 
+    Parameters
+    ----------
+       pin: connected input port(s)
+       params: block's parameters
+
+    Returns
+    -------
+      Block's reprezentation RCPblk
+    """
+
+    params.append(RcpParam("Internal", 0, RcpParam.Type.INT))
+    return RCPblk("scope", pin, [], [0, 0], 1, params)

@@ -1,9 +1,9 @@
 from supsisim.RCPblk import RCPblk
 from numpy import size
 
-def prodBlk(pin, pout):
-    """
 
+def prodBlk(pin: list[int], pout: list[int]) -> RCPblk:
+    """
     Call:   prodBlk(pin, pout)
 
     Parameters
@@ -13,13 +13,10 @@ def prodBlk(pin, pout):
 
     Returns
     -------
-        blk  : RCPblk
-
+      Block's reprezentation RCPblk
     """
-    
-    if(size(pout) != 1):
+
+    if size(pout) != 1:
         raise ValueError("Block should have 1 output port; received %i." % size(pout))
 
-    blk = RCPblk('prod',pin,pout,[0,0],1,[],[])
-    return blk
-
+    return RCPblk("prod", pin, pout, [0, 0], 1)

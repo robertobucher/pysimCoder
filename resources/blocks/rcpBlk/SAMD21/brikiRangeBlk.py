@@ -1,10 +1,8 @@
-
 from supsisim.RCPblk import RCPblk
-from numpy import size
 
-def brikiRangeBlk(pout):
+
+def brikiRangeBlk(pout: list[int]) -> RCPblk:
     """
-
     Call:   brikiRangeBlk(pout)
 
     Parameters
@@ -13,9 +11,7 @@ def brikiRangeBlk(pout):
 
     Returns
     -------
-       blk: RCPblk
-
+      Block's reprezentation RCPblk
     """
 
-    blk = RCPblk('brikiRange', [], pout, [0,0], 0, [], [])
-    return blk
+    return RCPblk("brikiRange", [], pout, [0, 0], 0)

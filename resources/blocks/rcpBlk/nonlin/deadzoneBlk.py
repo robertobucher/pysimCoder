@@ -1,24 +1,20 @@
-from supsisim.RCPblk import RCPblk
-from numpy import size
+from supsisim.RCPblk import RCPblk, RcpParam
 
-def deadzoneBlk(pin, pout, start, end):
+
+def deadzoneBlk(pin: list[int], pout: list[int], params: RcpParam) -> RCPblk:
     """
 
-    Call:   deadzoneBlk(pin, pout, start, end)
+    Call:   deadzoneBlk(pin, pout, params)
 
     Parameters
     ----------
        pin: connected input port(s)
        pout: connected output port(s)
-       start : Start
-       end : End
+       params: block's parameters
 
     Returns
     -------
-       blk: RCPblk
-
+      Block's reprezentation RCPblk
     """
 
-    blk = RCPblk('deadzone', pin, pout, [0,0], 1, [start, end], [])
-    return blk
-
+    return RCPblk("deadzone", pin, pout, [0, 0], 1, params)

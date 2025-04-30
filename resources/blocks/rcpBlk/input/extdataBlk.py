@@ -1,26 +1,26 @@
-from supsisim.RCPblk import RCPblk
+from supsisim.RCPblk import RCPblk, RcpParam
 from numpy import size
 
-def extdataBlk(pout, ch, datasize, fname):
-    """
 
-    Call:   extdataBlk(pout, ch, len, fname)
+def extdataBlk(pout: list[int], params: RcpParam) -> RCPblk:
+    """
+    Call:   extdataBlk(pout, params)
 
     Parameters
     ----------
        pout: connected output port(s)
-       ch : Channels
-       len : Data length
-       fname : File name
+       params: block's parameters
 
     Returns
     -------
-       blk: RCPblk
-
+      Block's reprezentation RCPblk
     """
 
-    if(size(pout) != ch):
-        raise ValueError("Block should have %i output port; received %i." % (ch,size(pout)))
-    
-    blk = RCPblk('extdata', [], pout, [0,0], 0, [], [ch, datasize, 0], fname)
-    return blk
+    if size(pout) != params[0].value:
+        raise ValueError(
+            "Block should have %i output port; received %i."
+            % (params[0].value, size(pout))
+        )
+
+    params.append(RcpParam("File descriptor", 0, RcpParam.Type.INT))
+    return RCPblk("extdata", [], pout, [0, 0], 0, params)

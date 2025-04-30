@@ -1,23 +1,18 @@
-from supsisim.RCPblk import RCPblk
-from numpy import size
+from supsisim.RCPblk import RCPblk, RcpParam
 
-def init_epos_MotIBlk(candev, ID, propGain, intGain, mode):
+
+def init_epos_MotIBlk(params: RcpParam) -> RCPblk:
     """
-
-    Call:   init_epos_MotIBlk(ID, propGain, intGain)
+    Call:   init_epos_MotIBlk(params)
 
     Parameters
     ----------
-       ID : Device ID
-       propGain : Prop. gain
-       intGain : Integ. gain
+       params: block's parameters
 
     Returns
     -------
-        blk  : RCPblk
-
+        Block's reprezentation RCPblk
     """
-    blk = RCPblk('init_epos_Mot',[],[],[0,0],0,[propGain, intGain],[ID, -1*mode], candev)
-    
-    return blk
 
+    params[4].value = -1 * params[4].value
+    return RCPblk("init_epos_Mot", [], [], [0, 0], 0, params)

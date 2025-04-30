@@ -6,6 +6,6 @@
   "stin": 0,
   "stout": 0,
   "icon": "",
-  "params": "tos1a|Port:'/dev/ttyACM0'|TimeConstLamp:0.5:double|TimeConstVent:0.5:double|TimeConstTemp:0.5:double",
+  "params": "tos1a|Port:'/dev/ttyACM0':str|TimeConstLamp:0.5:double|TimeConstVent:0.5:double|TimeConstTemp:0.5:double",
   "help": "Params = 4\nPort - \nTimeConstLamp - 0.5s to 10.0s\nTimeConstVent - 0.5s to 10.0s\nTimeConstTemp - 0.5s to 10.0s\n\n---\n\nInputs = 3\n0 = temp\n1 = vent\n2 = lamp\n\n---\n\nOutputs = 15\n0 = temp  - PCB\n1 = temp - internal, filtered\n2 = temp - internal, derived\n3 = temp - external, filtered\n4 = temp - external, derived\n\n5 = light intensity - linear, filtered\n6 = light intensity - linear, derived\n7 = light intensity - logarithmic, filtered\n8 = light intensity - logarithmic, derived\n9 = lamp - current\n10 = lamp - voltage\n\n11 = vent - current\n12 = vent - volatge\n13 = vent - rpm, filtered\n14 = vent - rpm, derived\n\n\n\n"
 }

@@ -1,9 +1,9 @@
 from supsisim.RCPblk import RCPblk
 
-def P3MotBlk(pin, pout):
-    """
 
-    Call:   P3MotBlk(pin,pout)
+def P3MotBlk(pin: list[int], pout: list[int]) -> RCPblk:
+    """
+    Call:   P3MotBlk(pin, pout)
 
     Parameters
     ----------
@@ -12,9 +12,7 @@ def P3MotBlk(pin, pout):
 
     Returns
     -------
-       blk: RCPblk
-
+      Block's reprezentation RCPblk
     """
 
-    blk = RCPblk('P3M_spi', pin, pout, [0,0], 0, [], [])
-    return blk
+    return RCPblk("P3M_spi", pin, pout, [0, 0], 0)

@@ -6,6 +6,6 @@
   "stin": 0,
   "stout": 0,
   "icon": "INIT",
-  "params": "ar2inoSetupBlk|Port:'/dev/ttyACM0'|Baud:115200",
+  "params": "ar2inoSetupBlk|Port:'/dev/ttyACM0':str|Baud:115200:int",
   "help": "Setup the channel for the communication"
 }

@@ -6,6 +6,6 @@
   "stin": 0,
   "stout": 0,
   "icon": "DI",
-  "params": "comediDIBlk|Device: '/dev/comedi0'|Channel: 0:int",
+  "params": "comediDIBlk|Device: '/dev/comedi0':str|Channel: 0:int",
   "help": "Implementation of a COMEDI Digital Input interface.\n\nParameters:\nDevice and channel\n\nFor more details get the COMEDI documentation (www.comedi.org)\n"
 }

@@ -1,26 +1,23 @@
-from supsisim.RCPblk import RCPblk
+from supsisim.RCPblk import RCPblk, RcpParam
 from numpy import size
 
-def relBlk(pin, pout, operator):
-    """
 
-    Call:   relBlk(pin, pout)
+def relBlk(pin: list[int], pout: list[int], params: RcpParam) -> RCPblk:
+    """
+    Call:   relBlk(pin, pout, params)
 
     Parameters
     ----------
        pin: connected input ports
        pout: connected output port
-       operator: math operations to do
+       params: block's parameters
 
     Returns
     -------
-        blk  : RCPblk
-
+      Block's reprezentation RCPblk
     """
 
-    if(size(pout) != 1):
+    if size(pout) != 1:
         raise ValueError("Block should have 1 output port; received %i." % size(pout))
 
-    blk = RCPblk('rel',pin,pout,[0,0],1,[],[], operator)
-    return blk
-
+    return RCPblk("rel", pin, pout, [0, 0], 1, params)

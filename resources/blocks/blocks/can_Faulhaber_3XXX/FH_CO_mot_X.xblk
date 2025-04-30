@@ -6,6 +6,6 @@
   "stin": 0,
   "stout": 0,
   "icon": "MOT_X",
-  "params": "FH_CO_MotXBlk|Can dev:'/dev/pcan32'|Device ID: 0x01:int|Resolution: 125000:double",
+  "params": "FH_CO_MotXBlk|Can dev:'/dev/pcan32':str|Device ID: 0x01:int|Resolution: 125000:double",
   "help": "This block implement the Canopen output for the motor position for a MCDC 3002 or MCBL 3002 Faulhaber motion controller for synchronized output.\n\nIn the Block diagram shoud be present the FH3XXX_INIT block!\n\nSee the Faulhaber homepage for more details (www.faulhaber.com)\n"
 }

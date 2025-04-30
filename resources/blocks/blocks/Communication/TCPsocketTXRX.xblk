@@ -6,6 +6,6 @@
   "stin": 1,
   "stout": 1,
   "icon": "TCPSOCKET",
-  "params": "TCPsocketTxRxBlk|IP Addr:'127.0.0.1'|Port:1024:int",
+  "params": "TCPsocketTxRxBlk|IP Addr:'127.0.0.1':str|Port:1024:int",
   "help": "This block implements a TCP sender and optional receiver\n\nParameters\nIP address of the receiver\nPort\n"
 }

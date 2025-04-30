@@ -1,23 +1,19 @@
-from supsisim.RCPblk import RCPblk
-from numpy import size
+from supsisim.RCPblk import RCPblk, RcpParam
 
-def UDPsocketTxBlk(pin, IP, port):
+
+def UDPsocketTxBlk(pin: list[int], params: RcpParam) -> RCPblk:
     """
-
-    Call:   UDPsocketTxBlk(pin, IP, port)
+    Call:   UDPsocketTxBlk(pin, params)
 
     Parameters
     ----------
        pin: connected input port(s)
-       IP : IP Addr
-       port :  Port
+       params: block's parameters
 
     Returns
     -------
-       blk: RCPblk
-
+      Block's reprezentation RCPblk
     """
 
-    blk = RCPblk('UDPsocketTx', pin, [], [0,0], 1, [], [port, 0], IP)
-    return blk
-
+    params.append(RcpParam("File descriptor", 0, RcpParam.Type.INT))
+    return RCPblk("UDPsocketTx", pin, [], [0, 0], 1, params)

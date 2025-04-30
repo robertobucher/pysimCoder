@@ -1,22 +1,18 @@
 from supsisim.RCPblk import RCPblk
-from numpy import size
+
 
 def SHVOutputBlk(pin):
     """
-
-    Call:   SHVOutputBlk(pout, name)
+    Call:   SHVOutputBlk(pout)
 
     Parameters
     ----------
        pout: connected input port(s)
-       name: name of the input
+       params: block's parameters
 
     Returns
     -------
-       blk: RCPblk
-
+      Block's reprezentation RCPblk
     """
 
-    blk = RCPblk('shv_output', pin, [], [0,0], 0, [], [0])
-    return blk
-
+    return RCPblk("shv_output", pin, [], [0, 0], 0, [])

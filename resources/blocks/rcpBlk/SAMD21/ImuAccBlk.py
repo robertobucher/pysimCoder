@@ -1,10 +1,8 @@
-
 from supsisim.RCPblk import RCPblk
-from numpy import size
 
-def ImuAccBlk(pout):
+
+def ImuAccBlk(pout: list[int]) -> RCPblk:
     """
-
     Call:   ImuAcc(pout)
 
     Parameters
@@ -13,9 +11,7 @@ def ImuAccBlk(pout):
 
     Returns
     -------
-       blk: RCPblk
-
+      Block's reprezentation RCPblk
     """
 
-    blk = RCPblk('ImuAcc', [], pout, [0,0], 0, [], [])
-    return blk
+    return RCPblk("ImuAcc", [], pout, [0, 0], 0)

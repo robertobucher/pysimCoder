@@ -1,24 +1,22 @@
-from supsisim.RCPblk import RCPblk
+from supsisim.RCPblk import RCPblk, RcpParam
 from numpy import size
 
-def constBlk(pout, val):
-    """
 
-    Call:   constBlk(pout, val)
+def constBlk(pout: list[int], params: RcpParam) -> RCPblk:
+    """
+    Call:   constBlk(pout, params)
 
     Parameters
     ----------
        pout: connected output port(s)
-       val : Value
+       params: block's parameters
 
     Returns
     -------
-    blk  : RCPblk
-
+      Block's reprezentation RCPblk
     """
-    
-    if(size(pout) != 1):
-        raise ValueError("Block should have 1 output port; received %i." % size(pout))
-    blk = RCPblk('constant',[],pout,[0,0],0,[val],[])
-    return blk
 
+    if size(pout) != 1:
+        raise ValueError("Block should have 1 output port; received %i." % size(pout))
+
+    return RCPblk("constant", [], pout, [0, 0], 0, params)

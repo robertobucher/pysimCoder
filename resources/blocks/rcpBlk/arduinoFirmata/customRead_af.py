@@ -1,22 +1,18 @@
-from supsisim.RCPblk import RCPblk
-from numpy import size
+from supsisim.RCPblk import RCPblk, RcpParam
 
 
-def customRead_af(pout, value):
+def customRead_af(pout: list[int], params: RcpParam) -> RCPblk:
     """
-
-    Call:   customRead_af(pout, value)
+    Call:   customRead_af(pout, params)
 
     Parameters
     ----------
        pout: connected output port(s)
-       value : Value
+       params: block's parameters
 
     Returns
     -------
-       blk: RCPblk
-
+        Block's reprezentation RCPblk
     """
 
-    blk = RCPblk('customRead_af', [], pout, [0, 0], 0, [], value)
-    return blk
+    return RCPblk("customRead_af", [], pout, [0, 0], 0, params)

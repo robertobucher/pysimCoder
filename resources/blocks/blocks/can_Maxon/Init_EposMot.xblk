@@ -6,6 +6,6 @@
   "stin": 0,
   "stout": 0,
   "icon": "IN_EPOS",
-  "params": "init_epos_MotIBlk|Can dev:'/dev/pcan32'|Device ID: 0x01:int|Prop. gain: 2200:double|Integ. gain: 500:double|Mode (1->Pos,2-> Vel,3-> Current):3:int",
+  "params": "init_epos_MotIBlk|Can dev:'/dev/pcan32':str|Device ID: 0x01:int|Prop. gain: 2200:double|Integ. gain: 500:double|Mode (1->Pos,2-> Vel,3-> Current):3:int",
   "help": "This block initialize a Maxon EPOS motion controller for different operations\n\nParameters:\nCan dev: device (ex. '/dev/can0')\nDevice ID\nControllers values\nOperation mode\n\nMore info are availbale at the Maxon homepage www.maxon.com\n"
 }

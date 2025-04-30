@@ -1,24 +1,19 @@
+from supsisim.RCPblk import RCPblk, RcpParam
 
-from supsisim.RCPblk import RCPblk
-from numpy import size
 
-def upowBlk(pin, pout, K, exp):
+def upowBlk(pin: list[int], pout: list[int], params: RcpParam) -> RCPblk:
     """
-
-    Call:   upowBlk(pin, pout, K, exp)
+    Call:   upowBlk(pin, pout, params)
 
     Parameters
     ----------
        pin: connected input port(s)
        pout: connected output port(s)
-       K : K
-       exp : v
+       params: block's parameters
 
     Returns
     -------
-       blk: RCPblk
-
+      Block's reprezentation RCPblk
     """
 
-    blk = RCPblk('upow', pin, pout, [0,0], 0, [K, exp], [])
-    return blk
+    return RCPblk("upow", pin, pout, [0, 0], 0, params)

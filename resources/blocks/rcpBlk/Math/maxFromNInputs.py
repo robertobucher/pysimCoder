@@ -1,10 +1,8 @@
-
 from supsisim.RCPblk import RCPblk
-from numpy import size
 
-def maxFromNInputs(pin, pout):
+
+def maxFromNInputs(pin: list[int], pout: list[int]) -> RCPblk:
     """
-
     Call:   maxFromNInputs(pin, pout)
 
     Parameters
@@ -14,9 +12,7 @@ def maxFromNInputs(pin, pout):
 
     Returns
     -------
-       blk: RCPblk
-
+      Block's reprezentation RCPblk
     """
 
-    blk = RCPblk('maxFromNInputs', pin, pout, [0,0], 0, [], [])
-    return blk
+    return RCPblk("maxFromNInputs", pin, pout, [0, 0], 0)

@@ -1,23 +1,18 @@
+from supsisim.RCPblk import RCPblk, RcpParam
 
-from supsisim.RCPblk import RCPblk
-from numpy import size
-import numpy as np
 
-def stm32ENCBlk(pout, res):
+def stm32ENCBlk(pout: list[int], params: RcpParam) -> RCPblk:
     """
-
-    Call:   stm32ENCBlk(pout, res)
+    Call:   stm32ENCBlk(pout, params)
 
     Parameters
     ----------
        pout: connected output port(s)
-       res : Resolution
+       params: block's parameters
 
     Returns
     -------
-       blk: RCPblk
-
+      Block's reprezentation RCPblk
     """
 
-    blk = RCPblk('stm32ENC', [], pout, [0,0], 0, [res], [])
-    return blk
+    return RCPblk("stm32ENC", [], pout, [0, 0], 0, params)

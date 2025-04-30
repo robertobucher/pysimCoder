@@ -1,23 +1,19 @@
+from supsisim.RCPblk import RCPblk, RcpParam
 
-from supsisim.RCPblk import RCPblk
-from numpy import size
 
-def analogWrite_af(pin, devicePin,pinMode):
+def analogWrite_af(pin: list[int], params: RcpParam) -> RCPblk:
     """
-
-    Call:   analogWrite_af(pin, devicePin)
+    Call:   analogWrite_af(pin, params)
 
     Parameters
     ----------
        pin: connected input port(s)
-       devicepin : Device pin
-       pinmode : Pin mode
+       pout: connected output port(s)
+       params: block's parameters
 
     Returns
     -------
-       blk: RCPblk
-
+        Block's reprezentation RCPblk
     """
 
-    blk = RCPblk('analogWrite_af', pin, [], [0,0], 0, [], [devicePin, pinMode])
-    return blk
+    return RCPblk("analogWrite_af", pin, [], [0, 0], 0, params)

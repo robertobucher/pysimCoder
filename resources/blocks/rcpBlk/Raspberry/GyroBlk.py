@@ -1,23 +1,19 @@
-from supsisim.RCPblk import RCPblk
+from supsisim.RCPblk import RCPblk, RcpParam
 
-def GyroBlk(pout, Cx, Cy, Cz):
+
+def GyroBlk(pout: list[int], params: RcpParam) -> RCPblk:
     """
-
-    Call:   AccelBlk(pout, Cx, Cy, Cz)
+    Call:   GyroBlk(pout, params)
 
     Parameters
     ----------
        pout: connected output port(s)
-       Cx:    Correction factor X
-       Cy:    Correction factor Y
-       Cz:    Correction factor Z
+       params: block's parameters
 
     Returns
     -------
-        blk  : RCPblk
-
+      Block's reprezentation RCPblk
     """
-    
-    blk = RCPblk('ImuGyro',[],pout,[0,0],0,[Cx, Cy, Cz],[0])
-    return blk
 
+    params.append(RcpParam("Internal", 0, RcpParam.Type.INT))
+    return RCPblk("ImuGyro", [], pout, [0, 0], 0, params)

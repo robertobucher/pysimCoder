@@ -6,6 +6,6 @@
   "stin": 1,
   "stout": 0,
   "icon": "TOFILE",
-  "params": "toFileBlk|File name: 'data.txt'",
+  "params": "toFileBlk|File name: 'data.txt':str",
   "help": "Input signals are stored into a text file.\n"
 }

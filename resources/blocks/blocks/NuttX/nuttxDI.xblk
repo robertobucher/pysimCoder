@@ -6,6 +6,6 @@
   "stin": 0,
   "stout": 0,
   "icon": "DI",
-  "params": "nuttxDIBlk|Port:'/dev/gpio0'",
+  "params": "nuttxDIBlk|Port:'/dev/gpio0':str",
   "help": "Parameters\nPort: device associated to the digital input\n\n"
 }
