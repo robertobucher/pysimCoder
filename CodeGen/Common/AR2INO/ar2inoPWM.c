@@ -58,7 +58,8 @@ static void inout(python_block *block)
   if (val<realPar[0]) val = realPar[0];
 
   int16_t *value = (int16_t *) &BuffOut[2];
-  *value = (int16_t) 255*mapD2wD(val, realPar[0], realPar[1]);
+  /* *value = (int16_t) 255*mapD2wD(val, realPar[0], realPar[1]); */
+  *value = (int16_t) 4095*mapD2wD(val, realPar[0], realPar[1]);
   
   if (*value!=pins[intPar[0]]){
       pins[intPar[0]] = *value;

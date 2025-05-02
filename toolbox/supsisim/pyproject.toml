@@ -11,7 +11,7 @@ name = "supsisim"
 description = "Python SUPSI Control Systems Library"
 authors = [{name = "Roberto Bucher et al.", email = "roberto.bucher@sunrise.ch"}]
 license = {text = "GPL-2.0"}
-version = "0.9"
+version = "0.95"
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Science/Research",
@@ -23,6 +23,9 @@ classifiers = [
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "Topic :: Software Development",
     "Topic :: Scientific/Engineering",
      "Operating System :: Unix",
