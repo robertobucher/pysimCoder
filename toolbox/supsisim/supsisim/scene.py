@@ -7,9 +7,11 @@ from supsisim.connection import Connection
 from supsisim.dialg import RTgenDlg, SHVDlg
 from supsisim.const import VERSION, pyrun, TEMP, respath, BWmin
 from supsisim.getTemplates import dictTemplates
+from supsisim.RCPblk import RcpParam
 from .shv import ShvClient
 from lxml import etree
 import os
+import io
 import subprocess
 import time
 import json
@@ -550,8 +552,49 @@ class Scene(QGraphicsScene):
             return False
 
     def blkInstance(self, item):
+        def _recheck_param(tocheck) -> RcpParam.Type:
+            """
+            Rechecks UNKNOWN parameters. This function is present
+            in case older diagrams are opened.
+            """
+
+            tocheck = str(tocheck).replace(' ', '')
+
+            # This one is easy.
+            if (tocheck[0] == '"' and tocheck[-1] == '"'):
+                return RcpParam.Type.STR
+            if (tocheck[0] == "'" and tocheck[-1] == "'"):
+                return RcpParam.Type.STR
+
+            # Some old parameters include number arrays.
+            # Check it.
+            if (tocheck[0] == '[' and tocheck[-1] == ']'):
+                numbers = [n.replace(' ', '') for n in tocheck[1:-1].split(',')]
+                cnt = 0
+                force_double = False
+                for n in numbers:
+                    try:
+                        _ = int(n)
+                        cnt += 1
+                    except ValueError:
+                        try:
+                            _ = float(n)
+                            force_double = True
+                            cnt += 1
+                        except ValueError:
+                            pass
+                # All array members are numbers.
+                if cnt == len(numbers):
+                    if force_double:
+                        return RcpParam.Type.DOUBLE
+                    else:
+                        return RcpParam.Type.INT
+
+            return RcpParam.Type.UNKNOWN
+
         ln = item.params.split('|')
-        txt = item.getCodeName().replace(' ','_') + ' = ' + ln[0] + '('
+        blk_name: str = item.getCodeName().replace(' ','_')
+        txt = blk_name + ' = ' + ln[0] + '('
         if item.inp != 0:
             inp = '['
             for thing in item.childItems():
@@ -571,24 +614,46 @@ class Scene(QGraphicsScene):
         N = len(ln)
         parArr = []
         for n in range(1,N):
+            shv_flag: RcpParam.ShvFlag = RcpParam.ShvFlag.HIDDEN
             par = ln[n].split(':')
-            txt += ', ' + par[1].__str__()
-            parType = ""
             try:
-                parType = str(par[2])
-                parType = parType.replace(' ','')
+                match str(par[2]).replace(' ', ''):
+                    case "double":
+                        param_type = RcpParam.Type.DOUBLE
+                        shv_flag = RcpParam.ShvFlag.EDITABLE
+                    case "int" | "integer":
+                        param_type = RcpParam.Type.INT
+                    case "str" | "string":
+                        param_type = RcpParam.Type.STR
+                    case "bool" | "boolean":
+                        param_type = RcpParam.Type.BOOL
+                    case _:
+                        param_type = _recheck_param(par[1])
             except:
-                parType = None
+                param_type = _recheck_param(par[1])
 
-            parArr.append((par[0], par[1], parType))
+            parArr.append((par[0], par[1], param_type, shv_flag))
 
         # Check if Block is PLOT
         if ln[0] == 'plotBlk':
             txt += ", '" + item.getCodeName().replace(' ','_') + "'"
 
+        txt_param: str | None = None
+        if parArr:
+            txt += f", {blk_name}_params"
+            txt_param = f"{blk_name}_params = ["
+            for param in parArr:
+                txt_param += f"RcpParam('{param[0]}', {param[1]}, {param[2]}, {param[3].value}), "
+            txt_param += ']\n'
+
+            txt_param += f"for param in {blk_name}_params:\n"
+            txt_param += "    if isinstance(param.value, list):\n"
+            txt_param += "        param.is_list = True\n"
+            txt_param += "        param.shv_flags = 0"
+
         txt += ')'
         txt = txt.replace('(, ', '(')
-        return txt, parArr
+        return txt, txt_param
 
     def generateCCode(self, items):
         try:
@@ -602,7 +667,7 @@ class Scene(QGraphicsScene):
         dir1 = respath + 'blocks/rcpBlk'
         txt += 'import os\n\n'
 
-        txt += 'from supsisim.RCPblk import RCPblk\n\n'
+        txt += 'from supsisim.RCPblk import RCPblk, RcpParam\n\n'
         txt += 'dirs = os.listdir("' + dir1 + '")\n'
         txt += 'for el in dirs:\n'
         txt += '    files = os.listdir("' + dir1 + '" + "/" + el)\n'
@@ -621,86 +686,57 @@ class Scene(QGraphicsScene):
         txt += 'from control import *\n'
 
         blkList = []
-        realParNames = []
-        intParNames = []
         sysPathList = []
         for item in items:
             if isinstance(item, Block):
- #               print(item)
                 blkList.append(item.getCodeName().replace(' ','_'))
-                blkText, blkPar = self.blkInstance(item)
-                txt += blkText + '\n'
-
-                blkRealNames = []
-                blkIntNames = []
-                for par in blkPar:
-                    if (par[2] == "double"):
-                        blkRealNames.append(par[0])
-                    elif (par[2] == "int"):
-                        blkIntNames.append(par[0])
-
-                sysPathList.append(item.syspath)
-                realParNames.append(tuple(blkRealNames))
-                intParNames.append(tuple(blkIntNames))
+                blk_text, param_text = self.blkInstance(item)
+                if param_text is not None:
+                    txt += param_text + '\n'
+                txt += blk_text + '\n\n'
 
         fname = self.mainw.filename
-        fn = open('tmp.py','w')
-        fn.write(txt)
-        fn.write('\n')
+        with open('tmp.py', 'w') as fn:
+            fn.write(txt + '\n')
 
-        for item in blkList:
-            fn.write(item + '.name = \'' + item + '\'\n')
+            for item in blkList:
+                fn.write(item + '.name = \'' + item + '\'\n')
 
-        txt = '\nblks = ['
-        for item in blkList:
-            txt += item + ','
-        txt += ']\n\n'
-        fn.write(txt)
+            txt = '\nblks = ['
+            for item in blkList:
+                txt += item + ','
+            txt += ']\n'
+            fn.write(txt)
 
-        txt =  'realParNames = ' + str(tuple(realParNames)) + '\n'
-        txt += 'intParNames = ' + str(tuple(intParNames)) + '\n'
-        txt += 'sysPath = '+ str(sysPathList) + '\n\n'
-        fn.write(txt)
+            txt = 'sysPath = '+ str(sysPathList) + '\n\n'
+            txt += 'tmp = 0\n'
+            txt += 'for item in sysPath:\n'
+            txt += '  blks[tmp].sysPath = item\n'
+            txt += '  tmp += 1\n\n'
+            fn.write(txt)
 
-        txt =  'tmp = 0\n'
-        txt += 'for item in realParNames:\n'
-        txt += '  for par in item:\n'
-        txt += '    blks[tmp].realParNames.append(par)\n'
-        txt += '  tmp += 1\n\n'
-        txt += 'tmp = 0\n'
-        txt += 'for item in intParNames:\n'
-        txt += '  for par in item:\n'
-        txt += '    blks[tmp].intParNames.append(par)\n'
-        txt += '  tmp += 1\n\n'
-        txt += 'tmp = 0\n'
-        txt += 'for item in sysPath:\n'
-        txt += '  blks[tmp].sysPath = item\n'
-        txt += '  tmp += 1\n\n'
-        fn.write(txt)
+            txt =  'os.environ["SHV_USED"] = \"' + str(self.SHV.used) + '\"\n'
+            txt += 'os.environ["SHV_BROKER_IP"] = \"' + self.SHV.ip + '\"\n'
+            txt += 'os.environ["SHV_BROKER_PORT"] = \"' + self.SHV.port + '\"\n'
+            txt += 'os.environ["SHV_BROKER_USER"] = \"' + self.SHV.user + '\"\n'
+            txt += 'os.environ["SHV_BROKER_PASSWORD"] = \"' + self.SHV.passw + '\"\n'
+            txt += 'os.environ["SHV_BROKER_DEV_ID"] = \"' + self.SHV.devid + '\"\n'
+            txt += 'os.environ["SHV_BROKER_MOUNT"] = \"' + self.SHV.mount + "/" + self.SHV.devid + '\"\n'
+            txt += 'os.environ["SHV_TREE_TYPE"] = \"' + self.SHV.tree + '\"\n\n'
+            fn.write(txt)
 
-        txt =  'os.environ["SHV_USED"] = \"' + str(self.SHV.used) + '\"\n'
-        txt += 'os.environ["SHV_BROKER_IP"] = \"' + self.SHV.ip + '\"\n'
-        txt += 'os.environ["SHV_BROKER_PORT"] = \"' + self.SHV.port + '\"\n'
-        txt += 'os.environ["SHV_BROKER_USER"] = \"' + self.SHV.user + '\"\n'
-        txt += 'os.environ["SHV_BROKER_PASSWORD"] = \"' + self.SHV.passw + '\"\n'
-        txt += 'os.environ["SHV_BROKER_DEV_ID"] = \"' + self.SHV.devid + '\"\n'
-        txt += 'os.environ["SHV_BROKER_MOUNT"] = \"' + self.SHV.mount + "/" + self.SHV.devid + '\"\n'
-        txt += 'os.environ["SHV_TREE_TYPE"] = \"' + self.SHV.tree + '\"\n\n'
-        fn.write(txt)
+            fnm = './' + fname + '_gen'
 
-        fnm = './' + fname + '_gen'
-
-        fn.write('fname = ' + "'" + fname + "'\n")
-        fn.write('os.chdir("'+ fnm +'")\n')
-        fn.write('genCode(fname, ' + self.Ts + ', blks, ' + "'" + self.intgMethod + "', " + \
-                 self.epsAbs + ', ' + self.epsRel +')\n')
-        fn.write("genMake(fname, '" + self.template + "', addObj = '" +
+            fn.write('fname = ' + "'" + fname + "'\n")
+            fn.write('os.chdir("'+ fnm +'")\n')
+            fn.write('genCode(fname, ' + self.Ts + ', blks, ' + "'" + self.intgMethod + "', " + \
+                    self.epsAbs + ', ' + self.epsRel +')\n')
+            fn.write("genMake(fname, '" + self.template + "', addObj = '" +
                   self.addObjs + "', addCDefs = '" + self.parsedAddCDefs + "')\n")
-        fn.write('\nimport os\n')
-        fn.write('os.system("make clean")\n')
-        fn.write('os.system("make ' + str(self.addMakeArgs) + '")\n')
-        fn.write('os.chdir("..")\n')
-        fn.close()
+            fn.write('\nimport os\n')
+            fn.write('os.system("make clean")\n')
+            fn.write('os.system("make")\n')
+            fn.write('os.chdir("..")\n')
 
     def simrun(self):
         if self.codegen(False):

@@ -1,28 +1,22 @@
-from supsisim.RCPblk import RCPblk
+from supsisim.RCPblk import RCPblk, RcpParam
 from numpy import size
 
-def squareBlk(pout, Amp, Period, Width, Bias, Delay):
-    """
 
-    Call:   squareBlk(pout, Amp, Period, Width, Bias, Delay)
+def squareBlk(pout: list[int], params: RcpParam) -> RCPblk:
+    """
+    Call:   squareBlk(pout, params)
 
     Parameters
     ----------
        pout: connected output port(s)
-       Amp : Amplitude
-       Period : Period
-       Width : Width
-       Bias : Bias
-       Delay : Delay
+       params: block's parameters
 
     Returns
     -------
-        blk  : RCPblk
-
+      Block's reprezentation RCPblk
     """
-    
-    if(size(pout) != 1):
-        raise ValueError("Block should have 1 output port; received %i." % size(pout))
-    blk = RCPblk('squareSignal',[],pout,[0,0],0,[Amp, Period, Width, Bias, Delay],[])
-    return blk
 
+    if size(pout) != 1:
+        raise ValueError("Block should have 1 output port; received %i." % size(pout))
+
+    return RCPblk("squareSignal", [], pout, [0, 0], 0, params)

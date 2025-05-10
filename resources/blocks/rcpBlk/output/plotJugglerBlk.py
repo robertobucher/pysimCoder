@@ -1,21 +1,19 @@
-from supsisim.RCPblk import RCPblk
+from supsisim.RCPblk import RCPblk, RcpParam
 
-def plotJugglerBlk(pin, IP, port):
+
+def plotJugglerBlk(pin: list[int], params: RcpParam) -> RCPblk:
     """Create an interactive scope.
-    Call:   UDPsocketTxBlk(pin, IP, port)
+    Call:   plotJugglerBlk(pin, params)
 
     Parameters
     ----------
        pin: connected input port(s)
-       IP : IP Addr
-       port :  Port
+       params: block's parameters
 
     Returns
     -------
-       blk: RCPblk
-
+      Block's reprezentation RCPblk
     """
 
-    blk = RCPblk("plotJuggler", pin, [], [0,0], 1, [], [port, 0], IP)
-    return blk
-
+    params.append(RcpParam("Internal", 0, RcpParam.Type.INT))
+    return RCPblk("plotJuggler", pin, [], [0, 0], 1, params)

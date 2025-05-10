@@ -1,10 +1,8 @@
-
 from supsisim.RCPblk import RCPblk
-from numpy import size
 
-def divBlk(pin, pout):
+
+def divBlk(pin: list[int], pout: list[int]) -> RCPblk:
     """
-
     Call:   divBlk(pin, pout)
 
     Parameters
@@ -14,9 +12,7 @@ def divBlk(pin, pout):
 
     Returns
     -------
-       blk: RCPblk
-
+      Block's reprezentation RCPblk
     """
 
-    blk = RCPblk('Div', pin, pout, [0,0], 1, [], [])
-    return blk
+    return RCPblk("Div", pin, pout, [0, 0], 1)

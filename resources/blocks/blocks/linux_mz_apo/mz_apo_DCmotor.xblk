@@ -6,6 +6,6 @@
   "stin": 0,
   "stout": 0,
   "icon": "MOT",
-  "params": "mz_apo_DCmotBlk|mot_ID:0:int",
+  "params": "mz_apo_DCmotBlk|Motor ID:0:int",
   "help": "Parameters\nMotor ID: 0 or 1\n\n\n"
 }

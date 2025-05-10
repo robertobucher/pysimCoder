@@ -4,9 +4,9 @@ SHV C tree generation.
 
 from numpy import size
 from os import environ
+from supsisim.RCPblk import RcpParam
 import copy
 import typing
-
 
 class ShvTreeGenerator:
     def __init__(self, f: typing.IO, model: str, blocks) -> None:
@@ -90,24 +90,20 @@ class ShvTreeGenerator:
                 self.blocks[index].fcn != "shv_output"
             ):
                 has_blocks = True
-                if size(self.blocks[index].realPar) != 0:
+                # Get all the real parameters
+                real_params = [param for param in self.blocks[index].params_list \
+                               if param.type == RcpParam.Type.DOUBLE]
+                real_params_cnt = len(real_params)
+
+                if real_params_cnt != 0:
                     has_real_pars = True
+                    real_par_names = [param.name for param in real_params]
 
-                    real_par_names = []
-
-                    if size(self.blocks[index].realPar) == size(
-                        self.blocks[index].realParNames
-                    ):
-                        for i in range(0, size(self.blocks[index].realPar)):
-                            real_par_names.append(self.blocks[index].realParNames[i])
-                    else:
-                        for i in range(0, size(self.blocks[index].realPar)):
-                            real_par_names.append("double" + str(i))
-
+                    # All params have a unique name. So no new name creations are needed.
                     real_par_names_ordered = copy.deepcopy(real_par_names)
                     real_par_names_ordered.sort()
 
-                    for i in range(0, size(self.blocks[index].realPar)):
+                    for i in range(0, real_params_cnt):
                         indexPar = real_par_names.index(real_par_names_ordered[i])
                         text += (
                             "const shv_node_typed_val_t shv_node_typed_val_blk"
@@ -134,7 +130,7 @@ class ShvTreeGenerator:
                         + "_pars"
                         + "[] = {\n"
                     )
-                    for i in range(0, size(self.blocks[index].realPar)):
+                    for i in range(0, real_params_cnt):
                         text += (
                             "  &shv_node_typed_val_blk"
                             + str(n)

@@ -6,6 +6,6 @@
   "stin": 0,
   "stout": 0,
   "icon": "ENC",
-  "params": "FH_5XXX_getVBlk|Can dev:'/dev/pcan32'|Device ID: 0x01:int",
+  "params": "FH_5XXX_getVBlk|Can dev:'/dev/pcan32':str|Device ID: 0x01:int",
   "help": "This block implements the speed input interface of a MC5XXX Faulhaber motion controller.\n\nIn the Block diagram shoud be present the FH5XXX_INIT block!\n\nSee the Faulhaber homepage for more details (www.faulhaber.com)\n"
 }

@@ -1,9 +1,8 @@
 from supsisim.RCPblk import RCPblk
-from numpy import size
 
-def printBlk(pin):
+
+def printBlk(pin: list[int]) -> RCPblk:
     """
-
     Call:   printBlk(pin)
 
     Parameters
@@ -12,10 +11,7 @@ def printBlk(pin):
 
     Returns
     -------
-        blk  : RCPblk
-
+      Block's reprezentation RCPblk
     """
 
-    blk = RCPblk('print',pin,[],[0,0],1,[],[])
-    return blk
-
+    return RCPblk("print", pin, [], [0, 0], 1)

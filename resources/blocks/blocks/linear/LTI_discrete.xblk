@@ -6,6 +6,6 @@
   "stin": 1,
   "stout": 1,
   "icon": "DSS",
-  "params": "dssBlk|System: sys|Initial conditions: 0",
+  "params": "dssBlk|System: sys|Initial conditions: 0:double",
   "help": "This block implements a linear discrete dynamic system.\n\nIt can be defined as transfer function (control.tf) or as state space system (control.ss)\n\nParameters:\nLTI discrete system\nInitial conditions of the state(s) as array, or \"0\" (in case that all the states have 0 initial condition).\n"
 }

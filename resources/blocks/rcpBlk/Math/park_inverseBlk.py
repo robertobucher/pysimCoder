@@ -1,9 +1,8 @@
 from supsisim.RCPblk import RCPblk
-from numpy import size
 
-def park_inverseBlk(pin, pout):
+
+def park_inverseBlk(pin: list[int], pout: list[int]) -> RCPblk:
     """
-
     Call:   park_inverseBlk(pin, pout)
 
     Parameters
@@ -13,10 +12,7 @@ def park_inverseBlk(pin, pout):
 
     Returns
     -------
-        blk  : RCPblk
-
+      Block's reprezentation RCPblk
     """
 
-    blk = RCPblk('inverse_park', pin, pout, [0,0], 1, [], [])
-    return blk
-
+    return RCPblk("inverse_park", pin, pout, [0, 0], 1)

@@ -1,10 +1,8 @@
-
 from supsisim.RCPblk import RCPblk
-from numpy import size
 
-def fromESP32Blk(pout):
+
+def fromESP32Blk(pout: list[int]) -> RCPblk:
     """
-
     Call:   fromESP32Blk(pout)
 
     Parameters
@@ -13,9 +11,7 @@ def fromESP32Blk(pout):
 
     Returns
     -------
-       blk: RCPblk
-
+      Block's reprezentation RCPblk
     """
 
-    blk = RCPblk('fromESP32', [], pout, [0,0], 0, [], [])
-    return blk
+    return RCPblk("fromESP32", [], pout, [0, 0], 0)

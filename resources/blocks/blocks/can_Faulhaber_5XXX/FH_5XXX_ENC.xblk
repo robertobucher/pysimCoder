@@ -6,6 +6,6 @@
   "stin": 0,
   "stout": 0,
   "icon": "ENC",
-  "params": "FH_5XXX_ENCBlk|Can dev:'/dev/pcan32'|Device ID: 0x01:int|Resolution: 1:double",
+  "params": "FH_5XXX_ENCBlk|Can dev:'/dev/pcan32':str|Device ID: 0x01:int|Resolution: 1:double",
   "help": "This block implements the encoder input interface of a MC5XXX Faulhaber motion controller.\n\nIn the Block diagram shoud be present the FH5XXX_INIT block!\n\nParameters:\nCan dev: device (ex. '/dev/can0')\nResolution (not related to a rotation!)\n\nSee the Faulhaber homepage for more details (www.faulhaber.com)\n\n\n"
 }

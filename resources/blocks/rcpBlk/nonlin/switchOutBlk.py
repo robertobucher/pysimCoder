@@ -1,22 +1,19 @@
-from supsisim.RCPblk import RCPblk
-from numpy import size
+from supsisim.RCPblk import RCPblk, RcpParam
 
-def switchOutBlk(pin, pout, val):
+
+def switchOutBlk(pin: list[int], pout: list[int], params: RcpParam) -> RCPblk:
     """
-
     Call:   switchOutBlk(pin, pout, val)
 
     Parameters
     ----------
         pin: connected input ports
         pout: connected output ports
-        val:   value to compare
+        params: block's parameters
 
     Returns
     -------
-        blk  : RCPblk
-
+      Block's reprezentation RCPblk
     """
 
-    blk = RCPblk('switch_output',pin,pout,[0,0],1,[val],[])
-    return blk
+    return RCPblk("switch_output", pin, pout, [0, 0], 1, params)

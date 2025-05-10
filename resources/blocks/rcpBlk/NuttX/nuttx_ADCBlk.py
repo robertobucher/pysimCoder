@@ -1,38 +1,30 @@
-import numpy as np
-from supsisim.RCPblk import RCPblk
-from numpy import size
+from supsisim.RCPblk import RCPblk, RcpParam
+from numpy import size, unique
 
-def nuttx_ADCBlk(pout, devname, ch, swtrig, res, umin, umax):
+
+def nuttx_ADCBlk(pout: list[int], params: RcpParam) -> RCPblk:
     """
-
-    Call:   nuttx_AdcBlk(pout, devname)
+    Call:   nuttx_AdcBlk(pout, params)
 
     Parameters
     ----------
        pout: connected output port(s)
-       devname : Port
-       ch: array of ADC channels
-       swtrig: flag to either SW trigger or not
-       res: resolution of the ADC
-       umin: minimal value
-       umax: maximum value
+       params: block's parameters
 
     Returns
     -------
-       blk: RCPblk
-
+      Block's reprezentation RCPblk
     """
 
-    if(size(pout) != size(ch)):
-        raise ValueError("ADC block: number of inputs (%i) should match number of channels (%i)" % (size(pout),size(ch)))
+    if (nout := size(pout)) != (nch := size(params[1].value)):
+        raise ValueError(
+            "ADC block: number of outputs (%i) should match number of channels (%i)"
+            % (nout, nch)
+        )
 
-    if(np.unique(ch).size != size(ch)):
+    if unique(params[1].value).size != nch:
         raise ValueError("ADC block: duplicate channels!")
 
-    ch.append(res)
-    ch.append(0)      # file descriptor
-    ch.append(0)      # number of configured chanels get by ioctl command
-    ch.append(swtrig) # boolean flag to SW trigger or not
-
-    blk = RCPblk('nuttx_ADC', [], pout, [0,0], 0, [umin, umax], ch, devname)
-    return blk
+    params.append(RcpParam("File descriptor", 0, RcpParam.Type.INT))
+    params.append(RcpParam("Number of channels", 0, RcpParam.Type.INT))
+    return RCPblk("nuttx_ADC", [], pout, [0, 0], 0, params)

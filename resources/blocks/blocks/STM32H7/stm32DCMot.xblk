@@ -6,6 +6,6 @@
   "stin": 0,
   "stout": 0,
   "icon": "MOT",
-  "params": "stm32DCMotBlk|PWM CHannel [1..4]:1:int|Direction 1 Port:'PORTA'|Direction 1 Channel:0:int|Direction 2 Port:'PORTA'|Direction 2 Channel:1:int|Umin :-1:double|Umax:1:double",
+  "params": "stm32DCMotBlk|PWM CHannel [1..4]:1:int|Direction 1 Port:'PORTA':str|Direction 1 Channel:0:int|Direction 2 Port:'PORTA':str|Direction 2 Channel:1:int|Umin :-1:double|Umax:1:double",
   "help": "Block  for the L298 Motor Driver\n\nParameters:\n-----------------\n\nPWM CHannel [1...4] : Port for the PWM signal\nDirection 1 Port : Digital pin for to handle the motor direction\nDirection 1 Channel\nDirection 2 Port: Digital pin for to handle the motor direction\nDirection 2 Channel\n\nUmin : minimal input - will be translated to PWM widt 0%\nUmax : maximal input - will be translated to PWM widt 100%\n"
 }

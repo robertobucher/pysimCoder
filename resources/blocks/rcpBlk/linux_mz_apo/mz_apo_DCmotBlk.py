@@ -1,21 +1,22 @@
+from supsisim.RCPblk import RCPblk, RcpParam
 
-from supsisim.RCPblk import RCPblk
-from numpy import size
 
-def mz_apo_DCmotBlk(pin, pout, mot_ID):
+def mz_apo_DCmotBlk(pin: list[int], pout: list[int], params: RcpParam) -> RCPblk:
     """
-
-    Call:   mz_apo_DCmotBlk(pin, pout, mot_ID)
+    Call:   mz_apo_DCmotBlk(pin, pout, params)
 
     Parameters
     ----------
-       mot_ID: 0 or 1
+       pin : connected input ports
+       pout: connected output ports
+       params: block's parameters
 
     Returns
     -------
-       blk: RCPblk
-
+      Block's reprezentation RCPblk
     """
 
-    blk = RCPblk('mz_apo_DCmot', pin, pout, [0, 0], 0, [], [mot_ID, 0])
-    return blk
+    params.append(
+        RcpParam("Motor position", 0, RcpParam.Type.INT, RcpParam.ShvFlag.VISIBLE)
+    )
+    return RCPblk("mz_apo_DCmot", pin, pout, [0, 0], 0, params)

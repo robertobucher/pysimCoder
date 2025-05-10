@@ -1,22 +1,18 @@
-from supsisim.RCPblk import RCPblk
-from numpy import size
+from supsisim.RCPblk import RCPblk, RcpParam
 
-def toFileBlk(pin, fname):
+
+def toFileBlk(pin: list[int], params: RcpParam) -> RCPblk:
     """
-
-    Call:   toFileBlk(pin, fname)
+    Call:   toFileBlk(pin, params)
 
     Parameters
     ----------
        pin: connected input port(s)
-       fname : File name
+       params: block's parameters
 
     Returns
     -------
-        blk  : RCPblk
-
+      Block's reprezentation RCPblk
     """
 
-    blk = RCPblk('toFile',pin,[],[0,0],1,[],[], fname)
-    return blk
-
+    return RCPblk("toFile", pin, [], [0, 0], 1, params)

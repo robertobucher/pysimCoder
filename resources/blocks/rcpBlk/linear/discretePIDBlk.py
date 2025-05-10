@@ -1,23 +1,21 @@
-from supsisim.RCPblk import RCPblk
-from numpy import size
+from supsisim.RCPblk import RCPblk, RcpParam
 
-def discretePIDBlk(pin, pout, Kp, Ki, Kd, min_val, max_val):
+
+def discretePIDBlk(pin: list[int], pout: list[int], params: RcpParam) -> RCPblk:
     """
-
-    Call:   nuttx_PWMBlk(pin, port, umin, umax)
+    Call:   discretePIDBlk(pin, pout, params)
 
     Parameters
     ----------
        pin: connected input port(s)
-       port : Port
-       umin : Umin [V]
-       umax : Umax [V]
+       pout: connected output port(s)
+       params: block's parameters
 
     Returns
     -------
-       blk: RCPblk
-
+      Block's reprezentation RCPblk
     """
 
-    blk = RCPblk('discretePID', pin, pout, [0,0], 1, [Kp, Ki, Kd, min_val, max_val, 0, 0], [])
-    return blk
+    params.append(RcpParam("Last Error", 0, RcpParam.Type.DOUBLE))
+    params.append(RcpParam("Integral Sum", 0, RcpParam.Type.DOUBLE))
+    return RCPblk("discretePID", pin, pout, [0, 0], 1, params)

@@ -1,22 +1,19 @@
-from supsisim.RCPblk import RCPblk
+from supsisim.RCPblk import RCPblk, RcpParam
 
-def hall3ph2secBlk(pin, pout, Inverted):
+
+def hall3ph2secBlk(pin: list[int], pout: list[int], params: RcpParam) -> RCPblk:
     """
-
-    Call:   hall3ph2secBlk(pin, pout, Gains)
+    Call:   hall3ph2secBlk(pin, pout, params)
 
     Parameters
     ----------
        pin: connected input port(s)
        pout: connected output port(s)
-       Inverted : 1 if inverted table is used
+       params: block's parameters
 
     Returns
     -------
-        blk  : RCPblk
-
+      Block's reprezentation RCPblk
     """
 
-    blk = RCPblk('hall3ph2sec',pin,pout,[0,0],1,[],[Inverted])
-    return blk
-
+    return RCPblk("hall3ph2sec", pin, pout, [0, 0], 1, params)

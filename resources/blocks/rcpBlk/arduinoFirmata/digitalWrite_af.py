@@ -1,22 +1,18 @@
+from supsisim.RCPblk import RCPblk, RcpParam
 
-from supsisim.RCPblk import RCPblk
-from numpy import size
 
-def digitalWrite_af(pin, devicePin):
+def digitalWrite_af(pin: list[int], params: RcpParam) -> RCPblk:
     """
-
-    Call:   digitalWrite_af(pin, devicePin)
+    Call:   digitalWrite_af(pin, params)
 
     Parameters
     ----------
        pin: connected input port(s)
-       devicePin : Device pin
+       params: block's parameters
 
     Returns
     -------
-       blk: RCPblk
-
+        Block's reprezentation RCPblk
     """
 
-    blk = RCPblk('digitalWrite_af', pin, [], [0,0], 0, [], [devicePin])
-    return blk
+    return RCPblk("digitalWrite_af", pin, [], [0, 0], 0, params)

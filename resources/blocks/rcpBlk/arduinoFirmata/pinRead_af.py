@@ -1,23 +1,19 @@
+from supsisim.RCPblk import RCPblk, RcpParam
 
-from supsisim.RCPblk import RCPblk
-from numpy import size
 
-def pinRead_af(pout, devicepin, pinmode):
+def pinRead_af(pout: list[int], params: RcpParam) -> RCPblk:
     """
 
-    Call:   pinRead_af(pout, pinmode, devicepin)
+    Call:   pinRead_af(pout, params)
 
     Parameters
     ----------
        pout: connected output port(s)
-       devicepin : Device pin
-       pinmode : Pin mode
+       params: block's parameters
 
     Returns
     -------
-       blk: RCPblk
-
+        Block's reprezentation RCPblk
     """
 
-    blk = RCPblk('pinRead_af', [], pout, [0,0], 0, [], [devicepin, pinmode])
-    return blk
+    return RCPblk("pinRead_af", [], pout, [0, 0], 0, params)

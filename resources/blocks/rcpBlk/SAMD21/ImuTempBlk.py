@@ -1,11 +1,9 @@
-
 from supsisim.RCPblk import RCPblk
-from numpy import size
 
-def ImuTempBlk(pout):
+
+def ImuTempBlk(pout: list[int]) -> RCPblk:
     """
-
-    Call:   ImuTemp(pout)
+    Call:   ImuTempBlk(pout)
 
     Parameters
     ----------
@@ -13,9 +11,7 @@ def ImuTempBlk(pout):
 
     Returns
     -------
-       blk: RCPblk
-
+      Block's reprezentation RCPblk
     """
 
-    blk = RCPblk('ImuTemp', [], pout, [0,0], 0, [], [])
-    return blk
+    return RCPblk("ImuTemp", [], pout, [0, 0], 0)

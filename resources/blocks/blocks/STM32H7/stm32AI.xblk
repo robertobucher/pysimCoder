@@ -6,6 +6,6 @@
   "stin": 0,
   "stout": 0,
   "icon": "AD",
-  "params": "stm32AIBlk|Channel:0|Umin [V]:0.0:double|Umax [V]:3.3:double",
+  "params": "stm32AIBlk|Channel:0:int|Umin [V]:0.0:double|Umax [V]:3.3:double",
   "help": "This block implements a Analog to digital converter for the STM32H7 uC\n\nchannel & ports\n\n0      PF11     ------> ADC1_INP2\n1      PA6     ------> ADC1_INP3\n2      PB1     ------> ADC1_INP5\n3      PC5     ------> ADC1_INP8\n4      PB0     ------> ADC1_INP9\n5      PC1     ------> ADC1_INP11\n6      PA3     ------> ADC1_INP15\n7      PA0     ------> ADC1_INP16\n\nParameters\nChannel: value between 0 and 7\nUmin [V]: minimal value (0 volt read -> umin)\nUmax [V] : maximal value (3.3V read -> umax)\n\n"
 }

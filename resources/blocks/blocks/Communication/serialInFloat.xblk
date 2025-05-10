@@ -6,6 +6,6 @@
   "stin": 0,
   "stout": 1,
   "icon": "SERIAL",
-  "params": "serialInFloatBlk|Port:'/dev/ttyACM0'",
+  "params": "serialInFloatBlk|Port:'/dev/ttyACM0':str",
   "help": " No help available for this block"
 }

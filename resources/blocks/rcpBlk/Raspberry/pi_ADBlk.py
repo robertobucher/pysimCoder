@@ -1,23 +1,19 @@
+from supsisim.RCPblk import RCPblk, RcpParam
 
-from supsisim.RCPblk import RCPblk
-from numpy import size
 
-def pi_ADBlk(pout, dev, ch, vref):
+def pi_ADBlk(pout: list[int], params: RcpParam) -> RCPblk:
     """
-
-    Call:   pi_ADBlk(pout, dev, ch)
+    Call:   pi_ADBlk(pout, params)
 
     Parameters
     ----------
        pout: connected output port(s)
-       dev : Device
-       ch : Channel
+       params: block's parameters
 
     Returns
     -------
-       blk: RCPblk
-
+      Block's reprezentation RCPblk
     """
 
-    blk = RCPblk('pi_AD', [], pout, [0,0], 0, [vref], [dev, ch, 0])
-    return blk
+    params.append(RcpParam("Internal", 0, RcpParam.Type.INT))
+    return RCPblk("pi_AD", [], pout, [0, 0], 0, params)

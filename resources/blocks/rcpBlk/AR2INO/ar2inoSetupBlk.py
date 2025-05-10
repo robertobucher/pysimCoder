@@ -1,22 +1,17 @@
+from supsisim.RCPblk import RCPblk, RcpParam
 
-from supsisim.RCPblk import RCPblk
-from numpy import size
 
-def ar2inoSetupBlk(channel, baud):
+def ar2inoSetupBlk(params: RcpParam) -> RCPblk:
     """
-
-    Call:   ar2inoSetup(channel, baud)
+    Call:   ar2inoSetup(params)
 
     Parameters
     ----------
-       channel : Port
-       baud : Baud
+      params: block's parameters
 
     Returns
     -------
-       blk: RCPblk
-
+      Block's reprezentation RCPblk
     """
 
-    blk = RCPblk('ar2inoSetup', [], [], [0,0], 0, [], [baud], channel)
-    return blk
+    return RCPblk("ar2inoSetup", [], [], [0, 0], 0, params)

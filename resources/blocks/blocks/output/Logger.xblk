@@ -6,6 +6,6 @@
   "stin": 1,
   "stout": 0,
   "icon": "TOFILE",
-  "params": "loggerBlk|Log file:'log_file'",
+  "params": "loggerBlk|Log file:'log_file':str",
   "help": "This block implements a logger method fro data from the block diagram into the \"log file\"\n"
 }

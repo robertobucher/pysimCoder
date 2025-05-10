@@ -6,6 +6,6 @@
   "stin": 0,
   "stout": 0,
   "icon": "ESC",
-  "params": "brikiESCBlk|Pin:0|Umin [V]:-10:double|Umax [V]:10:double",
+  "params": "brikiESCBlk|Pin:0:int|Umin [V]:-10:double|Umax [V]:10:double",
   "help": "This block implements the \"electronic speed function\" in the Arduino World.\nThis block can be used to move motors or servo motors.\n\nParameters:\nPin : Pin Number\nUmin [V]: Umin\nUmax [V]: Umax\n\nThe input signal can be a value between Umin and Umax and is automatically mapped to 500-2500us in the ESC system.\n\n"
 }

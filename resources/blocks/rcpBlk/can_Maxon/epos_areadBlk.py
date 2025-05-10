@@ -1,26 +1,22 @@
-from supsisim.RCPblk import RCPblk
+from supsisim.RCPblk import RCPblk, RcpParam
 from numpy import size
 
-def epos_areadBlk(pout, candev, ID, ch):
-    """
 
-    Call:   epos_areadBlk(pout, ID, ch)
+def epos_areadBlk(pout: list[int], params: RcpParam) -> RCPblk:
+    """
+    Call:   epos_areadBlk(pout, params)
 
     Parameters
     ----------
        pout: connected output port(s)
-       ID : Device ID
-       ch : Channel [0/1]
+       params: block's parameters
 
     Returns
     -------
-       blk  : RCPblk
-
+        Block's reprezentation RCPblk
     """
-    
-    if(size(pout) != 1):
+
+    if size(pout) != 1:
         raise ValueError("Block should have 1 output port; received %i." % size(pout))
 
-    blk = RCPblk('epos_canopen_aread',[],pout,[0,0],0,[],[ID, ch], candev)
-    return blk
-
+    return RCPblk("epos_canopen_aread", [], pout, [0, 0], 0, params)

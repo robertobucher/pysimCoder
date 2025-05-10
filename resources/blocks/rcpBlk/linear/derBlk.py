@@ -1,12 +1,12 @@
-from supsisim.RCPblk import RCPblk
+from supsisim.RCPblk import RCPblk, RcpParam
 from numpy import size
 
-def derBlk(pin,pout):
-    """ 
 
+def derBlk(pin: list[int], pout: list[int]) -> RCPblk:
+    """
     Continous integral block
 
-    Call: derBlk(pin,pout,X0)
+    Call: derBlk(pin, pout)
 
     Parameters
     ----------
@@ -15,18 +15,18 @@ def derBlk(pin,pout):
 
     Returns
     -------
-        blk  : RCPblk
-
+      Block's reprezentation RCPblk
     """
-    
-    nin = size(pin)
-    if (nin != 1):
-        raise ValueError("Block have 1 input: received %i input ports" % nin)
 
-    nout = size(pout)
-    if(nout != 1):
-        raise ValueError("Block have 1 output1: received %i output ports" % nout)
-        
-    blk = RCPblk('der',pin,pout,[1,0],1,[0.0, 0.0],[])
-    return blk
+    if size(pin) != 1:
+        raise ValueError("Block have 1 input: received %i input ports" % size(pin))
 
+    if size(pout) != 1:
+        raise ValueError("Block have 1 output1: received %i output ports" % size(pout))
+
+    params = [
+        RcpParam("Internal 1", 0, RcpParam.Type.DOUBLE),
+        RcpParam("Internal 2", 0, RcpParam.Type.DOUBLE),
+        RcpParam("Internal 3", 0, RcpParam.Type.DOUBLE),
+    ]
+    return RCPblk("der", pin, pout, [1, 0], 1, params)

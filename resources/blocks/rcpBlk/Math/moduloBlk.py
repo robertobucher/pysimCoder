@@ -1,9 +1,8 @@
-
 from supsisim.RCPblk import RCPblk
 
-def moduloBlk(pin, pout):
-    """
 
+def moduloBlk(pin: list[int], pout: list[int]) -> RCPblk:
+    """
     Call:   moduloBlk(pin, pout)
 
     Parameters
@@ -13,9 +12,7 @@ def moduloBlk(pin, pout):
 
     Returns
     -------
-       blk: RCPblk
-
+      Block's reprezentation RCPblk
     """
 
-    blk = RCPblk('pysim_modulo', pin, pout, [0,0], 1, [], [])
-    return blk
+    return RCPblk("pysim_modulo", pin, pout, [0, 0], 1)

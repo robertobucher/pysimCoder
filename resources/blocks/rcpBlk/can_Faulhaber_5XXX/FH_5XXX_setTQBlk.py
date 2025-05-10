@@ -1,22 +1,19 @@
-from supsisim.RCPblk import RCPblk
-from numpy import size
+from supsisim.RCPblk import RCPblk, RcpParam
 
-def FH_5XXX_setTQBlk(pin, candev, ID):
+
+def FH_5XXX_setTQBlk(pin: list[int], params: RcpParam) -> RCPblk:
     """
 
-    Call:   FH_5XXX_setTQBlk(pin, ID)
+    Call:   FH_5XXX_setTQBlk(pin, params)
 
     Parameters
     ----------
        pin: connected input port(s)
-       ID : Device ID
-  
+       params: block's parameters
+
     Returns
     -------
-        blk: RCPblk
-
+        Block's reprezentation RCPblk
     """
-    
-    blk = RCPblk('FH_5XXX_setTQ', pin, [], [0,0], 1, [], [ID], candev)
-    return blk
 
+    return RCPblk("FH_5XXX_setTQ", pin, [], [0, 0], 1, params)

@@ -1,33 +1,20 @@
-from supsisim.RCPblk import RCPblk
-from numpy import size, zeros
+from supsisim.RCPblk import RCPblk, RcpParam
 
-def unixsocketSBlk(pout, sockname, defvals):
+
+def unixsocketSBlk(pout: list[int], params: RcpParam) -> RCPblk:
     """
-
-    Call:   unixsocketSBlk(pout, sockname, defvals)
+    Call:   unixsocketSBlk(pout, params)
 
     Parameters
     ----------
        pout: connected output port(s)
-       sockname : Socket
-       defvals : Default outputs
+       params: block's parameters
 
     Returns
     -------
-        blk  : RCPblk
-
+      Block's reprezentation RCPblk
     """
-    
-    outputs = len(pout)
-    vals = zeros(outputs,float)
-    if len(defvals) > outputs:
-        N=outputs
-    else:
-        N = len(defvals)
 
-    for n in range(N):
-        vals[n]=defvals[n]
-        
-    blk = RCPblk('unixsockS',[],pout,[0,0],0,vals,[0,0],'/tmp/'+sockname)
-    return blk
-
+    params[0].value = "/tmp/" + params[0].value
+    params.append(RcpParam("Socket", 0, RcpParam.Type.INT))
+    return RCPblk("unixsockS", [], pout, [0, 0], 0, params)

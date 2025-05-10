@@ -1,24 +1,19 @@
+from supsisim.RCPblk import RCPblk, RcpParam
 
-from supsisim.RCPblk import RCPblk
-from numpy import size
 
-def USB_OTG_OutBlk(pin, decim):
+def USB_OTG_OutBlk(pin: list[int], params: RcpParam) -> RCPblk:
     """
-
-    Call:   USB_OTG_OutBlk(pin, decim)
+    Call:   USB_OTG_OutBlk(pin, params)
 
     Parameters
     ----------
        pin: connected input port(s)
-       decim : Decimation
+       params: block's parameters
 
     Returns
     -------
-       blk: RCPblk
-
+      Block's reprezentation RCPblk
     """
 
-    decim = int(decim)
-    
-    blk = RCPblk('USB_OTG_Out', pin, [], [0,0], 1, [], [decim, 0])
-    return blk
+    params.append(RcpParam("Internal", 0, RcpParam.Type.INT))
+    return RCPblk("USB_OTG_Out", pin, [], [0, 0], 1, params)

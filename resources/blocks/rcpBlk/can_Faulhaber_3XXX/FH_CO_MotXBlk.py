@@ -1,26 +1,22 @@
-from supsisim.RCPblk import RCPblk
+from supsisim.RCPblk import RCPblk, RcpParam
 from numpy import size
 
-def FH_CO_MotXBlk(pin, candev, ID, res):
-    """
 
-    Call:   FH_CO_MotXBlk(pin, ID, res)
+def FH_CO_MotXBlk(pin: list[int], params: RcpParam) -> RCPblk:
+    """
+    Call:   FH_CO_MotXBlk(pin, params)
 
     Parameters
     ----------
        pin: connected input port(s)
-       ID : Device ID
-       res : Resolution
+       params: block's parameters
 
     Returns
     -------
-        blk  : RCPblk
-
+        Block's reprezentation RCPblk
     """
-    
-    if(size(pin) != 1):
-        raise ValueError("Block should have 1 input port; received %i." % size(pout))
 
-    blk = RCPblk('FH_canopen_motX',pin,[],[0,0],1,[res],[ID], candev)
-    return blk
+    if size(pin) != 1:
+        raise ValueError("Block should have 1 input port; received %i." % size(pin))
 
+    return RCPblk("FH_canopen_motX", pin, [], [0, 0], 1, params)

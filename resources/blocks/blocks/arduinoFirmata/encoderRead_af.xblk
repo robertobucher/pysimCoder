@@ -6,6 +6,6 @@
   "stin": 0,
   "stout": 0,
   "icon": "ENC",
-  "params": "encoderRead_af|Encode no:0|Pin A:2|Pin B:3",
+  "params": "encoderRead_af|Encode no:0:int|Pin A:2:int|Pin B:3:int",
   "help": "Define an encoder block"
 }

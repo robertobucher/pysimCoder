@@ -1,18 +1,16 @@
-from supsisim.RCPblk import RCPblk
+from supsisim.RCPblk import RCPblk, RcpParam
 from numpy import size
 
-def switchBlk(pin, pout, cond, val, pers):
-    """
 
-    Call:   switchBlk(pin, pout, cond, val, pers)
+def switchBlk(pin: list[int], pout: list[int], params: RcpParam) -> RCPblk:
+    """
+    Call:   switchBlk(pin, pout, params)
 
     Parameters
     ----------
         pin: connected input ports (3)
         pout: connected output port
-        cond:  0 >, 1 <
-        val:   value to compare
-        pers:  switch can change again (0) or is fixed (1)
+        params: block's parameters
 
         Output switches from input 1 to input 2 if the condition is reached
         (input 3 > or <) than val;
@@ -21,16 +19,13 @@ def switchBlk(pin, pout, cond, val, pers):
 
     Returns
     -------
-        blk  : RCPblk
-
+      Block's reprezentation RCPblk
     """
-    
-    if(size(pin) != 3):
-        raise ValueError("Block should have 3 input ports; received %i." % size(pin))
 
-    if(size(pout) != 1):
-        raise ValueError("Block should have 1 output port; received %i." % size(pout))
+    if (nin := size(pin)) != 3:
+        raise ValueError("Block should have 3 input ports; received %i." % nin)
 
-    blk = RCPblk('switcher',pin,pout,[0,0],1,[val],[cond, pers])
-    return blk
+    if (nout := size(pout)) != 1:
+        raise ValueError("Block should have 1 output port; received %i." % nout)
 
+    return RCPblk("switcher", pin, pout, [0, 0], 1, params)

@@ -1,27 +1,26 @@
+from supsisim.RCPblk import RCPblk, RcpParam
 
-from supsisim.RCPblk import RCPblk
-from numpy import size
 
-def brikiPWMBlk(pin, ch, umin, umax, freq):
+def brikiPWMBlk(pin: list[int], params: RcpParam) -> RCPblk:
     """
-
-    Call:   brikiPWMBlk(pin, ch)
+    Call:   brikiPWMBlk(pin, params)
 
     Parameters
     ----------
        pin: connected input port(s)
-       ch : Pin
+       params: block's parameters
 
     Returns
     -------
-       blk: RCPblk
-
+      Block's reprezentation RCPblk
     """
 
     PWMlist = [11, 13, 21, 22, 23, 24, 25]
 
-    if ch not in PWMlist:
-        raise ValueError("You pass a channel which is not in the ABC Board PIN list: %i" % (ch))
-    
-    blk = RCPblk('brikiPWM', pin, [], [0,0], 1, [umin, umax], [ch, freq])
-    return blk
+    if params[0].value not in PWMlist:
+        raise ValueError(
+            "You pass a channel which is not in the ABC Board PIN list: %i"
+            % (params[0].value)
+        )
+
+    return RCPblk("brikiPWM", pin, [], [0, 0], 1, params)

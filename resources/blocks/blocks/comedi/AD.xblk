@@ -6,6 +6,6 @@
   "stin": 0,
   "stout": 0,
   "icon": "AD",
-  "params": "comediADBlk|Device: '/dev/comedi0'|Channel: 0:int|Range: 0:int|Reference [0..3]:0:int",
+  "params": "comediADBlk|Device: '/dev/comedi0':str|Channel: 0:int|Range: 0:int|Reference [0..3]:0:int",
   "help": "Implementation of a COMEDI Analog to Digital converter\n\nParameter\nDevice,channel and range (card specific!)\nReference 0: ground, 1: common, 2: diff, 3: other\n\nFor more details get the COMEDI documentation (www.comedi.org)\n"
 }

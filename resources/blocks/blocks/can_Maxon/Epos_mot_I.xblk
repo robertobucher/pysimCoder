@@ -6,6 +6,6 @@
   "stin": 0,
   "stout": 0,
   "icon": "MOT_I",
-  "params": "epos_MotIBlk|Can dev:'/dev/pcan32'|Device ID: 0x01:int",
+  "params": "epos_MotIBlk|Can dev:'/dev/pcan32':str|Device ID: 0x01:int",
   "help": "This Block implements the functions related to a Maxon EPOS motion controller for Torque writing\n\nParameters:\nCan dev: device (ex. '/dev/can0')\nDevice ID\n\nSee the Maxon homepage for more details (www.maxon.com)\n"
 }

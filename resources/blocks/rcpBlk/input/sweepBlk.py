@@ -1,23 +1,20 @@
-
-from supsisim.RCPblk import RCPblk
+from supsisim.RCPblk import RCPblk, RcpParam
 from numpy import pi
 
-def sweepBlk(pout, k, typ):
-    """
 
-    Call:   sweepBlk(pout, k, typ)
+def sweepBlk(pout: list[int], params: RcpParam) -> RCPblk:
+    """
+    Call:   sweepBlk(pout, params)
 
     Parameters
     ----------
        pout: connected output port(s)
-       k : Gain
-       typ : Type linear(1), quadratic (2) 
+       params: block's parameters
 
     Returns
     -------
-       blk: RCPblk
-
+      Block's reprezentation RCPblk
     """
 
-    blk = RCPblk('sweep', [], pout, [0,0], 0, [2*pi*k], [typ])
-    return blk
+    params[0].value = 2 * pi * params[0].value
+    return RCPblk("sweep", [], pout, [0, 0], 0, params)

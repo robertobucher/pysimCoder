@@ -6,6 +6,6 @@
   "stin": 0,
   "stout": 0,
   "icon": "CAN_SDO_RECV",
-  "params": "can_sdo_recvBlk|Can dev:'/dev/pcan32'|Device ID: 0x01:int|Index: 0x6064:int|SubIndex: 0x00:int|Conversion factor: 1.0:double",
+  "params": "can_sdo_recvBlk|Can dev:'/dev/pcan32':str|Device ID: 0x01:int|Index: 0x6064:int|SubIndex: 0x00:int|Conversion factor: 1.0:double",
   "help": "Implementation of a standard CAN bus generic message to be received\n\nParameters\nCan dev: device (ex. '/dev/can0')\nDevice ID: can ID (ex. 0x01)\nMessage Index and subindex\nMultiplication factor of the return value\n"
 }

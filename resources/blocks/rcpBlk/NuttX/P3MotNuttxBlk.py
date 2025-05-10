@@ -1,9 +1,9 @@
-from supsisim.RCPblk import RCPblk
+from supsisim.RCPblk import RCPblk, RcpParam
 
-def P3MotNuttxBlk(pin, pout):
+
+def P3MotNuttxBlk(pin: list[int], pout: list[int]) -> RCPblk:
     """
-
-    Call:   P3MotNuttxBlk(pin,pout)
+    Call:   P3MotNuttxBlk(pin, pout)
 
     Parameters
     ----------
@@ -12,9 +12,8 @@ def P3MotNuttxBlk(pin, pout):
 
     Returns
     -------
-       blk: RCPblk
-
+      Block's reprezentation RCPblk
     """
 
-    blk = RCPblk('nuttx_p3m_spi', pin, pout, [0,0], 0, [], [])
-    return blk
+    params = RcpParam("File descriptor", 0, RcpParam.Type.INT)
+    return RCPblk("nuttx_p3m_spi", pin, pout, [0, 0], params)

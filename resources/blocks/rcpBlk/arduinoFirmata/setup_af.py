@@ -1,23 +1,18 @@
-from supsisim.RCPblk import RCPblk
-from numpy import size
+from supsisim.RCPblk import RCPblk, RcpParam
 
 
-def setup_af(port, baud):
+def setup_af(params: RcpParam) -> RCPblk:
     """
 
-    Call:   setup_af(pout, port)
+    Call:   setup_af(params)
 
     Parameters
     ----------
-       pout: connected output port(s)
-       port : Port
-       baud : Baud
+       params: block's parameters
 
     Returns
     -------
-       blk: RCPblk
-
+        Block's reprezentation RCPblk
     """
 
-    blk = RCPblk('setup_af', [], [], [0, 0], 0, [], baud, port)
-    return blk
+    return RCPblk("setup_af", [], [], [0, 0], 0, [], params)

@@ -1,33 +1,26 @@
+from supsisim.RCPblk import RCPblk, RcpParam
 
-from supsisim.RCPblk import RCPblk
-from numpy import size
 
-# def TCPsocketTxRxBlk(pin, pout, IP, port):
 def TCPsocketTxRxBlk(*args):
-    if len(args) == 4:
-        pin, pout, IP, port = args
-    elif len(args) == 3:
-        pout = []
-        pin, IP, port = args
-
     """
-
-    Call:   TCPsocketTxRxBlk(pin, pout, IP, port)
+    Call:   TCPsocketTxRxBlk(*args)
 
     Parameters
     ----------
        pin: connected input port(s)
        pout: connected output port(s)
-       IP : IP Addr
-       port :  Port
+       params: block's parameters
 
     Returns
     -------
-       blk: RCPblk
-
+      Block's reprezentation RCPblk
     """
 
-    blk = RCPblk('TCPsocketTxRx', pin, pout, [0,0], 1, [], [port, 0], IP)
-    return blk
+    if len(args) == 3:
+        pin, pout, params = args
+    elif len(args) == 2:
+        pout = []
+        pin, params = args
 
-
+    params.append(RcpParam("File descriptor", 0, RcpParam.Type.INT))
+    return RCPblk("TCPsocketTxRx", pin, pout, [0, 0], 1, params)

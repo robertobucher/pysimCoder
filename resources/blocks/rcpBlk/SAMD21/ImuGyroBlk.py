@@ -1,10 +1,8 @@
-
 from supsisim.RCPblk import RCPblk
-from numpy import size
 
-def ImuGyroBlk(pout):
+
+def ImuGyroBlk(pout: list[int]) -> RCPblk:
     """
-
     Call:   ImuGyro(pout)
 
     Parameters
@@ -13,9 +11,7 @@ def ImuGyroBlk(pout):
 
     Returns
     -------
-       blk: RCPblk
-
+      Block's reprezentation RCPblk
     """
 
-    blk = RCPblk('ImuGyro', [], pout, [0,0], 0, [], [])
-    return blk
+    return RCPblk("ImuGyro", [], pout, [0, 0], 0)

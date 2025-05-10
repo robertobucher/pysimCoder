@@ -1,32 +1,29 @@
-import numpy as np
-from supsisim.RCPblk import RCPblk
-from numpy import size
+from supsisim.RCPblk import RCPblk, RcpParam
+from numpy import size, unique
 
-def nuttx_PWMBlk(pin, port, ch, freq, umin, umax):
+
+def nuttx_PWMBlk(pin: list[int], params: RcpParam) -> RCPblk:
     """
-
-    Call:   nuttx_PWMBlk(pin, port, umin, umax)
+    Call:   nuttx_PWMBlk(pin, params)
 
     Parameters
     ----------
        pin: connected input port(s)
-       port : Port
-       umin : Umin [V]
-       umax : Umax [V]
+       params: block's parameters
 
     Returns
     -------
-       blk: RCPblk
-
+      Block's reprezentation RCPblk
     """
 
-    if(size(pin) != size(ch)):
-        raise ValueError("Number of inputs (%i) should match number of channels (%i)" % (size(pin),size(ch)))
+    if (nin := size(pin)) != (nch := size(params[1].value)):
+        raise ValueError(
+            "PWM block: number of inputs (%i) should match number of channels (%i)"
+            % (nin, nch)
+        )
 
-    if(np.unique(ch).size != size(ch)):
-         raise ValueError("PWM block: duplicate channels!")
+    if unique(params[1].value).size != nch:
+        raise ValueError("PWM block: duplicate channels!")
 
-    ch.append(0)
-
-    blk = RCPblk('nuttx_PWM', pin, [], [0,0], 1, [freq, umin, umax], ch, port)
-    return blk
+    params.append(RcpParam("File descriptor", 0, RcpParam.Type.INT))
+    return RCPblk("nuttx_PWM", pin, [], [0, 0], 1, params)

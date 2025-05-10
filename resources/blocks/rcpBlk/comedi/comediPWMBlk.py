@@ -1,29 +1,25 @@
-from supsisim.RCPblk import RCPblk
+from supsisim.RCPblk import RCPblk, RcpParam
 from numpy import size
 
-def comediPWMBlk(pin, devicename, channel, prescaler, pfiout):
-    """Create Comedi_PWM block 
+
+def comediPWMBlk(pin: list[int], params: RcpParam) -> RCPblk:
+    """Create Comedi_PWM block
 
     Comedi_PWM
-    
-    Call:  ComediPWMBlk(pin, devicename, channel, prescaler, pfiout)
+
+    Call:  ComediPWMBlk(pin, params)
 
     Parameters
     ----------
-    pin : connected input port
-    devicename: Comedi device name /path
-    channel : Channel
-    prescaler: Clock Prescaler
-    pfiout: Output pin
+        pin : connected input port
+        params: block's parameters
 
     Returns
     -------
-    blk  : RCPblk
+        Block's reprezentation RCPblk
     """
-    if size(pin)!=1:
-        raise ValueError("Block should have only 1 input port, receivesd %i" % size(pin))
-    
-    blk = RCPblk("comedi_pwm_generator", pin, [], [0, 0], 1, [], [channel, prescaler, pfiout], devicename)
-    return blk
-    
 
+    if size(pin) != 1:
+        raise ValueError("Block should have only 1 input port, received %i" % size(pin))
+
+    return RCPblk("comedi_pwm_generator", pin, [], [0, 0], 1, params)

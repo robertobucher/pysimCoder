@@ -6,6 +6,6 @@
   "stin": 0,
   "stout": 0,
   "icon": "ENC",
-  "params": "baumer_EncBlk|Can dev:'/dev/pcan32'|Device ID: 0x01:int|Resolution: 500:double|Encoder reset (1->Yes,0->No):1:int",
+  "params": "baumer_EncBlk|Can dev:'/dev/pcan32':str|Device ID: 0x01:int|Resolution: 500:double|Encoder reset (1->Yes,0->No):1:int",
   "help": "This block implements the input of a Baumer differential encoder on the CABN bus.\n\nParameters:\nCan dev: device (ex. '/dev/can0')\nDevice ID: can bus device ID (ex. 0x01)\nResolution: Resolution of the encoder\nEncoder reset: 1 or 0. Setting this value to 1 reset the encoder at the beginning of the simulation.\n"
 }

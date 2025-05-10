@@ -1,27 +1,18 @@
-from supsisim.RCPblk import RCPblk
-from numpy import size
+from supsisim.RCPblk import RCPblk, RcpParam
 
-def can_sdo_sendThBlk(pin, candev, ID, index, subindex, data, useInp):
+
+def can_sdo_sendThBlk(pin: list[int], params: RcpParam) -> RCPblk:
     """
-
-    Call:   can_sdo_sendThBlk(pin, pout, ID, index, subindex, data, useInp)
+    Call:   can_sdo_sendThBlk(pin, params)
 
     Parameters
     ----------
        pin: connected input port(s)
-       pout: connected output port(s)
-       ID : Device ID
-       index : Index
-       subindex : SubIndex
-       data :  Data
-       useInp :  Use Input [0/1 no/yes]
+       params: block's parameters
 
     Returns
     -------
-        blk: RCPblk
-
+        Block's reprezentation RCPblk
     """
-    
-    blk = RCPblk('can_sdo_send', pin, [], [0,0], 1, [], [ID, index, subindex, data, useInp], candev)
-    return blk
 
+    return RCPblk("can_sdo_send", pin, [], [0, 0], 1, params)

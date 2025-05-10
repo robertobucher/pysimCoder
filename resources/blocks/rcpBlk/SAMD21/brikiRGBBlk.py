@@ -1,10 +1,8 @@
-
 from supsisim.RCPblk import RCPblk
-from numpy import size
 
-def brikiRGBBlk(pin):
+
+def brikiRGBBlk(pin: list[int]) -> RCPblk:
     """
-
     Call:   brikiRGBBlk(pin)
 
     Parameters
@@ -13,9 +11,7 @@ def brikiRGBBlk(pin):
 
     Returns
     -------
-       blk: RCPblk
-
+      Block's reprezentation RCPblk
     """
 
-    blk = RCPblk('brikiRGB', pin, [], [0,0], 1, [], [])
-    return blk
+    return RCPblk("brikiRGB", pin, [], [0, 0], 1)

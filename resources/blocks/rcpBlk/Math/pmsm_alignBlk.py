@@ -1,20 +1,21 @@
-from supsisim.RCPblk import RCPblk
+from supsisim.RCPblk import RCPblk, RcpParam
 
-def pmsm_alignBlk(pin, pout, hallOffset, IRCperPeriod, angleOffset):
+
+def pmsm_alignBlk(pin: list[int], pout: list[int], params: RcpParam) -> RCPblk:
     """
-
-    Call:   pmsm_alignBlk(pin, pout)
+    Call:   pmsm_alignBlk(pin, pout, params)
 
     Parameters
     ----------
        pin: connected input port(s)
        pout: connected output port(s)
+       params: block's parameters
 
     Returns
     -------
-        blk  : RCPblk
-
+      Block's reprezentation RCPblk
     """
 
-    blk = RCPblk('pmsm_align',pin,pout,[0,0],1,[hallOffset, IRCperPeriod, angleOffset],[0, 0])
-    return blk
+    params.append(RcpParam("Internal 1", 0, RcpParam.Type.INT))
+    params.append(RcpParam("Internal 2", 0, RcpParam.Type.INT))
+    return RCPblk("pmsm_align", pin, pout, [0, 0], 1, params)

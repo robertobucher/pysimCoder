@@ -1,28 +1,26 @@
-from supsisim.RCPblk import RCPblk
-from numpy import size
+from supsisim.RCPblk import RCPblk, RcpParam
 
-def genericBlk(pin, pout, nx, uy, rP, iP, strP, fname):
+
+def genericBlk(pin: list[int], pout: list[int], params: RcpParam) -> RCPblk:
     """
-
-    Call: genericBlk()
+    Call: genericBlk(pin, pout, params)
 
     Parameters
     ----------
-        pin     : connected input ports
-        pout    : connected output ports
-        nx      : states [cont, disc]
-        uy      : Feedforw input->output
-        rP      : real parameters
-        iP:     : integer parameters
-        strP:   : Block string
-        fname   : filename (implementation file .c)
+        pin: connected input ports
+        pout: connected output ports
+        params: block's parameters
 
     Returns
     -------
-        blk  : RCPblk
-
+      Block's reprezentation RCPblk
     """
-    
-    blk = RCPblk(fname,pin,pout,nx,uy,rP,iP, strP)
-    return blk
 
+    fname = params[-1].value
+    nx = params[0].value
+    uy = params[1].value
+    params.pop(-1)
+    params.pop(0)
+    params.pop(1)
+
+    return RCPblk(fname, pin, pout, nx, uy, params)

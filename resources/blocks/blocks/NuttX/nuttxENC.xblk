@@ -6,6 +6,6 @@
   "stin": 0,
   "stout": 1,
   "icon": "ENC",
-  "params": "nuttxENCBlk|Port:'/dev/qe0'|Resolution:500:double| reset counter [1 yes]:1:int",
+  "params": "nuttxENCBlk|Port:'/dev/qe0':str|Resolution:500:double| reset counter [1 yes]:1:int",
   "help": "This block can have 1 or 3 outputs. Only position is returned if one output is used, position, index and index cound is returned if 3 outputs are selected.\n\nParameters\nPort: device name\nResolution: Encoder resolution (can be 0 if no resolution required)\nReset: 1=yes, 0 = no\n\n\n"
 }

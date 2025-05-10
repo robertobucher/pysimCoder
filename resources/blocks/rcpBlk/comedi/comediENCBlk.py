@@ -1,29 +1,25 @@
-from supsisim.RCPblk import RCPblk
+from supsisim.RCPblk import RCPblk, RcpParam
 from numpy import size
 
-def comediENCBlk(pout, dev, ch):
-    """
 
-    Call:   comediENCBlk(pout, dev, ch)
+def comediENCBlk(pout: list[int], params: RcpParam) -> RCPblk:
+    """
+    Call:   comediENCBlk(pout, params)
 
     Parameters
     ----------
        pout: connected output port(s)
-       dev : Device
-       ch : Channel
+       params: block's parameters
 
     Returns
     -------
-        blk  : RCPblk
-
+        Block's reprezentation RCPblk
     """
-    
+
     if size(pout) != 1:
         raise ValueError("Block should have 1 input port; received %i !" % size(pout))
 
-    if ch > 1:
-        raise ValueError("Channel value can be 0 or 1 not %i !" % ch)
+    if params[1].value > 1:
+        raise ValueError("Channel value can be 0 or 1 not %i !" % params[1].value)
 
-    blk = RCPblk('comedi_encoder', [], pout, [0,0], 0, [], [ch], dev)
-    return blk
-
+    return RCPblk("comedi_encoder", [], pout, [0, 0], 0, params)

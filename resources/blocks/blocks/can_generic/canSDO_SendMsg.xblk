@@ -6,6 +6,6 @@
   "stin": 0,
   "stout": 0,
   "icon": "CAN_SDO_SEND",
-  "params": "can_sdo_sendThBlk|Can dev:'/dev/pcan32'|Device ID: 0x01:int|Index: 0x2030:int|SubIndex: 0x00:int| Data: 0x00:int| Use Input [0/1 no/yes]: 1:int",
+  "params": "can_sdo_sendThBlk|Can dev:'/dev/pcan32':str|Device ID: 0x01:int|Index: 0x2030:int|SubIndex: 0x00:int| Data: 0x00:int| Use Input [0/1 no/yes]: 1:int",
   "help": "Implementation of a generic CAN bus message send\n\nParameters:\nCan dev: device (ex. '/dev/can0')\nDevice ID (ex. 0x01)\nIndex and subindex\nData type (byte,word,dword)\nUsing the input of the block\n"
 }

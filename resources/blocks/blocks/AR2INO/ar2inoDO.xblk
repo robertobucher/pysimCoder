@@ -6,6 +6,6 @@
   "stin": 0,
   "stout": 0,
   "icon": "DO",
-  "params": "ar2inoDOBlk|Channel: 0|Threshold:0.5",
+  "params": "ar2inoDOBlk|Channel: 0:int|Threshold:0.5:double",
   "help": "Parameters\nChannel: PIN for digital output\n\nThe threshold represents the level limit between the LOW and the HIGH signal"
 }

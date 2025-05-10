@@ -1,9 +1,8 @@
 from supsisim.RCPblk import RCPblk
-from numpy import size
 
-def getTimerBlk(pout):
+
+def getTimerBlk(pout: list[int]) -> RCPblk:
     """
-
     Call:   getTimerBlk(pout)
 
     Parameters
@@ -12,10 +11,7 @@ def getTimerBlk(pout):
 
     Returns
     -------
-       blk: RCPblk
-
+      Block's reprezentation RCPblk
     """
 
-    blk = RCPblk('getTimer', [], pout, [0,0], 0, [], [])
-    return blk
-
+    return RCPblk("getTimer", [], pout, [0, 0], 0)

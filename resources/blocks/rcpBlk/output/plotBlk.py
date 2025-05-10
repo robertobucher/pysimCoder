@@ -1,21 +1,18 @@
-from supsisim.RCPblk import RCPblk
-from numpy import size
+from supsisim.RCPblk import RCPblk, RcpParam
 
-def plotBlk(pin, fname):
+
+def plotBlk(pin: list[int], params: RcpParam) -> RCPblk:
     """
-
-    Call:   plotBlk(pin)
+    Call:   plotBlk(pin, params)
 
     Parameters
     ----------
        pin: connected input port(s)
+       params: block's parameters
 
     Returns
     -------
-        blk  : RCPblk
-
+      Block's reprezentation RCPblk
     """
 
-    blk = RCPblk('plot',pin,[],[0,0],1,[],[], fname)
-    return blk
-
+    return RCPblk("plot", pin, [], [0, 0], 1, params)

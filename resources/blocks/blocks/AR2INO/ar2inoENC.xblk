@@ -6,6 +6,6 @@
   "stin": 0,
   "stout": 0,
   "icon": "ENC",
-  "params": "ar2inoENCBlk|Resolution:1|Reset [0=no/1=yes]:1",
+  "params": "ar2inoENCBlk|Resolution:1:int|Reset [0=no/1=yes]:1:int",
   "help": "Define an encoder block"
 }

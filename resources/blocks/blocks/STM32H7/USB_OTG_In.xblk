@@ -6,6 +6,6 @@
   "stin": 0,
   "stout": 1,
   "icon": "SERIAL",
-  "params": "USB_OTG_InBlk|Default outputs:[0.]",
+  "params": "USB_OTG_InBlk|Default outputs:[0.]:double",
   "help": "Parameters\n\nDefault output: the output before arriving of data\n"
 }

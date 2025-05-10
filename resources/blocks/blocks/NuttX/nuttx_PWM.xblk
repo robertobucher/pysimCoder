@@ -6,6 +6,6 @@
   "stin": 1,
   "stout": 0,
   "icon": "PWM",
-  "params": "nuttx_PWMBlk|Port:'/dev/pwm0'|channels: [1]|PWM freq [Hz]:10000:double|Umin [V]:0.0:double|Umax [V]:100.0:double",
+  "params": "nuttx_PWMBlk|Port:'/dev/pwm0':str|channels: [1]:int|PWM freq [Hz]:10000:double|Umin [V]:0.0:double|Umax [V]:100.0:double",
   "help": "Parameters\nPort        :  device name\nchannel: 1..4 (array)\nFrequency: PWM freq in Hz\nUmin [V]: minimal value (umin -> 0%)\nUmax [V] : maximal value (umax -> 100%)\n\nCan have multiple inputs to support\nmultiple channel PWM.\n"
 }

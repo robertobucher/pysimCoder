@@ -6,6 +6,6 @@
   "stin": 1,
   "stout": 0,
   "icon": "UNIXSOCK",
-  "params": "unixsocketCBlk|Socket: 'bsock'",
+  "params": "unixsocketCBlk|Socket: 'bsock':str",
   "help": "This block implements a Unix Sochet Client to send the data to a Unix Socket Server.\n\n\n"
 }

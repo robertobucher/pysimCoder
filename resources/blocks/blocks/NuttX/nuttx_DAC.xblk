@@ -6,6 +6,6 @@
   "stin": 0,
   "stout": 0,
   "icon": "DAC",
-  "params": "nuttx_DACBlk|Port:'/dev/dac0'|Channel:0:int",
+  "params": "nuttx_DACBlk|Port:'/dev/dac0':str|Channel:0:int",
   "help": " No help available for this block"
 }

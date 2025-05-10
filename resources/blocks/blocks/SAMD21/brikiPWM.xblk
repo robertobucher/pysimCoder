@@ -6,6 +6,6 @@
   "stin": 0,
   "stout": 0,
   "icon": "PWM",
-  "params": "brikiPWMBlk|Pin:0|Umin [V]:0.0:double|Umax [V]:3.3:double|Freq:1000:int",
+  "params": "brikiPWMBlk|Pin:0:int|Umin [V]:0.0:double|Umax [V]:3.3:double|Freq:1000:int",
   "help": "This block implements a PWM output on the Briki system.\n\nParameters:\nChannel: Channels on the ABC board\n\n\nPossible values for the channel are: 11, 13, 21, 22, 23, 24, 25\n\nThe input signal can be a value between Umin and Umax and is automatically mapped to the PWM width 0-100%, with a resolution of 12 bit.\n"
 }

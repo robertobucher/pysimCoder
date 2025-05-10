@@ -1,5 +1,4 @@
 from supsisim.RCPblk import RCPblk
-from numpy import size
 
 
 def help_TCLab_temperature(pin, pout):
@@ -14,10 +13,7 @@ def help_TCLab_temperature(pin, pout):
 
     Returns
     -------
-       blk: RCPblk
-
+        Block's reprezentation RCPblk
     """
 
-    blk = RCPblk('help_TCLab_temperature', pin, pout, [0, 0], 0,
-                 [], [])
-    return blk
+    return RCPblk("help_TCLab_temperature", pin, pout, [0, 0], 0)

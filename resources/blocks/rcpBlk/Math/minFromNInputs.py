@@ -1,10 +1,8 @@
-
 from supsisim.RCPblk import RCPblk
-from numpy import size
 
-def minFromNInputs(pin, pout):
+
+def minFromNInputs(pin: list[int], pout: list[int]) -> RCPblk:
     """
-
     Call:   minFromNInputs(pin, pout)
 
     Parameters
@@ -14,9 +12,7 @@ def minFromNInputs(pin, pout):
 
     Returns
     -------
-       blk: RCPblk
-
+      Block's reprezentation RCPblk
     """
 
-    blk = RCPblk('minFromNInputs', pin, pout, [0,0], 0, [], [])
-    return blk
+    return RCPblk("minFromNInputs", pin, pout, [0, 0], 0)

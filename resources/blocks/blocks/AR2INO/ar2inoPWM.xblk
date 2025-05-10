@@ -6,6 +6,6 @@
   "stin": 0,
   "stout": 0,
   "icon": "PWM",
-  "params": "ar2inoPWMBlk|Pin:0|Umin [V]:0.0|Umax [V]:100.0",
+  "params": "ar2inoPWMBlk|Pin:0:int|Umin [V]:0.0:double|Umax [V]:100.0:double",
   "help": "This block implements a PWM output on the Arduino system.\n\nParameters:\nChannel: PIN for PWM output\n\nThe input signal can be a value between Umin and Umax and is automatically mapped to the PWM width 0-100%"
 }

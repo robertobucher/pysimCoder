@@ -1,27 +1,21 @@
+from supsisim.RCPblk import RCPblk, RcpParam
 
-from supsisim.RCPblk import RCPblk
-from numpy import size
 
-def ar2inoPWMBlk(pin, ch, Umin, Umax):
+def ar2inoPWMBlk(pin: list[int], params: RcpParam) -> RCPblk:
     """
-
-    Call:   ar2inoPWMBlk(pin, pin, Umin, Umax)
+    Call:   ar2inoPWMBlk(pin, params)
 
     Parameters
     ----------
        pin: connected input port(s)
-       pin : Pin
-       Umin : Umin [V]
-       Umax : Umax [V]
+       params: block's parameters
 
     Returns
     -------
-       blk: RCPblk
-
+        Block's reprezentation RCPblk
     """
 
-    if 2 <= ch <= 5:
-        raise ValueError("Pin  %i is reserved for encoders!" % (ch))
+    if 2 <= params[0].value <= 5:
+        raise ValueError("Pin  %i is reserved for encoders!" % (params[0].value))
 
-    blk = RCPblk('ar2inoPWM', pin, [], [0,0], 1, [Umin, Umax], [ch])
-    return blk
+    return RCPblk("ar2inoPWM", pin, [], [0, 0], 1, params)

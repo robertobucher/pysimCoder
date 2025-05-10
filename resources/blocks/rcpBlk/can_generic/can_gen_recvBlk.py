@@ -1,26 +1,18 @@
-from supsisim.RCPblk import RCPblk
-from numpy import size
+from supsisim.RCPblk import RCPblk, RcpParam
 
-def can_gen_recvBlk(pout, candev, ID, retID, index, subindex, K):
+
+def can_gen_recvBlk(pout: list[int], params: RcpParam) -> RCPblk:
     """
-
-    Call:   can_gen_recvBlk(pout, ID, retID, index, subindex, K)
+    Call:   can_gen_recvBlk(pout, params)
 
     Parameters
     ----------
        pout: connected output port(s)
-       ID : Device ID
-       retID : ReturnID
-       index : Index
-       subindex : SubIndex
-       K : Conversion factor
+       params: block's parameters
 
     Returns
     -------
-       blk  : RCPblk
-
+        Block's reprezentation RCPblk
     """
-    
-    blk = RCPblk('can_gen_recv',[],pout,[0,0],0,[K],[ID, index, subindex, retID], candev)
-    return blk
 
+    return RCPblk("can_gen_recv", [], pout, [0, 0], 0, params)
