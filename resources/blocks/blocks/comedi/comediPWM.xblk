@@ -6,6 +6,6 @@
   "stin": 0,
   "stout": 0,
   "icon": "PWM",
-  "params": "comediPWMBlk|Device: '/dev/comedi0'|Channel: 0:int|Prescaler: 0:int|Output pin: 0:int",
+  "params": "comediPWMBlk|Device: '/dev/comedi0':str|Channel: 0:int|Prescaler: 0:int|Output pin: 0:int",
   "help": "Implementation of a COMEDI PWM interface\n\nFor more details get the COMEDI documentation (www.comedi.org)\n\n"
 }

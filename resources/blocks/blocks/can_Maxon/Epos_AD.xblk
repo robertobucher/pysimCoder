@@ -6,6 +6,6 @@
   "stin": 0,
   "stout": 0,
   "icon": "AD",
-  "params": "epos_areadBlk|Can dev:'/dev/pcan32'|Device ID: 0x01:int|Channel [0/1]: 0:int",
+  "params": "epos_areadBlk|Can dev:'/dev/pcan32':str|Device ID: 0x01:int|Channel [0/1]: 0:int",
   "help": "This Block implements the functions related to a Maxon EPOS motion controller for Analog read.\n\nParameters:\nCan dev: device (ex. '/dev/can0')\nDevice ID and channel number\n\nsee the Maxon homepage for more details (www.maxon.com)\n\n"
 }

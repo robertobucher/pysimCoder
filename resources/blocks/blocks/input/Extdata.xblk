@@ -6,6 +6,6 @@
   "stin": 0,
   "stout": 1,
   "icon": "EXTDATA",
-  "params": "extdataBlk|Channels: 1: int|Data length: 1000: int|File name: 'data.txt'",
+  "params": "extdataBlk|Channels: 1: int|Data length: 1000: int|File name: 'data.txt':str",
   "help": "This block implements input signals read from an externel file.\n\nThe data are put repetively to the out as periodic signal.\n\nParameters:\nChannels: number of signals in output\nData lenght (must be the same for all the outputs!)\nFilename (the values are stored in column without the time)\n"
 }

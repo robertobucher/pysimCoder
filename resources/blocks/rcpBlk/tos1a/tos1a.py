@@ -1,26 +1,20 @@
-from supsisim.RCPblk import RCPblk
-from numpy import size
+from supsisim.RCPblk import RCPblk, RcpParam
 
 
-def tos1a(pin, pout, port, lamp, vent, temp):
+def tos1a(pin: list[int], pout: list[int], params: RcpParam) -> RCPblk:
     """
-
-    Call:   tos1a(pin, pout, port, lamp, vent, temp)
+    Call:   tos1a(pin, pout, params)
 
     Parameters
     ----------
        pin: connected input port(s)
        pout: connected output port(s)
-       port : Port
-       lamp : TimeConstLamp
-       vent : TimeConstVent
-       temp : TimeConstTemp
+       params: block's parameters
 
     Returns
     -------
-       blk: RCPblk
-
+      Block's reprezentation RCPblk
     """
 
-    blk = RCPblk('tos1a', pin, pout, [0, 0], 0, [lamp, vent, temp], [0], port)
-    return blk
+    params.append(RcpParam("Internal", 0, RcpParam.Type.INT))
+    return RCPblk("tos1a", pin, pout, [0, 0], 0, params)

@@ -1,22 +1,20 @@
+from supsisim.RCPblk import RCPblk, RcpParam
 
-from supsisim.RCPblk import RCPblk
-from numpy import size
 
-def serialInFloatBlk(pout, port):
+def serialInFloatBlk(pout: list[int], params: RcpParam) -> RCPblk:
     """
 
-    Call:   serialIn(pout, port)
+    Call:   serialInFloatBlk(pout, params)
 
     Parameters
     ----------
        pout: connected output port(s)
-       port : Port
+       params: block's parameters
 
     Returns
     -------
-       blk: RCPblk
-
+      Block's reprezentation RCPblk
     """
 
-    blk = RCPblk('serialInFloat', [], pout, [0,0], 0, [], [0], port)
-    return blk
+    params.append(RcpParam("File descriptor", 0, RcpParam.Type.INT))
+    return RCPblk("serialInFloat", [], pout, [0, 0], 0, params)

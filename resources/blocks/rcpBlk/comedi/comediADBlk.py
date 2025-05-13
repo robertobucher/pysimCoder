@@ -1,28 +1,22 @@
-from supsisim.RCPblk import RCPblk
+from supsisim.RCPblk import RCPblk, RcpParam
 from numpy import size
 
-def comediADBlk(pout, dev, ch, cr, ref):
-    """
 
-    Call:   comediADBlk(pout, dev, ch, cr, ref)
+def comediADBlk(pout: list[int], params: RcpParam) -> RCPblk:
+    """
+    Call:   comediADBlk(pout, params)
 
     Parameters
     ----------
        pout: connected output port(s)
-       dev : Device
-       ch : Channel
-       cr : Range
-       reference : Reference
+       params: block's parameters
 
     Returns
     -------
-        blk  : RCPblk
-
+        Block's reprezentation RCPblk
     """
-    
+
     if size(pout) != 1:
         raise ValueError("Block should have 1 input port; received %i !" % size(pout))
 
-    blk = RCPblk('comedi_analog_input', [], pout, [0,0], 0, [], [ch, cr, ref], dev)
-    return blk
-
+    return RCPblk("comedi_analog_input", [], pout, [0, 0], 0, params)

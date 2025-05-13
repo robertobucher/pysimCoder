@@ -1,27 +1,23 @@
-from supsisim.RCPblk import RCPblk
+from supsisim.RCPblk import RCPblk, RcpParam
 from numpy import size
 
-def baumer_EncBlk(pout, candev, ID, res, encres):
-    """
 
-    Call:   baumer_EncBlk(pout, ID, res, encres)
+def baumer_EncBlk(pout: list[int], params: RcpParam) -> RCPblk:
+    """
+    Call:   baumer_EncBlk(pout, params)
 
     Parameters
     ----------
        pout: connected output port(s)
-       ID : Device ID
-       res : Resolution
-       encres : Encoder reset
+       params: block's parameters
 
     Returns
     -------
-        blk  : RCPblk
-
+        Block's reprezentation RCPblk
     """
-    
-    if(size(pout) != 1):
+
+    if size(pout) != 1:
         raise ValueError("Block should have 1 output port; received %i." % size(pout))
 
-    blk = RCPblk('baumer_enc',[],pout,[0,0],0,[4*res],[ID, encres], candev)
-    return blk
-
+    params[2].value = 4 * params[2].value
+    return RCPblk("baumer_enc", [], pout, [0, 0], 0, params)

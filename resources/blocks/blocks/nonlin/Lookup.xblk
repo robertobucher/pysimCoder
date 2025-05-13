@@ -6,6 +6,6 @@
   "stin": 0,
   "stout": 0,
   "icon": "LOOKUP",
-  "params": "lutBlk|Coeff : [1,0]",
+  "params": "lutBlk|Coeff : [1,0]:double",
   "help": "This block calculates the output with polynomial coefficients applied to the input value.\n\nThe order of the polynom is given by the numebr of coefficients. The first coefficient is related to the higher exponent of the input signal.\n\n"
 }

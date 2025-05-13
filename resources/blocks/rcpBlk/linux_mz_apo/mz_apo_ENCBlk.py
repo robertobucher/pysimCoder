@@ -1,22 +1,22 @@
+from supsisim.RCPblk import RCPblk, RcpParam
 
-from supsisim.RCPblk import RCPblk
-from numpy import size
 
-def mz_apo_ENCBlk(pout, channel, init_val):
+def mz_apo_ENCBlk(pout: list[int], params: RcpParam) -> RCPblk:
     """
-
-    Call:   mz_apo_ENCBlk(pout, channel, init_val)
+    Call:   mz_apo_ENCBlk(pout, params)
 
     Parameters
     ----------
-       channel: integer 0 to 2
-       init_val: integer of initial value
+       pout: connected output ports
+       params: block's parameters
 
     Returns
     -------
-       blk: RCPblk
-
+      Block's reprezentation RCPblk
     """
 
-    blk = RCPblk('mz_apo_ENC', [], pout, [0, 0], 0, [], [channel, init_val, 0, 0])
-    return blk
+    params.append(RcpParam("Value Raw", 0, RcpParam.Type.INT, RcpParam.ShvFlag.VISIBLE))
+    params.append(
+        RcpParam("Value offset", 0, RcpParam.Type.INT, RcpParam.ShvFlag.VISIBLE)
+    )
+    return RCPblk("mz_apo_ENC", [], pout, [0, 0], 0, params)

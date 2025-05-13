@@ -40,9 +40,9 @@
 
 static void init(python_block *block)
 {
-  int * intPar = block->intPar;
-  int fd = intPar[block->nout + 1];
-  int sw_trig = intPar[block->nout + 3];
+  int *intPar = block->intPar;
+  int sw_trig = intPar[block->nout + 1];
+  int fd = intPar[block->nout + 2];
 
   /* Open the device */
 
@@ -94,9 +94,8 @@ static void init(python_block *block)
 
   /* Save fd and number of configured channels to block parameters */
 
-  intPar[block->nout + 1] = fd;
-  intPar[block->nout + 2] = ret;
-
+  intPar[block->nout + 2] = fd;
+  intPar[block->nout + 3] = ret;
 }
 
 /****************************************************************************
@@ -114,9 +113,9 @@ static void inout(python_block *block)
   double *y = block->y[0];
   int i, j, ret;
   int res     = intPar[block->nout];
-  int fd      = intPar[block->nout + 1];
-  int conf_ch = intPar[block->nout + 2];
-  int sw_trig = intPar[block->nout + 3];
+  int sw_trig = intPar[block->nout + 1];
+  int fd      = intPar[block->nout + 2];
+  int conf_ch = intPar[block->nout + 3];
   int readsize = conf_ch*sizeof(struct adc_msg_s);
   int nbytes;
 
@@ -187,9 +186,9 @@ static void inout(python_block *block)
 
 static void end(python_block *block)
 {
-  int * intPar    = block->intPar;
+  int *intPar    = block->intPar;
 
-  close(intPar[block->nout + 1]);
+  close(intPar[block->nout + 2]);
 }
 
 /****************************************************************************
@@ -202,13 +201,20 @@ static void end(python_block *block)
 
 void nuttx_ADC(int flag, python_block *block)
 {
-  if (flag==CG_OUT){          /* get input */
-    inout(block);
-  }
-  else if (flag==CG_END){     /* termination */
-    end(block);
-  }
-  else if (flag ==CG_INIT){   /* initialisation */
+  /* get input */
+  /* termination */
+  /* initialisation */
+
+  if (flag == CG_OUT)
+    {
+      inout(block);
+    }
+  else if (flag == CG_END)
+    {
+      end(block);
+    }
+  else if (flag == CG_INIT)
+  {
     init(block);
   }
 }

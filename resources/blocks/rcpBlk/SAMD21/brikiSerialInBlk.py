@@ -1,11 +1,9 @@
-
 from supsisim.RCPblk import RCPblk
-from numpy import size
 
-def brikiSerialInBlk(pout):
+
+def brikiSerialInBlk(pout: list[int]) -> RCPblk:
     """
-
-    Call:   brikiSerialIn(pin)
+    Call:   brikiSerialInBlk(pin)
 
     Parameters
     ----------
@@ -13,9 +11,7 @@ def brikiSerialInBlk(pout):
 
     Returns
     -------
-       blk: RCPblk
-
+      Block's reprezentation RCPblk
     """
-    
-    blk = RCPblk('serialIn', [], pout, [0,0], 0, [], [])
-    return blk
+
+    return RCPblk("serialIn", [], pout, [0, 0], 0)

@@ -1,28 +1,24 @@
-from supsisim.RCPblk import RCPblk
+from supsisim.RCPblk import RCPblk, RcpParam
 from numpy import size
 
-def saturBlk(pin, pout, satP, satN):
-    """
 
-    Call:   saturBlk(pin, pout, satP, satN)
+def saturBlk(pin: list[int], pout: list[int], params: RcpParam) -> RCPblk:
+    """
+    Call:   saturBlk(pin, pout, params)
 
     Parameters
     ----------
        pin: connected input port(s)
        pout: connected output port(s)
-       satP : Upper saturation
-       satN : Lower saturation
+       params: block's parameters
 
     Returns
     -------
-       blk  : RCPblk
-
+      Block's reprezentation RCPblk
     """
-    
-    if(size(pin) != 1):
-        raise ValueError("Block should have 1 input port; received %i." % size(pin))
-    if(size(pout) != 1):
-        raise ValueError("Block should have 1 output port; received %i." % size(pout))
-    blk = RCPblk('saturation',pin,pout,[0,0],1,[satP, satN],[])
-    return blk
 
+    if (nin := size(pin)) != 1:
+        raise ValueError("Block should have 1 input port; received %i." % nin)
+    if (nout := size(pout)) != 1:
+        raise ValueError("Block should have 1 output port; received %i." % nout)
+    return RCPblk("saturation", pin, pout, [0, 0], 1, params)

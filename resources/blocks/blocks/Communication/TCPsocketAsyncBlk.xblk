@@ -6,6 +6,6 @@
   "stin": 1,
   "stout": 1,
   "icon": "TCPSOCKET",
-  "params": "TCPsocketAsyncBlk|IP Addr:'127.0.0.1'|Port:1024:int|Buffer Size:32:int|Downsampling factor:1:int",
+  "params": "TCPsocketAsyncBlk|IP Addr:'127.0.0.1':str|Port:1024:int|Buffer Size:32:int|Downsampling factor:1:int",
   "help": "This block implements an asynchronous TCP sender and optional receiver\nThis block keep a real time capabilities as send and receive is done in a separate thread from the main application.\nParameters\nIP address of the receiver\nPort\nBuffer size of send buffer\nDownsampling factor: data is sent/received only per xth sample.\n"
 }

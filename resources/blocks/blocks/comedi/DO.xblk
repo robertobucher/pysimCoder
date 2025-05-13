@@ -6,6 +6,6 @@
   "stin": 0,
   "stout": 0,
   "icon": "DO",
-  "params": "comediDOBlk|Device: '/dev/comedi0'|Channel: 0:int|Threshold: 1.0:double",
+  "params": "comediDOBlk|Device: '/dev/comedi0':str|Channel: 0:int|Threshold: 1.0:double",
   "help": "Implementation of a COMEDI digital output interface\n\nParameters:\nDevice,channel and threshold for output \"1\"\n\nFor more details get the COMEDI documentation (www.comedi.org)\n\n"
 }

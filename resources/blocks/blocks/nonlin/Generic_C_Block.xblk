@@ -6,6 +6,6 @@
   "stin": 1,
   "stout": 1,
   "icon": "CBLOCK",
-  "params": "genericBlk|States: [0,0]|FeedForw: 0|Real pars: []| Int pars:[]|String: ''| Function name: 'test'",
+  "params": "genericBlk|States: [0,0]:double|FeedForw: 0:int|Real pars: []:double| Int pars:[]:int|String: '':str| Function name: 'test':str",
   "help": "This block implements a generic C function.\n\nThe file with the function can be generated using the \"gen_pydev\" utility and must be located in the working directory. The name of the object file must be passed in the code generation dialog box.\n\nParameters:\nNumber of continous and discrete states (as matrix)\nFlag for input-output direct dependancy\nReal,Integer parameters (as matrices)\nString parameter\nFunction name\n\nThe parameters are the same in pyblock.h reference.\nMore info are described in this header file.\n"
 }

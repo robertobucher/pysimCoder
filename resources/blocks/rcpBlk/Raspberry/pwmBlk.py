@@ -1,26 +1,22 @@
+from supsisim.RCPblk import RCPblk, RcpParam
 
-from supsisim.RCPblk import RCPblk
-from numpy import size
 
-def pwmBlk(pin, ch, umin, umax):
+def pwmBlk(pin: list[int], params: RcpParam) -> RCPblk:
     """
-
-    Call:   pwmBlk(pout, ch)
+    Call:   pwmBlk(pout, params)
 
     Parameters
     ----------
        pout: connected output port(s)
-       ch : Channel
+       params: block's parameters
 
     Returns
     -------
-       blk: RCPblk
-
+      Block's reprezentation RCPblk
     """
-    if ch == 0:
-        ch = 1
+    if params[0].value == 0:
+        params[0].value = 1
     else:
-        ch = 23
-        
-    blk = RCPblk('pwm', pin, [], [0,0], 1, [umin, umax], [ch])
-    return blk
+        params[0].value = 23
+
+    return RCPblk("pwm", pin, [], [0, 0], 1, params)

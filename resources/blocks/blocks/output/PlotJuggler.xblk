@@ -6,6 +6,6 @@
   "stin": 1,
   "stout": 0,
   "icon": "PLOT",
-  "params": "plotJugglerBlk|IP Addr:'127.0.0.1'| Port:5005:int",
+  "params": "plotJugglerBlk|IP Addr:'127.0.0.1':str| Port:5005:int",
   "help": "This block send the data to PlotJuggler, including the time as [ts] field.\n\n"
 }

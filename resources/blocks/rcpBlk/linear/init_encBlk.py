@@ -1,28 +1,27 @@
-from supsisim.RCPblk import RCPblk
+from supsisim.RCPblk import RCPblk, RcpParam
 from numpy import size
 
-def init_encBlk(pin, pout, trgtime, defv, offset):
-    """
 
-    Call:   init_encBlk(pin, pout, trgtime, defv, offset)
+def init_encBlk(pin: list[int], pout: list[int], params: RcpParam) -> RCPblk:
+    """
+    Call:   init_encBlk(pin, pout, params)
 
     Parameters
     ----------
        pin: connected input port(s)
        pout: connected output port(s)
-       trgtime : Trigger Time
-       defv : Default Output
-       offset : Offset
+       params: block's parameters
 
     Returns
     -------
-        blk  : RCPblk
-
+      Block's reprezentation RCPblk
     """
-    
+
     if (size(pout) != 1) or (size(pin) != 1):
-        raise ValueError("Block should have 1 input and 1 output port; received %i and %i." % (size(pin),size(pout)))
+        raise ValueError(
+            "Block should have 1 input and 1 output port; received %i and %i."
+            % (size(pin), size(pout))
+        )
 
-    blk = RCPblk('init_enc',pin,pout,[0,0],1,[trgtime, defv, offset, 0.0],[])
-    return blk
-
+    params.append(RcpParam("Internal 1", 0, RcpParam.Type.DOUBLE))
+    return RCPblk("init_enc", pin, pout, [0, 0], 1, params)

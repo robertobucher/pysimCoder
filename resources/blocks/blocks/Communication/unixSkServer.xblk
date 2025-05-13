@@ -6,6 +6,6 @@
   "stin": 0,
   "stout": 1,
   "icon": "UNIXSOCK",
-  "params": "unixsocketSBlk|Socket: 'ssock'|Default outputs:[0.]:int",
+  "params": "unixsocketSBlk|Socket: 'ssock':str|Default outputs:[0.]:double",
   "help": "This block implements a Unix Socket Server, which can receive signals from a client and pass them as double values into the block diagram.\n\nParameters:\nSocket: the socket name\nDefault output: the output before arriving of data\n"
 }

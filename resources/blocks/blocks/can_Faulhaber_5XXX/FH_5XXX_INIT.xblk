@@ -6,6 +6,6 @@
   "stin": 0,
   "stout": 0,
   "icon": "FH_5XXX_INIT",
-  "params": "FH_5XXX_INIT_Blk|Can dev:'/dev/pcan32'|Device ID: 0x01:int|Pos Prop. gain: 0:double|Pos Deriv. gain: 0:double|V Prop. gain:0:double|V Intg gain:0:double|TQ Prop. gain:0:double|TQ Intg gain:0:double| Encoder reset (1->Yes,0->No):1:int",
+  "params": "FH_5XXX_INIT_Blk|Can dev:'/dev/pcan32':str|Device ID: 0x01:int|Pos Prop. gain: 0:double|Pos Deriv. gain: 0:double|V Prop. gain:0:double|V Intg gain:0:double|TQ Prop. gain:0:double|TQ Intg gain:0:double| Encoder reset (1->Yes,0->No):1:int",
   "help": "This file implements the initialisation of a MC5XXX Faulhaber motion controllers.\n\nParameters:\nCan dev: device (ex. '/dev/can0')\nDevice ID\nControllers Values (if \"0\" -> no change of the internal saved parameters)\nFlag for encoder reset\n\nSee the Faulhaber homepage for more details (www.faulhaber.com)\n"
 }

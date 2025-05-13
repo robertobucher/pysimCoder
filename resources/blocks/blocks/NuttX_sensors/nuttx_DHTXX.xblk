@@ -6,6 +6,6 @@
   "stin": 0,
   "stout": 0,
   "icon": "DHTXX",
-  "params": "nuttx_DHTXXBlk|Port:'/dev/hum0'",
+  "params": "nuttx_DHTXXBlk|Port:'/dev/hum0':str",
   "help": "Block for DHT22 and DHT11 sensors.\n\nOutput 1: humidity\nOutput 2: temperture\n\nParameters\nPort : device name (ex. '/dev/hum0')\n"
 }

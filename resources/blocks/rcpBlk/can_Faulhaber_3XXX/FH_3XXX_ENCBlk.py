@@ -1,23 +1,18 @@
-from supsisim.RCPblk import RCPblk
-from numpy import size
+from supsisim.RCPblk import RCPblk, RcpParam
 
-def FH_3XXX_ENCBlk(pout, candev, ID, res):
+
+def FH_3XXX_ENCBlk(pout: list[int], params: RcpParam) -> RCPblk:
     """
-
-    Call:   FH_3XXX_ENCBlk(pout, ID)
+    Call:   FH_3XXX_ENCBlk(pout, params)
 
     Parameters
     ----------
        pout: connected output port(s)
-       ID : Device ID
-       res : Resolution
+       params: block's parameters
 
     Returns
     -------
-        blk: RCPblk
-
+        Block's reprezentation RCPblk
     """
 
-    blk = RCPblk('FH_3XXX_ENC',[],pout,[0,0],0,[res],[ID], candev)
-    return blk
-
+    return RCPblk("FH_3XXX_ENC", [], pout, [0, 0], 0, params)

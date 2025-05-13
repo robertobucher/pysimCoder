@@ -1,26 +1,22 @@
-from supsisim.RCPblk import RCPblk
+from supsisim.RCPblk import RCPblk, RcpParam
 from numpy import size
 
-def FH_5XXX_ADBlk(pout, candev, ID, ch):
-    """
 
-    Call:   FH_5XXX_ADBlk(pout, ID)
+def FH_5XXX_ADBlk(pout: list[int], params: RcpParam) -> RCPblk:
+    """
+    Call:   FH_5XXX_ADBlk(pout, params)
 
     Parameters
     ----------
        pout: connected output port(s)
-       ID : Device ID
-       ch: Channel (0 or 1)
+       params: block's parameters
 
     Returns
     -------
-        blk  : RCPblk
-
+        Block's reprezentation RCPblk
     """
-    
-    if(size(pout) != 1):
+
+    if size(pout) != 1:
         raise ValueError("Block should have 1 output port; received %i." % size(pout))
 
-    blk = RCPblk('FH_5XXX_AD',[],pout,[0,0],0,[],[ID, ch], candev)
-    return blk
-
+    return RCPblk("FH_5XXX_AD", [], pout, [0, 0], 0, params)

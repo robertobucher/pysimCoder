@@ -1,28 +1,30 @@
+from supsisim.RCPblk import RCPblk, RcpParam
 
-from supsisim.RCPblk import RCPblk
-from numpy import size
 
-def brikiEchoBlk(pout, trg, echo):
+def brikiEchoBlk(pout: list[int], params: RcpParam) -> RCPblk:
     """
-
-    Call:   brikiEchoBlk(pout, trg, echo)
+    Call:   brikiEchoBlk(pout, params)
 
     Parameters
     ----------
        pout: connected output port(s)
-       trg : Trigger Pin
-       echo : Echo Pin
+       params: block's parameters
 
     Returns
     -------
-       blk: RCPblk
-
+      Block's reprezentation RCPblk
     """
-    CHlist = [11, 13, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]
-    if trg not in CHlist:
-        raise ValueError("You pass a channel which is not in the ABC Board PIN list: %i" % (trg))
-    if echo not in CHlist:
-        raise ValueError("You pass a channel which is not in the ABC Board PIN list: %i" % (echo))
 
-    blk = RCPblk('brikiEcho', [], pout, [0,0], 0, [], [trg, echo])
-    return blk
+    CHlist = [11, 13, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]
+    if params[0].value not in CHlist:
+        raise ValueError(
+            "You pass a channel which is not in the ABC Board PIN list: %i"
+            % (params[0].value)
+        )
+    if params[1].value not in CHlist:
+        raise ValueError(
+            "You pass a channel which is not in the ABC Board PIN list: %i"
+            % (params[1].value)
+        )
+
+    return RCPblk("brikiEcho", [], pout, [0, 0], 0, params)

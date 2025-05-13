@@ -6,6 +6,6 @@
   "stin": 0,
   "stout": 0,
   "icon": "CHIRP",
-  "params": "sweepBlk|Gain:0.1|Type linear(1), quadratic (2) :1",
+  "params": "sweepBlk|Gain:0.1:double|Type linear(1), quadratic (2) :1:int",
   "help": "This block implements a chirp signal for identifications purposes\n\nAt present only the linear methos is implemented. Other methods are ignored yet.\n"
 }
