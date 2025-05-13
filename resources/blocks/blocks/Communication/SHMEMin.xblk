@@ -1,0 +1,11 @@
+{
+  "lib": "Communication",
+  "name": "SHMEMin",
+  "ip": 0,
+  "op": 1,
+  "stin": 0,
+  "stout": 1,
+  "icon": "SHMEM",
+  "params": "shmemInBlk|SHM name:'in_shm'",
+  "help": "Shared memory for input data"
+}
