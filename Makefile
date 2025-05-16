@@ -36,6 +36,9 @@ lib:
 full_lib:
 	cd CodeGen/LinuxRT/devices; make all
 
+linux_mzapo:
+	cd CodeGen/linux_mz_apo/devices; make all
+
 arduino_firmata:
 	cd CodeGen/arduinoFirmata; make all
 
