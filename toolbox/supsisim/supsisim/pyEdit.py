@@ -474,7 +474,7 @@ class NewEditorMainWindow(QMainWindow):
          self.scene.simrun()
 
     def codegenAct(self):
-        self.scene.codegen(True)
+        return self.scene.codegen(True)
 
     def setrunAct(self):
         self.scene.runDlg()
