@@ -538,10 +538,11 @@ class Scene(QGraphicsScene):
             if flag:
                 cmd = pyrun + ' tmp.py'
                 try:
-                    p = subprocess.Popen(cmd, shell=True)
-                except:
-                    pass
-                p.wait()
+                    subprocess.run(cmd, shell=True, check=True)
+                except subprocess.CalledProcessError:
+                    self.mainw.statusLabel.setText("Failed to compile generated code!")
+                    del(dgmBlocks)
+                    return False
 
             # Reset block diagram to previous state
             del(dgmBlocks)
@@ -735,7 +736,8 @@ class Scene(QGraphicsScene):
                   self.addObjs + "', addCDefs = '" + self.parsedAddCDefs + "')\n")
             fn.write('\nimport os\n')
             fn.write('os.system("make clean")\n')
-            fn.write('os.system("make")\n')
+            fn.write('if (os.system("make")) != 0:\n')
+            fn.write('  raise RuntimeError("C code compilation failed")\n')
             fn.write('os.chdir("..")\n')
 
     def simrun(self):

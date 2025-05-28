@@ -1,0 +1,62 @@
+name: Build
+
+on: [ push, pull_request ]
+
+jobs:
+  blocks:
+    name: "Blocks Build"
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install dependencies
+        run: "sudo apt-get update && sudo apt-get install libgsl-dev
+              libxml2-dev libxslt1-dev libopenblas-dev libcomedi-dev
+              gcc-arm-linux-gnueabihf"
+
+      - name: Export PYSUPSICTRL
+        run: "export PYSUPSICTRL=${{ github.workspace }}"
+
+      - name: LinuxRT
+        run: "make full_lib"
+
+      - name: Linux MZ APO
+        run: "make linux_mzapo"
+
+      - name: Arduino Firmata
+        run: "make arduino_firmata"
+
+      - name: LinuxRT with SHV
+        run: "make full_lib SHV=1"
+
+      - name: Linux MZ APO with SHV
+        run: "make linux_mzapo SHV=1"
+
+  generation:
+    name: "Code Generation"
+    runs-on: ubuntu-latest
+    needs: blocks
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install dependencies
+        run: "sudo apt-get update && sudo apt-get install libgsl-dev
+              libxml2-dev libxslt1-dev libopenblas-dev libcomedi-dev
+              libxkbcommon-x11-0 libxcb-cursor-dev libxcb-xinerama0
+              freeglut3-dev gcc-arm-linux-gnueabihf"
+
+      - name: Setup Python
+        run: "pip install -r requirements.txt"
+
+      - name: Export PYSUPSICTRL
+        run: "export PYSUPSICTRL=${{ github.workspace }}"
+
+      - name: Setup Linux Blocks
+        run: "make full_lib"
+
+      - name: Generate Simple Diagram
+        run: "QT_QPA_PLATFORM=offscreen ./pysim-run.sh -g Tests/diagrams/simple_linux_rt.dgm"
+
+      - name: Generate Diagram with Subsystems
+        run: "QT_QPA_PLATFORM=offscreen ./pysim-run.sh -g Tests/diagrams/subsystem_linux_rt.dgm"
+
