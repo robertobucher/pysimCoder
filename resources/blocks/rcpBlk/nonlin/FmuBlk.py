@@ -19,9 +19,9 @@ def getXMLindex(file, ref):
 
 
 def FmuBlk(*args):
-    if len(args) == 8:
+    if len(args) == 3:
         pin, pout, params = args
-    elif len(args) == 7:
+    elif len(args) == 2:
         pout, params = args
         pin = []
     else:
