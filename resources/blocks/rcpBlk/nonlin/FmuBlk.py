@@ -42,7 +42,8 @@ def FmuBlk(*args):
     params.append(RcpParam("Inputs Size", np.size(pin), RcpParam.Type.INT))
     params.append(RcpParam("Outputs Size", np.size(pin), RcpParam.Type.INT))
 
-    spl_name = params[2].value.split(".")
+    name = params[2].value
+    spl_name = name.split(".")
     name = "/tmp/" + spl_name[0]
 
     cmd = "unzip -o -d " + name + " " + params[2].value + " >/dev/null"
@@ -65,5 +66,5 @@ def FmuBlk(*args):
     system("rm -fr " + name)
 
     params.pop(0)
-    params.pop(1)
+    params.pop(0)
     return RCPblk("FMUinterface", pin, pout, [0, 0], ft, params)
