@@ -5,17 +5,25 @@ SHV client.
 import asyncio
 from threading import Thread
 
-from shv import RpcUrl, RpcError, SHVType
-
 try:
-    from shv import SHVClient
+    from shv import SHVType
+    from shv.rpcapi.client import SHVClient
+    from shv.rpcdef.errors import RpcError
+    from shv.rpcurl import RpcUrl
 
     SHV_CLIENT = SHVClient
-except:
-    print("Warning: It is suggested to use pyshv in version >=0.8.0")
-    from shv import SimpleClient
+except ImportError:
+    from shv import RpcError, RpcUrl, SHVType
 
-    SHV_CLIENT = SimpleClient
+    print("Warning: It is suggested to use pyshv in version >=0.10.0")
+    try:
+        from shv import SHVClient
+
+        SHV_CLIENT = SHVClient
+    except ImportError:
+        from shv import SimpleClient
+
+        SHV_CLIENT = SimpleClient
 
 
 def _start_background_loop(loop: asyncio.AbstractEventLoop) -> None:
