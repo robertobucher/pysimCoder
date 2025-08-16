@@ -6,6 +6,6 @@
   "stin": 0,
   "stout": 1,
   "icon": "SHMEM",
-  "params": "shmemInBlk|SHM name:'in_shm'",
+  "params": "shmemInBlk|SHM name:'in_shm':str",
   "help": "Shared memory for input data"
 }

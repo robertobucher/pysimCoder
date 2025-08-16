@@ -1,8 +1,8 @@
 
-from supsisim.RCPblk import RCPblk
+from supsisim.RCPblk import RCPblk, RcpParam
 from numpy import size
 
-def shmemOutBlk(pin, name):
+def shmemOutBlk(pin: list[int], params: RcpParam) -> RCPblk:
     """
 
     Call:   shmemOutBlk(pin, name)
@@ -18,5 +18,6 @@ def shmemOutBlk(pin, name):
 
     """
 
-    blk = RCPblk('shmemOut', pin, [], [0,0], 1, [], [0], name)
+    params.append(RcpParam("File descriptor", 0, RcpParam.Type.INT))
+    blk = RCPblk('shmemOut', pin, [], [0,0], 1, params)
     return blk

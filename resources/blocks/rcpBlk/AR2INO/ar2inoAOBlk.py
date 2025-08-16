@@ -1,8 +1,8 @@
 
-from supsisim.RCPblk import RCPblk
+from supsisim.RCPblk import RCPblk, RcpParam
 from numpy import size
 
-def ar2inoAOBlk(pin, ch, umin, umax):
+def ar2inoAOBlk(pin: list[int], params: RcpParam) -> RCPblk:
     """
 
     Call:   brikiAOBlk(pin, pin)
@@ -21,5 +21,5 @@ def ar2inoAOBlk(pin, ch, umin, umax):
     if ch not in DAlist:
         raise ValueError("You pass a channel which is correct %i" % (ch))
             
-    blk = RCPblk('ar2inoAO', pin, [], [0,0], 1, [umin, umax], [ch])
+    blk = RCPblk('ar2inoAO', pin, [], [0,0], 1, params)
     return blk

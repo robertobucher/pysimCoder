@@ -6,6 +6,6 @@
   "stin": 1,
   "stout": 0,
   "icon": "SHMEM",
-  "params": "shmemOutBlk|SHM name:'out_shm'",
+  "params": "shmemOutBlk|SHM name:'out_shm':str",
   "help": "Shared memory for output data"
 }
