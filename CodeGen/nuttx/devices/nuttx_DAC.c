@@ -97,7 +97,8 @@ static void inout(python_block *block)
 
 static void end(python_block *block)
 {
-  close(fd);
+  close(block->intPar[1]);
+  block->intPar[1] = 0;     /* Needed for reinitialization */
 }
 
 void nuttx_DAC(int flag, python_block *block)
