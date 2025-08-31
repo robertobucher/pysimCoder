@@ -166,6 +166,11 @@ class NewEditorMainWindow(QMainWindow):
                                                 statusTip = 'SHV Support',
                                                 triggered = self.setSHVAct)
 
+        self.setUpdimgAction = QAction(QIcon(mypath+'updateimg.png'),
+                                                'Upload and update firmware',self,
+                                                statusTip = 'Upload and update firmware',
+                                                triggered = self.setupdimgAct)
+
         self.showLibAction = QAction(QIcon(mypath+'library.png'),
                                      'Show/Hide Block Library',self,
                                      statusTip = 'Show/Hide Block Library',
@@ -206,6 +211,7 @@ class NewEditorMainWindow(QMainWindow):
         toolbarS.addAction(self.codegenAction)
         toolbarS.addAction(self.setCodegenAction)
         toolbarS.addAction(self.setSHVAction)
+        toolbarS.addAction(self.setUpdimgAction)
 
         toolbarP = self.addToolBar('Python')
         toolbarP.addAction(self.startPythonAction)
@@ -484,6 +490,9 @@ class NewEditorMainWindow(QMainWindow):
 
     def setSHVAct(self):
         self.scene.SHVSetDlg()
+
+    def setupdimgAct(self):
+        self.scene.updimgDlg()
         
     def getScene(self):
         return Scene(self)

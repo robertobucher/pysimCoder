@@ -4,6 +4,8 @@ SHV client.
 
 import asyncio
 from threading import Thread
+from typing import Awaitable, Any, Optional
+from enum import Enum
 
 try:
     from shv import SHVType
@@ -13,7 +15,7 @@ try:
 
     SHV_CLIENT = SHVClient
 except ImportError:
-    from shv import RpcError, RpcUrl, SHVType
+    from shv import RpcError, RpcUrl, SHVType, SHVBytes
 
     print("Warning: It is suggested to use pyshv in version >=0.10.0")
     try:
@@ -25,6 +27,9 @@ except ImportError:
 
         SHV_CLIENT = SimpleClient
 
+class ShvCallError(Enum):
+    Rpc = 0
+    Timeout = 1
 
 def _start_background_loop(loop: asyncio.AbstractEventLoop) -> None:
     asyncio.set_event_loop(loop)
@@ -51,7 +56,8 @@ async def _connect_client(
     url: RpcUrl = RpcUrl.parse(f"tcp://{user}@{addr}:{port}?password={password}")
 
     print("Connection to SHV broker: ", url.to_url())
-    return await SHV_CLIENT.connect(url)
+    async with asyncio.timeout(5):
+        return await SHV_CLIENT.connect(url)
 
 
 async def _get_parameter_value(
@@ -86,7 +92,6 @@ async def _set_parameter_value(
 async def _is_connected(client: SHV_CLIENT) -> bool:
     return client.client.connected
 
-
 class ShvClient:
     """Representation of SHV client connection to the broker."""
 
@@ -106,6 +111,7 @@ class ShvClient:
         self.asyncio_thread.start()
 
     def __del__(self) -> None:
+        print("Stopping SHV connection!")
         self.asyncio_loop.stop()
 
     def _connect(self) -> None:
@@ -207,3 +213,113 @@ class ShvClient:
 
     def disconnect(self):
         self._disconnect()
+
+
+async def _fwupdate_met_call(client: SHV_CLIENT, mount_point: str, device_id: str,
+    node: str, met_name: str, arg: SHVType = None) -> SHVType | ShvCallError:
+    call_url = f"{mount_point}/{device_id}/{node}"
+    try:
+        if arg is not None:
+            return await client.call(call_url, met_name, arg, call_timeout=10)
+        else:
+            return await client.call(call_url, met_name, call_timeout=10)
+    except RpcError as exc:
+        print(exc)
+        return ShvCallError.Rpc
+    except TimeoutError as exc:
+        print(exc)
+        return ShvCallError.Timeout
+
+class ShvFwUpdateClient(ShvClient):
+    def __init__(self):
+        super().__init__()
+
+    async def _fw_call(
+        self,
+        client: SHV_CLIENT,
+        mount_point: str,
+        device_id: str,
+        path: str,
+        method: str,
+        params: SHVType = None
+    ) -> SHVType | ShvCallError:
+        return await _fwupdate_met_call(client, mount_point, device_id, path, method, params)
+
+    def _run(self, cor: Awaitable[Any]) -> SHVType | ShvCallError:
+        return asyncio.run_coroutine_threadsafe(cor, self.asyncio_loop).result()
+
+    def stat_file(self) -> SHVType | ShvCallError:
+        return self._run(self._fw_call(
+            self._get_connection(),
+            self.mount_point,
+            self.device_id,
+            "fwUpdate",
+            "stat"
+        ))
+
+    def write_chunk(self, chunk: bytes, offset: int) -> SHVType | ShvCallError:
+        return self._run(self._fw_call(
+            self._get_connection(),
+            self.mount_point,
+            self.device_id,
+            "fwUpdate",
+            "write",
+            [offset, SHVBytes(chunk)]
+        ))
+
+    def get_crc(self, start: int, size: int) -> SHVType | ShvCallError:
+        ret = self._run(self._fw_call(
+            self._get_connection(),
+            self.mount_point,
+            self.device_id,
+            "fwUpdate",
+            "crc",
+            [start, size]
+        ))
+        return None if ret is None else (ret & 0xFFFFFFFF)
+
+    def reset_device(self) -> SHVType | ShvCallError:
+        return self._run(self._fw_call(
+            self._get_connection(),
+            self.mount_point,
+            self.device_id,
+            ".device",
+            "reset"
+        ))
+
+    def pause_ctrl(self) -> SHVType | ShvCallError:
+        return self._run(self._fw_call(
+            self._get_connection(),
+            self.mount_point,
+            self.device_id,
+            "manager",
+            "pause"
+        ))
+
+    def get_ctrlstate(self) -> SHVType | ShvCallError:
+        return self._run(self._fw_call(
+            self._get_connection(),
+            self.mount_point,
+            self.device_id,
+            "manager",
+            "getstate"
+        ))
+
+    def reset_device(self) -> SHVType | ShvCallError:
+        return self._run(self._fw_call(
+            self._get_connection(),
+            self.mount_point,
+            self.device_id,
+            ".device",
+            "reset"
+        ))
+
+    def confirm_image(self) -> SHVType | ShvCallError:
+        return self._run(self._fw_call(
+            self._get_connection(),
+            self.mount_point,
+            self.device_id,
+            "fwStable",
+            "confirm"
+        ))
+

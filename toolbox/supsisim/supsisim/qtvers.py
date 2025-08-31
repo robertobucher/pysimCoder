@@ -41,7 +41,8 @@ try:
         QPainterPath,
         QBrush,
         QPen,
-        QTransform
+        QTransform,
+        QFont
     )
 
     from PyQt6.QtCore import (
@@ -56,7 +57,10 @@ try:
         QSizeF,
         QT_VERSION_STR,
         QVariant,
-        Qt
+        Qt,
+        QThread,
+        pyqtSignal,
+        pyqtSlot
     )
 
     from PyQt6.QtPrintSupport import (
@@ -107,7 +111,8 @@ except:
         QPainterPath,
         QBrush,
         QPen,
-        QTransform
+        QTransform,
+        QFont
     )
 
     from PyQt5.QtCore import (
@@ -122,7 +127,10 @@ except:
         QSizeF,
         QT_VERSION_STR,
         QVariant,
-        Qt
+        Qt,
+        QThread,
+        pyqtSignal,
+        pyqtSlot
     )
 
     from PyQt5.QtPrintSupport import (

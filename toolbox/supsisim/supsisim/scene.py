@@ -4,11 +4,11 @@ from supsisim.block import Block
 from supsisim.subsblock import subsBlock
 from supsisim.port import Port, InPort, OutPort
 from supsisim.connection import Connection
-from supsisim.dialg import RTgenDlg, SHVDlg
+from supsisim.dialg import RTgenDlg, SHVDlg, UpdimgDlg
 from supsisim.const import VERSION, pyrun, TEMP, respath, BWmin
 from supsisim.getTemplates import dictTemplates
 from supsisim.RCPblk import RcpParam
-from .shv import ShvClient
+from .shv import ShvClient, SHVInstance
 from lxml import etree
 import os
 import io
@@ -33,21 +33,13 @@ class GraphicsView(QGraphicsView):
         factor = 1.41 ** (-event.angleDelta().y() / 240.0)
         self.scale(factor, factor)
 
-class SHVInstance:
-    def __init__(self, filename):
-        self.used = False
-        self.ip = '127.0.0.1'
-        self.port = '3755'
-        self.user = 'admin'
-        self.passw = 'admin!123'
-        self.devid = filename
-        self.mount = 'test'
-
-        self.tuned = False
-
-        self.tree = 'GAVL'
 
 class Scene(QGraphicsScene):
+    class UpdimgContext():
+        def __init__(self, met: str, openocd_params: str):
+            self.met = met
+            self.openocd_params = openocd_params
+
     def __init__(self, main, parent=None):
         super(Scene,self).__init__(parent)
         self.mainw = main
@@ -69,6 +61,7 @@ class Scene(QGraphicsScene):
         self.prio = ''
 
         self.SHV = SHVInstance(self.mainw.filename)
+        self.updimgCtx = self.UpdimgContext("openocd", "")
 
         self.brokerConnection = ShvClient()
 
@@ -103,10 +96,13 @@ class Scene(QGraphicsScene):
         vals = [self.template, self.Ts, self.addObjs, self.addCDefs, self.addMakeArgs, self.script, self.intgMethod, self.epsAbs, self.epsRel, self.Tf, self.prio]
         dataDict['simulate'] = dict(zip(keys, vals))
 
-        keys = ['used', 'ip', 'port', 'user', 'passwd', 'devid', 'mount', 'tree']
+        keys = ['used', 'ip', 'port', 'user', 'passwd', 'devid', 'mount', 'tree', 'updates']
         vals = [self.SHV.used, self.SHV.ip, self.SHV.port, self.SHV.user, self.SHV.passw,
-                self.SHV.devid, self.SHV.mount, self.SHV.tree]
+                self.SHV.devid, self.SHV.mount, self.SHV.tree, self.SHV.updates]
         dataDict['SHV'] = dict(zip(keys, vals))
+        keys = ['method', 'openocd_params']
+        vals = [self.updimgCtx.met, self.updimgCtx.openocd_params]
+        dataDict['updimg']  = dict(zip(keys, vals))
 
         self.saveItems(dataDict)
 
@@ -214,6 +210,13 @@ class Scene(QGraphicsScene):
             self.SHV.devid = dataDict['SHV']['devid']
             self.SHV.mount = dataDict['SHV']['mount']
             self.SHV.tree = dataDict['SHV']['tree']
+            self.SHV.updates = dataDict['SHV']['updates']
+        except:
+            pass
+
+        try:
+            self.updimgCtx.met = dataDict['updimg']['method']
+            self.updimgCtx.openocd_params = dataDict['updimg']['openocd_params']
         except:
             pass
 
@@ -360,6 +363,7 @@ class Scene(QGraphicsScene):
         dialog = SHVDlg(self)
         dialog.SHVused.setChecked(self.SHV.used)
         dialog.SHVtune.setChecked(self.SHV.tuned)
+        dialog.SHVUpdates.setChecked(self.SHV.updates)
         dialog.SHVip.setText(self.SHV.ip)
         dialog.SHVport.setText(self.SHV.port)
         dialog.SHVuser.setText(self.SHV.user)
@@ -380,9 +384,38 @@ class Scene(QGraphicsScene):
         self.SHV.devid = str(dialog.SHVdevid.text())
         self.SHV.mount = str(dialog.SHVmount.text())
         self.SHV.tree = str(dialog.SHVtree.currentText())
+        self.SHV.updates = dialog.SHVUpdates.isChecked()
 
         if not self.SHV.tuned and self.brokerConnection is not None:
             self.brokerConnection.disconnect()
+
+    def updimgDlg(self):
+        # REVISIT: each makefile should define the executable filename
+        if self.template == "nuttx_timerhook.tmf" or \
+           self.template == "nuttx_systemtickhook.tmf" or \
+           self.template == "nuttx.tmf":
+            upd_filename = "./" + self.mainw.filename + ".nximg"
+        else:
+            upd_filename = self.mainw.filename
+
+        dialog = UpdimgDlg(upd_filename, self.SHV, parent=self)
+        dialog.upd_met_combo.addItem("openocd")
+        if self.SHV.updates == True:
+            dialog.upd_met_combo.addItem("SHV File Node Update")
+
+        # Reset the dialog's context
+        dialog.upd_met_combo.setCurrentIndex(0)
+        _idx = dialog.upd_met_combo.findText(self.updimgCtx.met)
+        if _idx >= 0:
+            dialog.upd_met_combo.setCurrentIndex(_idx)
+        dialog.openocd_params_edit.setText(self.updimgCtx.openocd_params)
+
+        res = dialog.exec()
+        if res != 1:
+            return
+
+        self.updimgCtx.met = dialog.upd_met_combo.currentText()
+        self.updimgCtx.openocd_params = dialog.openocd_params_edit.text()
 
     def findAllItems(self, scene):
         items = []
@@ -724,6 +757,7 @@ class Scene(QGraphicsScene):
             txt += 'os.environ["SHV_BROKER_DEV_ID"] = \"' + self.SHV.devid + '\"\n'
             txt += 'os.environ["SHV_BROKER_MOUNT"] = \"' + self.SHV.mount + "/" + self.SHV.devid + '\"\n'
             txt += 'os.environ["SHV_TREE_TYPE"] = \"' + self.SHV.tree + '\"\n\n'
+            txt +=  'os.environ["SHV_UPDATES_USED"] = \"' + str(self.SHV.updates) + '\"\n'
             fn.write(txt)
 
             fnm = './' + fname + '_gen'

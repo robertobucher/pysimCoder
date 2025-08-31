@@ -21,18 +21,17 @@ class ShvTreeGenerator:
         self.blocks_ordered.sort()
 
     def generate_header(self) -> None:
-        if environ["SHV_USED"] == "True":
-            text: str = "#define CONF_SHV_USED 1\n\n"
-        else:
-            text = "#undef CONF_SHV_USED\n\n"
-        self.f.write(text)
-
         text = "#ifdef CONF_SHV_USED\n"
+        text += "#include <shv/tree/shv_connection.h>\n"
         text += "#include <shv/tree/shv_tree.h>\n"
-        text += "#include <shv_pysim.h>\n"
         text += "#include <shv/tree/shv_methods.h>\n"
         text += "#include <shv/tree/shv_com.h>\n"
+        text += "#include <shv/tree/shv_file_node.h>\n"
+        text += "#include <shv/tree/shv_dotdevice_node.h>\n"
         text += "#include <ulut/ul_utdefs.h>\n\n"
+        text += '#include "shv_pysim.h"\n'
+        text += '#include "shv_manager_node.h"\n'
+        text += '#include "shv_fwstable_node.h"\n'
         self.f.write(text)
 
         if environ["SHV_TREE_TYPE"] == "GSA":
@@ -48,15 +47,31 @@ class ShvTreeGenerator:
         text += "#endif /* CONF_SHV_USED */\n\n"
         self.f.write(text)
 
-        if environ["SHV_USED"] == "True":
-            self.f.write("/* SHV related function and structres */\n\n")
-            self.f.write("#ifdef CONF_SHV_USED\n")
-            self.f.write(
-                "shv_con_ctx_t *shv_tree_init(python_block_name_map * block_map, const shv_node_t *static_root, int mode);\n"
-            )
-            self.f.write("void shv_tree_end(shv_con_ctx_t *ctx, int mode);\n\n")
+        # It gets a bit complicated, due to the file update node.
+        # As the main should provide the shv_init_fwupdate function due to platform differences,
+        # we expect the fwupdate node to be dynamic, regardless of the whole tree type.
+        # Thus in case of fwupdate and GSA being used, the whole tree is built
+        # as const rodata, but the file node is always built and initialized dynamically.
+        # So we need to modifier to determine whether the root is const or not.
 
-            text = "python_block_name_map block_name_map_" + self.model + ";\n"
+        if environ["SHV_USED"] == "True":
+            self.f.write("/* SHV related function and structures */\n\n")
+            self.f.write("#ifdef CONF_SHV_USED\n")
+            text = "#ifdef CONF_SHV_UPDATES_USED\n"
+            text += "#define ROOT_NODE_CONST\n"
+            text += "#else\n"
+            text += "#define ROOT_NODE_CONST const\n"
+            text += "#endif /* CONF_SHV_UPDATES_USED */\n\n"
+            self.f.write(text)
+
+            text = "/********** SHV Function Declarations **********/\n"
+            text += "int shv_init_fwupdate(struct pysim_platform_model_ctx *ctx, shv_file_node_t *item);\n"
+            text += "int shv_init_fwstable(struct pysim_platform_model_ctx *ctx, struct shv_fwstable_node *item);\n"
+            text += "\n"
+            self.f.write(text)
+
+            text = "/********** SHV Private Data **********/\n"
+            text += "python_block_name_map block_name_map_" + self.model + ";\n"
             text += (
                 "python_block_name_entry block_name_entry_"
                 + self.model
@@ -64,7 +79,8 @@ class ShvTreeGenerator:
                 + str(self.blocks_cnt)
                 + "];\n"
             )
-            text += "static shv_con_ctx_t *" + self.model + "_ctx;\n"
+            text += "static shv_con_ctx_t *" + self.model + "_shv_ctx;\n"
+            text += "static struct shv_connection shv_conn;\n"
             text += "#endif /* CONF_SHV_USED */\n\n"
             self.f.write(text)
 
@@ -533,16 +549,30 @@ class ShvTreeGenerator:
         text += "}};\n\n"
         self.f.write(text)
 
+        # Generate the manager node, in case of GSA_STATIC
+        text = (
+            "const shv_node_model_ctx_t shv_node_manager = {\n" +
+            "    .shv_node = {\n" +
+            '        .name = "manager",\n'
+            "        .dir = UL_CAST_UNQ1(shv_dmap_t *, &shv_manager_dmap),\n" +
+            "        .children = { .mode = CONF_SHV_TREE_TYPE }\n" +
+            "    },\n" +
+            "    .model_ctx = &" + self.model + "_ctx\n" +
+            "};\n\n"
+        )
+        self.f.write(text)
+
         text = (
             "const shv_node_t *const shv_tree_root_items[] = {\n"
             + "  &shv_node_blks,\n"
             + "  &shv_node_inputs,\n"
+            + "  &shv_node_manager.shv_node,\n"
             + "  &shv_node_outputs,\n};\n\n"
         )
         self.f.write(text)
 
         text = (
-            "const shv_node_t shv_tree_root = {\n"
+            "ROOT_NODE_CONST shv_node_t shv_tree_root = {\n"
             + "   .dir = UL_CAST_UNQ1(shv_dmap_t *, &shv_root_dmap),\n"
             + "   .children = {.mode = CONF_SHV_TREE_TYPE,\n"
             + "                .list = {.gsa = {.root = {\n"
@@ -552,35 +582,92 @@ class ShvTreeGenerator:
             + "}}}};\n\n"
         )
         self.f.write(text)
+        self.f.write("#endif /* CONF_SHV_TREE_STATIC */\n\n")
 
-        self.f.write("#endif /* CONF_SHV_TREE_STATIC */")
+    def _generate_fwupdate_init(self) -> str:
+        text  = "#ifdef CONF_SHV_UPDATES_USED\n"
+        text += '  shv_file_node_t *shv_fwupdate_node = shv_tree_file_node_new("fwUpdate", &shv_file_node_dmap, CONF_SHV_TREE_TYPE);\n'
+        text += "  if (shv_fwupdate_node == NULL)\n"
+        text += "    return -1;\n"
+        text += "  shv_init_fwupdate(&" + self.model + "_pt_ctx, shv_fwupdate_node);\n"
+        text += "#else\n"
+        text += "  shv_file_node_t *shv_fwupdate_node = NULL;\n"
+        text += "#endif /* CONF_SHV_UPDATES_USED */\n"
+        return text
 
-    def generate_code(self) -> None:
+    def _generate_dotdevice_init(self) -> str:
+        text  = "  shv_dotdevice_node_t *shv_dotdevice_node = shv_tree_dotdevice_node_new(&shv_dotdevice_dmap, CONF_SHV_TREE_TYPE);\n"
+        text += "  if (shv_dotdevice_node == NULL)\n"
+        text += "    return -1;\n"
+        text += "  /* Fill in the dotdevice parameters */\n"
+        text += '  shv_dotdevice_node->name = "pysimCoder SHV compatible device";\n'
+        text += '  shv_dotdevice_node->version = "0.1.0";\n'
+        text += '  shv_dotdevice_node->serial_number = "0xDEADBEEF";\n'
+        return text
+
+    def _generate_fwstable_init(self) -> str:
+        text  = "#ifdef CONF_SHV_UPDATES_USED\n"
+        text += "  struct shv_fwstable_node *fwstable_node = shv_fwstable_node_new(&shv_fwstable_dmap, CONF_SHV_TREE_TYPE);\n"
+        text += "  if (fwstable_node == NULL)\n"
+        text += "    return -1;\n"
+        text += "  /* Initialize the fwStable node */\n"
+        text += "  shv_init_fwstable(&" + self.model + "_pt_ctx, fwstable_node);\n"
+        text += "#else\n"
+        text += "  struct shv_fwstable_node *fwstable_node = NULL;\n"
+        text += "#endif /* CONF_SHV_UPDATES_USED */\n"
+        return text
+
+    def generate_init(self) -> None:
         text = "#ifdef CONF_SHV_USED\n"
-        text += '  setenv("SHV_BROKER_IP", "' + environ["SHV_BROKER_IP"] + '", 0);\n'
+        text += "int " + self.model + "_com_init(shv_attention_signaller at_signlr)\n"
+        text += "{\n"
+        text += "  /* Call shv_tree_init() to initialize SHV tree */\n"
+
+        if environ["SHV_TREE_TYPE"] != "GSA_STATIC":
+            text += "  const shv_node_t shv_tree_root = {};\n"
+
+        text += '  shv_connection_init(&shv_conn, SHV_TLAYER_TCPIP);\n'
+        text += '  shv_conn.broker_user = "' + environ["SHV_BROKER_USER"] + '";\n'
+        text += '  shv_conn.broker_password = "' + environ["SHV_BROKER_PASSWORD"] + '";\n'
+        text += '  shv_conn.broker_mount = "' + environ["SHV_BROKER_MOUNT"] + '";\n'
+        text += '  shv_conn.device_id = "' + environ["SHV_BROKER_DEV_ID"] + '";\n'
+        text += '  shv_conn.reconnect_period = 10;\n'
+        text += '  shv_conn.reconnect_retries = 0;\n'
+        text += '  shv_connection_tcpip_init(&shv_conn, "' + environ["SHV_BROKER_IP"] + \
+                '", ' + environ["SHV_BROKER_PORT"] + ');\n\n'
+        text += '  /* Fill in the pysim_model_ctx struct. REVISIT: do it somewhere else */\n'
+        text += "  " + self.model + '_ctx.pt_arg = &' + self.model + '_pt_ctx;\n'
         text += (
-            '  setenv("SHV_BROKER_PORT", "' + environ["SHV_BROKER_PORT"] + '", 0);\n'
+            "  " + self.model + '_ctx.pt_ops.pausectrl = &' + self.model + '_pausectrl;\n' +
+            "  " + self.model + '_ctx.pt_ops.resumectrl = &' + self.model + '_resumectrl;\n' +
+            "  " + self.model + '_ctx.pt_ops.getctrlstate = &' + self.model + '_getctrlstate;\n'
+            "  " + self.model + '_ctx.pt_ops.comprio = &' + self.model + '_comprio;\n'
         )
-        text += (
-            '  setenv("SHV_BROKER_USER", "' + environ["SHV_BROKER_USER"] + '", 0);\n'
+        text += "  block_name_map_" + self.model + ".model_ctx = &" + self.model + "_ctx;\n"
+        self.f.write(text)
+        # Generate the update node (file node) and .device node dynamically, regardless of the tree type.
+        # The reason is that these nodes are platform dependant and require platform dependant init.
+        self.f.write(self._generate_fwupdate_init())
+        self.f.write(self._generate_dotdevice_init())
+        self.f.write(self._generate_fwstable_init())
+        # Now construct the whole tree, using all the dynamically instantiated nodes.
+        text = (
+            "  "
+            + self.model
+            + "_shv_ctx = shv_tree_init(&block_name_map_"
+            + self.model
+            + ", (const shv_node_t *) &shv_tree_root, CONF_SHV_TREE_TYPE, "
+            + "&shv_conn, at_signlr, shv_fwupdate_node, shv_dotdevice_node, fwstable_node);\n"
         )
-        text += (
-            '  setenv("SHV_BROKER_PASSWORD", "'
-            + environ["SHV_BROKER_PASSWORD"]
-            + '", 0);\n'
-        )
-        text += (
-            '  setenv("SHV_BROKER_DEV_ID", "'
-            + environ["SHV_BROKER_DEV_ID"]
-            + '", 0);\n'
-        )
-        text += (
-            '  setenv("SHV_BROKER_MOUNT", "'
-            + environ["SHV_BROKER_MOUNT"]
-            + '", 0);\n\n'
-        )
+        text += "  if (" + self.model + "_shv_ctx == NULL)\n"
+        text += "    return -1;\n"
+        text += "  return 0;\n"
+        text += "}\n"
+        text += "#endif /* CONF_SHV_USED */\n\n"
         self.f.write(text)
 
+    def generate_code(self) -> None:
+        self.f.write("#ifdef CONF_SHV_USED\n")
         self.f.write("/* SHV structures definition */\n\n")
 
         blks_names = []
@@ -672,29 +759,23 @@ class ShvTreeGenerator:
             + self.model
             + ".block_structure = block_"
             + self.model
-            + ";\n\n"
+            + ";\n"
+        )
+        text += (
+            "  block_name_map_"
+            + self.model
+            + ".model_ctx = &"
+            + self.model
+            + "_ctx;\n\n"
         )
         self.f.write(text)
-
-        self.f.write("/* Call shv_tree_init() to initialize SHV tree */\n\n")
-
-        if environ["SHV_TREE_TYPE"] != "GSA_STATIC":
-            text = "  const shv_node_t shv_tree_root = {};\n\n"
-            self.f.write(text)
-
-        text = (
-            "  "
-            + self.model
-            + "_ctx = shv_tree_init(&block_name_map_"
-            + self.model
-            + ", &shv_tree_root, CONF_SHV_TREE_TYPE);\n\n"
-        )
-        self.f.write(text)
-
         self.f.write("#endif /* CONF_SHV_USED */\n\n")
 
     def generate_end(self) -> None:
         text = "#ifdef CONF_SHV_USED\n"
-        text += "  shv_tree_end(" + self.model + "_ctx, CONF_SHV_TREE_TYPE);\n"
+        text += "void " + self.model + "_com_end(void)\n"
+        text += "{\n"
+        text += "  shv_tree_end(" + self.model + "_shv_ctx, CONF_SHV_TREE_TYPE);\n"
+        text += "}\n"
         text += "#endif /* CONF_SHV_USED */\n\n"
         self.f.write(text)
