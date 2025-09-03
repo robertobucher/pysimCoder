@@ -26,6 +26,7 @@ struct shv_fwstable_node
     shv_node_t shv_node;      /* Base node */
     struct {
         int (*confirm)(void); /* A callback to confirm the newly updated image */
+        int (*get)(void);     /* A callback to get image's current state (confirmed/unconfirmed) */
     } ops;
 };
 

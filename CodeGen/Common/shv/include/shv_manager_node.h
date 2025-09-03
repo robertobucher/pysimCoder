@@ -17,7 +17,7 @@
 */
 
 #ifndef _SHV_MANAGER_NODE_H
-#define _SHV_MAANGER_NODE_H
+#define _SHV_MANAGER_NODE_H
 
 #include <shv/tree/shv_tree.h>
 

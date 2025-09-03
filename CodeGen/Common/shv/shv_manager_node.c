@@ -24,8 +24,6 @@
 #include <shv/tree/shv_com.h>
 #include <ulut/ul_utdefs.h>
 
-#include <stdlib.h>
-
 static int shv_pausectrl(shv_con_ctx_t *shv_ctx, shv_node_t *item, int rid)
 {
     shv_unpack_data(&shv_ctx->unpack_ctx, 0, 0);
@@ -37,7 +35,7 @@ static int shv_pausectrl(shv_con_ctx_t *shv_ctx, shv_node_t *item, int rid)
         shv_send_empty_response(shv_ctx, rid);
         return 0;
     }
-    shv_send_error(shv_ctx, rid, SHV_RE_PLATFORM_ERROR, "NULL OPS");
+    shv_send_error(shv_ctx, rid, SHV_RE_METHOD_CALL_EXCEPTION, "Platform pausectrl cb not defined!");
     return -1;
 }
 
@@ -52,7 +50,7 @@ static int shv_resumectrl(shv_con_ctx_t *shv_ctx, shv_node_t *item, int rid)
         shv_send_empty_response(shv_ctx, rid);
         return 0;
     }
-    shv_send_error(shv_ctx, rid, SHV_RE_PLATFORM_ERROR, "NULL OPS");
+    shv_send_error(shv_ctx, rid, SHV_RE_METHOD_CALL_EXCEPTION, "Platform resumectrl cb not defined!");
     return -1;
 }
 
@@ -66,29 +64,34 @@ static int shv_getstate(shv_con_ctx_t *shv_ctx, shv_node_t *item, int rid)
         shv_send_int(shv_ctx, rid, mctx->pt_ops.getctrlstate(mctx->pt_arg));
         return 0;
     }
-    shv_send_error(shv_ctx, rid, SHV_RE_PLATFORM_ERROR, "NULL OPS");
+    shv_send_error(shv_ctx, rid, SHV_RE_METHOD_CALL_EXCEPTION, "Platform getstate cb not defined!");
     return -1;
 }
 
 static const shv_method_des_t shv_dmap_item_pausectrl =
 {
   .name = "pause",
-  .access = SHV_ACCESS_BROWSE,
+  .flags = 0,
+  .result = "",
+  .access = SHV_ACCESS_COMMAND,
   .method = shv_pausectrl
 };
 
 static const shv_method_des_t shv_dmap_item_resumectrl =
 {
   .name = "resume",
-  .access = SHV_ACCESS_BROWSE,
+  .flags = 0,
+  .result = "",
+  .access = SHV_ACCESS_COMMAND,
   .method = shv_resumectrl
 };
 
 static const shv_method_des_t shv_dmap_item_getctrlstate =
 {
   .name = "getstate",
-  .access = SHV_ACCESS_READ,
   .flags = SHV_METHOD_GETTER,
+  .result = "i",
+  .access = SHV_ACCESS_READ,
   .method = shv_getstate
 };
 

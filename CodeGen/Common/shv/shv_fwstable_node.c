@@ -32,24 +32,49 @@ static int shv_confirm(shv_con_ctx_t *shv_ctx, shv_node_t *item, int rid)
                                                          shv_node);
     if (item_node->ops.confirm) {
         item_node->ops.confirm();
-        shv_send_int(shv_ctx, rid, 0);
+        shv_send_empty_response(shv_ctx, rid);
         return 0;
     }
-    shv_send_error(shv_ctx, rid, SHV_RE_PLATFORM_ERROR, "NULL OPS");
+    shv_send_error(shv_ctx, rid, SHV_RE_METHOD_CALL_EXCEPTION, "Platform confirm cb not defined!");
+    return -1;
+}
+
+static int shv_get(shv_con_ctx_t *shv_ctx, shv_node_t *item, int rid)
+{
+    shv_unpack_data(&shv_ctx->unpack_ctx, 0, 0);
+    struct shv_fwstable_node *item_node = UL_CONTAINEROF(item, struct shv_fwstable_node,
+                                                         shv_node);
+    if (item_node->ops.get) {
+        shv_send_int(shv_ctx, rid, item_node->ops.get());
+        return 0;
+    }
+    shv_send_error(shv_ctx, rid, SHV_RE_METHOD_CALL_EXCEPTION, "Platform get cb not defined!");
     return -1;
 }
 
 static const shv_method_des_t shv_dmap_item_confirm =
 {
     .name = "confirm",
-    .access = SHV_ACCESS_BROWSE,
+    .flags = 0,
+    .result = "",
+    .access = SHV_ACCESS_COMMAND,
     .method = shv_confirm
+};
+
+static const shv_method_des_t shv_dmap_item_get =
+{
+   .name = "get",
+   .flags = SHV_METHOD_GETTER,
+   .result = "i",
+   .access = SHV_ACCESS_READ,
+   .method = shv_get
 };
 
 static const shv_method_des_t *const shv_fwstable_dmap_items[] =
 {
     &shv_dmap_item_confirm,
     &shv_dmap_item_dir,
+    &shv_dmap_item_get,
     &shv_dmap_item_ls
 };
 

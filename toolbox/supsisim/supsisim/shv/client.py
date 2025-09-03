@@ -5,10 +5,10 @@ SHV client.
 import asyncio
 from threading import Thread
 from typing import Awaitable, Any, Optional
-from enum import Enum
+from enum import Enum, auto
 
 try:
-    from shv import SHVType
+    from shv import SHVType, SHVBytes
     from shv.rpcapi.client import SHVClient
     from shv.rpcdef.errors import RpcError
     from shv.rpcurl import RpcUrl
@@ -19,17 +19,17 @@ except ImportError:
 
     print("Warning: It is suggested to use pyshv in version >=0.10.0")
     try:
-        from shv import SHVClient
+        from shv import SHVClient, SHVBytes
 
         SHV_CLIENT = SHVClient
     except ImportError:
-        from shv import SimpleClient
+        from shv import SimpleClient, SHVBytes
 
         SHV_CLIENT = SimpleClient
 
 class ShvCallError(Enum):
-    Rpc = 0
-    Timeout = 1
+    Rpc = auto()
+    Timeout = auto()
 
 def _start_background_loop(loop: asyncio.AbstractEventLoop) -> None:
     asyncio.set_event_loop(loop)
@@ -276,7 +276,7 @@ class ShvFwUpdateClient(ShvClient):
             "crc",
             [start, size]
         ))
-        return None if ret is None else (ret & 0xFFFFFFFF)
+        return ShvCallError.Rpc if type(ret) == ShvCallError else (ret & 0xFFFFFFFF)
 
     def reset_device(self) -> SHVType | ShvCallError:
         return self._run(self._fw_call(
