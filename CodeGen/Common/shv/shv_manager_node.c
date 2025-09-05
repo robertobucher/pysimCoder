@@ -72,6 +72,7 @@ static const shv_method_des_t shv_dmap_item_pausectrl =
 {
   .name = "pause",
   .flags = 0,
+  .param = "n",
   .result = "",
   .access = SHV_ACCESS_COMMAND,
   .method = shv_pausectrl
@@ -81,6 +82,7 @@ static const shv_method_des_t shv_dmap_item_resumectrl =
 {
   .name = "resume",
   .flags = 0,
+  .param = "n",
   .result = "",
   .access = SHV_ACCESS_COMMAND,
   .method = shv_resumectrl
@@ -90,7 +92,8 @@ static const shv_method_des_t shv_dmap_item_getctrlstate =
 {
   .name = "getstate",
   .flags = SHV_METHOD_GETTER,
-  .result = "i",
+  .param = "i(0,)|n",
+  .result = "i[PAUSED,RUNNING]",
   .access = SHV_ACCESS_READ,
   .method = shv_getstate
 };
