@@ -200,6 +200,7 @@ static void *rt_task(void *p)
 void endme(int n)
 {
   end = 1;
+  NAME(MODEL, _pt_ctx).ctrlloopend = 1;
 }
 
 void print_usage(void)
