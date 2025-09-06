@@ -25,7 +25,7 @@
 
 #include <stdlib.h>
 
-static int shv_confirm(shv_con_ctx_t *shv_ctx, shv_node_t *item, int rid)
+static int shv_confirm(struct shv_con_ctx *shv_ctx, struct shv_node *item, int rid)
 {
     shv_unpack_data(&shv_ctx->unpack_ctx, 0, 0);
     struct shv_fwstable_node *item_node = UL_CONTAINEROF(item, struct shv_fwstable_node,
@@ -39,7 +39,7 @@ static int shv_confirm(shv_con_ctx_t *shv_ctx, shv_node_t *item, int rid)
     return -1;
 }
 
-static int shv_get(shv_con_ctx_t *shv_ctx, shv_node_t *item, int rid)
+static int shv_get(struct shv_con_ctx *shv_ctx, struct shv_node *item, int rid)
 {
     shv_unpack_data(&shv_ctx->unpack_ctx, 0, 0);
     struct shv_fwstable_node *item_node = UL_CONTAINEROF(item, struct shv_fwstable_node,
@@ -52,7 +52,7 @@ static int shv_get(shv_con_ctx_t *shv_ctx, shv_node_t *item, int rid)
     return -1;
 }
 
-static const shv_method_des_t shv_dmap_item_confirm =
+static const struct shv_method_des shv_dmap_item_confirm =
 {
     .name = "confirm",
     .flags = 0,
@@ -61,7 +61,7 @@ static const shv_method_des_t shv_dmap_item_confirm =
     .method = shv_confirm
 };
 
-static const shv_method_des_t shv_dmap_item_get =
+static const struct shv_method_des shv_dmap_item_get =
 {
    .name = "get",
    .flags = SHV_METHOD_GETTER,
@@ -70,7 +70,7 @@ static const shv_method_des_t shv_dmap_item_get =
    .method = shv_get
 };
 
-static const shv_method_des_t *const shv_fwstable_dmap_items[] =
+static const struct shv_method_des *const shv_fwstable_dmap_items[] =
 {
     &shv_dmap_item_confirm,
     &shv_dmap_item_dir,
@@ -78,15 +78,15 @@ static const shv_method_des_t *const shv_fwstable_dmap_items[] =
     &shv_dmap_item_ls
 };
 
-const shv_dmap_t shv_fwstable_dmap = SHV_CREATE_NODE_DMAP(fwstable, shv_fwstable_dmap_items);
+const struct shv_dmap shv_fwstable_dmap = SHV_CREATE_NODE_DMAP(fwstable, shv_fwstable_dmap_items);
 
-static void _shv_fwstable_node_destructor(shv_node_t *this)
+static void _shv_fwstable_node_destructor(struct shv_node *this)
 {
     struct shv_fwstable_node *item = UL_CONTAINEROF(this, struct shv_fwstable_node, shv_node);
     free(item);
 }
 
-struct shv_fwstable_node *shv_fwstable_node_new(const shv_dmap_t *dir, int mode)
+struct shv_fwstable_node *shv_fwstable_node_new(const struct shv_dmap *dir, int mode)
 {
     struct shv_fwstable_node *item = calloc(1, sizeof(struct shv_fwstable_node));
     if (item == NULL) {

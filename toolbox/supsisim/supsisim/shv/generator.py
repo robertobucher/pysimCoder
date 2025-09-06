@@ -65,7 +65,7 @@ class ShvTreeGenerator:
             self.f.write(text)
 
             text = "/********** SHV Function Declarations **********/\n"
-            text += "int shv_init_fwupdate(struct pysim_platform_model_ctx *ctx, shv_file_node_t *item);\n"
+            text += "int shv_init_fwupdate(struct pysim_platform_model_ctx *ctx, struct shv_file_node *item);\n"
             text += "int shv_init_fwstable(struct pysim_platform_model_ctx *ctx, struct shv_fwstable_node *item);\n"
             text += "\n"
             self.f.write(text)
@@ -79,7 +79,7 @@ class ShvTreeGenerator:
                 + str(self.blocks_cnt)
                 + "];\n"
             )
-            text += "static shv_con_ctx_t *" + self.model + "_shv_ctx;\n"
+            text += "static struct shv_con_ctx *" + self.model + "_shv_ctx;\n"
             text += "static struct shv_connection shv_conn;\n"
             text += "#endif /* CONF_SHV_USED */\n\n"
             self.f.write(text)
@@ -122,7 +122,7 @@ class ShvTreeGenerator:
                     for i in range(0, real_params_cnt):
                         indexPar = real_par_names.index(real_par_names_ordered[i])
                         text += (
-                            "const shv_node_typed_val_t shv_node_typed_val_blk"
+                            "const struct shv_node_typed_val shv_node_typed_val_blk"
                             + str(n)
                             + "_par"
                             + str(i)
@@ -130,7 +130,7 @@ class ShvTreeGenerator:
                             + '   .shv_node = {.name = "'
                             + str(real_par_names[indexPar])
                             + '",\n'
-                            + "            .dir  = UL_CAST_UNQ1(shv_dmap_t *, &shv_double_dmap),\n"
+                            + "            .dir  = UL_CAST_UNQ1(struct shv_dmap *, &shv_double_dmap),\n"
                             + "           },\n"
                             + "   .val_ptr = &realPar_"
                             + str(index)
@@ -141,7 +141,7 @@ class ShvTreeGenerator:
                         )
                     self.f.write(text)
                     text = (
-                        "const shv_node_typed_val_t *const shv_node_typed_val_blk"
+                        "const struct shv_node_typed_val *const shv_node_typed_val_blk"
                         + str(n)
                         + "_pars"
                         + "[] = {\n"
@@ -159,11 +159,11 @@ class ShvTreeGenerator:
                     self.f.write(text)
 
                 text = (
-                    "const shv_node_t shv_node_blk"
+                    "const struct shv_node shv_node_blk"
                     + str(n)
                     + "_par = {\n"
                     + '   .name = "parameters",\n'
-                    + "   .dir  = UL_CAST_UNQ1(shv_dmap_t *, &shv_blk_dmap),\n"
+                    + "   .dir  = UL_CAST_UNQ1(struct shv_dmap *, &shv_blk_dmap),\n"
                     + "   .children = {.mode = CONF_SHV_TREE_TYPE,\n"
                 )
                 if has_real_pars:
@@ -188,7 +188,7 @@ class ShvTreeGenerator:
                     text = ""
                     for i in range(0, size(self.blocks[index].pin)):
                         text += (
-                            "const shv_node_typed_val_t shv_node_typed_val_blk"
+                            "const struct shv_node_typed_val shv_node_typed_val_blk"
                             + str(n)
                             + "_in"
                             + str(i)
@@ -196,7 +196,7 @@ class ShvTreeGenerator:
                             + '   .shv_node = {.name = "input'
                             + str(i)
                             + '",\n'
-                            + "            .dir  = UL_CAST_UNQ1(shv_dmap_t *, &shv_double_read_only_dmap),\n"
+                            + "            .dir  = UL_CAST_UNQ1(struct shv_dmap *, &shv_double_read_only_dmap),\n"
                             + "           },\n"
                             + "   .val_ptr = Node_"
                             + str(self.blocks[index].pin[i])
@@ -205,7 +205,7 @@ class ShvTreeGenerator:
                         )
                     self.f.write(text)
                     text = (
-                        "const shv_node_typed_val_t *const shv_node_typed_val_blk"
+                        "const struct shv_node_typed_val *const shv_node_typed_val_blk"
                         + str(n)
                         + "_ins"
                         + "[] = {\n"
@@ -222,11 +222,11 @@ class ShvTreeGenerator:
                     self.f.write(text)
 
                 text = (
-                    "const shv_node_t shv_node_blk"
+                    "const struct shv_node shv_node_blk"
                     + str(n)
                     + "_in = {\n"
                     + '   .name = "inputs",\n'
-                    + "   .dir  = UL_CAST_UNQ1(shv_dmap_t *, &shv_blk_dmap),\n"
+                    + "   .dir  = UL_CAST_UNQ1(struct shv_dmap *, &shv_blk_dmap),\n"
                     + "   .children = {.mode = CONF_SHV_TREE_TYPE,\n"
                 )
                 if has_inputs:
@@ -251,7 +251,7 @@ class ShvTreeGenerator:
                     text = ""
                     for i in range(0, size(self.blocks[index].pout)):
                         text += (
-                            "const shv_node_typed_val_t shv_node_typed_val_blk"
+                            "const struct shv_node_typed_val shv_node_typed_val_blk"
                             + str(n)
                             + "_out"
                             + str(i)
@@ -259,7 +259,7 @@ class ShvTreeGenerator:
                             + '   .shv_node = {.name = "output'
                             + str(i)
                             + '",\n'
-                            + "            .dir  = UL_CAST_UNQ1(shv_dmap_t *, &shv_double_read_only_dmap),\n"
+                            + "            .dir  = UL_CAST_UNQ1(struct shv_dmap *, &shv_double_read_only_dmap),\n"
                             + "           },\n"
                             + "   .val_ptr = Node_"
                             + str(self.blocks[index].pout[i])
@@ -268,7 +268,7 @@ class ShvTreeGenerator:
                         )
                     self.f.write(text)
                     text = (
-                        "const shv_node_typed_val_t *const shv_node_typed_val_blk"
+                        "const struct shv_node_typed_val *const shv_node_typed_val_blk"
                         + str(n)
                         + "_outs"
                         + "[] = {\n"
@@ -285,11 +285,11 @@ class ShvTreeGenerator:
                     self.f.write(text)
 
                 text = (
-                    "const shv_node_t shv_node_blk"
+                    "const struct shv_node shv_node_blk"
                     + str(n)
                     + "_out = {\n"
                     + '   .name = "outputs",\n'
-                    + "   .dir  = UL_CAST_UNQ1(shv_dmap_t *, &shv_blk_dmap),\n"
+                    + "   .dir  = UL_CAST_UNQ1(struct shv_dmap *, &shv_blk_dmap),\n"
                     + "   .children = {.mode = CONF_SHV_TREE_TYPE,\n"
                 )
                 if has_outputs:
@@ -310,7 +310,7 @@ class ShvTreeGenerator:
                 self.f.write(text)
 
                 text = (
-                    "const shv_node_t *const shv_node_blk"
+                    "const struct shv_node *const shv_node_blk"
                     + str(n)
                     + "_items"
                     + "[] = {\n"
@@ -322,13 +322,13 @@ class ShvTreeGenerator:
                 self.f.write(text)
 
                 text = (
-                    "const shv_node_t shv_node_blk"
+                    "const struct shv_node shv_node_blk"
                     + str(n)
                     + " = {\n"
                     + '   .name = "'
                     + str(self.blocks[index].name)
                     + '",\n'
-                    + "   .dir  = UL_CAST_UNQ1(shv_dmap_t *, &shv_blk_dmap),\n"
+                    + "   .dir  = UL_CAST_UNQ1(struct shv_dmap *, &shv_blk_dmap),\n"
                     + "   .children = {.mode = CONF_SHV_TREE_TYPE,\n"
                     + "                .list = {.gsa = {.root = {\n"
                     + "                      .items = (void **)shv_node_blk"
@@ -350,7 +350,7 @@ class ShvTreeGenerator:
                 # we have editable outputs (SHV input block)
                 for i in range(0, size(self.blocks[index].pout)):
                     text += (
-                        "const shv_node_typed_val_t shv_node_typed_val_blk"
+                        "const struct shv_node_typed_val shv_node_typed_val_blk"
                         + str(n)
                         + "_sysIn"
                         + str(i)
@@ -358,7 +358,7 @@ class ShvTreeGenerator:
                         + '   .shv_node = {.name = "input'
                         + str(i)
                         + '",\n'
-                        + "            .dir  = UL_CAST_UNQ1(shv_dmap_t *, &shv_double_dmap),\n"
+                        + "            .dir  = UL_CAST_UNQ1(struct shv_dmap *, &shv_double_dmap),\n"
                         + "           },\n"
                         + "   .val_ptr = Node_"
                         + str(self.blocks[index].pout[i])
@@ -367,7 +367,7 @@ class ShvTreeGenerator:
                     )
                 self.f.write(text)
                 text = (
-                    "const shv_node_typed_val_t *const shv_node_typed_val_blk"
+                    "const struct shv_node_typed_val *const shv_node_typed_val_blk"
                     + str(n)
                     + "_sysIns"
                     + "[] = {\n"
@@ -381,13 +381,13 @@ class ShvTreeGenerator:
                 self.f.write(text)
 
                 text = (
-                    "const shv_node_t shv_node_blk"
+                    "const struct shv_node shv_node_blk"
                     + str(n)
                     + "_sysIns = {\n"
                     + '   .name = "'
                     + str(self.blocks[index].name)
                     + '",\n'
-                    + "   .dir  = UL_CAST_UNQ1(shv_dmap_t *, &shv_blk_dmap),\n"
+                    + "   .dir  = UL_CAST_UNQ1(struct shv_dmap *, &shv_blk_dmap),\n"
                     + "   .children = {.mode = CONF_SHV_TREE_TYPE,\n"
                     + "                .list = {.gsa = {.root = {\n"
                     + "                      .items = (void **)shv_node_typed_val_blk"
@@ -408,7 +408,7 @@ class ShvTreeGenerator:
                 # we have editable inputs (SHV output block)
                 for i in range(0, size(self.blocks[index].pin)):
                     text += (
-                        "const shv_node_typed_val_t shv_node_typed_val_blk"
+                        "const struct shv_node_typed_val shv_node_typed_val_blk"
                         + str(n)
                         + "_sysOut"
                         + str(i)
@@ -416,7 +416,7 @@ class ShvTreeGenerator:
                         + '   .shv_node = {.name = "output'
                         + str(i)
                         + '",\n'
-                        + "            .dir  = UL_CAST_UNQ1(shv_dmap_t *, &shv_double_read_only_dmap),\n"
+                        + "            .dir  = UL_CAST_UNQ1(struct shv_dmap *, &shv_double_read_only_dmap),\n"
                         + "           },\n"
                         + "   .val_ptr = Node_"
                         + str(self.blocks[index].pin[i])
@@ -425,7 +425,7 @@ class ShvTreeGenerator:
                     )
                 self.f.write(text)
                 text = (
-                    "const shv_node_typed_val_t *const shv_node_typed_val_blk"
+                    "const struct shv_node_typed_val *const shv_node_typed_val_blk"
                     + str(n)
                     + "_sysOuts"
                     + "[] = {\n"
@@ -443,13 +443,13 @@ class ShvTreeGenerator:
                 self.f.write(text)
 
                 text = (
-                    "const shv_node_t shv_node_blk"
+                    "const struct shv_node shv_node_blk"
                     + str(n)
                     + "_sysOuts = {\n"
                     + '   .name = "'
                     + str(self.blocks[index].name)
                     + '",\n'
-                    + "   .dir  = UL_CAST_UNQ1(shv_dmap_t *, &shv_blk_dmap),\n"
+                    + "   .dir  = UL_CAST_UNQ1(struct shv_dmap *, &shv_blk_dmap),\n"
                     + "   .children = {.mode = CONF_SHV_TREE_TYPE,\n"
                     + "                .list = {.gsa = {.root = {\n"
                     + "                      .items = (void **)shv_node_typed_val_blk"
@@ -466,7 +466,7 @@ class ShvTreeGenerator:
                 self.f.write(text)
 
         if has_blocks:
-            text = "const shv_node_t *const shv_node_blks_list[] = {\n"
+            text = "const struct shv_node *const shv_node_blks_list[] = {\n"
             for n in range(0, self.blocks_cnt):
                 index = blks_names.index(self.blocks_ordered[n])
                 if (self.blocks[index].fcn != "shv_input") and (
@@ -477,9 +477,9 @@ class ShvTreeGenerator:
             self.f.write(text)
 
         text = (
-            "const shv_node_t shv_node_blks = {\n"
+            "const struct shv_node shv_node_blks = {\n"
             + '   .name = "blocks",\n'
-            + "   .dir = UL_CAST_UNQ1(shv_dmap_t *, &shv_root_dmap),\n"
+            + "   .dir = UL_CAST_UNQ1(struct shv_dmap *, &shv_root_dmap),\n"
             + "   .children = {.mode = CONF_SHV_TREE_TYPE,\n"
         )
         if has_blocks:
@@ -494,7 +494,7 @@ class ShvTreeGenerator:
         self.f.write(text)
 
         if has_system_inputs:
-            text = "const shv_node_t *const shv_node_blks_inputs[] = {\n"
+            text = "const struct shv_node *const shv_node_blks_inputs[] = {\n"
             for n in range(0, self.blocks_cnt):
                 index = blks_names.index(self.blocks_ordered[n])
                 if (size(self.blocks[index].pout) != 0) and (
@@ -505,9 +505,9 @@ class ShvTreeGenerator:
             self.f.write(text)
 
         text = (
-            "const shv_node_t shv_node_inputs = {\n"
+            "const struct shv_node shv_node_inputs = {\n"
             + '   .name = "inputs",\n'
-            + "   .dir = UL_CAST_UNQ1(shv_dmap_t *, &shv_root_dmap),\n"
+            + "   .dir = UL_CAST_UNQ1(struct shv_dmap *, &shv_root_dmap),\n"
             + "   .children = {.mode = CONF_SHV_TREE_TYPE,\n"
         )
         if has_system_inputs:
@@ -522,7 +522,7 @@ class ShvTreeGenerator:
         self.f.write(text)
 
         if has_system_outputs:
-            text = "const shv_node_t *const shv_node_blks_outputs[] = {\n"
+            text = "const struct shv_node *const shv_node_blks_outputs[] = {\n"
             for n in range(0, self.blocks_cnt):
                 index = blks_names.index(self.blocks_ordered[n])
                 if (size(self.blocks[index].pin) != 0) and (
@@ -533,9 +533,9 @@ class ShvTreeGenerator:
             self.f.write(text)
 
         text = (
-            "const shv_node_t shv_node_outputs = {\n"
+            "const struct shv_node shv_node_outputs = {\n"
             + '   .name = "outputs",\n'
-            + "   .dir = UL_CAST_UNQ1(shv_dmap_t *, &shv_root_dmap),\n"
+            + "   .dir = UL_CAST_UNQ1(struct shv_dmap *, &shv_root_dmap),\n"
             + "   .children = {.mode = CONF_SHV_TREE_TYPE,\n"
         )
         if has_system_outputs:
@@ -551,10 +551,10 @@ class ShvTreeGenerator:
 
         # Generate the manager node, in case of GSA_STATIC
         text = (
-            "const shv_node_model_ctx_t shv_node_manager = {\n" +
+            "const struct shv_node_model_ctx shv_node_manager = {\n" +
             "    .shv_node = {\n" +
             '        .name = "manager",\n'
-            "        .dir = UL_CAST_UNQ1(shv_dmap_t *, &shv_manager_dmap),\n" +
+            "        .dir = UL_CAST_UNQ1(struct shv_dmap *, &shv_manager_dmap),\n" +
             "        .children = { .mode = CONF_SHV_TREE_TYPE }\n" +
             "    },\n" +
             "    .model_ctx = &" + self.model + "_ctx\n" +
@@ -563,7 +563,7 @@ class ShvTreeGenerator:
         self.f.write(text)
 
         text = (
-            "const shv_node_t *const shv_tree_root_items[] = {\n"
+            "const struct shv_node *const shv_tree_root_items[] = {\n"
             + "  &shv_node_blks,\n"
             + "  &shv_node_inputs,\n"
             + "  &shv_node_manager.shv_node,\n"
@@ -572,8 +572,8 @@ class ShvTreeGenerator:
         self.f.write(text)
 
         text = (
-            "ROOT_NODE_CONST shv_node_t shv_tree_root = {\n"
-            + "   .dir = UL_CAST_UNQ1(shv_dmap_t *, &shv_root_dmap),\n"
+            "ROOT_NODE_CONST struct shv_node shv_tree_root = {\n"
+            + "   .dir = UL_CAST_UNQ1(struct shv_dmap *, &shv_root_dmap),\n"
             + "   .children = {.mode = CONF_SHV_TREE_TYPE,\n"
             + "                .list = {.gsa = {.root = {\n"
             + "                      .items = (void **)shv_tree_root_items,\n"
@@ -586,17 +586,17 @@ class ShvTreeGenerator:
 
     def _generate_fwupdate_init(self) -> str:
         text  = "#ifdef CONF_SHV_UPDATES_USED\n"
-        text += '  shv_file_node_t *shv_fwupdate_node = shv_tree_file_node_new("fwUpdate", &shv_file_node_dmap, CONF_SHV_TREE_TYPE);\n'
+        text += '  struct shv_file_node *shv_fwupdate_node = shv_tree_file_node_new("fwUpdate", &shv_file_node_dmap, CONF_SHV_TREE_TYPE);\n'
         text += "  if (shv_fwupdate_node == NULL)\n"
         text += "    return -1;\n"
         text += "  shv_init_fwupdate(&" + self.model + "_pt_ctx, shv_fwupdate_node);\n"
         text += "#else\n"
-        text += "  shv_file_node_t *shv_fwupdate_node = NULL;\n"
+        text += "  struct shv_file_node *shv_fwupdate_node = NULL;\n"
         text += "#endif /* CONF_SHV_UPDATES_USED */\n"
         return text
 
     def _generate_dotdevice_init(self) -> str:
-        text  = "  shv_dotdevice_node_t *shv_dotdevice_node = shv_tree_dotdevice_node_new(&shv_dotdevice_dmap, CONF_SHV_TREE_TYPE);\n"
+        text  = "  struct shv_dotdevice_node *shv_dotdevice_node = shv_tree_dotdevice_node_new(&shv_dotdevice_dmap, CONF_SHV_TREE_TYPE);\n"
         text += "  if (shv_dotdevice_node == NULL)\n"
         text += "    return -1;\n"
         text += "  /* Fill in the dotdevice parameters */\n"
@@ -624,7 +624,7 @@ class ShvTreeGenerator:
         text += "  /* Call shv_tree_init() to initialize SHV tree */\n"
 
         if environ["SHV_TREE_TYPE"] != "GSA_STATIC":
-            text += "  const shv_node_t shv_tree_root = {};\n"
+            text += "  const struct shv_node shv_tree_root = {};\n"
 
         text += '  shv_connection_init(&shv_conn, SHV_TLAYER_TCPIP);\n'
         text += '  shv_conn.broker_user = "' + environ["SHV_BROKER_USER"] + '";\n'
@@ -656,7 +656,7 @@ class ShvTreeGenerator:
             + self.model
             + "_shv_ctx = shv_tree_init(&block_name_map_"
             + self.model
-            + ", (const shv_node_t *) &shv_tree_root, CONF_SHV_TREE_TYPE, "
+            + ", (const struct shv_node *) &shv_tree_root, CONF_SHV_TREE_TYPE, "
             + "&shv_conn, at_signlr, shv_fwupdate_node, shv_dotdevice_node, fwstable_node);\n"
         )
         text += "  if (" + self.model + "_shv_ctx == NULL)\n"

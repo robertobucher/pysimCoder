@@ -59,7 +59,7 @@ struct pysim_platform_model_ctx
 struct pysim_platform_model_ctx NAME(MODEL, _pt_ctx);
 
 #ifdef CONF_SHV_USED
-static void shv_my_at_signlr(shv_con_ctx_t *ctx, enum shv_attention_reason r)
+static void shv_my_at_signlr(struct shv_con_ctx *ctx, enum shv_attention_reason r)
 {
 }
 #endif
@@ -353,7 +353,7 @@ int NAME(MODEL, _getctrlstate)(struct pysim_platform_model_ctx *ctx)
  * updatedexe_MODEL
  */
 int shv_init_fwupdate(struct pysim_platform_model_ctx *ctx,
-                      shv_file_node_t *file_node)
+                      struct shv_file_node *file_node)
 {
   if (ctx == NULL || file_node == NULL) {
       return -1;

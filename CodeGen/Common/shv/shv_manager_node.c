@@ -24,7 +24,7 @@
 #include <shv/tree/shv_com.h>
 #include <ulut/ul_utdefs.h>
 
-static int shv_pausectrl(shv_con_ctx_t *shv_ctx, shv_node_t *item, int rid)
+static int shv_pausectrl(struct shv_con_ctx *shv_ctx, struct shv_node *item, int rid)
 {
     shv_unpack_data(&shv_ctx->unpack_ctx, 0, 0);
     struct shv_node_model_ctx *item_node = UL_CONTAINEROF(item, struct shv_node_model_ctx,
@@ -39,7 +39,7 @@ static int shv_pausectrl(shv_con_ctx_t *shv_ctx, shv_node_t *item, int rid)
     return -1;
 }
 
-static int shv_resumectrl(shv_con_ctx_t *shv_ctx, shv_node_t *item, int rid)
+static int shv_resumectrl(struct shv_con_ctx *shv_ctx, struct shv_node *item, int rid)
 {
     shv_unpack_data(&shv_ctx->unpack_ctx, 0, 0);
     struct shv_node_model_ctx *item_node = UL_CONTAINEROF(item, struct shv_node_model_ctx,
@@ -54,7 +54,7 @@ static int shv_resumectrl(shv_con_ctx_t *shv_ctx, shv_node_t *item, int rid)
     return -1;
 }
 
-static int shv_getstate(shv_con_ctx_t *shv_ctx, shv_node_t *item, int rid)
+static int shv_getstate(struct shv_con_ctx *shv_ctx, struct shv_node *item, int rid)
 {
     shv_unpack_data(&shv_ctx->unpack_ctx, 0, 0);
     struct shv_node_model_ctx *item_node = UL_CONTAINEROF(item, struct shv_node_model_ctx,
@@ -68,7 +68,7 @@ static int shv_getstate(shv_con_ctx_t *shv_ctx, shv_node_t *item, int rid)
     return -1;
 }
 
-static const shv_method_des_t shv_dmap_item_pausectrl =
+static const struct shv_method_des shv_dmap_item_pausectrl =
 {
   .name = "pause",
   .flags = 0,
@@ -78,7 +78,7 @@ static const shv_method_des_t shv_dmap_item_pausectrl =
   .method = shv_pausectrl
 };
 
-static const shv_method_des_t shv_dmap_item_resumectrl =
+static const struct shv_method_des shv_dmap_item_resumectrl =
 {
   .name = "resume",
   .flags = 0,
@@ -88,7 +88,7 @@ static const shv_method_des_t shv_dmap_item_resumectrl =
   .method = shv_resumectrl
 };
 
-static const shv_method_des_t shv_dmap_item_getctrlstate =
+static const struct shv_method_des shv_dmap_item_getctrlstate =
 {
   .name = "getstate",
   .flags = SHV_METHOD_GETTER,
@@ -98,7 +98,7 @@ static const shv_method_des_t shv_dmap_item_getctrlstate =
   .method = shv_getstate
 };
 
-static const shv_method_des_t * const shv_manager_dmap_items[] =
+static const struct shv_method_des * const shv_manager_dmap_items[] =
 {
   &shv_dmap_item_dir,
   &shv_dmap_item_getctrlstate,
@@ -107,7 +107,7 @@ static const shv_method_des_t * const shv_manager_dmap_items[] =
   &shv_dmap_item_resumectrl
 };
 
-const shv_dmap_t shv_manager_dmap = 
+const struct shv_dmap shv_manager_dmap =
 {
   .methods =
   {

@@ -23,15 +23,15 @@
 
 struct shv_fwstable_node
 {
-    shv_node_t shv_node;      /* Base node */
+    struct shv_node shv_node; /* Base node */
     struct {
         int (*confirm)(void); /* A callback to confirm the newly updated image */
         int (*get)(void);     /* A callback to get image's current state (confirmed/unconfirmed) */
     } ops;
 };
 
-extern const shv_dmap_t shv_fwstable_dmap;
+extern const struct shv_dmap shv_fwstable_dmap;
 
-struct shv_fwstable_node *shv_fwstable_node_new(const shv_dmap_t *dir, int mode);
+struct shv_fwstable_node *shv_fwstable_node_new(const struct shv_dmap *dir, int mode);
 
 #endif /* _SHV_FWSTABLE_NODE_H */

@@ -37,25 +37,25 @@
  */
 
 /* A SHV node used by the model's manager */
-typedef struct shv_node_model_ctx {
-  shv_node_t shv_node;               /* Node instance */
+struct shv_node_model_ctx {
+  struct shv_node shv_node;          /* Node instance */
   struct pysim_model_ctx *model_ctx; /* A pointer to the model's context, needed for interaction */
-} shv_node_model_ctx_t;
+};
 
 struct shv_node_model_ctx *shv_node_model_ctx_new(const char *child_name,
-                                                  const shv_dmap_t *dir,
+                                                  const struct shv_dmap *dir,
                                                   int mode);
 
-shv_con_ctx_t *shv_tree_init(python_block_name_map * block_map,
-                             const shv_node_t *static_root, int mode,
-                             struct shv_connection *conn,
-                             shv_attention_signaller at_signlr,
-                             shv_file_node_t *fwupdate_node,
-                             shv_dotdevice_node_t *dotdevice_node,
-                             struct shv_fwstable_node *fwstable_node);
+struct shv_con_ctx *shv_tree_init(python_block_name_map * block_map,
+                                  const struct shv_node *static_root, int mode,
+                                  struct shv_connection *conn,
+                                  shv_attention_signaller at_signlr,
+                                  struct shv_file_node *fwupdate_node,
+                                  struct shv_dotdevice_node *dotdevice_node,
+                                  struct shv_fwstable_node *fwstable_node);
 
-void shv_tree_end(shv_con_ctx_t *ctx, int mode);
+void shv_tree_end(struct shv_con_ctx *ctx, int mode);
 
-extern const shv_dmap_t shv_blk_dmap;
+extern const struct shv_dmap shv_blk_dmap;
 
 #endif /* SHV_PYSIM_H */

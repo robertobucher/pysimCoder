@@ -31,12 +31,12 @@
 #include <shv_pysim.h>
 #include <shv_manager_node.h>
 
-static const shv_method_des_t * const shv_blk_dmap_items[] = {
+static const struct shv_method_des * const shv_blk_dmap_items[] = {
   &shv_dmap_item_dir,
   &shv_dmap_item_ls,
 };
 
-const shv_dmap_t shv_blk_dmap = {.methods = {.items = (void **)shv_blk_dmap_items,
+const struct shv_dmap shv_blk_dmap = {.methods = {.items = (void **)shv_blk_dmap_items,
                                              .count = sizeof(shv_blk_dmap_items)/sizeof(shv_blk_dmap_items[0]),
                                              .alloc_count = 0,
                                             }};
@@ -50,9 +50,9 @@ const shv_dmap_t shv_blk_dmap = {.methods = {.items = (void **)shv_blk_dmap_item
  ****************************************************************************/
 
 static void shv_add_block(python_block_name_map *block_map, int index,
-                   shv_node_t *item_blk, int mode)
+                   struct shv_node *item_blk, int mode)
 {
-  shv_node_t *item_blk_par = shv_tree_node_new("parameters", &shv_dir_ls_dmap, mode);
+  struct shv_node *item_blk_par = shv_tree_node_new("parameters", &shv_dir_ls_dmap, mode);
   if (item_blk_par == NULL)
     {
       printf("ERROR: Failed to allocate memory for SHV tree block's parameters.");
@@ -66,7 +66,7 @@ static void shv_add_block(python_block_name_map *block_map, int index,
   for (int j = 0; j < block_map->block_structure[index].realParNum; j++)
     {
       const char *par_name = block_map->block_structure[index].realParNames[j];
-      shv_node_typed_val_t *item_par = shv_tree_node_typed_val_new(par_name,
+      struct shv_node_typed_val *item_par = shv_tree_node_typed_val_new(par_name,
                                                             &shv_double_dmap, mode);
 
       item_par->val_ptr = &block_map->block_structure[index].realPar[j];
@@ -75,7 +75,7 @@ static void shv_add_block(python_block_name_map *block_map, int index,
       shv_tree_add_child(item_blk_par, &item_par->shv_node);
     }
 
-  shv_node_t *item_blk_ins = shv_tree_node_new("inputs", &shv_dir_ls_dmap, mode);
+  struct shv_node *item_blk_ins = shv_tree_node_new("inputs", &shv_dir_ls_dmap, mode);
   if (item_blk_ins == NULL)
     {
       printf("ERROR: Failed to allocate memory for SHV tree block's inputs.");
@@ -94,7 +94,7 @@ static void shv_add_block(python_block_name_map *block_map, int index,
         }
 
       snprintf(input_name, 10, "input%d", j % 1000);
-      shv_node_typed_val_t *item_val = shv_tree_node_typed_val_new(input_name,
+      struct shv_node_typed_val *item_val = shv_tree_node_typed_val_new(input_name,
                                                            &shv_double_read_only_dmap,
                                                            mode);
 
@@ -105,7 +105,7 @@ static void shv_add_block(python_block_name_map *block_map, int index,
       shv_tree_add_child(item_blk_ins, &item_val->shv_node);
     }
 
-  shv_node_t *item_blk_outs = shv_tree_node_new("outputs", &shv_dir_ls_dmap, mode);
+  struct shv_node *item_blk_outs = shv_tree_node_new("outputs", &shv_dir_ls_dmap, mode);
   if (item_blk_outs == NULL)
     {
       printf("ERROR: Failed to allocate memory for SHV tree block's inputs.");
@@ -124,7 +124,7 @@ static void shv_add_block(python_block_name_map *block_map, int index,
         }
 
       snprintf(output_name, 10, "output%d", j % 1000);
-      shv_node_typed_val_t *item_val = shv_tree_node_typed_val_new(output_name,
+      struct shv_node_typed_val *item_val = shv_tree_node_typed_val_new(output_name,
                                                            &shv_double_read_only_dmap,
                                                            mode);
 
@@ -145,7 +145,7 @@ static void shv_add_block(python_block_name_map *block_map, int index,
  ****************************************************************************/
 
 static void shv_add_system_in(python_block_name_map *block_map, int index,
-                       shv_node_t *item_blk, int mode)
+                       struct shv_node *item_blk, int mode)
 {
   /* For each block input */
 
@@ -159,7 +159,7 @@ static void shv_add_system_in(python_block_name_map *block_map, int index,
         }
 
       snprintf(input_name, 10, "input%d", j % 1000);
-      shv_node_typed_val_t *item_val = shv_tree_node_typed_val_new(input_name,
+      struct shv_node_typed_val *item_val = shv_tree_node_typed_val_new(input_name,
                                                             &shv_double_dmap,
                                                             mode);
 
@@ -180,7 +180,7 @@ static void shv_add_system_in(python_block_name_map *block_map, int index,
  ****************************************************************************/
 
 static void shv_add_system_out(python_block_name_map *block_map, int index,
-                       shv_node_t *item_blk, int mode)
+                       struct shv_node *item_blk, int mode)
 {
   /* For each block input */
 
@@ -194,7 +194,7 @@ static void shv_add_system_out(python_block_name_map *block_map, int index,
         }
 
       snprintf(output_name, 10, "output%d", j % 1000);
-      shv_node_typed_val_t *item_val = shv_tree_node_typed_val_new(output_name,
+      struct shv_node_typed_val *item_val = shv_tree_node_typed_val_new(output_name,
                                                             &shv_double_read_only_dmap,
                                                             mode);
 
@@ -215,13 +215,13 @@ static void shv_add_system_out(python_block_name_map *block_map, int index,
  ****************************************************************************/
 
 static void shv_tree_create(python_block_name_map * block_map,
-                     shv_node_t *shv_tree_root,
+                     struct shv_node *shv_tree_root,
                      int mode)
 {
   int n_blocks = block_map->blocks_count;
-  shv_node_t *item_in;
-  shv_node_t *item_out;
-  shv_node_t *item_blocks;
+  struct shv_node *item_in;
+  struct shv_node *item_out;
+  struct shv_node *item_blocks;
   struct shv_node_model_ctx *item_manager;
 
   /* Initialization of tree root */
@@ -295,7 +295,7 @@ static void shv_tree_create(python_block_name_map * block_map,
 
       if ((block_map->blocks[i].system_outputs == 0) && (block_map->blocks[i].system_inputs == 0))
         {
-          shv_node_t *item_blk = shv_tree_node_new(blk_name, &shv_blk_dmap, mode);
+          struct shv_node *item_blk = shv_tree_node_new(blk_name, &shv_blk_dmap, mode);
           if (item_blk == NULL)
             {
               printf("ERROR: Failed to allocate memory for SHV tree block \"%s\"!", blk_name);
@@ -313,7 +313,7 @@ static void shv_tree_create(python_block_name_map * block_map,
 
       if (block_map->blocks[i].system_inputs == 1)
         {
-          shv_node_t *item_blk = shv_tree_node_new(blk_name, &shv_blk_dmap, mode);
+          struct shv_node *item_blk = shv_tree_node_new(blk_name, &shv_blk_dmap, mode);
           if (item_blk == NULL)
             {
               printf("ERROR: Failed to allocate memory for SHV tree block \"%s\"!", blk_name);
@@ -329,7 +329,7 @@ static void shv_tree_create(python_block_name_map * block_map,
 
       if (block_map->blocks[i].system_outputs == 1)
         {
-          shv_node_t *item_blk = shv_tree_node_new(blk_name, &shv_blk_dmap, mode);
+          struct shv_node *item_blk = shv_tree_node_new(blk_name, &shv_blk_dmap, mode);
           if (item_blk == NULL)
             {
               printf("ERROR: Failed to allocate memory for SHV tree block \"%s\"!", blk_name);
@@ -343,14 +343,14 @@ static void shv_tree_create(python_block_name_map * block_map,
     }
 }
 
-static void _shv_node_model_ctx_destructor(shv_node_t *this)
+static void _shv_node_model_ctx_destructor(struct shv_node *this)
 {
   struct shv_node_model_ctx *item = UL_CONTAINEROF(this, struct shv_node_model_ctx, shv_node);
   free(item);
 }
 
 struct shv_node_model_ctx *shv_node_model_ctx_new(const char *child_name,
-                                                  const shv_dmap_t *dir,
+                                                  const struct shv_dmap *dir,
                                                   int mode)
 {
     struct shv_node_model_ctx *item = calloc(1, sizeof(struct shv_node_model_ctx));
@@ -374,15 +374,15 @@ struct shv_node_model_ctx *shv_node_model_ctx_new(const char *child_name,
  *
  ****************************************************************************/
 
-shv_con_ctx_t *shv_tree_init(python_block_name_map * block_map,
-                             const shv_node_t *static_root, int mode,
-                             struct shv_connection *conn,
-                             shv_attention_signaller at_signlr,
-                             shv_file_node_t *fwupdate_root,
-                             shv_dotdevice_node_t *dotdevice_node,
-                             struct shv_fwstable_node *fwstable_node)
+struct shv_con_ctx *shv_tree_init(python_block_name_map * block_map,
+                                  const struct shv_node *static_root, int mode,
+                                  struct shv_connection *conn,
+                                  shv_attention_signaller at_signlr,
+                                  struct shv_file_node *fwupdate_root,
+                                  struct shv_dotdevice_node *dotdevice_node,
+                                  struct shv_fwstable_node *fwstable_node)
 {
-  const shv_node_t *root;
+  const struct shv_node *root;
   int comprio;
   int ret;
 
@@ -404,7 +404,7 @@ shv_con_ctx_t *shv_tree_init(python_block_name_map * block_map,
           printf("ERROR: malloc() failed\n");
           return NULL;
         }
-      shv_tree_create(block_map, (shv_node_t *)root, mode);
+      shv_tree_create(block_map, (struct shv_node *)root, mode);
     }
   else
     {
@@ -415,20 +415,20 @@ shv_con_ctx_t *shv_tree_init(python_block_name_map * block_map,
 
   if (fwupdate_root != NULL)
     {
-      shv_tree_add_child((shv_node_t*) root, &fwupdate_root->shv_node);
+      shv_tree_add_child((struct shv_node*) root, &fwupdate_root->shv_node);
     }
   if (dotdevice_node != NULL)
     {
-      shv_tree_add_child((shv_node_t*) root, &dotdevice_node->shv_node);
+      shv_tree_add_child((struct shv_node*) root, &dotdevice_node->shv_node);
     }
   if (fwstable_node != NULL)
     {
-      shv_tree_add_child((shv_node_t*) root, &fwstable_node->shv_node);
+      shv_tree_add_child((struct shv_node*) root, &fwstable_node->shv_node);
     }
 
-   /* Initialize SHV connection */
+  /* Initialize SHV connection */
 
-  shv_con_ctx_t *ctx = shv_com_init((shv_node_t *)root, conn, at_signlr);
+  struct shv_con_ctx *ctx = shv_com_init((struct shv_node *)root, conn, at_signlr);
   if (ctx == NULL)
     {
       printf("ERROR: shv_init() failed.\n");
@@ -453,7 +453,7 @@ shv_con_ctx_t *shv_tree_init(python_block_name_map * block_map,
  *
  ****************************************************************************/
 
-void shv_tree_end(shv_con_ctx_t *ctx, int mode)
+void shv_tree_end(struct shv_con_ctx *ctx, int mode)
 {
   struct shv_node *root;
   if (ctx == NULL)

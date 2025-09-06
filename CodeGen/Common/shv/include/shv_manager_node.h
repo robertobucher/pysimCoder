@@ -21,6 +21,6 @@
 
 #include <shv/tree/shv_tree.h>
 
-extern const shv_dmap_t shv_manager_dmap;
+extern const struct shv_dmap shv_manager_dmap;
 
 #endif /* _SHV_MANAGER_NODE_H */

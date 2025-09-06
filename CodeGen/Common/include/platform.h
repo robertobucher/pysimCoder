@@ -89,7 +89,7 @@ int NAME(MODEL, _com_end)(void);                                 /* deinit the c
 
 #ifdef CONF_SHV_UPDATES_USED
 int shv_init_fwupdate(struct pysim_platform_model_ctx *ctx,
-                      shv_file_node_t *file_node);              /* init the fwupdate node */
+                      struct shv_file_node *file_node);         /* init the fwupdate node */
 int shv_init_fwstable(struct pysim_platform_model_ctx *ctx,
                       struct shv_fwstable_node *fwstable_node); /* init the fwstable node */
 #endif /* CONF_SHV_UPDATES_USED */

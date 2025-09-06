@@ -90,7 +90,7 @@ static void proc_opt(int argc, char *argv[]);
 static void endme(int n);
 static void print_usage(void);
 #ifdef CONF_SHV_USED
-static void shv_my_at_signlr(shv_con_ctx_t *ctx, enum shv_attention_reason r);
+static void shv_my_at_signlr(struct shv_con_ctx *ctx, enum shv_attention_reason r);
 #endif
 
 /* Platform dependant model context, use this to store parameters. */
@@ -179,7 +179,7 @@ static void *benchmark_task(void *p)
 }
 
 #ifdef CONF_SHV_USED
-static void shv_my_at_signlr(shv_con_ctx_t *ctx, enum shv_attention_reason r)
+static void shv_my_at_signlr(struct shv_con_ctx *ctx, enum shv_attention_reason r)
 {
 }
 #endif
@@ -577,7 +577,7 @@ int NAME(MODEL, _getctrlstate)(struct pysim_platform_model_ctx *ctx)
 
 #ifdef CONF_SHV_USED
 #ifdef CONF_SHV_UPDATES_USED
-static int _shv_nxboot_opener(shv_file_node_t *item)
+static int _shv_nxboot_opener(struct shv_file_node *item)
 {
   struct shv_file_node_fctx *fctx = (struct shv_file_node_fctx*) item->fctx;
   if (!(fctx->flags & SHV_FILE_POSIX_BITFLAG_OPENED))
@@ -596,7 +596,7 @@ static int _shv_nxboot_opener(shv_file_node_t *item)
  * for NuttX and allows for NXBoot integration.
  */
 int shv_init_fwupdate(struct pysim_platform_model_ctx *ctx,
-                      shv_file_node_t *file_node)
+                      struct shv_file_node *file_node)
 {
   if (ctx == NULL || file_node == NULL)
     {
