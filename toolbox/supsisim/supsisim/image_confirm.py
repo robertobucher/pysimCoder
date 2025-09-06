@@ -57,7 +57,8 @@ class SHVConfirmMethod(ImageConfirmMethod):
         await asyncio.sleep(0)
         ret = self.shvclient.confirm_image()
 
-        if isinstance(ret, int) and int(ret) == 0:
+        # default fwStable/confirm response
+        if ret is None:
             queue.put_nowait(True)
         elif isinstance(ret, str):
             queue.put_nowait(f"Response from device: {ret}")
