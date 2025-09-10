@@ -1,4 +1,5 @@
 MODEL = $$MODEL$$
+ADDITIONAL_DEFINES = $$ADDITIONAL_DEFINES$$
 all: ../$(MODEL)
 
 PYCODEGEN = $(PYSUPSICTRL)/CodeGen
@@ -14,8 +15,7 @@ TOS1A_LIB  = $(PYCODEGEN)/tos1a/lib
 TOS1A_INC  = $(PYCODEGEN)/tos1a/includes
 
 SHV_INC = $(PYCODEGEN)/Common/shv/include
-ULUT_INC = $(PYSUPSICTRL)/ExtLibs/ulut
-EXT_SHV_INC = $(PYSUPSICTRL)/ExtLibs/libshv/libshvchainpack/c/include
+GENERATED_INC = $(PYCODEGEN)/LinuxRT/include-generated
 
 RM = rm -f
 FILES_TO_CLEAN = *.o $(MODEL)
@@ -38,18 +38,21 @@ ifeq ($(shell test -e $(FIRMATA_LIB)/firmatapyblk.a && echo -n yes),yes)
     LIB += $(FIRMATA_LIB)/firmatapyblk.a
 endif
 
+# shv-libs4c has zlib as a dependancy
+LIB += $(wildcard $(LIBDIR)/libshvtree.a)
+LIB += $(wildcard $(LIBDIR)/libshvchainpack.a)
+LIB += $(wildcard $(LIBDIR)/libulut.a)
+LIB += -lz
 
-CFLAGS = $(CC_OPTIONS) -Wall -O2 -I$(TOS1A_INC) -I$(FIRMATA_INC) -I$(INCDIR) -I$(COMMON_INCDIR) $(C_FLAGS) -DMODEL=$(MODEL)
+CFLAGS = $(CC_OPTIONS) -Wall -O2 -DMODEL=$(MODEL)
+CFLAGS += -I$(TOS1A_INC) -I$(FIRMATA_INC) -I$(INCDIR) -I$(COMMON_INCDIR)
 
 CFLAGS += -I$(SHV_INC)
-ifneq ($(wildcard $(ULUT_INC)),)
-ULUT_INC = $(PYSUPSICTRL)/ExtLibs/ulut
-CFLAGS += -I$(ULUT_INC)
-endif
-ifneq ($(wildcard $(EXT_SHV_INC)),)
-CFLAGS += -I$(EXT_SHV_INC)
+ifneq ($(wildcard $(GENERATED_INC)),)
+CFLAGS += -I$(GENERATED_INC)
 endif
 
+CFLAGS += $(ADDITIONAL_DEFINES) $(C_FLAGS)
 
 $(MAIN).c: $(MAINDIR)/$(MAIN).c $(MODEL).c
 	cp $< .

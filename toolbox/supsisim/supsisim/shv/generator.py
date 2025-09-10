@@ -28,10 +28,10 @@ class ShvTreeGenerator:
         self.f.write(text)
 
         text = "#ifdef CONF_SHV_USED\n"
-        text += "#include <shv_tree.h>\n"
+        text += "#include <shv/tree/shv_tree.h>\n"
         text += "#include <shv_pysim.h>\n"
-        text += "#include <shv_methods.h>\n"
-        text += "#include <shv_com.h>\n"
+        text += "#include <shv/tree/shv_methods.h>\n"
+        text += "#include <shv/tree/shv_com.h>\n"
         text += "#include <ulut/ul_utdefs.h>\n\n"
         self.f.write(text)
 

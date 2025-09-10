@@ -1,4 +1,5 @@
 MODEL = $$MODEL$$
+ADDITIONAL_DEFINES = $$ADDITIONAL_DEFINES$$
 all: ../$(MODEL)
 
 PYCODEGEN = $(PYSUPSICTRL)/CodeGen
@@ -8,8 +9,7 @@ INCDIR  = $(PYCODEGEN)/linux_mz_apo/include
 COMMON_INCDIR = $(PYCODEGEN)/Common/include
 
 SHV_INC = $(PYCODEGEN)/Common/shv/include
-ULUT_INC = $(PYSUPSICTRL)/ExtLibs/ulut
-EXT_SHV_INC = $(PYSUPSICTRL)/ExtLibs/libshv/libshvchainpack/c/include
+GENERATED_INC = $(PYCODEGEN)/linux_mz_apo/include-generated
 
 RM = rm -f
 FILES_TO_CLEAN = *.o $(MODEL)
@@ -22,18 +22,23 @@ ADD_FILES = $$ADD_FILES$$
 
 OBJSSTAN = $(MAIN).o $(MODEL).o $(ADD_FILES)
 
-CFLAGS = $(CC_OPTIONS) -O2 -I$(INCDIR) -I$(COMMON_INCDIR) $(C_FLAGS) -DMODEL=$(MODEL)
+LIB = $(LIBDIR)/libpyblk.a
+
+# shv-libs4c has zlib as a dependancy
+LIB += $(wildcard $(LIBDIR)/libshvtree.a)
+LIB += $(wildcard $(LIBDIR)/libshvchainpack.a)
+LIB += $(wildcard $(LIBDIR)/libulut.a)
+LIB += -lz
+
+CFLAGS = $(CC_OPTIONS) -Wall -O2 -DMODEL=$(MODEL)
+CFLAGS += -I$(INCDIR) -I$(COMMON_INCDIR)
 
 CFLAGS += -I$(SHV_INC)
-ifneq ($(wildcard $(ULUT_INC)),)
-ULUT_INC = $(PYSUPSICTRL)/ExtLibs/ulut
-CFLAGS += -I$(ULUT_INC)
-endif
-ifneq ($(wildcard $(EXT_SHV_INC)),)
-CFLAGS += -I$(EXT_SHV_INC)
+ifneq ($(wildcard $(GENERATED_INC)),)
+CFLAGS += -I$(GENERATED_INC)
 endif
 
-LIB = $(LIBDIR)/libpyblk.a
+CFLAGS += $(ADDITIONAL_DEFINES) $(C_FLAGS)
 
 $(MAIN).c: $(MAINDIR)/$(MAIN).c $(MODEL).c
 	cp $< .

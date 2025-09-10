@@ -22,15 +22,17 @@
 
 #include <pyblock.h>
 
-#include "shv_tree.h"
-#include "shv_pysim.h"
-#include "shv_methods.h"
 #include "ulut/ul_utdefs.h"
+#include "shv/tree/shv_tree.h"
+#include "shv/tree/shv_methods.h"
+#include "shv_pysim.h"
 
 const shv_method_des_t * const shv_blk_dmap_items[] = {
   &shv_dmap_item_dir,
   &shv_dmap_item_ls,
 };
+
+extern int get_priority_for_com(void);
 
 const shv_dmap_t shv_blk_dmap = {.methods = {.items = (void **)shv_blk_dmap_items,
                                              .count = sizeof(shv_blk_dmap_items)/sizeof(shv_blk_dmap_items[0]),
@@ -323,6 +325,14 @@ void shv_tree_create(python_block_name_map * block_map,
 }
 
 /****************************************************************************
+ Functions to keep intermediate version working with new shv-libs4c
+ ****************************************************************************/
+
+static void shv_my_at_signlr(struct shv_con_ctx *ctx, enum shv_attention_reason r)
+{
+}
+
+/****************************************************************************
  * Name: shv_tree_init
  *
  * Description:
@@ -336,6 +346,29 @@ shv_con_ctx_t *shv_tree_init(python_block_name_map * block_map,
 {
   int ret;
   const shv_node_t *root;
+  shv_attention_signaller at_signlr = shv_my_at_signlr;
+  static struct shv_connection shv_conn;
+  uint16_t port;
+  char *shv_broker_ip;
+  char *shv_broker_port;
+
+  shv_broker_ip = getenv("SHV_BROKER_IP");
+  if (!shv_broker_ip)
+    {
+      printf("Unable to get SHV_BROKER_IP env variable.");
+      return NULL;
+    }
+
+  shv_broker_port = getenv("SHV_BROKER_PORT");
+  if (!shv_broker_port)
+    {
+      printf("Unable to get SHV_BROKER_PORT env variable.");
+      return NULL;
+    }
+  else
+    {
+      port = atoi(shv_broker_port);
+    }
 
   if ((mode & SHV_NLIST_MODE_STATIC) == 0)
     {
@@ -355,11 +388,25 @@ shv_con_ctx_t *shv_tree_init(python_block_name_map * block_map,
     }
 
   /* Initialize SHV connection */
+  shv_connection_init(&shv_conn, SHV_TLAYER_TCPIP);
+  shv_conn.broker_user = getenv("SHV_BROKER_USER");
+  shv_conn.broker_password = getenv("SHV_BROKER_PASSWORD");
+  shv_conn.broker_mount = getenv("SHV_BROKER_MOUNT");
+  shv_conn.device_id = getenv("SHV_BROKER_DEV_ID");
+  shv_conn.reconnect_period = 10;
+  shv_conn.reconnect_retries = 0;
+  shv_connection_tcpip_init(&shv_conn, shv_broker_ip, port);
 
-  shv_con_ctx_t *ctx = shv_com_init((shv_node_t *)root);
+  struct shv_con_ctx *ctx = shv_com_init((struct shv_node *)root, &shv_conn, at_signlr);
   if (ctx == NULL)
     {
       printf("ERROR: shv_init() failed.\n");
+    }
+
+  ret = shv_create_process_thread(get_priority_for_com(), ctx);
+  if (ret < 0)
+    {
+      printf("ERROR: %s\n", shv_errno_str(ctx));
     }
 
   return ctx;
@@ -377,20 +424,22 @@ shv_con_ctx_t *shv_tree_init(python_block_name_map * block_map,
 
 void shv_tree_end(shv_con_ctx_t *ctx, int mode)
 {
-  int ret;
+  struct shv_node *root;
 
   if (ctx == NULL)
     {
       return;
     }
 
-  /* Terminate TCP connection */
+  root = ctx->root;
 
-  shv_com_end(ctx);
+  /* Terminate the SHV connection */
+
+  shv_com_destroy(ctx);
 
   /* And destroy SHV tree */
-
-  shv_tree_destroy(ctx->root);
-
-  free(ctx);
+  if ((root->children.mode & SHV_NLIST_MODE_STATIC) == 0)
+    {
+      shv_tree_destroy(root);
+    }
 }

@@ -11,11 +11,7 @@ all: default
 #EMBEDROMFS = romfs
 
 SHV_INC = $(PYCODEGEN)/Common/shv/include
-
-# If this path DOES not exist, we don't have any SHV support
-# or it is already included in NuttX.
-EXT_SHV_INC = $(PYSUPSICTRL)/ExtLibs/libshv/libshvchainpack/c/include
-ULUT_INC = $(PYSUPSICTRL)/ExtLibs/ulut
+GENERATED_INC = $(PYCODEGEN)/nuttx/include-generated
 
 RM = rm -f
 FILES_TO_CLEAN = *.o $(MODEL) $(MODEL).elf $(MAIN)-builtintab.c
@@ -156,13 +152,20 @@ INCLUDES += -I$(INCDIR) -I$(COMMON_INCDIR) $(NUTTX_INCLUDES)
 CFLAGS = $(TARGET_ARCH_FLAGS) $(ARCHWARNINGS) $(OPT_OPTS) $(INCLUDES) -DMODEL=$(MODEL) $(ADDITIONAL_DEFINES)
 
 # Test, whether the directory exists
-ifneq ($(wildcard $(EXT_SHV_INC))),)
-CFLAGS += -I$(SHV_INC) -I$(EXT_SHV_INC) -I$(ULUT_INC)
+ifneq ($(wildcard $(GENERATED_INC)),)
+CFLAGS += -I$(GENERATED_INC)
 endif
+CFLAGS += -I$(SHV_INC)
 
 CXXFLAGS = $(TARGET_ARCH_FLAGS) $(ARCHCXXFLAGS) $(ARCHWARNINGSXX) $(OPT_OPTS) $(INCLUDES) -DMODEL=$(MODEL)
 
 LIB = $(LIBDIR)/libpyblk.a
+LIB = $(LIBDIR)/libpyblk.a
+
+# shv-libs4c has zlib as a dependancy
+LIB += $(wildcard $(LIBDIR)/libshvtree.a)
+LIB += $(wildcard $(LIBDIR)/libshvchainpack.a)
+LIB += $(wildcard $(LIBDIR)/libulut.a)
 
 default: $(MODEL_BINARIES)
 
