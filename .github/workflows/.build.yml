@@ -23,8 +23,9 @@ jobs:
       - name: Linux MZ APO
         run: "make linux_mzapo"
 
-      - name: Arduino Firmata
-        run: "make arduino_firmata"
+      # Disable for now, dependency is missing and prevents SHV CI
+      # - name: Arduino Firmata
+      #   run: "make arduino_firmata"
 
       - name: LinuxRT with SHV
         run: "make full_lib SHV=1"
