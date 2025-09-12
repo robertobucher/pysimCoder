@@ -143,10 +143,13 @@ EXTLIB_LDFLAGS=$(CC_FLAGS)
 ifeq ($(SHV),1)
 SRCALL += $(wildcard $(COMMON_DIR)/shv/*.c)
 
+# If the SHV tree liraries are not provided by NuttX build local copy
+ifeq ($(wildcard $(NUTTX_EXPORT)/include/shv/tree/shv_tree.h),)
 CONFIG_SHV_LIBS4C_PLATFORM="nuttx"
 include $(COMMON_DIR)/rules/make-ulut.inc
 include $(COMMON_DIR)/rules/make-shv-libs4c.inc
 dependencies: make-ulut make-shv-libs4c
+endif
 endif
 
 allfiles:
