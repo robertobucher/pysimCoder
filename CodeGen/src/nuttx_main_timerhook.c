@@ -1,26 +1,25 @@
 /****************************************************************************
  * CodeGen/src/nuttx_main_timerhook.c
  *
- * SPDX-License-Identifier: Apache-2.0
+ * SPDX-License-Identifier: GPL-2.0-or-later
  * SPDX-FileCopyrightText:  Stepan Pressl <pressl.stepan@gmail.com>
  * SPDX-FileContributor:    Stepan Pressl <pressl.stepan@gmail.com>
  *
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.  The
- * ASF licenses this file to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance with the
- * License.  You may obtain a copy of the License at
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
- * License for the specific language governing permissions and limitations
- * under the License.
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  *
- * Author: Stepan Pressl <pressl.stepan@gmail.com>
+ * Author and maintainer: Stepan Pressl <pressl.stepan@gmail.com>
  *
  ****************************************************************************/
 
@@ -48,6 +47,7 @@
 #include <pthread.h>
 #include <sys/ioctl.h>
 #include <poll.h>
+#include <getopt.h>
 
 #include <nuttx/config.h>
 #include <nuttx/timers/timer.h>
@@ -78,6 +78,15 @@
 #define TIMER_DEV       ((const char *)PYSIM_NUTTX_SAMPLETIMER)
 #define PERIOD_WATCHDOG ((uint32_t)1000000)
 #define LOW_PRIORITY    ((int)50)
+
+/* This is a discrimination against nonASCII encodings!!!!!! */
+
+#define SHV_DEVID_FLAG  1000
+#define SHV_IPADDR_FLAG 1001
+#define SHV_MOUNT_FLAG  1002
+#define SHV_PASSWD_FLAG 1003
+#define SHV_PORT_FLAG   1004
+#define SHV_USER_FLAG   1005
 
 /****************************************************************************
  * Private Function Prototypes
@@ -133,10 +142,32 @@ static int time_counter = 0;
 static char rtversion[] = "0.9";
 static int prio = 99;
 static int verbose = 0;
-static int wait = 0;
 static int extclock = 0;
 static int benchmark = 0;
 static double final_time = 0.0;
+
+static const struct option optargs[] =
+{
+  {"benchmark", no_argument, 0, 'b'},
+  {"final-time", required_argument, 0, 'f'},
+  {"help", no_argument, 0, 'h'},
+  {"prio", required_argument, 0, 'p'},
+  {"verbose", no_argument, 0, 'v'},
+  {"version", no_argument, 0, 'V'},
+
+  /* Let SHV parameters be only of the long type.
+   * Let's keep basic letters reserved for stuff related more to the model.
+   * The number identifiers shouldn't be accessed by normal Ascii coding :)
+   */
+
+  {"shv-devid", required_argument, 0, SHV_DEVID_FLAG},
+  {"shv-ipaddr", required_argument, 0, SHV_IPADDR_FLAG},
+  {"shv-mount", required_argument, 0, SHV_MOUNT_FLAG},
+  {"shv-passwd", required_argument, 0, SHV_PASSWD_FLAG},
+  {"shv-port", required_argument, 0, SHV_PORT_FLAG},
+  {"shv-user", required_argument, 0, SHV_USER_FLAG},
+  {0, 0, 0, 0}
+};
 
 #ifdef CANOPEN
 void canopen_synch(void);
@@ -454,25 +485,40 @@ static void print_usage(void)
     "\nUsage:  'RT-model-name' [OPTIONS]\n"
     "\n"
     "OPTIONS:\n"
-    "  -h  print usage\n"
-    "  -f <final time> set the final time of the execution\n"
-    "  -v  verbose output\n"
-    "  -p <priority>  set rt task priority (default 99)\n"
-    "  -b  model timing benchmark, each second the number of model\n"
-    "      execution is printed, alongside worst case latencies\n"
-    "  -e  external clock\n"
-    "  -w  wait to start\n"
-    "  -V  print version\n"
-    "\n");
+    "  -b --benchmark: model timing benchmark, each second the number of model\n"
+    "                  execution is printed, alongside worst case latencies\n"
+    "  -h --help: print usage\n"
+    "  -p --prio <val>: set rt task priority to val (default 99)\n"
+    "  -v --verbose: verbose output\n"
+    "  -V --version: print version\n"
+    " --shv-devid <dev-id>: set the device's name in SHV\n"
+    " --shv-ipaddr <ip>: set the broker's IPv4\n"
+    " --shv-mount <mount>: device's mount point in SHV\n"
+    " --shv-passwd <passwd>: password to access the broker\n"
+    " --shv-port <port>: set the broker's port\n"
+    " --shv-user <user> user to access the broker\n");
 }
+
+/****************************************************************************
+ * Name: proc_opt
+ *
+ * Description:
+ *   Process argv. Some options are kept to be implemented later on.
+ *   Can override default SHV parameters (only long options prefixed with --)
+ *
+ ****************************************************************************/
 
 static void proc_opt(int argc, char *argv[])
 {
   int i;
-  while ((i = getopt(argc, argv, "ef:hp:vVwb")) != -1)
+  int longindex;
+  while ((i = getopt_long(argc, argv, "bhp:vV", optargs, NULL)) != -1)
     {
       switch (i)
         {
+          case 'b':
+            benchmark = 1;
+            break;
           case 'h':
             print_usage();
             exit(0);
@@ -483,17 +529,33 @@ static void proc_opt(int argc, char *argv[])
           case 'v':
             verbose = 1;
             break;
-          case 'w':
-            wait = 1;
-            break;
-          case 'b':
-            benchmark = 1;
-            break;
           case 'V':
             printf("Version %s\n", rtversion);
             exit(0);
             break;
-          case 'f':
+          case SHV_DEVID_FLAG:
+            setenv("CONF_SHV_BROKER_DEV_ID", optarg, 1);
+            break;
+          case SHV_IPADDR_FLAG:
+            setenv("CONF_SHV_BROKER_IP", optarg, 1);
+            break;
+          case SHV_MOUNT_FLAG:
+            setenv("CONF_SHV_BROKER_MOUNT", optarg, 1);
+            break;
+          case SHV_PASSWD_FLAG:
+            setenv("CONF_SHV_BROKER_PASSWORD", optarg, 1);
+            break;
+          case SHV_PORT_FLAG:
+            setenv("CONF_SHV_BROKER_PORT", optarg, 1);
+            break;
+          case SHV_USER_FLAG:
+            setenv("CONF_SHV_BROKER_USER", optarg, 1);
+            break;
+          case '?':
+            print_usage();
+            exit(1);
+            break;
+          default:
             break;
         }
     }
