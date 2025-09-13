@@ -71,8 +71,6 @@ static int shv_getstate(struct shv_con_ctx *shv_ctx, struct shv_node *item, int 
 static const struct shv_method_des shv_dmap_item_pausectrl =
 {
   .name = "pause",
-  .flags = 0,
-  .param = "n",
   .result = "",
   .access = SHV_ACCESS_COMMAND,
   .method = shv_pausectrl
@@ -81,8 +79,6 @@ static const struct shv_method_des shv_dmap_item_pausectrl =
 static const struct shv_method_des shv_dmap_item_resumectrl =
 {
   .name = "resume",
-  .flags = 0,
-  .param = "n",
   .result = "",
   .access = SHV_ACCESS_COMMAND,
   .method = shv_resumectrl

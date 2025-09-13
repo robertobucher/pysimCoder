@@ -55,7 +55,6 @@ static int shv_get(struct shv_con_ctx *shv_ctx, struct shv_node *item, int rid)
 static const struct shv_method_des shv_dmap_item_confirm =
 {
     .name = "confirm",
-    .flags = 0,
     .result = "",
     .access = SHV_ACCESS_COMMAND,
     .method = shv_confirm
@@ -65,7 +64,7 @@ static const struct shv_method_des shv_dmap_item_get =
 {
    .name = "get",
    .flags = SHV_METHOD_GETTER,
-   .result = "i",
+   .result = "i(0,)|n",
    .access = SHV_ACCESS_READ,
    .method = shv_get
 };
