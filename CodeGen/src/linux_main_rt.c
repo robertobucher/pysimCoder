@@ -12,6 +12,7 @@
 #include <fcntl.h>
 #include <pthread.h>
 #include <stdbool.h>
+#include <getopt.h>
 
 #ifdef CG_WITH_IOPL
 #include <sys/io.h>
@@ -26,6 +27,15 @@ void canopen_synch(void);
 #define XSTRIFY(x)        #x
 #define STRIFY(x)         XSTRIFY(x)
 
+/* This is a discrimination against nonASCII encodings!!!!!! */
+
+#define SHV_DEVID_FLAG  1000
+#define SHV_IPADDR_FLAG 1001
+#define SHV_MOUNT_FLAG  1002
+#define SHV_PASSWD_FLAG 1003
+#define SHV_PORT_FLAG   1004
+#define SHV_USER_FLAG   100
+
 static volatile int end = 0;
 static double T = 0.0;
 static double Tsamp;
@@ -37,6 +47,30 @@ static int verbose = 0;
 static int wait = 0;
 static int extclock = 0;
 double FinalTime = 0.0;
+
+static const struct option optargs[] =
+{
+  {"benchmark", no_argument, 0, 'b'},
+  {"ext-clock", no_argument, 0, 'e'},
+  {"final-time", required_argument, 0, 'f'},
+  {"help", no_argument, 0, 'h'},
+  {"prio", required_argument, 0, 'p'},
+  {"verbose", no_argument, 0, 'v'},
+  {"version", no_argument, 0, 'V'},
+
+  /* Let SHV parameters be only of the long type.
+   * Let's keep basic letters reserved for stuff related more to the model.
+   * The number identifiers shouldn't be accessed by normal Ascii coding :)
+   */
+
+  {"shv-devid", required_argument, 0, SHV_DEVID_FLAG},
+  {"shv-ipaddr", required_argument, 0, SHV_IPADDR_FLAG},
+  {"shv-mount", required_argument, 0, SHV_MOUNT_FLAG},
+  {"shv-passwd", required_argument, 0, SHV_PASSWD_FLAG},
+  {"shv-port", required_argument, 0, SHV_PORT_FLAG},
+  {"shv-user", required_argument, 0, SHV_USER_FLAG},
+  {0, 0, 0, 0}
+};
 
 /* Platform dependant model context, use this to store parameters. */
 
@@ -203,21 +237,24 @@ void endme(int n)
   NAME(MODEL, _pt_ctx).ctrlloopend = 1;
 }
 
-void print_usage(void)
+static void print_usage(void)
 {
-  puts(  "\nUsage:  'RT-model-name' [OPTIONS]\n"
-         "\n"
-         "OPTIONS:\n"
-         "  -h  print usage\n"
-	 "  -f <final time> set the final time of the execution\n"
-	 "  -v  verbose output\n"
-	 "  -p <priority>  set rt task priority (default 99)\n"
-	 "  -e  external clock\n"
-	 "  -w  wait to start\n"
-	 "  -V  print version\n"
-   "  -D  command line parameters\n"
-   "        SHV_BROKER=hostname:port\n"
-	 "\n");
+  puts(
+    "\nUsage:  'RT-model-name' [OPTIONS]\n"
+    "\n"
+    "OPTIONS:\n"
+    "  -e --ext-clock: external clock (what is this actually for?)\n"
+    "  -f --final-time <val> set model's final time to val\n"
+    "  -h --help: print usage\n"
+    "  -p --prio <val>: set rt task priority to val (default 99)\n"
+    "  -v --verbose: verbose output\n"
+    "  -V --version: print version\n"
+    " --shv-devid <dev-id>: set the device's name in SHV\n"
+    " --shv-ipaddr <ip>: set the broker's IPv4\n"
+    " --shv-mount <mount>: device's mount point in SHV\n"
+    " --shv-passwd <passwd>: password to access the broker\n"
+    " --shv-port <port>: set the broker's port\n"
+    " --shv-user <user> user to access the broker");
 }
 
 char *parse_string(char ** str, int parse_char)
@@ -245,7 +282,7 @@ static void proc_opt(int argc, char *argv[])
   int i;
   char *t;
 
-  while((i=getopt(argc,argv,"D:ef:hp:vVw"))!=-1){
+  while((i=getopt_long(argc,argv,"ef:hp:vVw",optargs,NULL))!=-1){
     switch(i){
     case 'h':
       print_usage();
@@ -275,31 +312,30 @@ static void proc_opt(int argc, char *argv[])
         exit(1);
       }
       break;
-    case 'D':
-      t = parse_string(&optarg, '=');
-      if (t == NULL)
-        {
-          break;
-        }
-      if (strcmp(t, "SHV_BROKER") == 0)
-        {
-          t = parse_string(&optarg, ':');
-          if (t == NULL)
-            {
-              break;
-            }
-          setenv("SHV_BROKER_IP", t, 1);
-          t = parse_string(&optarg, ':');
-          if (t == NULL)
-            {
-              break;
-            }
-          setenv("SHV_BROKER_PORT", t, 1);
-        }
-      else
-        {
-          setenv(t, optarg, 1);
-        }
+    case SHV_DEVID_FLAG:
+      printf("Setting here!");
+      setenv("CONF_SHV_BROKER_DEV_ID", optarg, 1);
+      break;
+    case SHV_IPADDR_FLAG:
+      setenv("CONF_SHV_BROKER_IP", optarg, 1);
+      break;
+    case SHV_MOUNT_FLAG:
+      setenv("CONF_SHV_BROKER_MOUNT", optarg, 1);
+      break;
+    case SHV_PASSWD_FLAG:
+      setenv("CONF_SHV_BROKER_PASSWORD", optarg, 1);
+      break;
+    case SHV_PORT_FLAG:
+      setenv("CONF_SHV_BROKER_PORT", optarg, 1);
+      break;
+    case SHV_USER_FLAG:
+      setenv("CONF_SHV_BROKER_USER", optarg, 1);
+      break;
+    case '?':
+      print_usage();
+      exit(1);
+      break;
+    default:
       break;
     }
   }
