@@ -141,6 +141,13 @@ EXTLIB_CXXFLAGS=$(CC_FLAGS)
 EXTLIB_LDFLAGS=$(CC_FLAGS)
 
 ifeq ($(SHV),1)
+# The Python generated SHV Code uses the getenv to retrieve
+# SHV parameters that override the default ones. Unfortunately for us,
+# getenv and setenv might be disabled. Raise an error if this CONFIG is on.
+ifneq ($(shell grep CONFIG_DISABLE_ENVIRON "$(NUTTX_EXPORT)/include/nuttx/config.h"),)
+$(error "In order for SHV to work, NuttX build must have CONFIG_DISABLE_ENVIRON unset!")
+endif
+
 SRCALL += $(wildcard $(COMMON_DIR)/shv/*.c)
 
 # If the SHV tree liraries are not provided by NuttX build local copy

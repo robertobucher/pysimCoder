@@ -22,6 +22,7 @@ class ShvTreeGenerator:
 
     def generate_header(self) -> None:
         text = "#ifdef CONF_SHV_USED\n"
+        text += '#include <string.h>\n'
         text += "#include <shv/tree/shv_connection.h>\n"
         text += "#include <shv/tree/shv_tree.h>\n"
         text += "#include <shv/tree/shv_methods.h>\n"
@@ -621,20 +622,48 @@ class ShvTreeGenerator:
         text = "#ifdef CONF_SHV_USED\n"
         text += "int " + self.model + "_com_init(shv_attention_signaller at_signlr)\n"
         text += "{\n"
+        text += "  /* Firstly, check if SHV overrides are present. Normally, the generated\n"
+        text += "   * code uses the default constants, but the user can override them\n"
+        text += "   * inside the running application using these variables:\n"
+        text += "   * CONF_SHV_BROKER_USER, CONF_SHV_BROKER_PASSWORD, CONF_SHV_BROKER_MOUNT,\n"
+        text += "   * CONF_SHV_BROKER_DEV_ID, CONF_SHV_BROKER_IP, CONF_SHV_BROKER_PORT */\n"
+        text += '  const char *broker_user = "' + environ["SHV_BROKER_USER"] + '";\n'
+        text += '  const char *broker_password = "' + environ["SHV_BROKER_PASSWORD"] + '";\n'
+        text += '  const char *broker_mount = "' + environ["SHV_BROKER_MOUNT"] + '";\n'
+        text += '  const char *device_id = "' + environ["SHV_BROKER_DEV_ID"] + '";\n'
+        text += '  const char *broker_ip = "' + environ["SHV_BROKER_IP"] + '";\n'
+        text += '  int broker_port = ' + environ["SHV_BROKER_PORT"] + ';\n'
+        text += '  char *env_temp;\n'
+        text += '  if ((env_temp = getenv("CONF_SHV_BROKER_USER")) != NULL)\n'
+        text += '    broker_user = (const char*) env_temp;\n'
+        text += '  if ((env_temp = getenv("CONF_SHV_BROKER_PASSWORD")) != NULL)\n'
+        text += '    broker_password = (const char*) env_temp;\n'
+        text += '  if ((env_temp = getenv("CONF_SHV_BROKER_MOUNT")) != NULL)\n'
+        text += '    broker_mount = (const char*) env_temp;\n'
+        text += '  if ((env_temp = getenv("CONF_SHV_BROKER_DEV_ID")) != NULL)\n'
+        text += '    device_id = (const char*) env_temp;\n'
+        text += '  if ((env_temp = getenv("CONF_SHV_BROKER_IP")) != NULL)\n'
+        text += '    broker_ip = (const char*) env_temp;\n'
+        text += '  if ((env_temp = getenv("CONF_SHV_BROKER_PORT")) != NULL)\n'
+        text += '  {\n'
+        text += '    char *strtol_tmp;\n'
+        text += '    int temp_port = strtol(env_temp, &strtol_tmp, 10);\n'
+        text += '    if (env_temp != strtol_tmp)\n'
+        text += '      broker_port = temp_port;\n'
+        text += '  }\n'
         text += "  /* Call shv_tree_init() to initialize SHV tree */\n"
 
         if environ["SHV_TREE_TYPE"] != "GSA_STATIC":
             text += "  const struct shv_node shv_tree_root = {};\n"
 
         text += '  shv_connection_init(&shv_conn, SHV_TLAYER_TCPIP);\n'
-        text += '  shv_conn.broker_user = "' + environ["SHV_BROKER_USER"] + '";\n'
-        text += '  shv_conn.broker_password = "' + environ["SHV_BROKER_PASSWORD"] + '";\n'
-        text += '  shv_conn.broker_mount = "' + environ["SHV_BROKER_MOUNT"] + '";\n'
-        text += '  shv_conn.device_id = "' + environ["SHV_BROKER_DEV_ID"] + '";\n'
+        text += '  shv_conn.broker_user = broker_user;\n'
+        text += '  shv_conn.broker_password = broker_password;\n'
+        text += '  shv_conn.broker_mount = broker_mount;\n'
+        text += '  shv_conn.device_id = device_id;\n'
         text += '  shv_conn.reconnect_period = 10;\n'
         text += '  shv_conn.reconnect_retries = 0;\n'
-        text += '  shv_connection_tcpip_init(&shv_conn, "' + environ["SHV_BROKER_IP"] + \
-                '", ' + environ["SHV_BROKER_PORT"] + ');\n\n'
+        text += '  shv_connection_tcpip_init(&shv_conn, broker_ip, broker_port);\n\n'
         text += '  /* Fill in the pysim_model_ctx struct. REVISIT: do it somewhere else */\n'
         text += "  " + self.model + '_ctx.pt_arg = &' + self.model + '_pt_ctx;\n'
         text += (
