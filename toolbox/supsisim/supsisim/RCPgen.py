@@ -71,12 +71,34 @@ def genCode(model, Tsamp, blocks, rkMethod='standard_RK4', epsAbs = 1e-6, epsRel
     else:
         f.write('\n')
 
+
     N = size(Blocks)
 
     shv_generator = ShvTreeGenerator(f, model, Blocks)
     shv_generator.generate_header()
 
+    # Generate the model's context
+    mctx = "/* Model's context */\n"
+    mctx += 'struct pysim_model_ctx ' + model + '_ctx;\n'
+    mctx += 'extern struct pysim_platform_model_ctx ' + model + '_pt_ctx;\n\n'
+    f.write(mctx)
+
+    # Generate the model's function prototypes
     f.write('/* Function prototypes */\n\n')
+    prototypes  = "void " + model + "_init(void);\n"
+    prototypes += "void " + model + "_isr(double);\n"
+    prototypes += "void " + model + "_end(void);\n"
+    prototypes += "double " + model + "_get_tsamp(void);\n"
+    prototypes += "#ifdef CONF_SHV_USED\n"
+    prototypes += "int " + model + "_com_init(shv_attention_signaller at_signlr);\n"
+    prototypes += "void " + model + "_com_end(void);\n"
+    prototypes += "#endif\n"
+    prototypes += "double " + model + "_runtime(struct pysim_platform_model_ctx *pt_arg);\n"
+    prototypes += "int " + model + "_comprio(struct pysim_platform_model_ctx *pt_arg);\n"
+    prototypes += "void " + model + "_pausectrl(struct pysim_platform_model_ctx *pt_arg);\n"
+    prototypes += "void " + model + "_resumectrl(struct pysim_platform_model_ctx *pt_arg);\n"
+    prototypes += "int " + model + "_getctrlstate(struct pysim_platform_model_ctx *pt_arg);\n\n"
+    f.write(prototypes)
 
     prototypes = []
 
@@ -181,6 +203,10 @@ def genCode(model, Tsamp, blocks, rkMethod='standard_RK4', epsAbs = 1e-6, epsRel
 
     if (environ['SHV_TREE_TYPE'] == 'GSA_STATIC') and (environ['SHV_USED'] == 'True'):
         shv_generator.generate_tree()
+
+    if (environ['SHV_USED'] == 'True'):
+        shv_generator.generate_init()
+        shv_generator.generate_end()
 
     f.write('/* Initialization function */\n\n')
     strLn = 'void ' + model + '_init(void)\n'
@@ -367,9 +393,6 @@ def genCode(model, Tsamp, blocks, rkMethod='standard_RK4', epsAbs = 1e-6, epsRel
     if gslFlag:
         f.write('gsl_odeiv2_driver *driver;\n')
 
-    if environ['SHV_USED'] == 'True':
-        shv_generator.generate_end()
-
     for n in range(0,N):
         blk = Blocks[n]
         if blk.fcn in ['css', 'integral']:
@@ -409,6 +432,13 @@ def genMake(model, template, addObj = '', addCDefs = ''):
     f.close()
     mf = mf.replace('$$MODEL$$',model)
     mf = mf.replace('$$ADD_FILES$$',addObj)
+
+    # Define SHV parameters for the build
+    if environ.get('SHV_USED') == 'True':
+        addCDefs += ' \'-DCONF_SHV_USED\''
+        if environ.get('SHV_UPDATES_USED') == 'True':
+            addCDefs += ' \'-DCONF_SHV_UPDATES_USED\''
+
     mf = mf.replace('$$ADDITIONAL_DEFINES$$', addCDefs)
     f = open('Makefile','w')
     f.write(mf)

@@ -1,1 +1,5 @@
+_build
+_compiled
 spi*
+*.omk-default
+libpyblk.a

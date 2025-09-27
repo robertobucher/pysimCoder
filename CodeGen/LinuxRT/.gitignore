@@ -1,3 +1,4 @@
+include-generated
 lib/*.a
 fmu/lib/*.a
 devices/*.o

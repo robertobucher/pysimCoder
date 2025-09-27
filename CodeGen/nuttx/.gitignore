@@ -1,6 +1,10 @@
 nuttx-export*
 lib/*.a
 devices/*.o
+devices/*.omk-default
+devices/_build
+devices/_compiled
+devices/libpyblk.a
+include-generated
 get_lib
 set_lib
-

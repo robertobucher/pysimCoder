@@ -221,8 +221,10 @@ static void end(python_block *block)
 
 #ifdef CONFIG_PWM_MULTICHAN
   int fd = intPar[block->nin];
+  intPar[block->nin] = 0; /* Needed for reinitialization */
 #else
   int fd = intPar[1];
+  intPar[1] = 0; /* Needed for reinitialization */
 #endif
 
   /* Stop PWM output */

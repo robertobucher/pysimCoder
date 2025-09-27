@@ -189,6 +189,7 @@ static void end(python_block *block)
   int *intPar    = block->intPar;
 
   close(intPar[block->nout + 2]);
+  intPar[block->nout + 2] = 0; /* Needed for reinitialization */
 }
 
 /****************************************************************************
