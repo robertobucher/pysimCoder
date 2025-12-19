@@ -194,7 +194,10 @@ static void *rt_task(void *p)
       canopen_synch();
 #endif
 
-      if((FinalTime >0) && (T >= FinalTime)) break;
+      if((FinalTime >0) && (T >= FinalTime)) {
+        end = 1;
+        break;
+      }
 
       t_next.tv_sec = t_current.tv_sec + t_isr.tv_sec;
       t_next.tv_nsec = t_current.tv_nsec + t_isr.tv_nsec;
