@@ -324,17 +324,15 @@ def genCode(model, Tsamp, blocks, rkMethod='standard_RK4', epsAbs = 1e-6, epsRel
                     strLn += '  block_' + model + '[' + str(n) + '].ptrPar = (void *) driver;\n'
                     f.write(strLn)
 
-                    try:
-                        nrp = len(blk.realPar[0])
-                        pos = nrp - nStates
-                        strLn = '  double y_' + str(n) + '[' + str(nStates) + '];\n'
-                        f.write(strLn)
+                    realPar = [param for param in blk.params_list if param.type == RcpParam.Type.DOUBLE]
+                    if len(realPar) == 1:
+                        nrp = size(realPar[0].value[0])
+                    else:
+                        nrp = len(realPar)
+                    pos = nrp - nStates
 
-                    except:
-                        nrp = len(blk.realPar)
-                        pos = nrp - nStates
-                        strLn = '  double y_' + str(n) + '[' + str(nStates) + '];\n'
-                        f.write(strLn)
+                    strLn = '  double y_' + str(n) + '[' + str(nStates) + '];\n'
+                    f.write(strLn)
 
                     strLn = '  memcpy(y_' + str(n) + ', &(block_' + model + '[' + str(n) + '].realPar[' +\
                     str(pos) + ']),' + str(nStates) + '*sizeof(double));\n'
@@ -360,11 +358,14 @@ def genCode(model, Tsamp, blocks, rkMethod='standard_RK4', epsAbs = 1e-6, epsRel
                     strLn += '    driver = (gsl_odeiv2_driver *) block_' + model + '[' + str(n) + '].ptrPar;\n'
                     strLn += '    status = gsl_odeiv2_driver_apply(driver, &t0, t0+h, y_' + str(n) + ');\n'
                     f.write(strLn)
-                    try:
-                        nrp = len(blk.realPar[0])
-                    except:
-                        nrp = len(blk.realPar)
-                    pos = nrp-nStates
+
+                    realPar = [param for param in blk.params_list if param.type == RcpParam.Type.DOUBLE]
+                    if len(realPar) == 1:
+                        nrp = size(realPar[0].value[0])
+                    else:
+                        nrp = len(realPar)
+                    pos = nrp - nStates
+
                     strLn = '    memcpy(&(block_' + model + '[' + str(n) + '].realPar[' +\
                     str(pos) + ']), y_' + str(n) + ', ' + str(nStates) + '*sizeof(double));\n'
                     f.write(strLn)
