@@ -220,9 +220,9 @@ async def _fwupdate_met_call(client: SHV_CLIENT, mount_point: str, device_id: st
     call_url = f"{mount_point}/{device_id}/{node}"
     try:
         if arg is not None:
-            return await client.call(call_url, met_name, arg, call_timeout=10)
+            return await asyncio.wait_for(client.call(call_url, met_name, arg), timeout=10)
         else:
-            return await client.call(call_url, met_name, call_timeout=10)
+            return await asyncio.wait_for(client.call(call_url, met_name), timeout=10)
     except RpcError as exc:
         print(exc)
         return ShvCallError.Rpc

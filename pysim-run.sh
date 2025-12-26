@@ -30,4 +30,11 @@ export PYTHONPATH=":$PYSUPSICTRL/resources/blocks/rcpBlk$PYTHONPATH"
 export PYTHONPATH=":$PYSUPSICTRL/toolbox/supsictrl$PYTHONPATH"
 export PYTHONPATH="$PYSUPSICTRL/toolbox/supsisim$PYTHONPATH"
 
-/usr/bin/python3 "$PYSUPSICTRL/BlockEditor/$appname.py" "$@"
+# Check whether virtual environment is running
+if [ -z $VIRTUAL_ENV ]; then
+    PYTHON_INTR="/usr/bin/env python3"
+else
+    PYTHON_INTR="$VIRTUAL_ENV/bin/python3"
+fi
+
+$PYTHON_INTR "$PYSUPSICTRL/BlockEditor/$appname.py" "$@"
