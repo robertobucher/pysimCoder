@@ -10,3 +10,4 @@ rt_mz_apo.tmf
 rt_nrt_iopl.tmf		Template for Linux with iopl and RT support
 samd21.tmf		Template for BRIKI board
 stm32h7.tmf		Template for NUCLEO-H745ZI-Q board
+dspic.tmf			 Template for dsPIC33AK on Curiosity board

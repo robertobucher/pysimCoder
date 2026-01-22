@@ -1,0 +1,57 @@
+MODEL = $$MODEL$$
+
+all: ../$(MODEL).hex
+
+MAIN = dspic_main
+
+PYCODEGEN = $(PYSUPSICTRL)/CodeGen/
+MAINDIR = $(PYCODEGEN)/src
+DSPIC_DIR = $(PYCODEGEN)/dsPIC
+INCDIR  = $(DSPIC_DIR)/include
+
+OBJSSTAN = $(MODEL).o $(MAIN).o 
+
+$(MAIN).c: $(MAINDIR)/$(MAIN).c $(MODEL).c
+	cp $< .
+
+# Directories
+VER_TOOLS = v3.30
+VER_DFP = 1.2.135
+
+TOOL_DIR = /opt/microchip/xc-dsc/$(VER_TOOLS)/bin
+DFP = $(HOME)/.mchp_packs/Microchip/dsPIC33AK-MP_DFP/$(VER_DFP)/xc16
+
+GCC       = $(TOOL_DIR)/xc-dsc-gcc
+OBJCOPY  = $(TOOL_DIR)/xc-dsc-objcopy
+DBG = -g
+
+MCU = 33AK512MPS512
+LDSCRIPT = p33AK512MPS512.gld
+
+GCC_FLAGS = \
+ -c -mcpu=$(MCU) -mdfp=$(DFP) -O0 -Wall -omf=elf
+
+DEFINES = \
+-DMODEL=$(MODEL) 
+
+INCLUDES = \
+-I$(INCDIR) \
+-I$(PYSUPSICTRL)/CodeGen/Common/include
+
+LD_FLAGS = \
+-mcpu=$(MCU) -mdfp=$(DFP) -omf=elf \
+-Wl,--script=$(LDSCRIPT), -mdfp=$(DFP)
+
+MYLIBS =  $(DSPIC_DIR)/lib/libdspic.a
+
+%.o: %.c
+	$(GCC) $< $(GCC_FLAGS) $(DEFINES) $(INCLUDES) -o $@
+
+$(MODEL).elf: $(OBJSSTAN) $(MYLIBS)
+	$(GCC) $(LD_FLAGS) $(OBJSSTAN)  $(MYLIBS) -o $@
+
+../$(MODEL).hex: $(MODEL).elf
+	$(OBJCOPY) -O ihex $< $@  -mdfp=$(DFP)
+
+clean:
+	rm -f *.o *.elf ../$(MODEL).hex

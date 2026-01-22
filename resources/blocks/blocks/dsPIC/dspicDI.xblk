@@ -1,0 +1,11 @@
+{
+  "lib": "dsPIC",
+  "name": "DI",
+  "ip": 0,
+  "op": 1,
+  "stin": 0,
+  "stout": 0,
+  "icon": "DI",
+  "params": "dspicDIBlk|Port:'PORTA':str|Channel [0-15]:0:int",
+  "help": "Parameters\nPort\nChannel [0-15]\n"
+}

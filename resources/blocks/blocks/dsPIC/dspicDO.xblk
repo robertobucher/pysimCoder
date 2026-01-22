@@ -1,0 +1,11 @@
+{
+  "lib": "dsPIC",
+  "name": "DO",
+  "ip": 1,
+  "op": 0,
+  "stin": 0,
+  "stout": 0,
+  "icon": "DO",
+  "params": "dspicDOBlk|Port:'PORTA':str|Channel [0-15]:0:int|Threshold:0.5:double",
+  "help": "Parameters\nPort\nChannel [0-15]\nThreshold\n"
+}

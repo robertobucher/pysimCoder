@@ -95,7 +95,7 @@ class tcp_rcvServer(threading.Thread):
         threading.Thread.__init__(self)
         self.mainw = mainw
         self.N = self.mainw.N
-        self.st = struct.Struct(self.N*'d')
+        self.st = struct.Struct(self.N*'f')
         self.daemon = True
 
     def run(self):
@@ -445,6 +445,8 @@ class MainWindow(QMainWindow, form_class):
         else:
             if porttype == SER:
                 self.pbStart_ser.setText('Start Server')
+            elif porttype == SER4:
+                self.pbStart_tcp.setText('Start Server')
             elif porttype == TCP:
                 self.pbStart_tcp.setText('Start Server')
             else:
