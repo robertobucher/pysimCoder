@@ -1,7 +1,6 @@
 from supsisim.RCPblk import RCPblk, RcpParam
 from numpy import size
 
-
 def dspicENCBlk(pout: list[int], params: RcpParam) -> RCPblk:
     """
     Call:   nuttxENCBlk(pout, params)
@@ -16,8 +15,18 @@ def dspicENCBlk(pout: list[int], params: RcpParam) -> RCPblk:
       Block's reprezentation RCPblk
     """
 
-    if (nout := size(pout)) != 1:
-        raise ValueError("NuttxENC: Number of outputs (%i) should be 1" % nout)
+    p = params[0].value[-1]
+    p = p.upper()
+    pn = ord(p) - ord("0")
 
-    params.append(RcpParam("File descriptor", 0, RcpParam.Type.INT))
+
+    if pn < 1 or pn > 3:
+        raise ValueError(
+            "QEI should be between QEI1 and QEI3 not %s"
+            % (params[0].value)
+        )
+
+    params[0].value = pn
+    params[0].type = RcpParam.Type.INT
+
     return RCPblk("dspicENC", [], pout, [0, 0], 0, params)

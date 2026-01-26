@@ -64,7 +64,10 @@
 enum ADC5_CHANNEL
 {
     ADC5_Channel0,    /**<Channel Name:Channel_0 connected to ADC5_AN0 */
-    ADC5_MAX_CHANNELS = 1    /**< Maximum number of channels configured by user for ADC5 */
+    ADC5_Channel1,    /**<Channel Name:Channel_1 connected to ADC5_AN1 */
+    ADC5_Channel2,    /**<Channel Name:Channel_2 connected to ADC5_AN2 */
+    ADC5_Channel3,    /**<Channel Name:Channel_3 connected to ADC5_AN3 */
+    ADC5_MAX_CHANNELS = 4    /**< Maximum number of channels configured by user for ADC5 */
 };
 
 /**
@@ -185,6 +188,15 @@ inline static void ADC5_ChannelSoftwareTriggerEnable(const enum ADC5_CHANNEL cha
         case ADC5_Channel0:
                 AD5SWTRGbits.CH0TRG = 0x1U;
                 break;
+        case ADC5_Channel1:
+                AD5SWTRGbits.CH1TRG = 0x1U;
+                break;
+        case ADC5_Channel2:
+                AD5SWTRGbits.CH2TRG = 0x1U;
+                break;
+        case ADC5_Channel3:
+                AD5SWTRGbits.CH3TRG = 0x1U;
+                break;
         default:
                 break;
     }
@@ -203,6 +215,15 @@ inline static void ADC5_ChannelSoftwareTriggerDisable(const enum ADC5_CHANNEL ch
     {
         case ADC5_Channel0:
                 AD5SWTRGbits.CH0TRG = 0x0U;
+                break;
+        case ADC5_Channel1:
+                AD5SWTRGbits.CH1TRG = 0x0U;
+                break;
+        case ADC5_Channel2:
+                AD5SWTRGbits.CH2TRG = 0x0U;
+                break;
+        case ADC5_Channel3:
+                AD5SWTRGbits.CH3TRG = 0x0U;
                 break;
         default:
                 break;
@@ -225,6 +246,15 @@ inline static uint16_t ADC5_SampleCountGet(const enum ADC5_CHANNEL channel)
     {
         case ADC5_Channel0:
                 count = AD5CH0CNTbits.CNT;
+                break;
+        case ADC5_Channel1:
+                count = AD5CH1CNTbits.CNT;
+                break;
+        case ADC5_Channel2:
+                count = AD5CH2CNTbits.CNT;
+                break;
+        case ADC5_Channel3:
+                count = AD5CH3CNTbits.CNT;
                 break;
         default:
                 break;
@@ -249,6 +279,15 @@ inline static uint16_t ADC5_SampleCountStatusGet(const enum ADC5_CHANNEL channel
         case ADC5_Channel0:
                 countStatus = AD5CH0CNTbits.CNTSTAT;
                 break;
+        case ADC5_Channel1:
+                countStatus = AD5CH1CNTbits.CNTSTAT;
+                break;
+        case ADC5_Channel2:
+                countStatus = AD5CH2CNTbits.CNTSTAT;
+                break;
+        case ADC5_Channel3:
+                countStatus = AD5CH3CNTbits.CNTSTAT;
+                break;
         default:
                 break;
     }
@@ -272,6 +311,15 @@ inline static uint32_t ADC5_ConversionResultGet(const enum ADC5_CHANNEL channel)
     {
         case ADC5_Channel0:
                 result = AD5CH0DATA;
+                break;
+        case ADC5_Channel1:
+                result = AD5CH1DATA;
+                break;
+        case ADC5_Channel2:
+                result = AD5CH2DATA;
+                break;
+        case ADC5_Channel3:
+                result = AD5CH3DATA;
                 break;
         default:
                 break;
@@ -299,6 +347,15 @@ inline static bool ADC5_IsConversionComplete(const enum ADC5_CHANNEL channel)
         case ADC5_Channel0:
                 status = AD5STATbits.CH0RDY;
                 break;
+        case ADC5_Channel1:
+                status = AD5STATbits.CH1RDY;
+                break;
+        case ADC5_Channel2:
+                status = AD5STATbits.CH2RDY;
+                break;
+        case ADC5_Channel3:
+                status = AD5STATbits.CH3RDY;
+                break;
         default:
                 break;
     }
@@ -320,6 +377,15 @@ inline static void ADC5_IndividualChannelInterruptEnable(const enum ADC5_CHANNEL
         case ADC5_Channel0:
                 IEC7bits.AD5CH0IE = 1U;
                 break;
+        case ADC5_Channel1:
+                IEC7bits.AD5CH1IE = 1U;
+                break;
+        case ADC5_Channel2:
+                IEC7bits.AD5CH2IE = 1U;
+                break;
+        case ADC5_Channel3:
+                IEC7bits.AD5CH3IE = 1U;
+                break;
         default:
                 break;
     }
@@ -338,6 +404,15 @@ inline static void ADC5_IndividualChannelInterruptDisable(const enum ADC5_CHANNE
     {
         case ADC5_Channel0:
                 IEC7bits.AD5CH0IE = 0U;
+                break;
+        case ADC5_Channel1:
+                IEC7bits.AD5CH1IE = 0U;
+                break;
+        case ADC5_Channel2:
+                IEC7bits.AD5CH2IE = 0U;
+                break;
+        case ADC5_Channel3:
+                IEC7bits.AD5CH3IE = 0U;
                 break;
         default:
                 break;
@@ -360,6 +435,15 @@ inline static void ADC5_IndividualChannelInterruptFlagClear(const enum ADC5_CHAN
         case ADC5_Channel0:
                 IFS7bits.AD5CH0IF = 0U;
                 break;
+        case ADC5_Channel1:
+                IFS7bits.AD5CH1IF = 0U;
+                break;
+        case ADC5_Channel2:
+                IFS7bits.AD5CH2IF = 0U;
+                break;
+        case ADC5_Channel3:
+                IFS7bits.AD5CH3IF = 0U;
+                break;
         default:
                 break;
     }
@@ -379,6 +463,15 @@ inline static void ADC5_IndividualChannelInterruptPrioritySet(const enum ADC5_CH
 	{
 		case ADC5_Channel0:
 				IPC30bits.AD5CH0IP = priorityValue;
+				break;
+		case ADC5_Channel1:
+				IPC30bits.AD5CH1IP = priorityValue;
+				break;
+		case ADC5_Channel2:
+				IPC30bits.AD5CH2IP = priorityValue;
+				break;
+		case ADC5_Channel3:
+				IPC30bits.AD5CH3IP = priorityValue;
 				break;
 		default:
 				break;

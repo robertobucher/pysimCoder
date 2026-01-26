@@ -6,6 +6,6 @@
   "stin": 0,
   "stout": 0,
   "icon": "AD",
-  "params": "dspicAIBlk|Port:'PORTA':str|Channel [0-15]:0:int|Analog Channel:0:int|Umin [V]:0.0:double|Umax [V]:3.3:double",
-  "help": "Parameters\nPort\nChannel [0-15]\nAnalog Channel (AN from Datasheet)\n\nParameters\nChannel: value between 0 and \nUmin [V]: minimal value (0 volt read -> umin)\nUmax [V] : maximal value (3.3V read -> umax)\n\n"
+  "params": "dspicAIBlk|ADC:'ADC5':str|Channel [0-4]:0:int|Umin [V]:0.0:double|Umax [V]:3.3:double",
+  "help": "Parameters\nADC name\nChannel [0-4]\nInput: 0 is translated to Umin, Max int value is translated to Umax\n\n"
 }

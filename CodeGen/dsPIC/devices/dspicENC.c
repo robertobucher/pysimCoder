@@ -18,37 +18,40 @@
 
 #include <pyblock.h>
 #include <xc.h>
-#include <dsPICfun.h>
+#include <dspicFun.h>
+#include <dspicConf.h>
 #include <qei1.h>
-
-#define PINS_PPSLock()           (RPCONbits.IOLOCK = 1)
-#define PINS_PPSUnlock()        (RPCONbits.IOLOCK = 0)
 
 static void init(python_block *block)
 {
-   gpio_config(0, 0, GPIO_INPUT, GPIO_DIGITAL);
-  gpio_config(0, 1, GPIO_INPUT, GPIO_DIGITAL);
+  int * intPar = block->intPar;
+  int qeiN = intPar[0];
 
-  PINS_PPSUnlock(); // unlock PPS
-  RPINR9bits.QEIA1R = 0x0001UL; //RA0->QEI1:QEIA1;
-  RPINR9bits.QEIB1R = 0x0002UL; //RA1->QEI1:QEIB1;  
-  PINS_PPSLock(); // lock PPS
+  qei_hw_t  qei_reg = qei[qeiN];
+  
+  gpio_config(qei_reg.portA, qei_reg.pinA , GPIO_INPUT, GPIO_DIGITAL);
+  gpio_config(qei_reg.portB,  qei_reg.pinB , GPIO_INPUT, GPIO_DIGITAL);
 
-  QEI1_PositionCountWrite(0);  // Init value for tests
-  QEI1_Enable();
+  *(qei_reg.datareg) = 0;
+  *(qei_reg.enable) |= (1 << 15);
 }
 
 static void inout(python_block *block)
 {
-  double * realPar = block->realPar;
+  int * intPar = block->intPar;
+  double * realPar = block->realPar;  
   double *y = block->y[0];
+  
+  int qeiN = intPar[0];
   double scale = 1;
 
   if (realPar[0] != 0)    {
     scale = 1/realPar[0];
   }
 
-  uint32_t cnt = QEI1_PositionCountRead();
+  qei_hw_t  qei_reg = qei[qeiN];
+  uint32_t cnt = *(qei_reg.datareg);
+  
   int32_t iVal = (int32_t) cnt;
 
   y[0] = scale *iVal;

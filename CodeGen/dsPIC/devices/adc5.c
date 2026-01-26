@@ -133,16 +133,52 @@ void ADC5_Initialize(void)
     AD5SWTRG = 0x0UL;
     //TRG1SRC Software trigger initiated by using ADnSWTRG register; MODE Single sample initiated by TRG1SRC[4:0] trigger; TRG2SRC Triggers are disabled; ACCNUM 4 samples, 13 bits result; SAMC 0.5 TAD; IRQSEL enabled; EIEN disabled; TRG1POL disabled; PINSEL AD5AN0; NINSEL disabled; FRAC Integer; DIFF disabled; 
     AD5CH0CON1 = 0x200001UL;
+    //TRG1SRC Software trigger initiated by using ADnSWTRG register; MODE Single sample initiated by TRG1SRC[4:0] trigger; TRG2SRC Triggers are disabled; ACCNUM 4 samples, 13 bits result; SAMC 0.5 TAD; IRQSEL enabled; EIEN disabled; TRG1POL disabled; PINSEL AD5AN1; NINSEL disabled; FRAC Integer; DIFF disabled; 
+    AD5CH1CON1 = 0x1200001UL;
+    //TRG1SRC Software trigger initiated by using ADnSWTRG register; MODE Single sample initiated by TRG1SRC[4:0] trigger; TRG2SRC Triggers are disabled; ACCNUM 4 samples, 13 bits result; SAMC 0.5 TAD; IRQSEL enabled; EIEN disabled; TRG1POL disabled; PINSEL AD5AN2; NINSEL disabled; FRAC Integer; DIFF disabled; 
+    AD5CH2CON1 = 0x2200001UL;
+    //TRG1SRC Software trigger initiated by using ADnSWTRG register; MODE Single sample initiated by TRG1SRC[4:0] trigger; TRG2SRC Triggers are disabled; ACCNUM 4 samples, 13 bits result; SAMC 0.5 TAD; IRQSEL enabled; EIEN disabled; TRG1POL disabled; PINSEL AD5AN3; NINSEL disabled; FRAC Integer; DIFF disabled; 
+    AD5CH3CON1 = 0x3200001UL;
     //ADCMPCNT disabled; CMPMOD NONE; CMPCNTMOD disabled; CMPVAL enabled; ACCBRST disabled; ACCRO disabled; 
     AD5CH0CON2 = 0x20000000UL;
+    //ADCMPCNT disabled; CMPMOD NONE; CMPCNTMOD disabled; CMPVAL enabled; ACCBRST disabled; ACCRO disabled; 
+    AD5CH1CON2 = 0x20000000UL;
+    //ADCMPCNT disabled; CMPMOD NONE; CMPCNTMOD disabled; CMPVAL enabled; ACCBRST disabled; ACCRO disabled; 
+    AD5CH2CON2 = 0x20000000UL;
+    //ADCMPCNT disabled; CMPMOD NONE; CMPCNTMOD disabled; CMPVAL enabled; ACCBRST disabled; ACCRO disabled; 
+    AD5CH3CON2 = 0x20000000UL;
     //
     AD5CH0RES = 0x0UL;
+    //
+    AD5CH1RES = 0x0UL;
+    //
+    AD5CH2RES = 0x0UL;
+    //
+    AD5CH3RES = 0x0UL;
     //CNT 0x0; 
     AD5CH0CNT = 0x0UL;
+    //CNT 0x0; 
+    AD5CH1CNT = 0x0UL;
+    //CNT 0x0; 
+    AD5CH2CNT = 0x0UL;
+    //CNT 0x0; 
+    AD5CH3CNT = 0x0UL;
     //CMPLO 0x0; 
     AD5CH0CMPLO = 0x0UL;
+    //CMPLO 0x0; 
+    AD5CH1CMPLO = 0x0UL;
+    //CMPLO 0x0; 
+    AD5CH2CMPLO = 0x0UL;
+    //CMPLO 0x0; 
+    AD5CH3CMPLO = 0x0UL;
     //CMPHI 0x0; 
     AD5CH0CMPHI = 0x0UL;
+    //CMPHI 0x0; 
+    AD5CH1CMPHI = 0x0UL;
+    //CMPHI 0x0; 
+    AD5CH2CMPHI = 0x0UL;
+    //CMPHI 0x0; 
+    AD5CH3CMPHI = 0x0UL;
 
     ADC5_ChannelCallbackRegister(&ADC5_ChannelCallback);
     ADC5_Result32BitChannelCallbackRegister(&ADC5_Result32BitChannelCallback);
@@ -164,11 +200,29 @@ void ADC5_Deinitialize (void)
     AD5CMPSTAT = 0x0UL;
     AD5SWTRG = 0x0UL;
     AD5CH0CON1 = 0x0UL;
+    AD5CH1CON1 = 0x0UL;
+    AD5CH2CON1 = 0x0UL;
+    AD5CH3CON1 = 0x0UL;
     AD5CH0CON2 = 0x1UL;
+    AD5CH1CON2 = 0x1UL;
+    AD5CH2CON2 = 0x1UL;
+    AD5CH3CON2 = 0x1UL;
     AD5CH0RES = 0x0UL;
+    AD5CH1RES = 0x0UL;
+    AD5CH2RES = 0x0UL;
+    AD5CH3RES = 0x0UL;
     AD5CH0CNT = 0x0UL;
+    AD5CH1CNT = 0x0UL;
+    AD5CH2CNT = 0x0UL;
+    AD5CH3CNT = 0x0UL;
     AD5CH0CMPLO = 0x0UL;
+    AD5CH1CMPLO = 0x0UL;
+    AD5CH2CMPLO = 0x0UL;
+    AD5CH3CMPLO = 0x0UL;
     AD5CH0CMPHI = 0x0UL;
+    AD5CH1CMPHI = 0x0UL;
+    AD5CH2CMPHI = 0x0UL;
+    AD5CH3CMPHI = 0x0UL;
 }
 
 void ADC5_SharedCorePowerEnable (void) 
@@ -311,6 +365,15 @@ void ADC5_PWMTriggerSourceSet(enum ADC5_CHANNEL channel, enum ADC_PWM_INSTANCE p
         case ADC5_Channel0:
                 AD5CH0CON1bits.TRG1SRC = adcTriggerValue;
                 break;
+        case ADC5_Channel1:
+                AD5CH1CON1bits.TRG1SRC = adcTriggerValue;
+                break;
+        case ADC5_Channel2:
+                AD5CH2CON1bits.TRG1SRC = adcTriggerValue;
+                break;
+        case ADC5_Channel3:
+                AD5CH3CON1bits.TRG1SRC = adcTriggerValue;
+                break;
         default:
                 break;
     }
@@ -372,6 +435,87 @@ void __attribute__ ( ( __interrupt__, weak ) ) _AD5CH0Interrupt ( void )
     IFS7bits.AD5CH0IF = 0U;
 }
 
+/* cppcheck-suppress misra-c2012-8.4
+*
+* (Rule 8.4) REQUIRED: A compatible declaration shall be visible when an object or 
+* function with external linkage is defined
+*
+* Reasoning: Interrupt declaration are provided by compiler and are available
+* outside the driver folder
+*/
+void __attribute__ ( ( __interrupt__, weak ) ) _AD5CH1Interrupt ( void )
+{
+    uint32_t valADC5_Channel1;
+    //Read the ADC value from the ADCBUF
+    valADC5_Channel1 = AD5CH1DATA;
+
+    if(NULL != ADC5_ChannelHandler)
+    {
+        (*ADC5_ChannelHandler)(ADC5_Channel1, valADC5_Channel1);
+    }
+    if(NULL != ADC5_Result32BitChannelHandler)
+    {
+        (*ADC5_Result32BitChannelHandler)(ADC5_Channel1, valADC5_Channel1);
+    }
+
+    //clear the ADC5_Channel1 interrupt flag
+    IFS7bits.AD5CH1IF = 0U;
+}
+
+/* cppcheck-suppress misra-c2012-8.4
+*
+* (Rule 8.4) REQUIRED: A compatible declaration shall be visible when an object or 
+* function with external linkage is defined
+*
+* Reasoning: Interrupt declaration are provided by compiler and are available
+* outside the driver folder
+*/
+void __attribute__ ( ( __interrupt__, weak ) ) _AD5CH2Interrupt ( void )
+{
+    uint32_t valADC5_Channel2;
+    //Read the ADC value from the ADCBUF
+    valADC5_Channel2 = AD5CH2DATA;
+
+    if(NULL != ADC5_ChannelHandler)
+    {
+        (*ADC5_ChannelHandler)(ADC5_Channel2, valADC5_Channel2);
+    }
+    if(NULL != ADC5_Result32BitChannelHandler)
+    {
+        (*ADC5_Result32BitChannelHandler)(ADC5_Channel2, valADC5_Channel2);
+    }
+
+    //clear the ADC5_Channel2 interrupt flag
+    IFS7bits.AD5CH2IF = 0U;
+}
+
+/* cppcheck-suppress misra-c2012-8.4
+*
+* (Rule 8.4) REQUIRED: A compatible declaration shall be visible when an object or 
+* function with external linkage is defined
+*
+* Reasoning: Interrupt declaration are provided by compiler and are available
+* outside the driver folder
+*/
+void __attribute__ ( ( __interrupt__, weak ) ) _AD5CH3Interrupt ( void )
+{
+    uint32_t valADC5_Channel3;
+    //Read the ADC value from the ADCBUF
+    valADC5_Channel3 = AD5CH3DATA;
+
+    if(NULL != ADC5_ChannelHandler)
+    {
+        (*ADC5_ChannelHandler)(ADC5_Channel3, valADC5_Channel3);
+    }
+    if(NULL != ADC5_Result32BitChannelHandler)
+    {
+        (*ADC5_Result32BitChannelHandler)(ADC5_Channel3, valADC5_Channel3);
+    }
+
+    //clear the ADC5_Channel3 interrupt flag
+    IFS7bits.AD5CH3IF = 0U;
+}
+
 
 void __attribute__ ( ( weak ) ) ADC5_ChannelTasks (enum ADC5_CHANNEL channel)
 {
@@ -384,6 +528,54 @@ void __attribute__ ( ( weak ) ) ADC5_ChannelTasks (enum ADC5_CHANNEL channel)
             {
                 //Read the ADC value from the ADCBUF
                 adcVal = AD5CH0DATA;
+
+                if(NULL != ADC5_ChannelHandler)
+                {
+                    (*ADC5_ChannelHandler)(channel, adcVal);
+                }
+                if(NULL != ADC5_Result32BitChannelHandler)
+                {
+                    (*ADC5_Result32BitChannelHandler)(channel, adcVal);
+                }
+            }
+            break;
+        case ADC5_Channel1:
+            if((bool)AD5STATbits.CH1RDY == 1U)
+            {
+                //Read the ADC value from the ADCBUF
+                adcVal = AD5CH1DATA;
+
+                if(NULL != ADC5_ChannelHandler)
+                {
+                    (*ADC5_ChannelHandler)(channel, adcVal);
+                }
+                if(NULL != ADC5_Result32BitChannelHandler)
+                {
+                    (*ADC5_Result32BitChannelHandler)(channel, adcVal);
+                }
+            }
+            break;
+        case ADC5_Channel2:
+            if((bool)AD5STATbits.CH2RDY == 1U)
+            {
+                //Read the ADC value from the ADCBUF
+                adcVal = AD5CH2DATA;
+
+                if(NULL != ADC5_ChannelHandler)
+                {
+                    (*ADC5_ChannelHandler)(channel, adcVal);
+                }
+                if(NULL != ADC5_Result32BitChannelHandler)
+                {
+                    (*ADC5_Result32BitChannelHandler)(channel, adcVal);
+                }
+            }
+            break;
+        case ADC5_Channel3:
+            if((bool)AD5STATbits.CH3RDY == 1U)
+            {
+                //Read the ADC value from the ADCBUF
+                adcVal = AD5CH3DATA;
 
                 if(NULL != ADC5_ChannelHandler)
                 {

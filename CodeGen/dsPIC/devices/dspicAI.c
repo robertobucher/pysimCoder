@@ -19,35 +19,28 @@
 #include <pyblock.h>
 #include <stdlib.h>
 #include <xc.h>
-#include <dsPICfun.h>
+#include <dspicFun.h>
+#include <dspicConf.h>
 #include <commonFun.h>
-#include <adc5.h>
-
-#define ADCMAXVAL 330
 
 static void init(python_block *block)
 {
-  int * intPar    = block->intPar;
-  uint8_t port_id = intPar[0];
-  uint8_t pin     = intPar[1]; 
-
-  gpio_config((gpio_port_t)port_id,
-	      pin,
-	      GPIO_OUTPUT,
-	      GPIO_DIGITAL);
 }
 
 static void inout(python_block *block)
 {
-  double * realPar = block->realPar;
   int * intPar = block->intPar;
+  double * realPar = block->realPar;
   double *y = block->y[0];
-  int ch = intPar[2];
-
-  ADC5_ChannelSoftwareTriggerEnable(ch);
-  while(!ADC5_IsConversionComplete(ch));
-
-  double val = (double) ADC5_ConversionResultGet(ch)/ADCMAXVAL;
+  
+  int adcN = intPar[0];
+  int ch = intPar[1];
+  uint32_t adc_mask = (0x1L << ch);  
+  adc_hw_t  adc_reg = adc[adcN];
+  
+  *(adc_reg.trig) |= adc_mask;
+  while( !(*(adc_reg.stat) & adc_mask));
+  double val = (double)   *(adc_reg.buf)[ch]/ADCMAXVAL;
 
   y[0] = maprD2D(val, realPar[0], realPar[1]);
 }

@@ -18,21 +18,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 
 #include <pyblock.h>
 #include <xc.h>
-#include <dsPICfun.h>
+#include <dspicFun.h>
 #include <uart1.h>
-
-#define PINS_PPSLock()           (RPCONbits.IOLOCK = 1)
-#define PINS_PPSUnlock()         (RPCONbits.IOLOCK = 0)
-
-static void init(python_block *block)
-{
-  PINS_PPSUnlock(); // unlock PPS
-
-  RPINR13bits.U1RXR = 0x0032UL; //RD1->UART1:U1RX;
-  RPOR28bits.RP114R = 0x0013UL;  //RH1->UART1:U1TX;
-
-  PINS_PPSLock(); // lock PPS
-}
 
 double get_run_time(void);
 
@@ -42,6 +29,10 @@ static void uart1_send_buffer(const uint8_t *buf, size_t len)
         while (!UART1_IsTxReady());
         UART1_Write(buf[i]);
     }
+}
+
+static void init(python_block *block)
+{
 }
 
 static void inout(python_block *block)

@@ -18,39 +18,27 @@
 
 #include <pyblock.h>
 #include <xc.h>
-#include <sccp1.h>
-#include <dsPICfun.h>
+#include <dspicFun.h>
+#include <dspicConf.h>
 #include <commonFun.h>
-
-#define PINS_PPSLock()           (RPCONbits.IOLOCK = 1)
-#define PINS_PPSUnlock()         (RPCONbits.IOLOCK = 0)
 
 static void init(python_block *block)
 {
-  int * intPar    = block->intPar;
-  uint8_t port_id = intPar[1];
-  uint8_t pin     = intPar[2]; 
-
-  gpio_config((gpio_port_t)port_id,
-	      pin,
-	      GPIO_OUTPUT,
-	      GPIO_DIGITAL);
-  
-  PINS_PPSUnlock(); // unlock PPS
-  RPOR12bits.RP49R = 0x0027UL;  //RD0->SCCP1:OCM1;
-  PINS_PPSLock(); // lock PPS
 }
 
 static void inout(python_block *block)
 {
+  int * intPar = block->intPar;
   double * realPar = block->realPar;
   double *u = block->u[0];
   uint16_t iVal;
+  int pwmN = intPar[0];
 
   double value = mapD2wD(u[0], realPar[0], realPar[1]);
-  iVal = (uint16_t) (value*5000);
+  iVal = (uint16_t) (value*PWMFACT);
 
-  SCCP1_PWM_DutyCycleSet(iVal);
+  pwm_hw_t  pwm_reg = pwm[pwmN];
+  *(pwm_reg.dutyReg) = iVal;
 }
 
 static void end(python_block *block)

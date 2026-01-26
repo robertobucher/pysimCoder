@@ -32,8 +32,6 @@ static void APP_Task(void) {
     LATCbits.LATC8 = 0;
   else
     LATCbits.LATC8 = 1;
-  /*  uart_print_uint(signal); */
-  /* uart_puts("\n"); */
 }
 
 /* =========================

@@ -3,13 +3,6 @@
 
 #include <xc.h>
 #include <dspicFun.h>
-#include <adc5.h>
-#include <sccp1.h>
-#include <sccp2.h>
-#include <sccp3.h>
-#include <qei1.h>
-#include <qei2.h>
-#include <qei3.h>
 
 #define ADCMAXVAL 330
 #define PWMFACT 5000

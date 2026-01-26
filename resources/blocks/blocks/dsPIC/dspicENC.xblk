@@ -6,6 +6,6 @@
   "stin": 0,
   "stout": 0,
   "icon": "ENC",
-  "params": "dspicENCBlk|Device:1:int|Resolution:500:double| reset counter [1 yes]:1:int",
-  "help": "dsPIC encoder\n\nParameters\nDevice: dev Nr\nResolution: Encoder resolution (can be 0 if no resolution required)\nReset: 1=yes, 0 = no\n\n"
+  "params": "dspicENCBlk|Device:'QEI1':str|Resolution:500:double| reset  [1 yes]:1:int",
+  "help": "dsPIC encoder on QEI Device, \n Resolution of encoder\n and Reset: 1=yes, 0 = no\n\n"
 }

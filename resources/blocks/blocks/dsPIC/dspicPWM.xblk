@@ -6,6 +6,6 @@
   "stin": 0,
   "stout": 0,
   "icon": "PWM",
-  "params": "dspicPWMBlk|PWM:1:int|Port:'PORTA':str|Channel [0-15]:0:int|Umin [V]:0.0:double|Umax [V]:3.3:double",
-  "help": "This block implements a PWM output on the ds<Pic44AK system.\n\nParameters:\nPWM Nr.\n\nThe input signal can be a value between Umin and Umax and is automatically mapped to the PWM width 0-100%.\n"
+  "params": "dspicPWMBlk|PWM:'PWM1':str|Umin [V]:0.0:double|Umax [V]:3.3:double",
+  "help": "This block implements a PWM output on the dsPIC33AK system.\n\nParameters:\nPWM\n\nThe input signal can be a value between Umin and Umax and is mapped to the PWM width 0-100% duty cycle.\n"
 }
