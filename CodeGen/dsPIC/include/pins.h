@@ -56,6 +56,57 @@
 // Section: Device Pin Macros
 /**
  * @ingroup  pinsdriver
+ * @brief    Sets the RC8 GPIO Pin which has a custom name of IO_LED0 to High
+ * @pre      The RC8 must be set as Output Pin             
+ * @param    none
+ * @return   none  
+ */
+#define IO_LED0_SetHigh()          (_LATC8 = 1)
+
+/**
+ * @ingroup  pinsdriver
+ * @brief    Sets the RC8 GPIO Pin which has a custom name of IO_LED0 to Low
+ * @pre      The RC8 must be set as Output Pin
+ * @param    none
+ * @return   none  
+ */
+#define IO_LED0_SetLow()           (_LATC8 = 0)
+
+/**
+ * @ingroup  pinsdriver
+ * @brief    Toggles the RC8 GPIO Pin which has a custom name of IO_LED0
+ * @pre      The RC8 must be set as Output Pin
+ * @param    none
+ * @return   none  
+ */
+#define IO_LED0_Toggle()           (_LATC8 ^= 1)
+
+/**
+ * @ingroup  pinsdriver
+ * @brief    Reads the value of the RC8 GPIO Pin which has a custom name of IO_LED0
+ * @param    none
+ * @return   none  
+ */
+#define IO_LED0_GetValue()         _RC8
+
+/**
+ * @ingroup  pinsdriver
+ * @brief    Configures the RC8 GPIO Pin which has a custom name of IO_LED0 as Input
+ * @param    none
+ * @return   none  
+ */
+#define IO_LED0_SetDigitalInput()  (_TRISC8 = 1)
+
+/**
+ * @ingroup  pinsdriver
+ * @brief    Configures the RC8 GPIO Pin which has a custom name of IO_LED0 as Output
+ * @param    none
+ * @return   none  
+ */
+#define IO_LED0_SetDigitalOutput() (_TRISC8 = 0)
+
+/**
+ * @ingroup  pinsdriver
  * @brief    Initializes the PINS module
  * @param    none
  * @return   none  

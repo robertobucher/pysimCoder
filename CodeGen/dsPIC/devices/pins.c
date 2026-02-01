@@ -60,7 +60,7 @@ void PINS_Initialize(void)
      ***************************************************************************/
     TRISA = 0xFFFFUL;
     TRISB = 0xFFFFUL;
-    TRISC = 0xFFFEUL;
+    TRISC = 0xFEFEUL;
     TRISD = 0xFDFAUL;
     TRISE = 0x07FFUL;
     TRISF = 0x0FEFUL;
@@ -105,7 +105,7 @@ void PINS_Initialize(void)
     /****************************************************************************
      * Setting the Analog/Digital Configuration SFR(s)
      ***************************************************************************/
-    ANSELA = 0xFFF2UL;
+    ANSELA = 0xFFFAUL;
     ANSELB = 0xFFF0UL;
     ANSELE = 0x0003UL;
     ANSELF = 0x0001UL;
@@ -120,7 +120,6 @@ void PINS_Initialize(void)
         RPINR11bits.QEIA3R = 0x0013UL; //RB2->QEI3:QEIA3;
         RPINR11bits.QEIB3R = 0x0014UL; //RB3->QEI3:QEIB3;
         RPINR13bits.U1RXR = 0x0032UL; //RD1->UART1:U1RX;
-        RPINR9bits.QEINDX1R = 0x0004UL; //RA3->QEI1:INDX1;
         RPINR9bits.QEIA1R = 0x0001UL; //RA0->QEI1:QEIA1;
         RPINR9bits.QEIB1R = 0x0003UL; //RA2->QEI1:QEIB1;
         RPOR14bits.RP58R = 0x0028UL;  //RD9->SCCP2:OCM2;

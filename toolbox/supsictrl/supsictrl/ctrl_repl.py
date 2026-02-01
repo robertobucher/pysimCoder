@@ -59,7 +59,7 @@ def d2c(sys,method='zoh'):
             tmp = np.vstack((tmp1, tmp2))
             s = la.logm(tmp)
             s = s/Ts
-            if la.norm(np. imag(s), np.inf) > np.sqrt(sp.finfo(float).eps):
+            if la.norm(np. imag(s), np.inf) > np.sqrt(np.finfo(float).eps):
                 print('Warning: accuracy may be poor')
             s = np.real(s)
             A = s[0:n,0:n]
@@ -87,7 +87,7 @@ def d2c(sys,method='zoh'):
         c = np.asmatrix(c)
         d = np.asmatrix(d)
         poles = la.eigvals(a)
-        if any(abs(poles-1)<200*sp.finfo(float).eps):
+        if any(abs(poles-1)<200*np.finfo(float).eps):
             print('d2c: some poles very close to one. May get bad results.')
         
         I = np.asmatrix(np.eye(n,n))

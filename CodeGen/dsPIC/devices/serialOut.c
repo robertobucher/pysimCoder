@@ -40,7 +40,6 @@ static void inout(python_block *block)
   int i;
   double *u;
   int N = block->nin;
-  /* float values[N]; */
   float values[N+1];
 
   values[0] = (float) get_run_time();
