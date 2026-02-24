@@ -10,6 +10,8 @@ DFP = $(HOME)/.mchp_packs/Microchip/dsPIC33AK-MP_DFP/$(VER_DFP)/xc16
 
 MCU = 33AK512MPS512
 
+MCC = adc?.c clock.c interrupt.c pins.c pwm*.c qei?.c system.c uart?.c
+
 GCC = $(TOOL_DIR)/xc-dsc-gcc
 AR = $(TOOL_DIR)/xc-dsc-ar
 
@@ -47,4 +49,9 @@ clean:
 	@echo "RM: $(LIB)"
 	@echo "RM: *.o"
 	@rm -f $(LIB) $(OBJ)
+
+cleanall:
+	@echo "RM: $(LIB)"
+	@echo "RM: *.o"
+	@rm -f $(LIB) $(OBJ) $(MCC)
 

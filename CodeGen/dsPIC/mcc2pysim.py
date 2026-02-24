@@ -3,10 +3,12 @@
 import os
 import re
 
-source = '/home/bucher/sviluppo/MPLABXProjects/extDevices.X/mcc_generated_files'
+source = '/home/bucher/sviluppo/MPLABXProjects/pysimC.X/mcc_generated_files'
 dest = os.environ.get('PYSUPSICTRL') + '/CodeGen/dsPIC'
+#dest = '/home/bucher/tmp'
 
-folders = ['adc', 'pwm', 'qei', 'uart']
+#folders = ['adc', 'pwm_hs', 'qei', 'timer', 'uart']
+folders = ['adc', 'pwm_hs', 'qei', 'uart']
 
 for fold in folders:
     mainfold = source + '/' + fold

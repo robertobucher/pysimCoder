@@ -52,14 +52,14 @@ void CLOCK_Initialize(void)
 {
     /*  
         System Clock Source                             :  PLL1 Out output
-        System/Generator 1 frequency (Fosc)             :  100 MHz
+        System/Generator 1 frequency (Fosc)             :  100.02442 MHz
         
         Clock Generator 2 frequency                     : 8 MHz
         Clock Generator 3 frequency                     : 8 MHz
-        Clock Generator 6 frequency                     : 80 MHz
+        Clock Generator 6 frequency                     : 100.02442 MHz
         
-        PLL 1 frequency                                 : 350 MHz
-        PLL 1 VCO Out frequency                         : 87.5 MHz
+        PLL 1 frequency                                 : 320 MHz
+        PLL 1 VCO Out frequency                         : 800 MHz
         PLL 2 frequency                                 : 200 MHz
         PLL 2 VCO Out frequency                         : 166.666667 MHz
 
@@ -83,8 +83,8 @@ void CLOCK_Initialize(void)
     
     // NOSC Primary Oscillator; OE enabled; SIDL disabled; ON enabled; BOSC Serial Test Mode clock (PGC); FSCMEN disabled; DIVSWEN disabled; OSWEN disabled; EXTCFSEL disabled; EXTCFEN disabled; FOUTSWEN disabled; RIS disabled; PLLSWEN disabled; 
     PLL1CON = 0x9300UL;
-    // POSTDIV2 1x divide; POSTDIV1 2x divide; PLLFBDIV 175; PLLPRE 2; 
-    PLL1DIV = 0x200AF11UL;
+    // POSTDIV2 1x divide; POSTDIV1 5x divide; PLLFBDIV 200; PLLPRE 1; 
+    PLL1DIV = 0x100C829UL;
     //Enable PLL Input and Feedback Divider update
     PLL1CONbits.PLLSWEN = 1U;
 #ifndef __MPLAB_DEBUGGER_SIMULATOR
@@ -104,8 +104,8 @@ void CLOCK_Initialize(void)
 #endif
     
     //Configure VCO Divider
-    // INTDIV 4; 
-    VCO1DIV = 0x40000UL;
+    // INTDIV 1; 
+    VCO1DIV = 0x10000UL;
     //enable PLL VCO divider
     PLL1CONbits.DIVSWEN = 1U;
 #ifndef __MPLAB_DEBUGGER_SIMULATOR     
@@ -150,8 +150,8 @@ void CLOCK_Initialize(void)
     
     // NOSC PLL1 Out output; OE enabled; SIDL disabled; ON enabled; BOSC Backup FRC Oscillator; FSCMEN disabled; DIVSWEN disabled; OSWEN disabled; EXTCFSEL External clock fail detection module #1; EXTCFEN disabled; RIS disabled; SLEEPDLY 8 sys_clk delay; 
     CLK1CON = 0x29580UL;
-    // FRACDIV 384; INTDIV 1; 
-    CLK1DIV = 0x1C000UL;
+    // FRACDIV 307; INTDIV 1; 
+    CLK1DIV = 0x19980UL;
     //enable divide factors
     CLK1CONbits.DIVSWEN = 1U; 
     //wait for divide factors to get updated
@@ -185,8 +185,8 @@ void CLOCK_Initialize(void)
     
     // NOSC PLL1 Out output; OE enabled; SIDL disabled; ON enabled; BOSC Backup FRC Oscillator; FSCMEN disabled; DIVSWEN disabled; OSWEN disabled; EXTCFSEL External clock fail detection module #1; EXTCFEN disabled; RIS disabled; SLEEPDLY 8 sys_clk delay; 
     CLK6CON = 0x29580UL;
-    // FRACDIV 96; INTDIV 2; 
-    CLK6DIV = 0x23000UL;
+    // FRACDIV 307; INTDIV 1; 
+    CLK6DIV = 0x19980UL;
     //enable divide factors
     CLK6CONbits.DIVSWEN = 1U; 
     //wait for divide factors to get updated

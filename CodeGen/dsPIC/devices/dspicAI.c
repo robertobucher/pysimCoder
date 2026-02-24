@@ -35,11 +35,8 @@ static void inout(python_block *block)
   
   int adcN = intPar[0];
   int ch = intPar[1];
-  uint32_t adc_mask = (0x1L << ch);  
   adc_hw_t  adc_reg = adc[adcN];
   
-  *(adc_reg.trig) |= adc_mask;
-  while( !(*(adc_reg.stat) & adc_mask));
   double val = (double)   *(adc_reg.buf)[ch]/ADCMAXVAL;
 
   y[0] = maprD2D(val, realPar[0], realPar[1]);

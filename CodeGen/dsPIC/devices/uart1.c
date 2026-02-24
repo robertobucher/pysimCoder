@@ -41,7 +41,7 @@
 #include <uart1.h>
 
 // Section: Macro Definitions
-#define UART1_CLOCK 50000000U
+#define UART1_CLOCK 50012210U
 #define UART1_BAUD_TO_BRG_WITH_FRACTIONAL(x) (UART1_CLOCK/(x))
 #define UART1_BAUD_TO_BRG_WITH_BRGS_1(x) (UART1_CLOCK/(4U*(x))-1U)
 #define UART1_BAUD_TO_BRG_WITH_BRGS_0(x) (UART1_CLOCK/(16U*(x))-1U)
@@ -54,7 +54,7 @@
 
 // Section: Driver Interface
 
-const struct UART_INTERFACE UART = {
+const struct UART_INTERFACE UART1_Drv = {
     .Initialize = &UART1_Initialize,
     .Deinitialize = &UART1_Deinitialize,
     .Read = &UART1_Read,
@@ -109,7 +109,7 @@ void UART1_Initialize(void)
     U1CON = 0x8000000UL;
     // TXCIF ; RXFOIF ; RXBKIF ; CERIF ; ABDOVIF ; TXCIE ; RXFOIE ; RXBKIE ; FERIE ; CERIE ; ABDOVIE ; PERIE ; TXMTIE ; STPMD ; TXWRE ; RXWM ; TXWM ; 
     U1STAT = 0x2E0080UL;
-    // BaudRate 115207.37; Frequency 50000000 Hz; BRG 434; 
+    // BaudRate 115235.51; Frequency 50012210 Hz; BRG 434; 
     U1BRG = 0x1B2UL;
     
     U1CONbits.ON = 1;   // enabling UART ON bit

@@ -13,7 +13,7 @@
 */
 
 /*
-? [2026] Microchip Technology Inc. and its subsidiaries.
+© [2026] Microchip Technology Inc. and its subsidiaries.
 
     Subject to your compliance with these terms, you may use Microchip 
     software and any derivatives exclusively with Microchip products. 
@@ -53,19 +53,19 @@ void PINS_Initialize(void)
     LATE = 0x0000UL;
     LATF = 0x0000UL;
     LATG = 0x0000UL;
-    LATH = 0x0002UL;
+    LATH = 0x0001UL;
 
     /****************************************************************************
      * Setting the GPIO Direction SFR(s)
      ***************************************************************************/
     TRISA = 0xFFFFUL;
     TRISB = 0xFFFFUL;
-    TRISC = 0xFEFEUL;
-    TRISD = 0xFDFAUL;
+    TRISC = 0xFFE6UL;
+    TRISD = 0xFFF0UL;
     TRISE = 0x07FFUL;
     TRISF = 0x0FEFUL;
     TRISG = 0x03F7UL;
-    TRISH = 0x0005UL;
+    TRISH = 0x0006UL;
 
 
     /****************************************************************************
@@ -105,8 +105,8 @@ void PINS_Initialize(void)
     /****************************************************************************
      * Setting the Analog/Digital Configuration SFR(s)
      ***************************************************************************/
-    ANSELA = 0xFFFAUL;
-    ANSELB = 0xFFF0UL;
+    ANSELA = 0xFFFFUL;
+    ANSELB = 0xFFFFUL;
     ANSELE = 0x0003UL;
     ANSELF = 0x0001UL;
 
@@ -115,17 +115,14 @@ void PINS_Initialize(void)
      ***************************************************************************/
       PINS_PPSUnlock(); // unlock PPS
 
-        RPINR10bits.QEIA2R = 0x0011UL; //RB0->QEI2:QEIA2;
-        RPINR10bits.QEIB2R = 0x0012UL; //RB1->QEI2:QEIB2;
-        RPINR11bits.QEIA3R = 0x0013UL; //RB2->QEI3:QEIA3;
-        RPINR11bits.QEIB3R = 0x0014UL; //RB3->QEI3:QEIB3;
-        RPINR13bits.U1RXR = 0x0032UL; //RD1->UART1:U1RX;
-        RPINR9bits.QEIA1R = 0x0001UL; //RA0->QEI1:QEIA1;
-        RPINR9bits.QEIB1R = 0x0003UL; //RA2->QEI1:QEIB1;
-        RPOR14bits.RP58R = 0x0028UL;  //RD9->SCCP2:OCM2;
-        RPOR12bits.RP49R = 0x0027UL;  //RD0->SCCP1:OCM1;
-        RPOR28bits.RP114R = 0x0013UL;  //RH1->UART1:U1TX;
-        RPOR12bits.RP51R = 0x0029UL;  //RD2->SCCP3:OCM3;
+        RPINR10bits.QEIA2R = 0x0038UL; //RD7->QEI2:QEIA2;
+        RPINR10bits.QEIB2R = 0x0039UL; //RD8->QEI2:QEIB2;
+        RPINR9bits.QEIA1R = 0x0036UL; //RD5->QEI1:QEIA1;
+        RPINR9bits.QEIB1R = 0x0037UL; //RD6->QEI1:QEIB1;
+        RPINR11bits.QEIA3R = 0x003CUL; //RD11->QEI3:QEIA3;
+        RPINR11bits.QEIB3R = 0x003EUL; //RD13->QEI3:QEIB3;
+        RPINR13bits.U1RXR = 0x003BUL; //RD10->UART1:U1RX;
+        RPOR28bits.RP113R = 0x0013UL;  //RH0->UART1:U1TX;
 
       PINS_PPSLock(); // lock PPS
 

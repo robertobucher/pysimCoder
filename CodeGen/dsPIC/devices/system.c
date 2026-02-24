@@ -34,13 +34,13 @@
 #include <system_types.h>
 #include <clock.h>
 #include <pins.h>
+#include <adc1.h>
+#include <adc2.h>
 #include <adc5.h>
+#include <pwm.h>
 #include <qei1.h>
 #include <qei2.h>
 #include <qei3.h>
-#include <sccp1.h>
-#include <sccp2.h>
-#include <sccp3.h>
 #include <uart1.h>
 #include <interrupt.h>
 
@@ -49,13 +49,13 @@ void SYSTEM_Initialize(void)
 {
     CLOCK_Initialize();
     PINS_Initialize();
+    ADC1_Initialize();
+    ADC2_Initialize();
     ADC5_Initialize();
+    PWM_Initialize();
     QEI1_Initialize();
     QEI2_Initialize();
     QEI3_Initialize();
-    SCCP1_PWM_Initialize();
-    SCCP2_PWM_Initialize();
-    SCCP3_PWM_Initialize();
     UART1_Initialize();
     INTERRUPT_GlobalEnable();
     INTERRUPT_Initialize();

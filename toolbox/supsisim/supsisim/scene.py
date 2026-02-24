@@ -668,10 +668,6 @@ class Scene(QGraphicsScene):
 
             parArr.append((par[0], par[1], param_type, shv_flag))
 
-        # Check if Block is PLOT
-        if ln[0] == 'plotBlk':
-            txt += ", '" + item.getCodeName().replace(' ','_') + "'"
-
         txt_param: str | None = None
         if parArr:
             txt += f", {blk_name}_params"

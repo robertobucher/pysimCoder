@@ -53,7 +53,7 @@ static const qei_hw_t qei[] = {
 Please, modify the first lines of the *mcc2pysim.py* script
 
 ```
-source = '/home/bucher/sviluppo/MPLABXProjects/extDevices.X/mcc_generated_files'
+source = '/home/bucher/sviluppo/MPLABXProjects/pysimC.X/mcc_generated_files'
 ```
 
 with the right path which contains the mcc_generated_files.

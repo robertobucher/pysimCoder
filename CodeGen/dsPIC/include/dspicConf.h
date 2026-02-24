@@ -5,7 +5,7 @@
 #include <dspicFun.h>
 
 #define ADCMAXVAL 330
-#define PWMFACT 5000
+#define PWMFACT 20000
 
 typedef struct {
     volatile uint32_t *lat;
@@ -45,21 +45,30 @@ static const gpio_port_hw_t gpio_ports[] = {
 };
 
 static const adc_hw_t adc[] = {
-  [ADC_5] =   {&AD5STAT,
+  [ADC_1] = {&AD1STAT,
+	   &AD1SWTRG,
+	   {&AD1CH0DATA, &AD1CH1DATA, &AD1CH2DATA,
+	    &AD1CH3DATA, &AD1CH4DATA}},
+  [ADC_2] = {&AD2STAT,
+	   &AD2SWTRG,
+	   {&AD2CH0DATA, &AD2CH1DATA, &AD2CH2DATA,
+	    &AD2CH3DATA}},
+  [ADC_5] = {&AD5STAT,
 	   &AD5SWTRG,
-	   {&AD5CH0DATA, &AD5CH1DATA, &AD5CH2DATA, &AD5CH3DATA}}
+	   {&AD5CH0DATA, &AD5CH1DATA, &AD5CH2DATA,
+	    &AD5CH3DATA, &AD5CH4DATA}}
 };
 
 static const pwm_hw_t pwm[] = {
-  [PWM_1] =   {&CCP1RB},
-  [PWM_2] =   {&CCP2RB},
-  [PWM_3] =   {&CCP3RB}
+  [PWM_1] =   {&PG1DC},
+  [PWM_2] =   {&PG2DC},
+  [PWM_3] =   {&PG3DC}
 };
 
 static const qei_hw_t qei[] = {
-  [QEI_1] =   {&POS1CNT, &QEI1CON, GPIO_PORT_A, 0, GPIO_PORT_A, 2},
-  [QEI_2] =   {&POS2CNT, &QEI2CON, GPIO_PORT_B, 0, GPIO_PORT_B, 1},
-  [QEI_3] =   {&POS3CNT, &QEI3CON, GPIO_PORT_B, 2, GPIO_PORT_B, 3}
+  [QEI_1] =   {&POS1CNT, &QEI1CON, GPIO_PORT_D, 5, GPIO_PORT_D, 6},
+  [QEI_2] =   {&POS2CNT, &QEI2CON, GPIO_PORT_D, 7, GPIO_PORT_D, 8},
+  [QEI_3] =   {&POS3CNT, &QEI3CON, GPIO_PORT_D, 11, GPIO_PORT_D, 13}
 };
 
 #endif

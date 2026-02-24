@@ -23,7 +23,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 
 double get_run_time(void);
 
-static void uart1_send_buffer(const uint8_t *buf, size_t len)
+static void uart_send_buffer(const uint8_t *buf, size_t len)
 {
     for (size_t i = 0; i < len; i++) {
         while (!UART1_IsTxReady());
@@ -48,7 +48,7 @@ static void inout(python_block *block)
     values[i+1] = (float) u[0];
   }
   int LEN = (N+1)*sizeof(float);
-  uart1_send_buffer((const uint8_t *) values, LEN); 
+  uart_send_buffer((const uint8_t *) values, LEN); 
 }
 
 static void end(python_block *block)

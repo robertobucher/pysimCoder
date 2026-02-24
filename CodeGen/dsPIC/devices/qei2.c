@@ -64,7 +64,7 @@ void QEI2_Initialize(void)
 {
     /* CCM Quadrature Encoder mode; GATEN disabled; CNTPOL disabled; INTDIV 1:1; IMV Index match occurs when QEBx = 0 and QEAx = 0; PIMOD Free running mode; SIDL disabled; ON disabled; */
     QEI2CON = 0x0UL;
-    /* QEAPOL disabled; QEBPOL disabled; IDXPOL disabled; HOMPOL disabled; SWPAB disabled; OUTFNC disabled; QFDIV 1:50000000; FLTREN enabled; QCAPEN disabled; HCAPEN disabled; */
+    /* QEAPOL disabled; QEBPOL disabled; IDXPOL disabled; HOMPOL disabled; SWPAB disabled; OUTFNC disabled; QFDIV 1:50012210.01221001; FLTREN enabled; QCAPEN disabled; HCAPEN disabled; */
     QEI2IOC = 0x4000UL;
     /* IDXIEN disabled; IDXIRQ No index event has occured; HOMIEN disabled; HOMIRQ No home event has occured; VELOVIEN disabled; VELOVIRQ No overflow has occured; PCIIEN disabled; PCIIRQ POSxCNT was not reinitialized; POSOVIEN disabled; POSOVIRQ No overflow has occured; PCLEQIEN disabled; PCLEQIRQ POSxCNT less than QEIxLEC; PCHEQIEN disabled; PCHEQIRQ POSxCNT less than QEIxGEC; */
     QEI2STAT = 0x0UL;
