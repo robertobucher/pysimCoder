@@ -28,6 +28,7 @@ PLOT_LINE_COLORS = ['y', 'g', 'r', 'b', 'c', 'm', 'k', 'w']
 pg.setConfigOption('background', pg.mkColor((COL, COL, COL)))
 pg.setConfigOption('foreground', 'k')
 
+app = QApplication(sys.argv)
 path = os.environ.get('PYSUPSICTRL') + '/BlockEditor'
 form_class = uic.loadUiType(path + '/pyplt.ui')[0]
 
@@ -158,7 +159,7 @@ class udp_rcvServer(threading.Thread):
 
 class MainWindow(QMainWindow, form_class):
     def __init__(self):
-        QMainWindow.__init__(self)
+        super().__init__()
         self.setupUi(self)
         self.setFixedSize(690, 415)  
 
@@ -464,7 +465,7 @@ class MainWindow(QMainWindow, form_class):
 
         event.accept()
                     
-app = QApplication(sys.argv)
+# app = QApplication(sys.argv)
 frame = MainWindow()
 frame.show()
 sys.exit(app.exec())

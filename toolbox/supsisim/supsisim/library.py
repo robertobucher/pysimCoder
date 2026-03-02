@@ -12,7 +12,7 @@ from supsisim.const import respath, BWmin
 
 class CompViewer(QGraphicsScene):
     def __init__(self, parent=None):
-        super(CompViewer, self).__init__()
+        super().__init__(parent)
         self.parent = parent
 
         self.componentList = []	 

@@ -167,7 +167,7 @@ class Block(QGraphicsPathItem):
 
     def paint(self, painter, option, widget):
         pen = QPen()
-        pen.setBrush(self.line_color)
+        pen.setBrush(QBrush(self.line_color))
         pen.setWidth = LW
         if self.isSelected():
             pen.setStyle(Qt.PenStyle.DotLine)

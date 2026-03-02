@@ -516,9 +516,9 @@ class NewEditorMainWindow(QMainWindow):
         for index in range(0, self.actFolders.count()):
             recFolders.append(self.actFolders.itemText(index))
         if recFolders:
-            recFolders = QVariant(recFolders)
+            recFolders = recFolders
         else:
-            recFolders = QVariant()
+            recFolders = None
             
         settings.setValue('RecentFolders', recFolders)
         self.editor.active = False
