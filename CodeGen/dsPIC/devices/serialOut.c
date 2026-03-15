@@ -33,6 +33,7 @@ static void uart_send_buffer(const uint8_t *buf, size_t len)
 
 static void init(python_block *block)
 {
+  U1BRG = 0x36;       /* 921600 bauds */
 }
 
 static void inout(python_block *block)

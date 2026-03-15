@@ -1,0 +1,11 @@
+{
+  "lib": "input",
+  "name": "embExtData",
+  "ip": 0,
+  "op": 2,
+  "stin": 0,
+  "stout": 1,
+  "icon": "EXTDATA",
+  "params": "embExtDataBlk|Filename: 'data.txt':str",
+  "help": "This block create embedded doubles from a file, integrated into the real parameters\n"
+}
