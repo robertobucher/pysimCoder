@@ -1,13 +1,10 @@
 #!/usr/bin/python3
 
-from PyQt5.QtGui import *
-from PyQt5.QtCore import *
-from PyQt5.QtWidgets import QMainWindow, QApplication, QGridLayout, QWidget, QPushButton, QSpinBox, QCheckBox, QTextEdit, QAction, QMenuBar, QLabel, QFileDialog, QLineEdit, QMessageBox, QComboBox
-from PyQt5 import QtCore, uic
-
 import os
 import sys
 import json
+
+from supsisim.qtvers import *
 
 path = os.environ.get('PYSUPSICTRL') + '/'
 mypath = path + 'resources/icons/'
@@ -189,4 +186,4 @@ class MainWindow(QMainWindow, form_class):
 app = QApplication(sys.argv)
 frame = MainWindow()
 frame.show()
-sys.exit(app.exec_())
+sys.exit(app.exec())

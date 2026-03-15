@@ -1,13 +1,10 @@
 #!/usr/bin/python3
 
-from PyQt5 import QtGui, QtCore, uic
-from PyQt5.QtGui import *
-from PyQt5.QtCore import *
-from PyQt5.QtWidgets import QMainWindow, QApplication, QAction, QFileDialog, QMessageBox, QLabel, QLineEdit, QPushButton, QTableWidget, QTableWidgetItem
-
 import os
 import sys
 import json
+
+from supsisim.qtvers import *
 
 path = os.environ.get('PYSUPSICTRL') + '/'
 form_class = uic.loadUiType(path+'BlockEditor/BlockParams.ui')[0]    
@@ -19,6 +16,7 @@ class MainWindow(QMainWindow, form_class):
     def __init__(self):
         QMainWindow.__init__(self)
         self.setupUi(self)
+        self.setFixedSize(750, 690)
         self.addactions()
         self.addMenubar()
         self.addToolbars()
@@ -225,4 +223,4 @@ class MainWindow(QMainWindow, form_class):
 app = QApplication(sys.argv)
 frame = MainWindow()
 frame.show()
-sys.exit(app.exec_())
+sys.exit(app.exec())

@@ -149,6 +149,7 @@ QLineEdit = QtWidgets.QLineEdit
 QListWidget = QtWidgets.QListWidget
 QMainWindow = QtWidgets.QMainWindow
 QMenu = QtWidgets.QMenu
+QMenuBar = QtWidgets.QMenuBar
 QMessageBox = QtWidgets.QMessageBox
 QPushButton = QtWidgets.QPushButton
 QSpinBox = QtWidgets.QSpinBox

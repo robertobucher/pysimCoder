@@ -1,15 +1,11 @@
 #!/usr/bin/python3
 
-from PyQt5 import QtGui, QtCore, uic
-from PyQt5.QtGui import *
-from PyQt5.QtCore import *
-from PyQt5.QtWidgets import QMainWindow, QApplication, QAction, QFileDialog, QMessageBox, \
-QLabel, QLineEdit, QPushButton, QTableWidget, QTableWidgetItem
-
 import supsictrl.unixsocket as sk
 import os
 import sys
 import json
+
+from supsisim.qtvers import *
 
 import socket
 import struct
@@ -23,6 +19,7 @@ class MainWindow(QMainWindow, form_class):
     def __init__(self):
         QMainWindow.__init__(self)
         self.setupUi(self)
+        self.setFixedSize(650, 470)
         self.devCbBox.clear()
         self.devCbBox.insertItem(0, '/tmp/ssock')
         self.addactions()
@@ -211,4 +208,4 @@ class MainWindow(QMainWindow, form_class):
 app = QApplication(sys.argv)
 frame = MainWindow()
 frame.show()
-sys.exit(app.exec_())
+sys.exit(app.exec())
