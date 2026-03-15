@@ -1,13 +1,9 @@
 #!/usr/bin/python3
 
-from PyQt5 import QtGui, QtCore
-
-from PyQt5.QtWidgets import QMainWindow, QApplication, QWidget, \
-    QLabel, QCheckBox, QGridLayout, QPushButton
-from PyQt5.QtCore import Qt
-
 import os
 import sys
+
+from supsisim.qtvers import *
 
 path = os.environ.get('PYSUPSICTRL') + '/'
 
@@ -63,5 +59,5 @@ class MainWindow(QMainWindow):
 app = QApplication(sys.argv)
 frame = MainWindow()
 frame.show()
-sys.exit(app.exec_())
+sys.exit(app.exec())
 
