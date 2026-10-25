@@ -261,6 +261,7 @@ class Block(QGraphicsPathItem):
             self.label = QGraphicsTextItem(self)
             self.label.setPlainText(self.name)           
         
+        self.label.setDefaultTextColor(Qt.GlobalColor.black)
         p.addRect(-self.w/2, -self.h/2, self.w, self.h)
         w = self.label.boundingRect().width()
         self.label.setPos(-w/2, self.h/2+5)

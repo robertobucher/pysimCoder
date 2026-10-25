@@ -43,6 +43,9 @@ class Scene(QGraphicsScene):
     def __init__(self, main, parent=None):
         super(Scene,self).__init__(parent)
         self.mainw = main
+        # Blocks and connections are drawn in black, keep the canvas white
+        # regardless of the system (dark mode) palette
+        self.setBackgroundBrush(QBrush(Qt.GlobalColor.white))
 
         self.selection = []
         self.currentItem = None
