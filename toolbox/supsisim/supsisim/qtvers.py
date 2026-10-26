@@ -91,6 +91,9 @@ except ImportError:
 
         QT_LIB = "PyQt5"
 
+        # In Qt5 workaround
+        QtGui.QAction = QtWidgets.QAction
+
         pyqtSignal = QtCore.pyqtSignal
         pyqtSlot = QtCore.pyqtSlot
 
