@@ -14,4 +14,5 @@ scikit-build>=0.15.0 # MIT
 pyshv>=0.8.0 #MIT
 typing-extensions>=4.13.1 # PSF-2.0
 semantic_version
+pyserial
 PyQt6 # GPLv3

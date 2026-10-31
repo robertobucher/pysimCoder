@@ -4,6 +4,7 @@ import sys
 import os
 
 from supsisim.qtvers import *
+from supsisim.const import path
 
 import time
 import threading
@@ -18,8 +19,7 @@ SER4 = 2
 TCP = 3
 UDP = 4
 
-path = os.environ.get('PYSUPSICTRL') + '/BlockEditor'
-form_class = uic.loadUiType(path + '/PlotJugglerIntf.ui')[0]
+form_class = uic.loadUiType(os.path.join(path, 'BlockEditor', 'PlotJugglerIntf.ui'))[0]
 
 class ser_rcvServer(threading.Thread):
     def __init__(self, mainw):
