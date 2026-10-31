@@ -27,6 +27,7 @@ class GraphicsView(QGraphicsView):
         self.setSceneRect(QRectF(-2000, -2000, 4000, 4000))
         self.setRenderHint(QPainter.RenderHint.Antialiasing)
         self.setRenderHint(QPainter.RenderHint.TextAntialiasing)
+        self.setViewportUpdateMode(QGraphicsView.ViewportUpdateMode.FullViewportUpdate)
         self.setAcceptDrops(True)
 
     def wheelEvent(self, event):
