@@ -1,7 +1,6 @@
 [build-system]
 requires = [
     "setuptools",
-    "setuptools-scm",
     "wheel"
 ]
 build-backend = "setuptools.build_meta"
@@ -19,20 +18,22 @@ classifiers = [
     "License :: OSI Approved :: GNU General Public License v2 (GPLv2)",
     "License :: OSI Approved :: BSD License",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.7",
-    "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "Topic :: Software Development",
     "Topic :: Scientific/Engineering",
      "Operating System :: Unix",
 ]
-requires-python = ">=3.7"
+requires-python = ">=3.10"
 
 dependencies = [
     "numpy",
     "matplotlib",
     "control",
+    "scipy",
+    "slycot",
 ]
 
 [tool.setuptools]

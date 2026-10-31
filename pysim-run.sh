@@ -30,11 +30,16 @@ export PYTHONPATH=":$PYSUPSICTRL/resources/blocks/rcpBlk$PYTHONPATH"
 export PYTHONPATH=":$PYSUPSICTRL/toolbox/supsictrl$PYTHONPATH"
 export PYTHONPATH="$PYSUPSICTRL/toolbox/supsisim$PYTHONPATH"
 
-# Check whether virtual environment is running
-if [ -z $VIRTUAL_ENV ]; then
-    PYTHON_INTR="/usr/bin/env python3"
-else
+# Prefer an active virtual environment, then the uv-managed .venv
+if [ -n "$VIRTUAL_ENV" ]; then
     PYTHON_INTR="$VIRTUAL_ENV/bin/python3"
+elif [ -x "$PYSUPSICTRL/.venv/bin/python3" ]; then
+    # Activate it, so that python3/jupyter spawned by the app use it too
+    export VIRTUAL_ENV="$PYSUPSICTRL/.venv"
+    export PATH="$VIRTUAL_ENV/bin:$PATH"
+    PYTHON_INTR="$VIRTUAL_ENV/bin/python3"
+else
+    PYTHON_INTR="/usr/bin/env python3"
 fi
 
 $PYTHON_INTR "$PYSUPSICTRL/BlockEditor/$appname.py" "$@"

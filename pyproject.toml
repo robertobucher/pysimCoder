@@ -1,0 +1,49 @@
+# uv project definition for pysimCoder.
+#
+# This file is used by uv only (`uv sync`). The repository root is NOT
+# a Python package and is never built as a wheel. pip users keep using
+# requirements.txt plus `make modules` -- keep both dependency lists in sync.
+
+[project]
+name = "pysimcoder"
+version = "0.95"
+description = "Rapid prototyping application for generating real-time control code"
+readme = "README.md"
+license = {text = "GPL-2.0"}
+requires-python = ">=3.11"  # pyshv>=0.8.0 requires 3.11
+
+dependencies = [
+    "supsictrl",
+    "supsisim",
+    "numpy>=1.19.5",
+    "scipy",
+    "control>=0.9.2",
+    "slycot>=0.5.0",
+    "matplotlib>=3.3.4",
+    "sympy>=1.7.1",
+    "pyqtgraph>=0.11.0",
+    "lxml>=4.6.3",
+    "tornado>=6.1",
+    "qtconsole>=5.0.2",
+    "pyshv>=0.8.0",
+    "typing-extensions>=4.13.1",
+    "pyserial",
+    "PyQt6",
+]
+
+[project.optional-dependencies]
+pyside6 = ["PySide6"]
+rtscope = ["PythonQwt"]
+
+[project.urls]
+homepage = "https://github.com/robertobucher/pysimCoder"
+
+[tool.uv]
+package = false
+
+[tool.uv.workspace]
+members = ["toolbox/supsictrl", "toolbox/supsisim"]
+
+[tool.uv.sources]
+supsictrl = { workspace = true }
+supsisim = { workspace = true }
