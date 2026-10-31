@@ -20,7 +20,8 @@ SRCALL += $(wildcard $(COMMON_DIR)/CAN_dev/*.c)
 SRCALL += $(wildcard $(COMMON_DIR)/common_dev/*.c)
 SRCALL += $(wildcard $(COMMON_DIR)/Faulhaber_dev/*.c)
 SRCALL += $(wildcard $(COMMON_DIR)/Maxon_dev/*.c)
-SRCALL += $(wildcard $(COMMON_DIR)/posix/*.c)
+SRCALL += $(wildcard $(COMMON_DIR)/os_compatible_dev/*.c)
+SRCALL += $(wildcard $(COMMON_DIR)/os_compatible_dev/posix/*.c)
 SRCALL += $(wildcard $(COMMON_DIR)/AR2INO/*.c)
 
 dependencies:
@@ -94,7 +95,10 @@ FMUinterface.o: FMUinterface.c
 %.o: $(COMMON_DIR)/Maxon_dev/%.c
 	$(CC) $(CC_FLAGS) $<
 
-%.o: $(COMMON_DIR)/posix/%.c
+%.o: $(COMMON_DIR)/os_compatible_dev/%.c
+	$(CC) $(CC_FLAGS) $<
+
+%.o: $(COMMON_DIR)/os_compatible_dev/posix/%.c
 	$(CC) $(CC_FLAGS) $<
 
 %.o: $(COMMON_DIR)/AR2INO/%.c

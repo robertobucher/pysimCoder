@@ -26,7 +26,8 @@ include $(NUTTX_EXPORT)/scripts/Make.defs
 include $(NUTTX_EXPORT)/.config
 
 SRCALL = $(wildcard $(COMMON_DIR)/common_dev/*.c)
-SRCALL += $(wildcard $(COMMON_DIR)/posix/*.c)
+SRCALL += $(wildcard $(COMMON_DIR)/os_compatible_dev/*.c)
+SRCALL += $(wildcard $(COMMON_DIR)/os_compatible_dev/posix/*.c)
 SRCALL += serialOut.c
 
 dependencies:
@@ -125,9 +126,8 @@ CFLAGS += $(TARGET_ARCH_FLAGS) $(ARCHWARNINGS) $(OPT_OPTS) $(INCLUDES)
 CXXFLAGS = $(TARGET_ARCH_FLAGS) $(ARCHCXXFLAGS) $(ARCHWARNINGSXX) $(OPT_OPTS) $(INCLUDES)
 
 OBJEX = $(SRC:.c=.o)
-DEFINES = -D PLOTTER_SCRIPT=\"$(CWD)/scope.py\"
 CC_FLAGS = -c $(DBG) $(INCLUDE) $(CFLAGS)
-CC_FLAGS += -I$(GENERATED_INC)
+CC_FLAGS += -I$(GENERATED_INC) -D__NuttX__
 ifeq ($(SHV),1)
 CC_FLAGS += -I$(COMMON_DIR)/shv/include
 endif
@@ -165,9 +165,6 @@ files:
 EXCLUDE = comedi_analog_input.c comedi_analog_output.c comedi_digital_input.c comedi_digital_output.c
 SRC=$(filter-out $(EXCLUDE),$(SRCALL))
 
-scope.o: scope.c
-	$(CC) $(CC_FLAGS_SCP) $<
-
 FMUinterface.o: FMUinterface.c
 	$(CC) $(CC_FLAGS_FMU) $<
 
@@ -197,7 +194,10 @@ endif
 %.o: $(COMMON_DIR)/Maxon_dev/%.c
 	$(CC) $(CC_FLAGS) $<
 
-%.o: $(COMMON_DIR)/posix/%.c
+%.o: $(COMMON_DIR)/os_compatible_dev/%.c
+	$(CC) $(CC_FLAGS) $<
+
+%.o: $(COMMON_DIR)/os_compatible_dev/posix/%.c
 	$(CC) $(CC_FLAGS) $<
 
 lib: $(OBJ)
