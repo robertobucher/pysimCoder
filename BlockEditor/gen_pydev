@@ -1,2 +1,0 @@
-sed s/xxxx/$1/ ${PYSUPSICTRL}/CodeGen/LinuxRT/devices/template.c.tmp > $1.c
-

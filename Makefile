@@ -45,7 +45,6 @@ arduino_firmata:
 link:
 	cd $(BINDIR); rm -f pyParams gen_pydev loadnrt defBlocks dataplot \
 	xblk2Blk configLibs
-	cp BlockEditor/gen_pydev $(BINDIR)/
 	cd $(CURDIR)/BlockEditor; chmod a+x *.py
 	cd $(CURDIR)/DriverNRT/; chmod a+x loadnrt
 	ln -s $(CURDIR)/BlockEditor/pyParams.py $(BINDIR)/pyParams
@@ -53,6 +52,7 @@ link:
 	ln -s $(CURDIR)/BlockEditor/dataplot.py $(BINDIR)/dataplot
 	ln -s $(CURDIR)/BlockEditor/xblk2Blk.py $(BINDIR)/xblk2Blk
 	ln -s $(CURDIR)/BlockEditor/configLibs.py $(BINDIR)/configLibs
+	ln -s $(CURDIR)/BlockEditor/gen_pydev.py $(BINDIR)/gen_pydev
 	ln -s $(CURDIR)/DriverNRT/loadnrt $(BINDIR)/loadnrt
 
 driver:
