@@ -1,6 +1,7 @@
 from supsisim.qtvers import *
 
 from supsisim.const import path, SHLIB_SUFFIX
+from supsisim import dgmformat
 from supsisim.getTemplates import dictTemplates
 from supsisim.image_update import ImageUpdateMethod, OpenocdUpdateMethod, SHVUpdateMethod
 from supsisim.image_confirm import ImageConfirmMethod, SHVConfirmMethod
@@ -8,6 +9,7 @@ from supsisim.shv.client import ShvFwUpdateClient
 from supsisim.shv.SHVInstance import SHVInstance
 from threading import Event
 from typing import Any, Callable, Optional
+from enum import Enum
 from os import listdir
 import os
 import asyncio
@@ -479,3 +481,54 @@ class UpdimgDlg(QDialog):
         self.thrd = self._UploadConfirmWorker(self, self.updinfo_box,
             self._upload_confirm_work_completed)
         self.thrd.start()
+
+class DgmOpenAction(Enum):
+    OPEN = 'open'          # open the diagram
+    CANCEL = 'cancel'      # do not open anything
+    UPGRADED = 'upgraded'  # an upgraded copy was saved, nothing is opened
+
+
+def checkDgmBeforeOpen(parent, filename, fromCmdLine = False) -> DgmOpenAction:
+    """
+    Check the format of a diagram before opening it and, for older
+    diagrams, offer to save an upgraded copy next to it. The upgraded
+    copy is never opened automatically: the user opens it manually
+    (fromCmdLine: pysimCoder closes after the upgrade).
+    The format logic itself lives in dgmformat.
+    """
+    status = dgmformat.inspect_file(filename)
+    if status.kind == dgmformat.DgmKind.CURRENT:
+        return DgmOpenAction.OPEN
+
+    if status.kind != dgmformat.DgmKind.OLDER:
+        QMessageBox.critical(parent, 'Cannot open diagram', filename + '\n\n' + status.error)
+        return DgmOpenAction.CANCEL
+
+    text = filename + '\n\n'
+    text += 'This diagram uses format %d, the current format is %d.\n' % (status.file_format,
+                                                                         status.current_format)
+    text += 'It must be upgraded before it can be opened:\n\n'
+    text += '\n'.join(['- ' + s for s in status.steps])
+    text += '\n\nThe original file is not modified, the upgraded diagram will be saved as:\n'
+    text += dgmformat.upgraded_path_for(filename)
+    text += '\n\nUpgrade the diagram now?'
+    ret = QMessageBox.warning(parent, 'Old diagram format', text,
+                              QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+                              QMessageBox.StandardButton.No)
+    if ret != QMessageBox.StandardButton.Yes:
+        return DgmOpenAction.CANCEL
+
+    try:
+        res = dgmformat.upgrade_file(filename)
+    except dgmformat.DgmFormatError as e:
+        QMessageBox.critical(parent, 'Upgrade failed', filename + '\n\n' + str(e))
+        return DgmOpenAction.CANCEL
+
+    text = 'The diagram was upgraded to format %d and saved as:\n%s\n\n' % (res.to_format,
+                                                                            res.new_path)
+    if fromCmdLine:
+        text += 'pysimCoder will now close. Please open the upgraded diagram.'
+    else:
+        text += 'Please open the upgraded diagram.'
+    QMessageBox.information(parent, 'Upgrade successful', text)
+    return DgmOpenAction.UPGRADED
