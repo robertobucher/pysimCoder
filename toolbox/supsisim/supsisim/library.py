@@ -191,12 +191,7 @@ class Library(QMainWindow):
                     d['lib'] = 'common'
                     blkList.append(d)
                 except:
-                    try:
-                        d = self.getBlock(os.path.join(myDir, f))
-                        d['lib'] = 'common'
-                        blkList.append(d)
-                    except:
-                        pass                
+                    pass
             fn.close()
         except:
             pass
