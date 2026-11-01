@@ -38,9 +38,7 @@ INCLUDE += -I$(FIRMATA_DIR)/includes -I$(FIRMATA_VENDOR)/includes
 endif
 endif
 
-# TCPsocketAsync.c: C11 atomics on non-_Atomic types in TCPdqf.h, rejected by clang
-EXCLUDE = TCPsocketAsync.c
-SRC = $(foreach f,$(SRCALL),$(if $(filter $(EXCLUDE),$(notdir $(f))),,$(f)))
+SRC = $(SRCALL)
 OBJ = $(notdir $(SRC:.c=.o))
 
 vpath %.c $(sort $(dir $(SRC)))
