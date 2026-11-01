@@ -4,6 +4,8 @@ import argparse
 import os
 import sys
 
+from supsisim.dgmformat import DgmFormatError
+from supsisim.dialg import DgmOpenAction
 from supsisim.library import Library
 from supsisim.pyEdit import NewEditorMainWindow
 from supsisim.qtvers import *
@@ -45,7 +47,10 @@ if __name__ == "__main__":
         app = QApplication(unknown)
 
         fname = str(QFileInfo(filename).baseName())
-        main = NewEditorMainWindow(fname, QFileInfo(filename).absolutePath(), None)
+        try:
+            main = NewEditorMainWindow(fname, QFileInfo(filename).absolutePath(), None)
+        except DgmFormatError as e:
+            sys.exit("Cannot load diagram: " + str(e))
         ret = main.codegenAct()
         app.deleteLater()
         os.remove("tmp.py")
@@ -68,8 +73,15 @@ if __name__ == "__main__":
             library.newFile()
             library.setWindowState(Qt.WindowState.WindowMaximized)
         else:
-            library.fopen(filename)
-            library.setWindowState(Qt.WindowState.WindowMinimized)
+            action = library.fopen(filename, fromCmdLine=True)
+            if action == DgmOpenAction.UPGRADED:
+                # the upgraded copy is not opened, close gracefully
+                print("Diagram %s was upgraded to a new file, please open it." % filename)
+                library.close()
+                app.deleteLater()
+                sys.exit(0)
+            if action == DgmOpenAction.OPEN:
+                library.setWindowState(Qt.WindowState.WindowMinimized)
         ret = app.exec()
         app.deleteLater()
 
