@@ -53,7 +53,7 @@ jobs:
         run: "export PYSUPSICTRL=${{ github.workspace }}"
 
       - name: Setup Linux Blocks
-        run: "make full_lib"
+        run: "make full_lib; make sim_lib"
 
       - name: Generate Simple Diagram
         run: "QT_QPA_PLATFORM=offscreen ./pysim-run.sh -g Tests/diagrams/simple_linux_rt.dgm"
