@@ -5,7 +5,7 @@ from supsisim.subsblock import subsBlock
 from supsisim.port import Port, InPort, OutPort
 from supsisim.connection import Connection
 from supsisim.dialg import RTgenDlg, SHVDlg, UpdimgDlg
-from supsisim.const import VERSION, DGM_FORMAT_VERSION, pyrun, TEMP, respath, BWmin, EXE_SUFFIX, MAKE
+from supsisim.const import VERSION, DGM_FORMAT_VERSION, pyrun, respath, BWmin, EXE_SUFFIX, MAKE
 from supsisim import dgmformat
 from supsisim.getTemplates import dictTemplates
 from supsisim.RCPblk import RcpParam

@@ -98,7 +98,7 @@ def _library_param_types() -> dict:
     for d in library_dirs():
         for fn in glob.glob(os.path.join(d, '**', '*.xblk'), recursive=True):
             try:
-                with open(fn, 'r') as f:
+                with open(fn, 'r', encoding='utf-8') as f:
                     params = json.load(f)['params'].split('|')
             except (OSError, ValueError, KeyError, AttributeError):
                 continue
@@ -313,7 +313,7 @@ def upgrade_file(path: str) -> UpgradeResult:
 
     for candidate in _upgraded_candidates(path, DGM_FORMAT_VERSION):
         try:
-            f = open(candidate, 'x')
+            f = open(candidate, 'x', encoding='utf-8')
         except FileExistsError:
             continue
         except OSError as e:
