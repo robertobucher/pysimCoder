@@ -29,6 +29,7 @@ dependencies = [
     "typing-extensions>=4.13.1",
     "pyserial",
     "PyQt6",
+    "semantic-version>=2.10.0",
 ]
 
 [project.optional-dependencies]

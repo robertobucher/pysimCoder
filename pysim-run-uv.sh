@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-if ! [ -z "$PYSUPSICTRL" ]; then
+if [ -z "$PYSUPSICTRL" ]; then
     export PYSUPSICTRL="$( cd "$(dirname "$0")" ; pwd )"
 fi
 
@@ -30,6 +30,10 @@ fi
 if [ ! -e "$PYSUPSICTRL/BlockEditor/$appname.py" ] ; then
     show_help
 fi
+
+# Block classes in rcpBlk are imported as top-level modules by the
+# generated tmp.py (and by the app), but rcpBlk is not a package
+export PYTHONPATH="$PYSUPSICTRL/resources/blocks/rcpBlk${PYTHONPATH:+:$PYTHONPATH}"
 
 uv sync --project "$PYSUPSICTRL"
 uv run --project "$PYSUPSICTRL" "$PYSUPSICTRL/BlockEditor/$appname.py" "$@"
