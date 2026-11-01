@@ -39,6 +39,9 @@ full_lib:
 linux_mzapo:
 	cd CodeGen/linux_mz_apo/devices; make all
 
+sim_lib:
+	cd CodeGen/sim/devices; make all
+
 arduino_firmata:
 	cd CodeGen/arduinoFirmata; make all
 

@@ -1,17 +1,24 @@
 MODEL = $$MODEL$$
-all: ../$(MODEL)
+
+ifeq ($(OS),Windows_NT)
+EXE = .exe
+SYS_LIBS = -lws2_32
+else ifeq ($(shell uname -s),Linux)
+LDFLAGS_OS = -static
+SYS_LIBS = -lrt
+endif
+
+all: ../$(MODEL)$(EXE)
 
 PYCODEGEN = $(PYSUPSICTRL)/CodeGen
 MAINDIR = $(PYCODEGEN)/src
-LIBDIR  = $(PYCODEGEN)/LinuxRT/lib
-INCDIR  = $(PYCODEGEN)/LinuxRT/include
+LIBDIR  = $(PYCODEGEN)/sim/lib
+INCDIR  = $(PYCODEGEN)/sim/include
 COMMON_INCDIR = $(PYCODEGEN)/Common/include
 
-FIRMATA_LIB  = $(PYCODEGEN)/arduinoFirmata/lib
-FIRMATA_INC  = $(PYCODEGEN)/arduinoFirmata/includes
-
-TOS1A_LIB  = $(PYCODEGEN)/tos1a/lib
-TOS1A_INC  = $(PYCODEGEN)/tos1a/includes
+# GSL, used by the variable step solvers
+GSL_CFLAGS = $(shell gsl-config --cflags)
+GSL_LIBS   = $(shell gsl-config --libs)
 
 RM = rm -f
 FILES_TO_CLEAN = *.o $(MODEL)
@@ -19,32 +26,23 @@ FILES_TO_CLEAN = *.o $(MODEL)
 CC = gcc
 CC_OPTIONS = -g
 
-MAIN = linux_main
+MAIN = sim_main
 ADD_FILES = $$ADD_FILES$$
 
 OBJSSTAN = $(MAIN).o $(MODEL).o $(ADD_FILES)
 
 LIB = $(LIBDIR)/libpyblk.a $(FMILIB)
 
-ifeq ($(shell test -e $(TOS1A_LIB)/tos1apyblk.a && echo -n yes),yes)
-     LIB += $(TOS1A_LIB)/tos1apyblk.a
-endif
-
-ifeq ($(shell test -e $(FIRMATA_LIB)/firmatapyblk.a && echo -n yes),yes)
-    LIB += $(FIRMATA_LIB)/firmatapyblk.a
-endif
-
-
-CFLAGS = $(CC_OPTIONS) -O2 -I$(TOS1A_INC) -I$(FIRMATA_INC) -I$(INCDIR) -I$(COMMON_INCDIR) $(C_FLAGS) -DMODEL=$(MODEL)
+CFLAGS = $(CC_OPTIONS) -O2 -I$(INCDIR) -I$(COMMON_INCDIR) $(GSL_CFLAGS) $(C_FLAGS) -DMODEL=$(MODEL)
 
 $(MAIN).c: $(MAINDIR)/$(MAIN).c $(MODEL).c
 	cp $< .
 
-%.o: ../%.c
+%.o: %.c
 	$(CC) -c -o $@ $(CFLAGS) $<
 
-../$(MODEL): $(OBJSSTAN) $(LIB)
-	$(CC) -static -o $@  $(OBJSSTAN) $(LIB) -lrt -lpthread -lgsl -lgslcblas -lm
+../$(MODEL)$(EXE): $(OBJSSTAN) $(LIB)
+	$(CC) $(LDFLAGS_OS) -o $@ $(OBJSSTAN) $(LIB) $(GSL_LIBS) -lpthread $(SYS_LIBS) -lm
 	@echo "### Created executable: $(MODEL)"
 
 clean::

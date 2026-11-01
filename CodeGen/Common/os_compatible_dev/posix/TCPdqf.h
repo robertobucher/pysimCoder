@@ -24,8 +24,8 @@
 #include <semaphore.h>
 
 typedef struct tcp_dqf_base {
-  unsigned int locin;
-  unsigned int locout;
+  _Atomic unsigned int locin;
+  _Atomic unsigned int locout;
   unsigned int locmask;
   unsigned int lostcount;
 } tcp_dqf_base_t;
@@ -37,7 +37,7 @@ typedef struct tcp_txrx_state {
   int sockfd;
   double *buff;
   double *rxbuff[3];
-  int rxbuff_to_apply;
+  _Atomic int rxbuff_to_apply;
   int rxbuff_in_apply;
   pthread_mutex_t tcp_lock;
   pthread_cond_t tcp_cond;

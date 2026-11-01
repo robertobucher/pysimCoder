@@ -1,14 +1,28 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
 #include <string.h>
 #include <time.h>
 #include <errno.h>
+
+/* If ran under Windows (MinGW, MSYS, CYGWIN), UDP sockets are utilized.
+ * If ran under Unix, we use UNIX sockets.
+ */
+#if defined(_WIN32)
+#include <winsock2.h>
+#include <ws2tcpip.h>
+/* no UNIX sockets, send UDP datagrams to 127.0.0.1:SCOPE_UDP_PORT+<instance> */
+#define SCOPE_UDP
+#define SCOPE_UDP_PORT 50000
+typedef SOCKET scope_sock_t;
+#elif defined(__linux__) || defined(__APPLE__) || defined(__NuttX__)
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/un.h>
 #include <unistd.h>
-#include <sched.h>
+typedef int scope_sock_t;
+#else
+#error "scope: unsupported platform"
+#endif
 
 #include <pyblock.h>
 
@@ -25,12 +39,11 @@
 #define PACKET_NUM 12U
 #define DOUBLE_SIZE sizeof(double)
 
-#define PYCONTROL_PATH_ENV_VAR "PYSUPSICTRL"
-#define PLOTTER_COMMAND_ARGV_NUM 5
-/* when compiling define PLOTTER_SCRIPT */
-
 struct _scope {
-  int sock;
+  scope_sock_t sock;
+#ifdef SCOPE_UDP
+  struct sockaddr_in addr;
+#endif
   size_t buff_pos;
   size_t buff_len;
   char sock_name[SOCK_NAME_MAX_LEN];
@@ -40,8 +53,6 @@ struct _scope {
 static int scope_init(python_block * blk);
 static void scope_out(python_block * blk);
 static void scope_end(python_block * blk);
-
-double get_Tsamp();
 
 void scope(int flag, python_block * blk) 
 {
@@ -58,91 +69,10 @@ void scope(int flag, python_block * blk)
   }
 }
 
-static unsigned number_len(unsigned u)
-{
-  return floor(log10(u)) + 1U;
-}
-
-static char * unsigned_to_str(unsigned u)
-{
-  char * str = 0;
-  size_t str_len = sizeof(*str) * number_len(u) + 1U;
-  str = malloc(str_len);
-  if (!str)
-    return 0;
-  snprintf(str, str_len, "%u", u);
-  return str;
-}
-
-static void start_plotter(unsigned nin, int sock, int timed, const char * sock_name)
-{
-  /* fork off process that will NOT run as rt */
-  pid_t pid = fork();
-  if (!pid) {
-    /* child */
-    struct sched_param param;
-    param.sched_priority = 0;
-    if (0 > sched_setscheduler(0, SCHED_OTHER, &param)) {
-      unlink(sock_name);
-      perror("sched_setscheduler");
-      exit(EXIT_FAILURE);
-    }
-    /* start plotter with sock_name and packet num as args */
-    char * packet_num_str = unsigned_to_str(PACKET_NUM);
-    char dtime[10];
-    if(timed) sprintf(dtime, "%9.6lf", get_Tsamp());
-    else        sprintf(dtime, "1");
-	    
-    if (!packet_num_str) {
-      unlink(sock_name);
-      fprintf(stderr, "mem error in start_plotter\n");
-      exit(EXIT_FAILURE);
-    }
-    char * nin_str = unsigned_to_str(nin);
-    if (!nin_str) {
-      free(packet_num_str);
-      unlink(sock_name);
-      fprintf(stderr, "mem error in start_plotter\n");
-      exit(EXIT_FAILURE);
-    }
-    char * const cargv[PLOTTER_COMMAND_ARGV_NUM + 1] = {
-							PLOTTER_SCRIPT,
-							(char *)sock_name,
-							packet_num_str,
-							nin_str,
-							dtime,
-							0,
-    };
-    int execv_ret = execv(PLOTTER_SCRIPT, cargv);
-    if (0 > execv_ret) {
-      unlink(sock_name);
-      perror("execv " PLOTTER_SCRIPT);
-      exit(EXIT_FAILURE);
-    }
-    /* if execv successfull will continue running plotter */
-  } else if (pid)
-    /* parent */
-    return;
-  else {
-    close(sock);
-    unlink(sock_name);
-    perror("fork");
-    exit(EXIT_FAILURE);
-  }
-}
-
-static void remScope(void)
-{
-  remove("scope_sock0");
-}
-
 static int scope_init(python_block * blk)
 {
   int * intPar    = blk->intPar;
-  /* allow us to have more than one scope */
   static unsigned num_instances = 0;
-  /* remove old scope if exists */
-  /* remScope(); */
   /* get _scope struct and append to blk */
   struct _scope * sc = malloc(sizeof(*sc));
   if (!sc) {
@@ -164,11 +94,33 @@ static int scope_init(python_block * blk)
   /* count instances up */
   num_instances++;
 
+#ifdef SCOPE_UDP
+  WSADATA wsa;
+  if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0) {
+    free(sc->buff);
+    free(sc);
+    fprintf(stderr, "WSAStartup failed\n");
+    exit(EXIT_FAILURE);
+  }
+  sc->sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+  if (sc->sock == INVALID_SOCKET) {
+    fprintf(stderr, "socket: WSA error %d\n", WSAGetLastError());
+    WSACleanup();
+    free(sc->buff);
+    free(sc);
+    exit(EXIT_FAILURE);
+  }
+  memset(&sc->addr, 0, sizeof(sc->addr));
+  sc->addr.sin_family = AF_INET;
+  /* num_instances was already counted up */
+  sc->addr.sin_port = htons(SCOPE_UDP_PORT + num_instances - 1);
+  sc->addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
+#else
   struct sockaddr_un sockaddr;
   socklen_t addrlen = sizeof(sockaddr);
   memset(&sockaddr, 0, addrlen);
   sockaddr.sun_family = AF_UNIX;
-  strncpy(sockaddr.sun_path, sc->sock_name, SOCK_NAME_MAX_LEN);
+  strncpy(sockaddr.sun_path, sc->sock_name, sizeof(sockaddr.sun_path) - 1);
 
   /* get unix socket */
   int sock = socket(sockaddr.sun_family, SOCK_STREAM, 0);
@@ -201,9 +153,6 @@ static int scope_init(python_block * blk)
     exit(EXIT_FAILURE);
   }
 
-  /* try to start plotter process */
-  start_plotter(blk->nin, sock, intPar[0], sc->sock_name);
-
   /* accept (blocking call) plotter */
   int conn = accept(sock, 0, 0);
   if (0 > conn) {
@@ -216,6 +165,7 @@ static int scope_init(python_block * blk)
   }
   close(sock);
   sc->sock = conn;
+#endif
   intPar[2] = 0;	
 }
 
@@ -223,7 +173,7 @@ static void scope_out(python_block * blk)
 {
   int * intPar    = blk->intPar;
   struct _scope * sc = (struct _scope *)blk->ptrPar;
-  int sock = sc->sock;
+  scope_sock_t sock = sc->sock;
   char * buff = sc->buff;
   size_t send_ret = 0;
   int send_ret2 = 0;
@@ -238,6 +188,11 @@ static void scope_out(python_block * blk)
     sc->buff_pos += nin;
     /* if we are to send this tick, well send buffer contents */
     if (PACKET_NUM * nin == sc->buff_pos) {
+#ifdef SCOPE_UDP
+      if (sendto(sock, buff, (int)buff_len, 0,
+                 (const struct sockaddr *)&sc->addr, sizeof(sc->addr)) == SOCKET_ERROR)
+        fprintf(stderr, "sendto: WSA error %d\n", WSAGetLastError());
+#else
       while (buff_len != send_ret) {
 	send_ret2 = send(sock, buff, buff_len, 0);
 	if (0 > send_ret2) {
@@ -248,6 +203,7 @@ static void scope_out(python_block * blk)
 	} else
 	  send_ret += send_ret2;
       }
+#endif
       send_ret = 0;
       sc->buff_pos = 0;
     }
@@ -258,9 +214,14 @@ static void scope_out(python_block * blk)
 static void scope_end(python_block * blk)
 {
   struct _scope * sc = (struct _scope *)blk->ptrPar;
-  int sock = sc->sock;
+  scope_sock_t sock = sc->sock;
+#ifdef SCOPE_UDP
+  closesocket(sock);
+  WSACleanup();
+#else
   close(sock);
   unlink(sc->sock_name);
+#endif
   free(sc->buff);
   free(sc);
 }

@@ -53,7 +53,7 @@ static void logger_init(python_block * blk)
 		free(logger);
 		exit(EXIT_FAILURE);
 	}
-	logger->fp = fopen(blk->str, "w");
+	logger->fp = fopen(blk->str, "wb");
 	if (!logger->fp) {
 		perror("fopen");
 		free(logger->buff);

@@ -2,6 +2,9 @@
 
 .PHONY: make-shv-libs4c
 
+# Bare archiver binary (OMK adds its own flags)
+EXTLIB_AR ?= $(AR)
+
 make-shv-libs4c: make-ulut
 	$(EXT_LIBS)/extlib-fetch.sh shv-libs4c
 	cd $(EXT_LIBS)/shv-libs4c && make default-config \
@@ -11,6 +14,7 @@ make-shv-libs4c: make-ulut
 		CFLAGS="$(EXTLIB_CFLAGS)" \
 		CXXFLAGS="$(EXTLIB_CXXFLAGS)" \
 		LD="$(LD)" \
+		AR="$(EXTLIB_AR)" \
 		LDFLAGS="$(EXTLIB_LDFLAGS)" \
 		CONFIG_FILE=$(CURDIR)/config-shv-libs4c.omk \
 		W=1 \
@@ -24,6 +28,7 @@ make-shv-libs4c: make-ulut
 		CFLAGS="$(EXTLIB_CFLAGS)" \
 		CXXFLAGS="$(EXTLIB_CXXFLAGS)" \
 		LD="$(LD)" \
+		AR="$(EXTLIB_AR)" \
 		LDFLAGS="$(EXTLIB_LDFLAGS)" \
 		CONFIG_FILE=$(CURDIR)/config-shv-libs4c.omk \
 		W=1 \
