@@ -71,9 +71,6 @@ files:
 EXCLUDE = comedi_analog_input.c comedi_analog_output.c comedi_digital_input.c comedi_digital_output.c
 SRC=$(filter-out $(EXCLUDE),$(SRCALL))
 
-scope.o: scope.c
-	$(CC) $(CC_FLAGS_SCP) $<
-
 led.o: led.c
 	$(CC) $(CC_FLAGS_LED) $<
 

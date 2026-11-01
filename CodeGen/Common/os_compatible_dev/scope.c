@@ -120,7 +120,7 @@ static int scope_init(python_block * blk)
   socklen_t addrlen = sizeof(sockaddr);
   memset(&sockaddr, 0, addrlen);
   sockaddr.sun_family = AF_UNIX;
-  strncpy(sockaddr.sun_path, sc->sock_name, SOCK_NAME_MAX_LEN);
+  strncpy(sockaddr.sun_path, sc->sock_name, sizeof(sockaddr.sun_path) - 1);
 
   /* get unix socket */
   int sock = socket(sockaddr.sun_family, SOCK_STREAM, 0);
