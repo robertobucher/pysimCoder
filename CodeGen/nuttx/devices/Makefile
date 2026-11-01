@@ -139,6 +139,8 @@ CC_FLAGS_FMU = -c $(DBG) $(INCLUDE) $(CFLAGS) -Wall -DFMI_COSIMULATION \
 EXTLIB_CFLAGS=$(CC_FLAGS)
 EXTLIB_CXXFLAGS=$(CC_FLAGS)
 EXTLIB_LDFLAGS=$(CC_FLAGS)
+# NuttX AR contains those stupid rcs flags, get rid of it
+EXTLIB_AR=$(CROSSDEV)ar
 
 ifeq ($(SHV),1)
 # The Python generated SHV Code uses the getenv to retrieve
