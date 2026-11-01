@@ -45,6 +45,27 @@ https://github.com/robertobucher/LinuxLabo
 
 Other distirbution can be installed in similar ways.
 
+## Installation with uv
+
+As an alternative to installing the Python packages with pip, the Python
+environment can be managed with `uv`. The system
+packages (compilers, headers, libraries) listed below are still required.
+
+```
+git clone https://github.com/robertobucher/pysimCoder
+cd pysimCoder
+make uv        # creates .venv with all Python dependencies (uv sync)
+make fmu full_lib
+sudo make link
+make user
+make alias
+```
+
+Optional extras can be selected with `make uv UV_EXTRAS="pyside6 rtscope"`.
+`pysim-run.sh` uses the `.venv` automatically when no other virtual
+environment is active. The pip-based installation (`make addfiles modules`,
+`pip install -r requirements.txt`) remains supported.
+
 Finally you launch the application from the command line.
 The `.bashrc` may have to be reloaded beforehand.
 

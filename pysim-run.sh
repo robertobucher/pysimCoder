@@ -34,7 +34,7 @@ export PYTHONPATH="$PYSUPSICTRL/toolbox/supsisim$PYTHONPATH"
 if [ -n "$VIRTUAL_ENV" ]; then
     PYTHON_INTR="$VIRTUAL_ENV/bin/python3"
 elif [ -x "$PYSUPSICTRL/.venv/bin/python3" ]; then
-    # Activate it, so that python3/jupyter spawned by the app use it too
+    # Activate it, so that python3 spawned by the app use it too
     export VIRTUAL_ENV="$PYSUPSICTRL/.venv"
     export PATH="$VIRTUAL_ENV/bin:$PATH"
     PYTHON_INTR="$VIRTUAL_ENV/bin/python3"
