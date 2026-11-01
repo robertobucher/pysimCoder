@@ -1,5 +1,7 @@
 all: addfiles modules fmu full_lib arduino_firmata driver link
 reduced: addfiles modules fmu lib arduino_firmata driver link
+all-uv: uv fmu full_lib arduino_firmata driver link
+reduced-uv: uv fmu lib arduino_firmata driver link
 
 BINDIR = /usr/local/bin
 CURDIR = $(shell pwd)
@@ -26,6 +28,11 @@ slycot:
 modules:
 	cd toolbox/supsictrl; pip install .  $(PIPFLAGS); rm -rf build *.egg-info
 	cd toolbox/supsisim; pip install .  $(PIPFLAGS); rm -rf build *.egg-info
+
+# Create/update .venv with uv (alternative to addfiles + modules)
+# Extras can be selected with e.g. make uv UV_EXTRAS="pyside6 rtscope"
+uv:
+	uv sync $(addprefix --extra ,$(UV_EXTRAS))
 
 fmu:
 	cd CodeGen/LinuxRT/fmu; make all; make install; make clean

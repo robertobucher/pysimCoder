@@ -1,3 +1,4 @@
+# pip dependency list. Mirrors [project].dependencies in pyproject.toml for uv
 setuptools # MIT
 cmake # Apache Software License 2.0, BSD License
 tk-tools # MIT
@@ -13,6 +14,6 @@ tornado>=6.1 #  Apache Software License 2.0
 scikit-build>=0.15.0 # MIT
 pyshv>=0.8.0 #MIT
 typing-extensions>=4.13.1 # PSF-2.0
-semantic_version
-pyserial
+semantic_version # BSD License
 PyQt6 # GPLv3
+pyserial # BSD License
