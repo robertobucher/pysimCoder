@@ -710,7 +710,7 @@ class Scene(QGraphicsScene):
         txt += '    for f in files:\n'
         txt += '        if not f.endswith(".py"):\n'
         txt += '            continue\n'
-        txt += '        f = f.rstrip("*.py")\n'
+        txt += '        f = f.removesuffix(".py")\n'
         txt += '        if True: #try:\n'
         txt += '            cmd = "from " + el + "." + f + " import *"\n'
         txt += '            exec(cmd)\n'
