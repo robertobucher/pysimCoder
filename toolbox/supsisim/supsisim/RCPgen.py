@@ -17,6 +17,7 @@ The following commands are provided:
 """
 from numpy import  nonzero, ones, asmatrix, size, array, zeros
 from os import environ
+import os
 import copy
 import sys
 from supsisim.RCPblk import RCPblk, RcpParam
@@ -63,7 +64,7 @@ def genCode(model, Tsamp, blocks, rkMethod='standard_RK4', epsAbs = 1e-6, epsRel
 
     gslFlag = (rkMethod != 'standard RK4')
     fn = model + '.c'
-    f=open(fn,'w')
+    f=open(fn, 'w', encoding='utf-8')
     strLn = '#include <pyblock.h>\n#include <stdio.h>\n#include <stdlib.h>\n'
     f.write(strLn)
     if gslFlag:
@@ -428,8 +429,8 @@ def genMake(model, template, addObj = '', addCDefs = '', addMakeArgs = ''):
     -
 """
     template_path = environ.get('PYSUPSICTRL')
-    fname = template_path + '/CodeGen/templates/' + template
-    f = open(fname,'r')
+    fname = os.path.join(template_path, 'CodeGen', 'templates', template)
+    f = open(fname, 'r', encoding='utf-8')
     mf = f.read()
     f.close()
     mf = mf.replace('$$MODEL$$',model)
@@ -443,7 +444,7 @@ def genMake(model, template, addObj = '', addCDefs = '', addMakeArgs = ''):
 
     mf = mf.replace('$$ADDITIONAL_DEFINES$$', addCDefs)
     mf = mf.replace('$$ADDITIONAL_MAKE_ARGS$$', addMakeArgs)
-    f = open('Makefile','w')
+    f = open('Makefile', 'w', encoding='utf-8')
     f.write(mf)
     f.close()
 

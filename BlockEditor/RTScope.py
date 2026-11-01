@@ -30,6 +30,7 @@ import struct
 import serial as ser
 import socket
 import json
+from supsisim.const import path
 
 COL = 220
 WIDTH = 2
@@ -39,8 +40,7 @@ SER4 = 2
 TCP = 3
 UDP = 4
 
-path = os.environ.get('PYSUPSICTRL') + '/BlockEditor'
-form_class = uic.loadUiType(path + '/pyplt.ui')[0]
+form_class = uic.loadUiType(os.path.join(path, 'BlockEditor', 'pyplt.ui'))[0]
 
 class ser_rcvServer(threading.Thread):
     def __init__(self, mainw):

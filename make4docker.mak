@@ -32,13 +32,13 @@ lib:
 
 link:
 	cd $(BINDIR); rm -f pyParams gen_pydev loadnrt defBlocks dataplot xblk2Blk
-	cp BlockEditor/gen_pydev $(BINDIR)/
 	cd $(CURDIR)/BlockEditor; chmod a+x *.py
 	cd $(CURDIR)/DriverNRT/; chmod a+x loadnrt
 	ln -s $(CURDIR)/BlockEditor/pyParams.py $(BINDIR)/pyParams
 	ln -s $(CURDIR)/BlockEditor/defBlocks.py $(BINDIR)/defBlocks
 	ln -s $(CURDIR)/BlockEditor/dataplot.py $(BINDIR)/dataplot
 	ln -s $(CURDIR)/BlockEditor/xblk2Blk.py $(BINDIR)/xblk2Blk
+	ln -s $(CURDIR)/BlockEditor/gen_pydev.py $(BINDIR)/gen_pydev
 	ln -s $(CURDIR)/DriverNRT/loadnrt $(BINDIR)/loadnrt
 
 user:

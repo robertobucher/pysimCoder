@@ -1,4 +1,5 @@
 #import sys
+import os
 
 from supsisim.qtvers import *
 
@@ -35,14 +36,15 @@ class BlkDlg(QDialog):
 
     def blkHelp(self):
         if self.helpTxt is None:
-            fn = respath + 'blocks/rcpBlk/help/' + self.fname + '.hlp'
+            helpdir = os.path.join(respath, 'blocks', 'rcpBlk', 'help')
+            fn = os.path.join(helpdir, self.fname + '.hlp')
             try:
-                f = open(fn,'r')
+                f = open(fn, 'r', encoding='utf-8')
                 text = f.read()
                 f.close()
             except:
                 try:
-                    f = open(respath + 'blocks/rcpBlk/help/noHelp.hlp', 'r')
+                    f = open(os.path.join(helpdir, 'noHelp.hlp'), 'r', encoding='utf-8')
                     text = f.read()
                     f.close()
                 except:

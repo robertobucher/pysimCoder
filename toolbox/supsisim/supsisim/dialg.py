@@ -1,6 +1,6 @@
 from supsisim.qtvers import *
 
-from supsisim.const import path
+from supsisim.const import path, SHLIB_SUFFIX
 from supsisim.getTemplates import dictTemplates
 from supsisim.image_update import ImageUpdateMethod, OpenocdUpdateMethod, SHVUpdateMethod
 from supsisim.image_confirm import ImageConfirmMethod, SHVConfirmMethod
@@ -9,6 +9,7 @@ from supsisim.shv.SHVInstance import SHVInstance
 from threading import Event
 from typing import Any, Callable, Optional
 from os import listdir
+import os
 import asyncio
 
 class IO_Dialog(QDialog):
@@ -63,7 +64,7 @@ class RTgenDlg(QDialog):
 
         lab1 = QLabel('Template Makefile')
         self.template = QComboBox()
-        self.template.addItems(listdir(path+'CodeGen/templates'))
+        self.template.addItems(listdir(os.path.join(path, 'CodeGen', 'templates')))
         self.template.setEditable(False)
 
         lab2 = QLabel('Parameter script')
@@ -145,20 +146,18 @@ class RTgenDlg(QDialog):
 
     def getTemplate(self):
         fname = QFileDialog.getOpenFileName(self,'Open Template Makefile',
-                                                  path+'CodeGen/templates', 'Template (*.tmf)')
+                                                  os.path.join(path, 'CodeGen', 'templates'), 'Template (*.tmf)')
         fname = fname[0]
         if len(fname) != 0:
-            ln = fname.split('/')
-            templ = ln[-1].__str__()
+            templ = os.path.basename(fname)
             self.template.setText(templ)
 
     def getObjs(self):
         fname = QFileDialog.getOpenFileName(self,'Additional libraries',
-                                                  '.','Dynamic libraries (*.so)')
+                                                  '.', 'Dynamic libraries (*' + SHLIB_SUFFIX + ')')
         fname = fname[0]
         if len(fname) != 0:
-            ln = fname.split('/')
-            libname = ln[-1].__str__()
+            libname = os.path.basename(fname)
             self.addObjs.setText(libname)
 
     def getScript(self):

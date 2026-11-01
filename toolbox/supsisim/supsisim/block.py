@@ -190,7 +190,17 @@ class Block(QGraphicsPathItem):
         new_left: float = -svg_size.width()/2 + delta.x()
         new_top: float = -svg_size.height()/2 + delta.y()
         where_to: QRectF = QRectF(new_left, new_top, svg_size.width(), svg_size.height())
-        self.renderer.render(painter, where_to)
+        if self.flip:
+            # The item itself is mirrored (see setFlip); mirror the icon
+            # back around its center so it is drawn in original orientation
+            painter.save()
+            painter.translate(delta.x(), 0)
+            painter.scale(-1, 1)
+            painter.translate(-delta.x(), 0)
+            self.renderer.render(painter, where_to)
+            painter.restore()
+        else:
+            self.renderer.render(painter, where_to)
 
     def itemChange(self, change, value):
         return value
@@ -224,18 +234,12 @@ class Block(QGraphicsPathItem):
         
         self.updateHandles()
         
-        str_path = respath + 'blocks/Icons/' + self.icon + '.svg'
+        str_path = os.path.join(respath, 'blocks', 'Icons', self.icon + '.svg')
+        self.renderer = QtSvg.QSvgRenderer(str_path)
         if self.flip:
             self.setTransform(QTransform.fromScale(-1, 1))
-            # the path
-            mirr_path = '/tmp/' + self.icon + '.svg'
-            if not os.path.exists(mirr_path):
-                cmd = 'inkscape --actions="select-all;object-flip-horizontal" -o ' + mirr_path + ' ' + str_path
-                os.system(cmd)
-            self.renderer = QtSvg.QSvgRenderer(mirr_path)
         else:
             self.setTransform(QTransform.fromScale(1, 1))
-            self.renderer = QtSvg.QSvgRenderer(str_path)
         self.flipLabel()
 
     def setLabel(self, p):

@@ -1,8 +1,10 @@
+import os
 import numpy as np
 import matplotlib.pyplot as plt
+from supsisim.const import TMPDIR
 
 def plotDlg(nin, nout, pars, name):
-    fn = '/tmp/'+name
+    fn = os.path.join(TMPDIR, name)
 
     try:
         x = np.loadtxt(fn)

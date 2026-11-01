@@ -5,11 +5,12 @@ import sys
 import json
 
 from supsisim.qtvers import *
+from supsisim.const import path
+from gen_pydev import gen_pydev
 
-path = os.environ.get('PYSUPSICTRL') + '/'
-mypath = path + 'resources/icons/'
+mypath = os.path.join(path, 'resources', 'icons', '')
 
-form_class = uic.loadUiType(path+'BlockEditor/xblk.ui')[0]    
+form_class = uic.loadUiType(os.path.join(path, 'BlockEditor', 'xblk.ui'))[0]
 
 class myCombo(QComboBox):
     def __init__(self):
@@ -129,7 +130,7 @@ class MainWindow(QMainWindow, form_class):
         fun += '    -------\n'
         fun += '       blk: RCPblk\n\n    """\n\n    '    
         
-        name = self.edFun.rstrip('Blk')
+        name = self.edFun.removesuffix('Blk')
 
         states = '[' + str(self.spBoxCS.value()) + ',' + str(self.spBoxDS.value()) + ']'
         if self.ckbRelation.checkState() == Qt.Checked:
@@ -179,9 +180,8 @@ class MainWindow(QMainWindow, form_class):
             
     def genSkeleton(self):
         if self.text.toPlainText() != '':
-            name = self.edFun.rstrip('Blk')
-            cmd = 'gen_pydev ' + name
-            os.system(cmd)
+            name = self.edFun.removesuffix('Blk')
+            gen_pydev(name)
                     
 app = QApplication(sys.argv)
 frame = MainWindow()

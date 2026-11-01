@@ -1,13 +1,16 @@
 from supsisim.RCPblk import RCPblk, RcpParam
 import numpy as np
-from os import system
+import zipfile
 
 
-def getXMLindex(file, ref):
+def getXMLindex(fmu, ref):
     import xml.etree.ElementTree as ET
 
     ind = -1
-    tree = ET.parse(file + "/modelDescription.xml")
+    # An FMU is a zip archive; read its model description in place
+    with zipfile.ZipFile(fmu) as z:
+        with z.open("modelDescription.xml") as f:
+            tree = ET.parse(f)
     root = tree.getroot()
     cs = root.findall("./ModelVariables/ScalarVariable")
     for el in cs:
@@ -42,28 +45,21 @@ def FmuBlk(*args):
     params.append(RcpParam("Inputs Size", np.size(pin), RcpParam.Type.INT))
     params.append(RcpParam("Outputs Size", np.size(pin), RcpParam.Type.INT))
 
-    name = params[2].value
-    spl_name = name.split(".")
-    name = "/tmp/" + spl_name[0]
-
-    cmd = "unzip -o -d " + name + " " + params[2].value + " >/dev/null"
-    system(cmd)
+    fmu = params[2].value
 
     for ref in params[0].value:
-        ind = getXMLindex(name, ref)
+        ind = getXMLindex(fmu, ref)
         if ind == -1:
             raise ValueError("Reference value not found!")
         else:
             params.append(RcpParam(ref, ind, RcpParam.Type.INT))
 
     for ref in params[1].value:
-        ind = getXMLindex(name, ref)
+        ind = getXMLindex(fmu, ref)
         if ind == -1:
             raise ValueError("Reference value not found!")
         else:
             params.append(RcpParam(ref, ind, RcpParam.Type.INT))
-
-    system("rm -fr " + name)
 
     params.pop(0)
     params.pop(0)

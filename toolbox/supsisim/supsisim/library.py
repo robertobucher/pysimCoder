@@ -119,7 +119,7 @@ class Library(QMainWindow):
         self.tabs.setCurrentIndex(index)
 
     def addActions(self):
-        mypath = respath + '/icons/'
+        mypath = os.path.join(respath, 'icons', '')
 
         self.newFileAction = QAction(QIcon(mypath+'filenew.png'),
                                      '&New', self,
@@ -172,43 +172,38 @@ class Library(QMainWindow):
         fileMenu.addAction(self.exitAction)
        
     def getBlock(self,fn):
-        f = open(fn,'r')
+        f = open(fn, 'r', encoding='utf-8')
         d = f.read()
         f.close()
         d = json.loads(d)
         return d
         
     def readLib(self):
-        commonDir = respath+'blocks/blocks'
-        
+        commonDir = os.path.join(respath, 'blocks', 'blocks')
+
         blkList = []
         try:
-            fn = open(commonDir + '/common.blks')
+            fn = open(os.path.join(commonDir, 'common.blks'), encoding='utf-8')
             for f in fn:
                 f = f.rstrip()
                 try:
-                    d = self.getBlock(respath +'blocks/blocks/' + f)
+                    d = self.getBlock(os.path.join(commonDir, f))
                     d['lib'] = 'common'
                     blkList.append(d)
                 except:
-                    try:
-                        d = self.getBlock(myDir + '/' + f)
-                        d['lib'] = 'common'
-                        blkList.append(d)
-                    except:
-                        pass                
+                    pass
             fn.close()
         except:
             pass
         
-        dirs = open(commonDir + '/folders','r')
+        dirs = open(os.path.join(commonDir, 'folders'), 'r', encoding='utf-8')
         for el in dirs:
             el = el.rstrip('\n')
             try:
-                files = os.listdir(commonDir + '/' + el)
+                files = os.listdir(os.path.join(commonDir, el))
                 for f in sorted(files):
                     if f.endswith('.xblk'):
-                        d = self.getBlock(respath +'blocks/blocks/' + el + '/' + f)
+                        d = self.getBlock(os.path.join(commonDir, el, f))
                 
                         blkList.append(d)
             except:

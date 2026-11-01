@@ -5,12 +5,12 @@ import sys
 import json
 
 from supsisim.qtvers import *
+from supsisim.const import path
 
-path = os.environ.get('PYSUPSICTRL') + '/'
-form_class = uic.loadUiType(path+'BlockEditor/BlockParams.ui')[0]    
+form_class = uic.loadUiType(os.path.join(path, 'BlockEditor', 'BlockParams.ui'))[0]
 
-mypath = path + 'resources/icons/'
-blkpath =  path + 'resources/blocks/blocks/'
+mypath = os.path.join(path, 'resources', 'icons', '')
+blkpath = os.path.join(path, 'resources', 'blocks', 'blocks', '')
 
 class MainWindow(QMainWindow, form_class):
     def __init__(self):

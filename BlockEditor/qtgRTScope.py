@@ -4,6 +4,7 @@ import sys
 import os
 
 from supsisim.qtvers import *
+from supsisim.const import path
 
 import pyqtgraph as pg
 
@@ -29,8 +30,7 @@ pg.setConfigOption('background', pg.mkColor((COL, COL, COL)))
 pg.setConfigOption('foreground', 'k')
 
 app = QApplication(sys.argv)
-path = os.environ.get('PYSUPSICTRL') + '/BlockEditor'
-form_class = uic.loadUiType(path + '/pyplt.ui')[0]
+form_class = uic.loadUiType(os.path.join(path, 'BlockEditor', 'pyplt.ui'))[0]
 
 class ser_rcvServer(threading.Thread):
     def __init__(self, mainw):

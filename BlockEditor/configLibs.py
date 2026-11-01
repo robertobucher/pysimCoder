@@ -4,15 +4,15 @@ import os
 import sys
 
 from supsisim.qtvers import *
+from supsisim.const import path
 
-path = os.environ.get('PYSUPSICTRL') + '/'
 
 class MainWindow(QMainWindow):
     def __init__(self):
         QMainWindow.__init__(self)
 
-        self.commonDir = path+'resources/blocks/blocks'
-        f = open(self.commonDir + '/folders','r')
+        self.commonDir = os.path.join(path, 'resources', 'blocks', 'blocks')
+        f = open(os.path.join(self.commonDir, 'folders'),'r')
         self.dirs = []
         self.folders = []
         for el in f:
@@ -21,7 +21,7 @@ class MainWindow(QMainWindow):
         f.close()
 
         for el in os.listdir(self.commonDir):
-            if os.path.isdir(self.commonDir + '/' + el):
+            if os.path.isdir(os.path.join(self.commonDir, el)):
                 self.folders.append(el)
 
         self.setGeometry(0,0,500,500)
@@ -49,7 +49,7 @@ class MainWindow(QMainWindow):
 
     def saveCh(self):
         N = self.grid.rowCount()
-        f = open(self.commonDir + '/folders','w')
+        f = open(os.path.join(self.commonDir, 'folders'),'w')
         for n in range(0, N-1):
             qc = self.grid.itemAt(n).widget()
             if qc.checkState() == Qt.Checked:
