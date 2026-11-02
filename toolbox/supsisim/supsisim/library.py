@@ -7,7 +7,6 @@ from supsisim.qtvers import *
 
 from supsisim.const import respath
 from supsisim.pyEdit import NewEditorMainWindow
-from supsisim.dialg import checkDgmBeforeOpen, DgmOpenAction
 from supsisim.block import Block
 from supsisim.const import respath, BWmin
 
@@ -151,17 +150,13 @@ class Library(QMainWindow):
         if filename != '':
             self.fopen(filename)
 
-    def fopen(self, filename, fromCmdLine = False):
-        action = checkDgmBeforeOpen(self, filename, fromCmdLine)
-        if action != DgmOpenAction.OPEN:
-            return action
+    def fopen(self, filename):
         fname = QFileInfo(filename)
         self.path = str(fname.absolutePath())
         fn = str(fname.baseName())
         main = NewEditorMainWindow(fn, self.path, self)
         self.mainWins.append(main)
         main.show()
-        return action
 
     def addToolbars(self):
         toolbarF = self.addToolBar('File')

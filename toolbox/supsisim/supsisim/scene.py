@@ -5,8 +5,7 @@ from supsisim.subsblock import subsBlock
 from supsisim.port import Port, InPort, OutPort
 from supsisim.connection import Connection
 from supsisim.dialg import RTgenDlg, SHVDlg, UpdimgDlg
-from supsisim.const import VERSION, DGM_FORMAT_VERSION, pyrun, respath, BWmin, EXE_SUFFIX, MAKE
-from supsisim import dgmformat
+from supsisim.const import VERSION, pyrun, respath, BWmin, EXE_SUFFIX, MAKE
 from supsisim.getTemplates import dictTemplates
 from supsisim.RCPblk import RcpParam
 from .shv import ShvClient, SHVInstance
@@ -17,7 +16,6 @@ import subprocess
 import time
 import json
 import re
-import sys
 
 
 IDLE = 0
@@ -94,7 +92,6 @@ class Scene(QGraphicsScene):
         # Transform the block diagram into a python dict
         init = {'code': 'pysimCoder',
                 'ver' : VERSION,
-                'format' : DGM_FORMAT_VERSION,
                 'date' : time.strftime("%d.%m.%Y - %H:%M:%S"),
             }
         dataDict['init'] = init
@@ -308,13 +305,15 @@ class Scene(QGraphicsScene):
         f.close()
 
     def loadDgm(self, fname):
-        # Older diagrams are upgraded in memory only; the GUI asks the
-        # user to upgrade the file itself before opening it
-        # (see dialg.checkDgmBeforeOpen)
-        fileDict, steps = dgmformat.load_dict(fname)
-        for step in steps:
-            print('Warning: %s upgraded in memory (format %s)' % (fname, step), file=sys.stderr)
+        f = open(fname, 'r', encoding='utf-8')
+        msg = f.read()
+        f.close()
 
+        # ============================================================
+        msg = msg.replace('width', 'dims')  # backward compatibility!
+        # ============================================================
+
+        fileDict = json.loads(msg)
         self.clearDgm()
 
         self.DictToDgm(fileDict)
