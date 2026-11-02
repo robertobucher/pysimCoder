@@ -19,6 +19,10 @@ DB = 4
 
 VERSION = 0.95
 
+# Version of the .dgm file format, independent of VERSION.
+# Should be bumped everytime a crucial change is made.
+DGM_FORMAT_VERSION = 1
+
 # Host system detection
 SYSTEM = platform.system()      # 'Linux', 'Darwin' or 'Windows'
 IS_LINUX = SYSTEM == 'Linux'
@@ -38,4 +42,3 @@ path = os.path.join(os.path.normpath(os.environ['PYSUPSICTRL']), '')
 respath = os.path.join(path, 'resources', '')
 
 pyrun = sys.executable  # interpreter running pysimCoder
-

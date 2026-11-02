@@ -1,3 +1,5 @@
 Link.txt
 pysimCoder
 .venv/
+__pycache__
+.DS_Store
