@@ -4,7 +4,7 @@ if [ -z "$PYSUPSICTRL" ]; then
     export PYSUPSICTRL="$( cd "$(dirname "$0")" ; pwd )"
 fi
 
-function show_help
+show_help()
 {
     # find all .py applications
     applications=$(find "$PYSUPSICTRL/BlockEditor" -name "*.py" -execdir basename {} \; | sed s/.py//)
