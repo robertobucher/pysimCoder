@@ -24,6 +24,14 @@ SRCALL += $(wildcard $(COMMON_DIR)/os_compatible_dev/*.c)
 SRCALL += $(wildcard $(COMMON_DIR)/os_compatible_dev/posix/*.c)
 SRCALL += $(wildcard $(COMMON_DIR)/AR2INO/*.c)
 
+VPATH = $(COMMON_DIR)/os_compatible_dev
+VPATH += $(COMMON_DIR)/os_compatible_dev/posix
+VPATH += $(COMMON_DIR)/CAN_dev
+VPATH += $(COMMON_DIR)/common_dev
+VPATH += $(COMMON_DIR)/Faulhaber_dev
+VPATH += $(COMMON_DIR)/Maxon_dev
+VPATH += $(COMMON_DIR)/AR2INO
+
 dependencies:
 	@mkdir -p $(GENERATED_INC)
 
@@ -38,14 +46,15 @@ DBG = -g
 CC ?= cc
 AR ?= ar
 OBJEX = $(SRC:.c=.o)
-DEFINES_SCP = -D PLOTTER_SCRIPT=\"$(CWD)/scope.py\"
-DEFINES_LED = -D LED_SCRIPT=\"$(CWD)/led.py\"
+
 CC_FLAGS = -c $(DBG) $(INCLUDE)
 CC_FLAGS += -I$(GENERATED_INC)
 ifeq ($(SHV),1)
 CC_FLAGS += -I$(COMMON_DIR)/shv/include
 endif
 CC_FLAGS += -D CG_WITH_ENV_HOST_ADDR
+DEFINES_SCP = -D PLOTTER_SCRIPT=\"$(COMMON_DIR)/os_compatible_dev/scope.py\"
+DEFINES_LED = -D LED_SCRIPT=\"$(COMMON_DIR)/os_compatible_dev/led.py\"
 CC_FLAGS_SCP = -c $(DBG) $(INCLUDE)  $(DEFINES_SCP)
 CC_FLAGS_LED = -c $(DBG) $(INCLUDE)  $(DEFINES_LED)
 CC_FLAGS_FMU = -c $(DBG) $(INCLUDE) -Wall -DFMI_COSIMULATION \
@@ -70,6 +79,9 @@ allfiles:
 files:
 EXCLUDE = comedi_analog_input.c comedi_analog_output.c comedi_digital_input.c comedi_digital_output.c
 SRC=$(filter-out $(EXCLUDE),$(SRCALL))
+
+scope.o: scope.c
+	$(CC) $(CC_FLAGS_SCP) $<
 
 led.o: led.c
 	$(CC) $(CC_FLAGS_LED) $<

@@ -47,8 +47,8 @@ CC = gcc
 AR = ar
 DBG = -g
 CC_FLAGS = -c $(DBG) $(INCLUDE)
-DEFINES_SCP = -D PLOTTER_SCRIPT=\"$(CWD)/scope.py\"
-DEFINES_LED = -D LED_SCRIPT=\"$(CWD)/led.py\"
+DEFINES_SCP = -D PLOTTER_SCRIPT=\"$(COMMON_DIR)/os_compatible_dev/scope.py\"
+DEFINES_LED = -D LED_SCRIPT=\"$(COMMON_DIR)/os_compatible_dev/led.py\"
 CC_FLAGS_SCP = -c $(DBG) $(INCLUDE)  $(DEFINES_SCP)
 CC_FLAGS_LED = -c $(DBG) $(INCLUDE)  $(DEFINES_LED)
 

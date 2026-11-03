@@ -1,58 +1,52 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 #include <string.h>
 #include <time.h>
 #include <errno.h>
 
-/* If ran under Windows (MinGW, MSYS, CYGWIN), UDP sockets are utilized.
- * If ran under Unix, we use UNIX sockets.
- */
+/* Configure TCP */
 #if defined(_WIN32)
 #include <winsock2.h>
 #include <ws2tcpip.h>
-/* no UNIX sockets, send UDP datagrams to 127.0.0.1:SCOPE_UDP_PORT+<instance> */
-#define SCOPE_UDP
-#define SCOPE_UDP_PORT 50000
+#include <process.h>
 typedef SOCKET scope_sock_t;
 #elif defined(__linux__) || defined(__APPLE__) || defined(__NuttX__)
 #include <sys/types.h>
 #include <sys/socket.h>
-#include <sys/un.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
 #include <unistd.h>
 typedef int scope_sock_t;
+#define INVALID_SOCKET (-1)
+#define SOCKET_ERROR (-1)
+#define closesocket close
 #else
 #error "scope: unsupported platform"
 #endif
 
 #include <pyblock.h>
 
-/* sth to convert number macros to strings */
-#define STR_HELPER(x) #x
-#define STR(x) STR_HELPER(x)
-
-/* we are only expecting and wanting one connector so backlog is 1 */
-#define SOCKET_NAME "./scope_sock"
-#define SOCK_NAME_MAX_LEN 108
+#define BASE_TCP_PORT 50000
 #define BACKLOG 1
 
-/* how many values to send for each stream to plotter */
 #define PACKET_NUM 12U
 #define DOUBLE_SIZE sizeof(double)
 
 struct _scope {
+  scope_sock_t listen_sock;
   scope_sock_t sock;
-#ifdef SCOPE_UDP
-  struct sockaddr_in addr;
-#endif
+  int port;
   size_t buff_pos;
   size_t buff_len;
-  char sock_name[SOCK_NAME_MAX_LEN];
   char * buff;
 };
 
 static int scope_init(python_block * blk);
 static void scope_out(python_block * blk);
 static void scope_end(python_block * blk);
+
+double get_Tsamp();
 
 void scope(int flag, python_block * blk) 
 {
@@ -69,16 +63,33 @@ void scope(int flag, python_block * blk)
   }
 }
 
+static unsigned number_len(unsigned u)
+{
+  return floor(log10(u)) + 1U;
+}
+
+static char * unsigned_to_str(unsigned u)
+{
+  char * str = 0;
+  size_t str_len = sizeof(*str) * number_len(u) + 1U;
+  str = malloc(str_len);
+  if (!str)
+    return 0;
+  snprintf(str, str_len, "%u", u);
+  return str;
+}
+
 static int scope_init(python_block * blk)
 {
-  int * intPar    = blk->intPar;
+  int * intPar = blk->intPar;
   static unsigned num_instances = 0;
-  /* get _scope struct and append to blk */
+  
   struct _scope * sc = malloc(sizeof(*sc));
   if (!sc) {
     fprintf(stderr, "Memory error in scope_init\n");
     exit(EXIT_FAILURE);
   }
+  
   sc->buff_len = blk->nin * PACKET_NUM * DOUBLE_SIZE;
   sc->buff = malloc(sc->buff_len * sizeof(*sc->buff));
   if (!sc->buff) {
@@ -87,14 +98,11 @@ static int scope_init(python_block * blk)
     exit(EXIT_FAILURE);
   }
   sc->buff_pos = 0;
-  snprintf(sc->sock_name,
-	   SOCK_NAME_MAX_LEN, "/tmp/%s%u", SOCKET_NAME, num_instances);
-  remove(sc->sock_name);
+  sc->port = BASE_TCP_PORT + num_instances;
   blk->ptrPar = (void *)sc;
-  /* count instances up */
   num_instances++;
 
-#ifdef SCOPE_UDP
+#if defined(_WIN32)
   WSADATA wsa;
   if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0) {
     free(sc->buff);
@@ -102,76 +110,128 @@ static int scope_init(python_block * blk)
     fprintf(stderr, "WSAStartup failed\n");
     exit(EXIT_FAILURE);
   }
-  sc->sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
-  if (sc->sock == INVALID_SOCKET) {
-    fprintf(stderr, "socket: WSA error %d\n", WSAGetLastError());
-    WSACleanup();
+#endif
+
+  // Create TCP (AF_INET)
+  sc->listen_sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+  if (sc->listen_sock == INVALID_SOCKET) {
+    fprintf(stderr, "socket error\n");
     free(sc->buff);
     free(sc);
     exit(EXIT_FAILURE);
   }
-  memset(&sc->addr, 0, sizeof(sc->addr));
-  sc->addr.sin_family = AF_INET;
-  /* num_instances was already counted up */
-  sc->addr.sin_port = htons(SCOPE_UDP_PORT + num_instances - 1);
-  sc->addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
-#else
-  struct sockaddr_un sockaddr;
-  socklen_t addrlen = sizeof(sockaddr);
-  memset(&sockaddr, 0, addrlen);
-  sockaddr.sun_family = AF_UNIX;
-  strncpy(sockaddr.sun_path, sc->sock_name, sizeof(sockaddr.sun_path) - 1);
 
-  /* get unix socket */
-  int sock = socket(sockaddr.sun_family, SOCK_STREAM, 0);
-  if (0 > sock) {
-    free(sc->buff);
-    free(sc);
-    perror("socket");
-    exit(EXIT_FAILURE);
-  }
+  // Avoid "Address already in use"
+  int opt = 1;
+  setsockopt(sc->listen_sock, SOL_SOCKET, SO_REUSEADDR, (const char*)&opt, sizeof(opt));
 
-  /* try to bind */
-  /* make sure socket file does not already exist */
-  unlink(SOCKET_NAME);
-  if (0 > bind(sock, (const struct sockaddr *)&sockaddr, addrlen)) {
-    close(sock);
-    unlink(sc->sock_name);
+  struct sockaddr_in address;
+  memset(&address, 0, sizeof(address));
+  address.sin_family = AF_INET;
+  address.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
+  address.sin_port = htons(sc->port);
+
+  if (bind(sc->listen_sock, (struct sockaddr *)&address, sizeof(address)) < 0) {
+    closesocket(sc->listen_sock);
     free(sc->buff);
     free(sc);
     perror("bind");
     exit(EXIT_FAILURE);
   }
 
-  /* listen on socket */
-  if (0 > listen(sock, BACKLOG)) {
-    close(sock);
-    unlink(sc->sock_name);
+  if (listen(sc->listen_sock, BACKLOG) < 0) {
+    closesocket(sc->listen_sock);
     free(sc->buff);
     free(sc);
     perror("listen");
     exit(EXIT_FAILURE);
   }
+// 1. Prepariamo le stringhe per i parametri (come facevi prima)
+    char port_str[16];
+    snprintf(port_str, sizeof(port_str), "%d", sc->port); // La porta TCP al posto di sock_name
 
-  /* accept (blocking call) plotter */
-  int conn = accept(sock, 0, 0);
-  if (0 > conn) {
-    close(sock);
-    unlink(sc->sock_name);
+    char * packet_num_str = unsigned_to_str(PACKET_NUM);
+    char * nin_str = unsigned_to_str(blk->nin); // Assicurati che nin sia definito/disponibile in questo scope
+    
+    char dtime[10];
+    if(intPar[0]) 
+        sprintf(dtime, "%9.6lf", get_Tsamp());
+    else        
+        sprintf(dtime, "1");
+
+    // 2. Array degli argomenti cross-platform
+    // Su Windows con _spawnvp, il primo elemento è l'interprete ("python" o "python3"), 
+    // seguito dallo script e dai suoi argomenti.
+    // Su Linux/Mac con fork/execvp, il primo elemento è sempre l'interprete.
+#if defined(_WIN32)
+    const char * const cargv[] = {
+        "python",
+        PLOTTER_SCRIPT,
+        port_str,
+        packet_num_str,
+        nin_str,
+        dtime,
+        NULL
+    };
+#else
+    const char * const cargv[] = {
+        "python3",
+        PLOTTER_SCRIPT,
+        port_str,
+        packet_num_str,
+        nin_str,
+        dtime,
+        NULL
+    };
+#endif
+
+#if defined(_WIN32)
+    // --- Windows: _spawnvp in background (P_NOWAIT) ---
+    intptr_t spawn_ret = _spawnvp(_P_NOWAIT, "python", cargv);
+    if (spawn_ret == -1) {
+        perror("_spawnvp python");
+        closesocket(sc->listen_sock);
+        free(sc->buff);
+        free(sc);
+        exit(EXIT_FAILURE);
+    }
+#else
+    // --- Linux / macOS: fork + execvp ---
+    pid_t pid = fork();
+    if (pid < 0) {
+        perror("fork");
+        close(sc->listen_sock);
+        free(sc->buff);
+        free(sc);
+        exit(EXIT_FAILURE);
+    } else if (pid == 0) {
+        // Processo figlio
+        execvp(cargv[0], (char * const *)cargv);
+        perror("execvp");
+        _exit(EXIT_FAILURE);
+    }
+    // Il processo padre prosegue e va a fare la accept() sulla socket TCP
+#endif
+      
+  scope_sock_t conn = accept(sc->listen_sock, NULL, NULL);
+  if (conn == INVALID_SOCKET) {
+    closesocket(sc->listen_sock);
     free(sc->buff);
     free(sc);
     perror("accept");
     exit(EXIT_FAILURE);
   }
-  close(sock);
+  
+  // close listening socket, mantein the connection
+  closesocket(sc->listen_sock);
   sc->sock = conn;
-#endif
-  intPar[2] = 0;	
+
+  intPar[2] = 0;    
 }
 
 static void scope_out(python_block * blk)
 {
-  int * intPar    = blk->intPar;
+  int * intPar = blk->intPar;
   struct _scope * sc = (struct _scope *)blk->ptrPar;
   scope_sock_t sock = sc->sock;
   char * buff = sc->buff;
@@ -179,48 +239,36 @@ static void scope_out(python_block * blk)
   int send_ret2 = 0;
   size_t buff_len = sc->buff_len;
   unsigned nin = blk->nin;
-  /* write values to buffer */
-	
+  
   if((intPar[2] % intPar[1]) == 0){
     for (unsigned i = 0; nin > i; i++)
       memcpy((void *)(buff + (sc->buff_pos + i) * DOUBLE_SIZE),
-	     blk->u[i], DOUBLE_SIZE);
+             blk->u[i], DOUBLE_SIZE);
     sc->buff_pos += nin;
-    /* if we are to send this tick, well send buffer contents */
+    
     if (PACKET_NUM * nin == sc->buff_pos) {
-#ifdef SCOPE_UDP
-      if (sendto(sock, buff, (int)buff_len, 0,
-                 (const struct sockaddr *)&sc->addr, sizeof(sc->addr)) == SOCKET_ERROR)
-        fprintf(stderr, "sendto: WSA error %d\n", WSAGetLastError());
-#else
       while (buff_len != send_ret) {
-	send_ret2 = send(sock, buff, buff_len, 0);
-	if (0 > send_ret2) {
-	  /* assuming this only happens when */
-	  /* plotter quits before we do */
-	  perror("send");
-	  break;
-	} else
-	  send_ret += send_ret2;
+        send_ret2 = send(sock, buff + send_ret, (int)(buff_len - send_ret), 0);
+        if (send_ret2 <= 0) {
+          perror("send");
+          break;
+        } else {
+          send_ret += send_ret2;
+        }
       }
-#endif
       send_ret = 0;
       sc->buff_pos = 0;
     }
   }
-  intPar[2] = intPar[2]+1;
+  intPar[2] = intPar[2] + 1;
 }
 
 static void scope_end(python_block * blk)
 {
   struct _scope * sc = (struct _scope *)blk->ptrPar;
-  scope_sock_t sock = sc->sock;
-#ifdef SCOPE_UDP
-  closesocket(sock);
+  closesocket(sc->sock);
+#if defined(_WIN32)
   WSACleanup();
-#else
-  close(sock);
-  unlink(sc->sock_name);
 #endif
   free(sc->buff);
   free(sc);
