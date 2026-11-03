@@ -27,8 +27,8 @@ ifneq ($(PLATFORM),Windows)
 SRCALL += $(wildcard $(COMMON_DIR)/os_compatible_dev/posix/*.c)
 
 # tos1a and arduinoFirmata blocks, previously linked by sim.tmf as separate libraries
-SRCALL += $(wildcard $(TOS1A_DIR)/src/*.c)
-INCLUDE += -I$(TOS1A_DIR)/includes
+#SRCALL += $(wildcard $(TOS1A_DIR)/src/*.c)
+#INCLUDE += -I$(TOS1A_DIR)/includes
 
 # arduinoFirmata needs the FirmataC sources fetched by 'make dependencies' in $(FIRMATA_DIR)
 ifneq ($(wildcard $(FIRMATA_VENDOR)/src/*.c),)
@@ -47,6 +47,16 @@ CC = gcc
 AR = ar
 DBG = -g
 CC_FLAGS = -c $(DBG) $(INCLUDE)
+DEFINES_SCP = -D PLOTTER_SCRIPT=\"$(CWD)/scope.py\"
+DEFINES_LED = -D LED_SCRIPT=\"$(CWD)/led.py\"
+CC_FLAGS_SCP = -c $(DBG) $(INCLUDE)  $(DEFINES_SCP)
+CC_FLAGS_LED = -c $(DBG) $(INCLUDE)  $(DEFINES_LED)
+
+led.o: led.c
+	$(CC) $(CC_FLAGS_LED) $<
+
+scope.o: scope.c
+	$(CC) $(CC_FLAGS_SCP) $<
 
 %.o: %.c
 	@echo "CC: $(notdir $<)"
