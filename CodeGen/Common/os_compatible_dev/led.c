@@ -20,7 +20,7 @@ typedef SOCKET scope_sock_t;
 #include <sched.h>
 typedef int scope_sock_t;
 #define INVALID_SOCKET (-1)
-#define socket_close(s) close(s)
+#define closesocket(s) close(s)
 #else
 #error "led: unsupported platform"
 #endif
