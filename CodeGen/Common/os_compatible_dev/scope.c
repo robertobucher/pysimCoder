@@ -19,8 +19,7 @@ typedef SOCKET scope_sock_t;
 #include <unistd.h>
 typedef int scope_sock_t;
 #define INVALID_SOCKET (-1)
-#define SOCKET_ERROR (-1)
-#define closesocket close
+#define socket_close(s) close(s)
 #else
 #error "scope: unsupported platform"
 #endif

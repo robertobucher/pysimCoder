@@ -5,15 +5,12 @@
 #include <time.h>
 #include <errno.h>
 
-/* Configurazione cross-platform per le socket TCP e gestione processi */
+/* Configure TCP */
 #if defined(_WIN32)
 #include <winsock2.h>
 #include <ws2tcpip.h>
 #include <process.h>
 typedef SOCKET scope_sock_t;
-#define INVALID_SOCKET (-1)
-#define SOCKET_ERROR (-1)
-#define closesocket close
 #elif defined(__linux__) || defined(__APPLE__) || defined(__NuttX__)
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -23,8 +20,7 @@ typedef SOCKET scope_sock_t;
 #include <sched.h>
 typedef int scope_sock_t;
 #define INVALID_SOCKET (-1)
-#define SOCKET_ERROR (-1)
-#define closesocket close
+#define socket_close(s) close(s)
 #else
 #error "led: unsupported platform"
 #endif
