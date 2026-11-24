@@ -47,7 +47,11 @@ static void init(python_block *block)
   struct pwm_info_s info;
   int ret;
   
-#ifdef CONFIG_PWM_MULTICHAN
+  /* NuttX no longer has CONFIG_PWM_MULTICHAN in newer versions but only
+   * defines CONFIG_PWM_NCHANNELS. Make sure to support both new and old
+   * versions
+   */
+#if defined(CONFIG_PWM_MULTICHAN) || (CONFIG_PWM_NCHANNELS > 1)
   int fd = intPar[block->nin];
 #else
   int fd = intPar[1];
@@ -62,7 +66,7 @@ static void init(python_block *block)
           exit(1);
         }
 
-#ifdef CONFIG_PWM_MULTICHAN
+#if defined(CONFIG_PWM_MULTICHAN) || (CONFIG_PWM_NCHANNELS > 1)
   /* Set all channels initially to zero  */
 
   for (int i = 0; i < CONFIG_PWM_NCHANNELS; i++)
@@ -114,7 +118,7 @@ static void init(python_block *block)
       exit(1);
     }
 
-#ifdef CONFIG_PWM_MULTICHAN
+#if defined(CONFIG_PWM_MULTICHAN) || (CONFIG_PWM_NCHANNELS > 1)
   intPar[block->nin] = fd;
 #else
   intPar[1] = fd;
@@ -141,7 +145,7 @@ static void inout(python_block *block)
   memset(&info, 0, sizeof(info));
   info.frequency = realPar[0];
 
-#ifdef CONFIG_PWM_MULTICHAN
+#if defined(CONFIG_PWM_MULTICHAN) || (CONFIG_PWM_NCHANNELS > 1)
   /* Set all channels initially to zero  */
 
   for (int i = 0; i < CONFIG_PWM_NCHANNELS; i++)
@@ -219,7 +223,7 @@ static void end(python_block *block)
 {
   int * intPar =  block->intPar;
 
-#ifdef CONFIG_PWM_MULTICHAN
+#if defined(CONFIG_PWM_MULTICHAN) || (CONFIG_PWM_NCHANNELS > 1)
   int fd = intPar[block->nin];
   intPar[block->nin] = 0; /* Needed for reinitialization */
 #else
