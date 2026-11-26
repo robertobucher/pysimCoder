@@ -26,8 +26,11 @@ include $(NUTTX_EXPORT)/scripts/Make.defs
 include $(NUTTX_EXPORT)/.config
 
 SRCALL = $(wildcard $(COMMON_DIR)/common_dev/*.c)
-SRCALL += $(wildcard $(COMMON_DIR)/os_compatible_dev/*.c)
+ifeq ($(CONFIG_NET),y)
 SRCALL += $(wildcard $(COMMON_DIR)/os_compatible_dev/posix/*.c)
+else
+SRCALL += $(COMMON_DIR)/os_compatible_dev/posix/toFile.c
+endif
 SRCALL += serialOut.c
 
 dependencies:
@@ -181,9 +184,6 @@ ifeq ($(SHV),1)
 	$(CC) $(CC_FLAGS) $<
 endif
 
-%.o: $(COMMON_DIR)/shv/%.c
-	$(CC) $(CC_FLAGS) $<
-
 %.o: $(COMMON_DIR)/CAN_dev/%.c
 	$(CC) $(CC_FLAGS) $<
 
@@ -196,11 +196,13 @@ endif
 %.o: $(COMMON_DIR)/Maxon_dev/%.c
 	$(CC) $(CC_FLAGS) $<
 
-%.o: $(COMMON_DIR)/os_compatible_dev/%.c
-	$(CC) $(CC_FLAGS) $<
-
+ifeq ($(CONFIG_NET),y)
 %.o: $(COMMON_DIR)/os_compatible_dev/posix/%.c
 	$(CC) $(CC_FLAGS) $<
+else
+%.o: $(COMMON_DIR)/os_compatible_dev/posix/toFile.c
+	$(CC) $(CC_FLAGS) $<
+endif
 
 lib: $(OBJ)
 	$(AR) $(LIB) $(OBJ)
